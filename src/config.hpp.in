@@ -1,0 +1,16 @@
+#ifndef pMR_CONFIG_H
+#define pMR_CONFIG_H
+
+#ifndef PROFILING
+#cmakedefine PROFILING
+#endif
+
+#ifndef HINT
+#cmakedefine HINT
+#endif
+
+namespace pMR
+{
+    constexpr unsigned int alignment = @ALIGNMENT@;
+}
+#endif // pMR_CONFIG_H
