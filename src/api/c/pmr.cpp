@@ -19,7 +19,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
             return nullptr;
         }
@@ -33,7 +33,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -49,7 +49,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
             return nullptr;
         }
@@ -63,7 +63,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -78,7 +78,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
             return 0;
         }
@@ -92,7 +92,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -105,7 +105,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -118,7 +118,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -134,7 +134,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
             return nullptr;
         }
@@ -148,7 +148,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -163,7 +163,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
             return 0;
         }
@@ -177,7 +177,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -190,7 +190,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -203,7 +203,7 @@ extern "C"
         }
         catch(const std::exception &e)
         {
-            print(e.what());
+            pMR::print(e.what());
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
