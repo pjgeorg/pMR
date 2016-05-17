@@ -5,7 +5,7 @@
 #ifdef HINT
 #include "../../misc/print.hpp"
 #endif // HINT
-
+#include "../../misc/print.hpp"
 
 pMR::verbs::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
@@ -26,13 +26,13 @@ pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
 
 void pMR::verbs::SendMemoryWindow::init()
 {
-    mConnection->postRecvRequest();
+    mConnection->postRecvAddrRequestToActive();
 }
 
 void pMR::verbs::SendMemoryWindow::post()
 {
     // Recv memory address from target 
-    mConnection->pollRecvCompletionQueue();
+    mConnection->pollActiveCompletionQueue();
     
     MemoryAddress remoteMemoryAddress = mConnection->getRemoteMemoryAddress();
 
@@ -47,27 +47,27 @@ void pMR::verbs::SendMemoryWindow::post()
     }
 #endif // HINT
 
-    mConnection->postRDMAWriteRequest(mMemoryRegion,
+    mConnection->postRDMAWriteRequestToActive(mMemoryRegion,
             mConnection->getRemoteMemoryAddress());
 }
 
 void pMR::verbs::SendMemoryWindow::wait()
 {
-    mConnection->pollSendCompletionQueue();
+    mConnection->pollActiveCompletionQueue();
 }
 
 void pMR::verbs::RecvMemoryWindow::init()
 {
     mConnection->setLocalMemoryAddress(mMemoryRegion);
     // Send memory address to target
-    mConnection->postSendRequest();
-    mConnection->postRecvRequest();
+    mConnection->postSendAddrRequestToPassive();
+    mConnection->postRecvSyncRequestToPassive();
 }
 
 void pMR::verbs::RecvMemoryWindow::post() { }
 
 void pMR::verbs::RecvMemoryWindow::wait()
 {
-    mConnection->pollSendCompletionQueue();
-    mConnection->pollRecvCompletionQueue();
+    mConnection->pollPassiveCompletionQueue();
+    mConnection->pollPassiveCompletionQueue();
 }

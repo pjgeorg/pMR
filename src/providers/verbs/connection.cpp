@@ -7,10 +7,12 @@ pMR::verbs::Connection::Connection(Target const &target,
         Device const &device, std::uint8_t const portNumber)
     :   mContext(device),
         mProtectionDomain(mContext),
-        mSendCompletionQueue(mContext, VerbsMaxSend),
-        mRecvCompletionQueue(mContext, VerbsMaxRecv),
-        mQueuePair(mProtectionDomain, mSendCompletionQueue,
-                mRecvCompletionQueue),
+        mActiveCompletionQueue(mContext, VerbsMaxCQEntry),
+        mPassiveCompletionQueue(mContext, VerbsMaxCQEntry),
+        mActiveQueuePair(mProtectionDomain, mActiveCompletionQueue,
+                mActiveCompletionQueue),
+        mPassiveQueuePair(mProtectionDomain, mPassiveCompletionQueue,
+                mPassiveCompletionQueue),
         mSendMemoryRegion(mContext, mProtectionDomain,
                 mLocalMemoryAddress.rawData(), mLocalMemoryAddress.size(),
                 IBV_ACCESS_LOCAL_WRITE),
@@ -18,22 +20,34 @@ pMR::verbs::Connection::Connection(Target const &target,
                 mRemoteMemoryAddress.rawData(), mRemoteMemoryAddress.size(),
                 IBV_ACCESS_LOCAL_WRITE)
 {
-    mQueuePair.setStateINIT(portNumber);
-    ConnectionAddress originAddress =
-        ConnectionAddress(mContext, mQueuePair, portNumber);
-    ConnectionAddress targetAddress;
-    exchangeConnectionAddress(target, originAddress, targetAddress);
-    mQueuePair.setStateRTR(portNumber, targetAddress);
+    mActiveQueuePair.setStateINIT(portNumber);
+    mPassiveQueuePair.setStateINIT(portNumber);
 
-    for(int i=0; i!=VerbsIniRecv; ++i)
+    ConnectionAddress originActiveAddress =
+        ConnectionAddress(mContext, mActiveQueuePair, portNumber);
+    ConnectionAddress originPassiveAddress =
+        ConnectionAddress(mContext, mPassiveQueuePair, portNumber);
+
+    ConnectionAddress targetActiveAddress;
+    ConnectionAddress targetPassiveAddress;
+
+    exchangeConnectionAddress(target, originActiveAddress, originPassiveAddress,
+            targetActiveAddress, targetPassiveAddress);
+
+    mActiveQueuePair.setStateRTR(portNumber, targetPassiveAddress);
+    mPassiveQueuePair.setStateRTR(portNumber, targetActiveAddress);
+
+    for(int i=0; i != VerbsInitialPostRecv; ++i)
     {
-        postRecvRequest();
+        postRecvAddrRequestToActive();
+        postRecvSyncRequestToPassive();
     }
 
     // Sync with remote side to assure both sides are in state RTR.
     pMR::backend::sync(target);
 
-    mQueuePair.setStateRTS();
+    mActiveQueuePair.setStateRTS();
+    mPassiveQueuePair.setStateRTS();
 }
 
 pMR::verbs::Context& pMR::verbs::Connection::getContext()
@@ -69,19 +83,29 @@ pMR::verbs::Connection::getRemoteMemoryAddress() const
     return mRemoteMemoryAddress;
 }
 
-void pMR::verbs::Connection::postRecvRequest()
+void pMR::verbs::Connection::postRecvSyncRequestToPassive()
 {
-    ScatterGatherList scatterGatherList(mRecvMemoryRegion);
-    postRecvRequest(mQueuePair, scatterGatherList.get(), 1);
+    postRecvRequest(mPassiveQueuePair, nullptr, 0);
 }
 
-void pMR::verbs::Connection::postSendRequest()
+void pMR::verbs::Connection::postSendAddrRequestToPassive()
 {
     ScatterGatherList scatterGatherList(mSendMemoryRegion);
-    postSendRequest(mQueuePair, scatterGatherList.get(), 1);
+    postSendRequest(mPassiveQueuePair, scatterGatherList.get(), 1);
 }
 
-void pMR::verbs::Connection::postRDMAWriteRequest(
+void pMR::verbs::Connection::postRecvAddrRequestToActive()
+{
+    ScatterGatherList scatterGatherList(mRecvMemoryRegion);
+    postRecvRequest(mActiveQueuePair, scatterGatherList.get(), 1);
+}
+
+void pMR::verbs::Connection::postSendSyncRequestToActive()
+{
+    postSendRequest(mActiveQueuePair, nullptr, 0);
+}
+
+void pMR::verbs::Connection::postRDMAWriteRequestToActive(
         MemoryRegion const &memoryRegion,
         MemoryAddress const &remoteMemoryAddress)
 {
@@ -100,32 +124,32 @@ void pMR::verbs::Connection::postRDMAWriteRequest(
     ibv_send_wr *badRequest;
 
     int ret;
-    if((ret = ibv_post_send(mQueuePair.get(), &workRequest, &badRequest)))
+    if((ret = ibv_post_send(mActiveQueuePair.get(), &workRequest, &badRequest)))
     {
         throw std::runtime_error("pMR: Unable to post RDMA Work Request.");
     }
 }
 
-void pMR::verbs::Connection::pollSendCompletionQueue()
+void pMR::verbs::Connection::pollActiveCompletionQueue()
 {
-    mSendCompletionQueue.poll();
+    mActiveCompletionQueue.poll();
 }
 
-void pMR::verbs::Connection::pollRecvCompletionQueue()
+void pMR::verbs::Connection::pollPassiveCompletionQueue()
 {
-    mRecvCompletionQueue.poll();
+    mPassiveCompletionQueue.poll();
 }
 
 void pMR::verbs::Connection::initFence()
 {
-    postRecvRequest();
-    postSendRequest();
+    postSendSyncRequestToActive();
+    postRecvSyncRequestToPassive();
 }
 
 void pMR::verbs::Connection::waitFence()
 {
-    pollSendCompletionQueue();
-    pollRecvCompletionQueue();
+    pollActiveCompletionQueue();
+    pollPassiveCompletionQueue();
 }
 
 void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,

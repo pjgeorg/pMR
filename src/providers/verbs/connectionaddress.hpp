@@ -44,7 +44,9 @@ namespace pMR { namespace verbs
     };
 
     void exchangeConnectionAddress(Target const &target,
-            ConnectionAddress const &originAddress,
-            ConnectionAddress &targetAddress);
+            ConnectionAddress const &originActiveAddress,
+            ConnectionAddress const &originPassiveAddress,
+            ConnectionAddress &targetActiveAddress,
+            ConnectionAddress &targetPassiveAddress);
 }}
 #endif // pMR_PROVIDERS_VERBS_CONNECTIONADDRESS_H

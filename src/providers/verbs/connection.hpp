@@ -33,21 +33,26 @@ namespace pMR { namespace verbs
             void setLocalMemoryAddress(MemoryRegion const&);
             MemoryAddress const& getRemoteMemoryAddress() const;
 
-            void postRecvRequest();
-            void postSendRequest();
-            void postRDMAWriteRequest(MemoryRegion const &memoryRegion,
+            void postRecvSyncRequestToPassive();
+            void postSendAddrRequestToPassive();
+
+            void postRecvAddrRequestToActive();
+            void postSendSyncRequestToActive();
+            void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
                     MemoryAddress const &remoteMemoryAddress);
-            void pollSendCompletionQueue();
-            void pollRecvCompletionQueue();
+
+            void pollActiveCompletionQueue();
+            void pollPassiveCompletionQueue();
 
             void initFence();
             void waitFence();
         private:
             Context mContext;
             ProtectionDomain mProtectionDomain;
-            CompletionQueue mSendCompletionQueue;
-            CompletionQueue mRecvCompletionQueue;
-            QueuePair mQueuePair;
+            CompletionQueue mActiveCompletionQueue;
+            CompletionQueue mPassiveCompletionQueue;
+            QueuePair mActiveQueuePair;
+            QueuePair mPassiveQueuePair;
             MemoryAddress mLocalMemoryAddress;
             MemoryAddress mRemoteMemoryAddress;
             MemoryRegion mSendMemoryRegion;
