@@ -1,0 +1,4 @@
+*.sw?
+build/
+install/
+doc/
