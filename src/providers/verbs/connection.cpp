@@ -48,6 +48,9 @@ pMR::verbs::Connection::Connection(Target const &target,
 
     mActiveQueuePair.setStateRTS();
     mPassiveQueuePair.setStateRTS();
+
+    // Get max inline data size
+    mMaxInlineDataSize = mActiveQueuePair.getMaxInlineDataSize();
 }
 
 pMR::verbs::Context& pMR::verbs::Connection::getContext()
@@ -111,12 +114,18 @@ void pMR::verbs::Connection::postRDMAWriteRequestToActive(
 {
     ScatterGatherList scatterGatherList(memoryRegion);
 
+    int sendFlags = IBV_SEND_SIGNALED;
+    if(scatterGatherList.getLength() <= mMaxInlineDataSize)
+    {
+        sendFlags |= IBV_SEND_INLINE;
+    }
+
     ibv_send_wr workRequest = {};
     workRequest.wr_id = VerbsRDMAWRID;
     workRequest.sg_list = scatterGatherList.get();
     workRequest.num_sge = scatterGatherList.getNumEntries();
     workRequest.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
-    workRequest.send_flags = IBV_SEND_SIGNALED;
+    workRequest.send_flags = sendFlags;
     workRequest.imm_data = 0;
     workRequest.wr.rdma.remote_addr = remoteMemoryAddress.getAddress();
     workRequest.wr.rdma.rkey = remoteMemoryAddress.getRKey();
@@ -171,12 +180,18 @@ void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
 void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
         ibv_sge *scatterGatherList, int const numEntries)
 {
+    int sendFlags = IBV_SEND_SIGNALED;
+    if(scatterGatherList->length <= mMaxInlineDataSize)
+    {
+        sendFlags |= IBV_SEND_INLINE;
+    }
+
     ibv_send_wr workRequest = {};
     workRequest.wr_id = VerbsSendWRID;
     workRequest.sg_list = scatterGatherList;
     workRequest.num_sge = numEntries;
     workRequest.opcode = IBV_WR_SEND;
-    workRequest.send_flags = IBV_SEND_SIGNALED;
+    workRequest.send_flags = sendFlags;
 
     ibv_send_wr *badRequest;
 
@@ -203,6 +218,11 @@ ibv_sge* pMR::verbs::ScatterGatherList::get()
 ibv_sge const* pMR::verbs::ScatterGatherList::get() const
 {
     return &mScatterGatherList;
+}
+
+std::uint32_t pMR::verbs::ScatterGatherList::getLength() const
+{
+    return mScatterGatherList.length;
 }
 
 int pMR::verbs::ScatterGatherList::getNumEntries() const

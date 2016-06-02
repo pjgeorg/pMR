@@ -57,6 +57,7 @@ namespace pMR { namespace verbs
             MemoryAddress mRemoteMemoryAddress;
             MemoryRegion mSendMemoryRegion;
             MemoryRegion mRecvMemoryRegion;
+            std::uint32_t mMaxInlineDataSize = 0;
             void postRecvRequest(QueuePair &queuePair,
                     ibv_sge *scatterGatherList, int const numEntries);
             void postSendRequest(QueuePair &queuePair,
@@ -69,6 +70,7 @@ namespace pMR { namespace verbs
             ScatterGatherList(MemoryRegion const&);
             ibv_sge* get();
             ibv_sge const* get() const;
+            std::uint32_t getLength() const;
             int getNumEntries() const;
         private:
             ibv_sge mScatterGatherList;
