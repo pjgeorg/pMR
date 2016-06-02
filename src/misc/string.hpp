@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 namespace pMR
 {
@@ -10,6 +11,9 @@ namespace pMR
 
     template<typename ...Types>
     std::string toString(double const &arg, Types const &...args);
+
+    template<typename T, typename ...Types>
+    std::string toString(std::vector<T> const &arg, Types const &...args);
 
     template<typename T, typename ...Types>
     std::string toString(T const &arg, Types const &...args);
@@ -26,6 +30,18 @@ std::string pMR::toString(double const &arg, Types const &...args)
     oss << std::scientific << arg;
     str += oss.str();
     str += " ";
+    str += toString(args...);
+    return str;
+}
+
+template<typename T, typename ...Types>
+std::string pMR::toString(std::vector<T> const &arg, Types const &...args)
+{
+    std::string str;
+    for(auto element : arg)
+    {
+        str += toString(element);
+    }
     str += toString(args...);
     return str;
 }
