@@ -23,6 +23,15 @@ namespace pMR
             //!     Communicator.
             //! @param communicator MPI Communicator
             Communicator(MPI_Comm const communicator);
+            //! @brief Creates a cartesian Communicator with topoloy.size()
+            //!     dimensions.
+            //! @param topology Number of processes in each dimension. Special
+            //!     value 0 indicates to auto detect a best fit for that
+            //!     dimension.
+            //! @param periodic Wether a dimension is periodic or not.
+            Communicator(MPI_Comm const communicator,
+                    std::vector<int> const &topology,
+                    std::vector<int> const &periodic);
             ~Communicator() = default;
             //! @brief Get the number of dimensions of the communicator.
             //! @return Number of dimensions.
@@ -53,11 +62,19 @@ namespace pMR
             Target getNeighbor(int const dimension,
                     int const displacement) const;
             MPI_Comm get() const;
+            //! @brief Get the communicator's topology.
+            //! @return Vector of length dimensions containing the number of
+            //!     processes in each dimension.
+            std::vector<int> topology() const;
+            //! @brief Get the communicator's topology periodicity.
+            //! @return Vector of length dimensions containing 0 or 1
+            //!     indicating wether dimensions is periodic or not.
+            std::vector<int> periodic() const;
         private:
-            MPI_Comm const mCommunicator;
+            MPI_Comm mCommunicator;
             int mSize;
             std::vector<int> mCoordinates;
-            std::vector<int> mDimensions;
+            std::vector<int> mTopology;
             std::vector<int> mPeriodic;
             bool mCartesian = false;
     };

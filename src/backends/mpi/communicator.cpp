@@ -29,10 +29,10 @@ pMR::Communicator::Communicator(MPI_Comm const communicator)
         }
 
         mCoordinates.resize(dimensions);
-        mDimensions.resize(dimensions);
+        mTopology.resize(dimensions);
         mPeriodic.resize(dimensions);
 
-        if(MPI_Cart_get(mCommunicator, dimensions, mDimensions.data(),
+        if(MPI_Cart_get(mCommunicator, dimensions, mTopology.data(),
                     mPeriodic.data(), mCoordinates.data()))
         {
             throw std::runtime_error("pMR: Unable to query cartesian MPI "
@@ -41,9 +41,64 @@ pMR::Communicator::Communicator(MPI_Comm const communicator)
     }
 }
 
+pMR::Communicator::Communicator(MPI_Comm const communicator,
+        std::vector<int> const &topology, std::vector<int> const &periodic)
+{
+    mTopology = topology;
+    mPeriodic = periodic;
+    mCoordinates.resize(mTopology.size());
+
+    // Check dimensions
+    if(mTopology.size() != mPeriodic.size())
+    {
+        throw std::runtime_error(
+                "pMR: Number of desired dimensions can not be determined.");
+    }
+
+    // Get size of communicator
+    if(MPI_Comm_size(communicator, &mSize))
+    {
+        throw std::runtime_error(
+                "pMR: Unable to get size of MPI communicator.");
+    }
+
+    // Calculate size of cartesian communicator
+    if(MPI_Dims_create(mSize, mTopology.size(), mTopology.data()))
+    {
+        throw std::runtime_error(
+                "pMR: Unable to calculate size of cartesian communicator.");
+    }
+
+    // Create cartesian communicator
+    if(MPI_Cart_create(communicator, mTopology.size(), mTopology.data(),
+                mPeriodic.data(), 0, &mCommunicator))
+    {
+        throw std::runtime_error(
+                "pMR: Unable to create cartesian communicator.");
+    }
+    if(mCommunicator == MPI_COMM_NULL)
+    {
+        throw std::runtime_error(
+                "pMR: Unable to create cartesian communicator.");
+    }
+    mCartesian = true;
+
+    // Get own coordinates
+    int rank;
+    if(MPI_Comm_rank(mCommunicator, &rank))
+    {
+        throw std::runtime_error("pMR: Unable to determine own MPI rank.");
+    }
+    if(MPI_Cart_coords(mCommunicator, rank, mTopology.size(),
+                mCoordinates.data()))
+    {
+        throw std::runtime_error("pMR: Unable to determine own coordinates.");
+    }
+}
+
 int pMR::Communicator::dimensions() const
 {
-    return mDimensions.size();
+    return mTopology.size();
 }
 
 int pMR::Communicator::size() const
@@ -55,12 +110,12 @@ int pMR::Communicator::size(int const dimension) const
 {
     try
     {
-        return mDimensions.at(dimension);
+        return mTopology.at(dimension);
 
     }
     catch(const std::exception &e)
     {
-        throw std::out_of_range("pMR: Communicator dimension.");
+        throw std::out_of_range("pMR: Communicator dimension out of range.");
     }
 }
 
@@ -72,7 +127,7 @@ bool pMR::Communicator::isPeriodic(int const dimension) const
     }
     catch(const std::exception &e)
     {
-        throw std::out_of_range("pMR: Communicator dimension.");
+        throw std::out_of_range("pMR: Communicator dimension out of range.");
     }
 }
 
@@ -84,7 +139,7 @@ int pMR::Communicator::coordinate(int const dimension) const
     }
     catch(const std::exception &e)
     {
-        throw std::out_of_range("pMR: Communicator dimension.");
+        throw std::out_of_range("pMR: Communicator dimension out of range.");
     }
 }
 
@@ -93,7 +148,7 @@ pMR::Target pMR::Communicator::getNeighbor(
 {
     if(dimension >= dimensions())
     {
-        throw std::out_of_range("pMR: Communicator dimension.");
+        throw std::out_of_range("pMR: Communicator dimension out of range.");
     }
 
     int origin;
@@ -125,7 +180,7 @@ pMR::Target pMR::Communicator::getNeighbor(
     int uniqueSendID = +displacement + (dimension + 1) * 1e3;
     int uniqueRecvID = -displacement + (dimension + 1) * 1e3;
 
-    // Check if target is self/loop
+    // Check if target is self
     if(origin == target)
     {
         // Self
@@ -140,4 +195,14 @@ pMR::Target pMR::Communicator::getNeighbor(
 MPI_Comm pMR::Communicator::get() const
 {
     return mCommunicator;
+}
+
+std::vector<int> pMR::Communicator::topology() const
+{
+    return mTopology;
+}
+
+std::vector<int> pMR::Communicator::periodic() const
+{
+    return mPeriodic;
 }
