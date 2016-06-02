@@ -58,9 +58,9 @@ namespace pMR { namespace verbs
             MemoryRegion mSendMemoryRegion;
             MemoryRegion mRecvMemoryRegion;
             void postRecvRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const length);
+                    ibv_sge *scatterGatherList, int const numEntries);
             void postSendRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const length);
+                    ibv_sge *scatterGatherList, int const numEntries);
     };
 
     class ScatterGatherList
@@ -69,6 +69,7 @@ namespace pMR { namespace verbs
             ScatterGatherList(MemoryRegion const&);
             ibv_sge* get();
             ibv_sge const* get() const;
+            int getNumEntries() const;
         private:
             ibv_sge mScatterGatherList;
     };

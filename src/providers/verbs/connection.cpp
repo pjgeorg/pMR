@@ -114,7 +114,7 @@ void pMR::verbs::Connection::postRDMAWriteRequestToActive(
     ibv_send_wr workRequest = {};
     workRequest.wr_id = VerbsRDMAWRID;
     workRequest.sg_list = scatterGatherList.get();
-    workRequest.num_sge = 1;
+    workRequest.num_sge = scatterGatherList.getNumEntries();
     workRequest.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
     workRequest.send_flags = IBV_SEND_SIGNALED;
     workRequest.imm_data = 0;
@@ -153,12 +153,12 @@ void pMR::verbs::Connection::waitFence()
 }
 
 void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
-        ibv_sge *scatterGatherList, int length)
+        ibv_sge *scatterGatherList, int const numEntries)
 {
     ibv_recv_wr workRequest = {};
     workRequest.wr_id = VerbsRecvWRID;
     workRequest.sg_list = scatterGatherList;
-    workRequest.num_sge = length;
+    workRequest.num_sge = numEntries;
 
     ibv_recv_wr *badRequest;
 
@@ -169,12 +169,12 @@ void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
 }
 
 void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
-        ibv_sge *scatterGatherList, int const length)
+        ibv_sge *scatterGatherList, int const numEntries)
 {
     ibv_send_wr workRequest = {};
     workRequest.wr_id = VerbsSendWRID;
     workRequest.sg_list = scatterGatherList;
-    workRequest.num_sge = length;
+    workRequest.num_sge = numEntries;
     workRequest.opcode = IBV_WR_SEND;
     workRequest.send_flags = IBV_SEND_SIGNALED;
 
@@ -203,4 +203,16 @@ ibv_sge* pMR::verbs::ScatterGatherList::get()
 ibv_sge const* pMR::verbs::ScatterGatherList::get() const
 {
     return &mScatterGatherList;
+}
+
+int pMR::verbs::ScatterGatherList::getNumEntries() const
+{
+    if(mScatterGatherList.length == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
