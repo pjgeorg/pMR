@@ -251,6 +251,13 @@ void pMR::Window<T>::checkBufferSize(std::uint32_t const count)
     {
         throw std::overflow_error("Message Size");
     }
+
+#ifdef HINT
+    if(count == 0)
+    {
+        print("pMR: HINT: Using zero size Window. Intentional?");
+    }
+#endif // HINT
 }
 
 template<typename T>
