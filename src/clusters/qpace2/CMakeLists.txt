@@ -1,5 +1,6 @@
 add_library(CLUSTER OBJECT
     ../qpaceb/connection.cpp
+    ../qpaceb/provider.cpp
     ../qpaceb/recvmemorywindow.cpp
     ../qpaceb/sendmemorywindow.cpp
     node.cpp

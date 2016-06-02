@@ -36,9 +36,9 @@ namespace pMR
             //! @param count Number of elements of type T in send buffer.
             SendWindow(Connection const &connection, std::uint32_t const count);
             SendWindow(const SendWindow&) = delete;
-            SendWindow(SendWindow&&) = delete;
+            SendWindow(SendWindow&&) = default;
             SendWindow& operator=(const SendWindow&) = delete;
-            SendWindow& operator=(SendWindow &&) = delete;
+            SendWindow& operator=(SendWindow&&) = default;
             ~SendWindow();
 
             //! @brief Initialize a send routine.

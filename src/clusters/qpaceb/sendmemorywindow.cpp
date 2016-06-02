@@ -13,30 +13,30 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
     {
         case Provider::null:
         {
-            mNull = std::unique_ptr<null::SendMemoryWindow>(new
-                        null::SendMemoryWindow(connection.mNull,
-                            buffer, sizeByte));
+            mNull = std::unique_ptr<null::SendMemoryWindow,
+                    null::SendMemoryWindowDeleter>(new null::SendMemoryWindow(
+                                connection.mNull, buffer, sizeByte));
             break;
         }
         case Provider::self:
         {
-            mSelf = std::unique_ptr<self::SendMemoryWindow>(new
-                        self::SendMemoryWindow(connection.mSelf,
-                            buffer, sizeByte));
+            mSelf = std::unique_ptr<self::SendMemoryWindow,
+                    self::SendMemoryWindowDeleter>(new self::SendMemoryWindow(
+                                connection.mSelf, buffer, sizeByte));
             break;
         }
         case Provider::loop:
         {
-            mLoop = std::unique_ptr<loop::SendMemoryWindow>(new
-                        loop::SendMemoryWindow(connection.mLoop,
-                            buffer, sizeByte));
+            mLoop = std::unique_ptr<loop::SendMemoryWindow,
+                    loop::SendMemoryWindowDeleter>(new loop::SendMemoryWindow(
+                                connection.mLoop, buffer, sizeByte));
             break;
         }
         case Provider::verbs:
         {
-            mVerbs = std::unique_ptr<verbs::SendMemoryWindow>(new
-                        verbs::SendMemoryWindow(connection.mVerbs,
-                            buffer, sizeByte));
+            mVerbs = std::unique_ptr<verbs::SendMemoryWindow,
+                    verbs::SendMemoryWindowDeleter>(new verbs::SendMemoryWindow(
+                                connection.mVerbs, buffer, sizeByte));
             break;
         }
     }

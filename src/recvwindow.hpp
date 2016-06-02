@@ -38,9 +38,9 @@ namespace pMR
             //! @param count Number of elements of type T in receive buffer.
             RecvWindow(Connection const &connection, std::uint32_t const count);
             RecvWindow(const RecvWindow&) = delete;
-            RecvWindow(RecvWindow&&) = delete;
+            RecvWindow(RecvWindow&&) = default;
             RecvWindow& operator=(const RecvWindow&) = delete;
-            RecvWindow& operator=(RecvWindow &&) = delete;
+            RecvWindow& operator=(RecvWindow &&) = default;
             ~RecvWindow();
 
             //! @brief Initialize a receive routine.

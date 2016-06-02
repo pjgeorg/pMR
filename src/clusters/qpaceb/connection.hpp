@@ -18,9 +18,9 @@ namespace pMR
         public:
             Connection(Target const &target);
             Connection(const Connection&) = delete;
-            Connection(Connection&&) = delete;
+            Connection(Connection&&) = default;
             Connection& operator=(const Connection&) = delete;
-            Connection& operator=(Connection&&) = delete;
+            Connection& operator=(Connection&&) = default;
             ~Connection() = default;
             void initFence();
             void waitFence();

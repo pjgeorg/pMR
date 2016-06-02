@@ -1,6 +1,7 @@
 add_library(CLUSTER OBJECT
     connection.cpp
     node.cpp
+    provider.cpp
     recvmemorywindow.cpp
     sendmemorywindow.cpp
     topology.cpp)

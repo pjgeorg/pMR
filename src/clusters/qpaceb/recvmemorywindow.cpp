@@ -13,30 +13,30 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
     {
         case Provider::null:
         {
-            mNull = std::unique_ptr<null::RecvMemoryWindow>(new
-                        null::RecvMemoryWindow(connection.mNull,
-                            buffer, sizeByte));
+            mNull = std::unique_ptr<null::RecvMemoryWindow,
+                    null::RecvMemoryWindowDeleter>(new null::RecvMemoryWindow(
+                                connection.mNull, buffer, sizeByte));
             break;
         }
         case Provider::self:
         {
-            mSelf = std::unique_ptr<self::RecvMemoryWindow>(new
-                        self::RecvMemoryWindow(connection.mSelf,
-                            buffer, sizeByte));
+            mSelf = std::unique_ptr<self::RecvMemoryWindow,
+                    self::RecvMemoryWindowDeleter>(new self::RecvMemoryWindow(
+                                connection.mSelf, buffer, sizeByte));
             break;
         }
         case Provider::loop:
         {
-            mLoop = std::unique_ptr<loop::RecvMemoryWindow>(new
-                        loop::RecvMemoryWindow(connection.mLoop,
-                            buffer, sizeByte));
+            mLoop = std::unique_ptr<loop::RecvMemoryWindow,
+                    loop::RecvMemoryWindowDeleter>(new loop::RecvMemoryWindow(
+                                connection.mLoop, buffer, sizeByte));
             break;
         }
         case Provider::verbs:
         {
-            mVerbs = std::unique_ptr<verbs::RecvMemoryWindow>(new
-                        verbs::RecvMemoryWindow(connection.mVerbs,
-                            buffer, sizeByte));
+            mVerbs = std::unique_ptr<verbs::RecvMemoryWindow,
+                    verbs::RecvMemoryWindowDeleter>(new verbs::RecvMemoryWindow(
+                                connection.mVerbs, buffer, sizeByte));
             break;
         }
     }

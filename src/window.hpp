@@ -27,6 +27,10 @@ namespace pMR
         public:
             Window(T *buffer, std::uint32_t const count);
             explicit Window(std::uint32_t const count);
+            Window(const Window&) = delete;
+            Window(Window&&) = default;
+            Window& operator=(const Window&) = delete;
+            Window& operator=(Window&&) = default;
             ~Window() = default;
             //! @brief Direct access specified element of the internal buffer.
             //! @param index Position of element in internal buffer.
