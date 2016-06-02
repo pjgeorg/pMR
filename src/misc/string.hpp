@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <iomanip>
 #include <vector>
 
 namespace pMR
@@ -11,6 +12,12 @@ namespace pMR
 
     template<typename ...Types>
     std::string toString(double const &arg, Types const &...args);
+
+    template<typename ...Types>
+    std::string toString(std::uint32_t const &arg, Types const &...args);
+
+    template<typename ...Types>
+    std::string toString(std::uint64_t const &arg, Types const &...args);
 
     template<typename T, typename ...Types>
     std::string toString(std::vector<T> const &arg, Types const &...args);
@@ -28,6 +35,30 @@ std::string pMR::toString(double const &arg, Types const &...args)
     std::string str;
     std::ostringstream oss;
     oss << std::scientific << arg;
+    str += oss.str();
+    str += " ";
+    str += toString(args...);
+    return str;
+}
+
+template<typename ...Types>
+std::string pMR::toString(std::uint32_t const &arg, Types const &...args)
+{
+    std::string str;
+    std::ostringstream oss;
+    oss << std::setw(8) << arg;
+    str += oss.str();
+    str += " ";
+    str += toString(args...);
+    return str;
+}
+
+template<typename ...Types>
+std::string pMR::toString(std::uint64_t const &arg, Types const &...args)
+{
+    std::string str;
+    std::ostringstream oss;
+    oss << std::setw(8) << arg;
     str += oss.str();
     str += " ";
     str += toString(args...);
