@@ -132,7 +132,6 @@ template<typename T>
 pMR::Window<T>::Window(std::uint32_t const count)
     :   mVector(count), mBuffer(mVector.data()), mCount(count)
 {
-
 #ifdef PROFILING
     mSizeByte = count * sizeof(T);
 #endif // PROFILING
@@ -282,10 +281,13 @@ template<typename T>
 template<std::size_t N>
 void pMR::Window<T>::printStats(char const (&type)[N])
 {
-    print("pMR", type, "SizeByte", mSizeByte, "Init", mTimeInit,
-            "Post", mTimePost, "Wait", mTimeWait, "Sum",
-            mTimeInit + mTimePost + mTimeWait,
-            "Copy", mTimeCopy, "Iterations", mIterations);
+    if(mIterations)
+    {
+        print("pMR:", type, "SizeByte", mSizeByte, "Init", mTimeInit,
+                "Post", mTimePost, "Wait", mTimeWait, "Sum",
+                mTimeInit + mTimePost + mTimeWait,
+                "Copy", mTimeCopy, "Iterations", mIterations);
+    }
 }
 #endif // PROFILING
 #endif // pMR_WINDOW_H
