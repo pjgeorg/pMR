@@ -1,0 +1,23 @@
+#ifndef pMR_TOOL_INFO_H
+#define pMR_TOOL_INFO_H
+
+constexpr char sLibs[] = "@LIBS_STRING@";
+constexpr char sLDFlags[] = "@LDFLAGS_STRING@";
+constexpr char sCXX[] = "@CMAKE_CXX_COMPILER@";
+constexpr char sCXXFlags[] = "@CMAKE_CXX_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/include";
+constexpr char sCluster[] = "@CLUSTER@";
+constexpr char sBackend[] = "@BACKEND@";
+constexpr char sThread[] = "@THREAD@";
+constexpr char sVersion[] = "@GIT_BRANCH@ @GIT_COMMIT_HASH@";
+
+void printInfo(int argc, char **argv);
+
+void printLibs();
+void printLDFlags();
+void printCXX();
+void printCXXFlags();
+void printCluster();
+void printBackend();
+void printThread();
+void printVersion();
+#endif // pMR_TOOL_INFO_H
