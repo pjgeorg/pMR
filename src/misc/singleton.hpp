@@ -1,5 +1,5 @@
-#ifndef pMR_SINGLETON_H
-#define pMR_SINGLETON_H
+#ifndef pMR_MISC_SINGLETON_H
+#define pMR_MISC_SINGLETON_H
 
 namespace pMR
 {
@@ -27,4 +27,4 @@ namespace pMR
             ~Singleton() = default;
     };
 }
-#endif // pMR_SINGLETON_H
+#endif // pMR_MISC_SINGLETON_H

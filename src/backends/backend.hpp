@@ -1,5 +1,5 @@
-#ifndef pMR_BACKEND_H
-#define pMR_BACKEND_H
+#ifndef pMR_BACKENDS_BACKEND_H
+#define pMR_BACKENDS_BACKEND_H
 
 #include <array>
 #include <cstdint>
@@ -32,4 +32,4 @@ namespace pMR
         }
     }
 }
-#endif // pMR_BACKEND_H
+#endif // pMR_BACKENDS_BACKEND_H

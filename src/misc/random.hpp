@@ -1,5 +1,5 @@
-#ifndef pMR_RANDOM_H
-#define pMR_RANDOM_H
+#ifndef pMR_MISC_RANDOM_H
+#define pMR_MISC_RANDOM_H
 
 #include <random>
 #include <limits>
@@ -32,4 +32,4 @@ namespace pMR
         return Singleton<Random<T>>::Instance().getRandomNumber();
     }
 }
-#endif // pMR_RANDOM_H
+#endif // pMR_MISC_RANDOM_H

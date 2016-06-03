@@ -93,4 +93,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_IDATACOOL_PROVIDER_H
+#endif // pMR_CLUSTERS_IDATACOOL_PROVIDER_H

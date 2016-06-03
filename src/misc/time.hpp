@@ -1,8 +1,8 @@
-#ifndef pMR_TIME_H
-#define pMR_TIME_H
+#ifndef pMR_MISC_TIME_H
+#define pMR_MISC_TIME_H
 
 namespace pMR
 {
     double getTimeInSeconds();
 }
-#endif // pMR_TIME_H
+#endif // pMR_MISC_TIME_H
