@@ -25,6 +25,8 @@ namespace pMR
             Communicator(MPI_Comm const communicator);
             //! @brief Creates a cartesian Communicator with topoloy.size()
             //!     dimensions.
+            //! @param communicator MPI Communicator to use as base for new
+            //!     cartesian Communicator.
             //! @param topology Number of processes in each dimension. Special
             //!     value 0 indicates to auto detect a best fit for that
             //!     dimension.
