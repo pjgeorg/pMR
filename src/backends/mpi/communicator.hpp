@@ -49,13 +49,13 @@ namespace pMR
             //! @param dimension Dimension.
             //! @return true if dimension is periodic, false otherwise.
             bool isPeriodic(int const dimension) const;
-            //! @brief Get own coordinate of specified dimension.
-            //! @param dimension Dimension.
-            //! @return Own coordinate.
-            int ID() const;
             //! @brief Get own identification number unique within this
             //!     communicator.
             //! @return Own ID.
+            int ID() const;
+            //! @brief Get own coordinate of specified dimension.
+            //! @param dimension Dimension.
+            //! @return Own coordinate.
             int coordinate(int const dimension) const;
             //! @brief Get the neighbor in specified dimension, direction and
             //!     displacement.
