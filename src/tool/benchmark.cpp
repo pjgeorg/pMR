@@ -100,10 +100,10 @@ void runBenchmark(int argc, char **argv)
     auto msgSize = minMsgSize;
     while(msgSize <= maxMsgSize)
     {
-        std::vector<std::vector<char, pMR::AlignedAllocator<char>>>
+        std::vector<std::vector<unsigned char, pMR::AlignedAllocator<unsigned char>>>
             sendBuffers, recvBuffers;
-        std::vector<pMR::SendWindow<char>> sendWindows;
-        std::vector<pMR::RecvWindow<char>> recvWindows;
+        std::vector<pMR::SendWindow<unsigned char>> sendWindows;
+        std::vector<pMR::RecvWindow<unsigned char>> recvWindows;
         
         // Create Buffers and Windows
         for(decltype(connections.size()) c = 0; c != connections.size(); ++c)
