@@ -95,7 +95,7 @@ namespace pMR
             //! @return true if the Window is suitable, false otherwise.
             bool isSame(std::uint32_t const count);
         protected:
-            std::vector<T, AlignedAllocator<T, alignment>> mVector;
+            std::vector<T, AlignedAllocator<T>> mVector;
             T* mBuffer;
             std::uint32_t mCount;
             void checkBufferType();

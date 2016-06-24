@@ -5,10 +5,11 @@
 #include <memory>
 #include <limits>
 #include <stdexcept>
+#include "config.hpp"
 
 namespace pMR
 {
-    template<typename T, std::size_t Alignment>
+    template<typename T, std::size_t Alignment = alignment>
     class AlignedAllocator
     {
         public:
