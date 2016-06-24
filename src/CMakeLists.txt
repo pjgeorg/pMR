@@ -150,7 +150,6 @@ if(CAPI)
     endif()
     add_subdirectory(api/c)
     list(APPEND API_SRC $<TARGET_OBJECTS:API_C>)
-    install(FILES api/c/pmr.h DESTINATION include/pmr)
 endif()
 
 add_subdirectory(misc)

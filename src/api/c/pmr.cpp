@@ -43,9 +43,10 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR_SendWindow*>(new pMR::SendWindow<char>(
+            return reinterpret_cast<pMR_SendWindow*>(
+                    new pMR::SendWindow<unsigned char>(
                         *reinterpret_cast<pMR::Connection*>(connection),
-                        static_cast<char*>(buffer), sizeByte));
+                        static_cast<unsigned char*>(buffer), sizeByte));
         }
         catch(const std::exception &e)
         {
@@ -59,7 +60,8 @@ extern "C"
     {
         try
         {
-            delete reinterpret_cast<pMR::SendWindow<char>*>(sendWindow);
+            delete
+                reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow);
         }
         catch(const std::exception &e)
         {
@@ -73,8 +75,9 @@ extern "C"
     {
         try
         {
-            return static_cast<int>(reinterpret_cast<pMR::SendWindow<char>*>
-                    (sendWindow)->isSame(static_cast<char*>(buffer), sizeByte));
+            return static_cast<int>(reinterpret_cast
+                    <pMR::SendWindow<unsigned char>*>(sendWindow)
+                    ->isSame(static_cast<unsigned char*>(buffer), sizeByte));
         }
         catch(const std::exception &e)
         {
@@ -88,7 +91,8 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR::SendWindow<char>*>(sendWindow)->init();
+            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
+                ->init();
         }
         catch(const std::exception &e)
         {
@@ -101,7 +105,8 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR::SendWindow<char>*>(sendWindow)->post();
+            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
+                ->post();
         }
         catch(const std::exception &e)
         {
@@ -114,7 +119,8 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR::SendWindow<char>*>(sendWindow)->wait();
+            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
+                ->wait();
         }
         catch(const std::exception &e)
         {
@@ -128,9 +134,10 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR_RecvWindow*>(new pMR::RecvWindow<char>(
+            return reinterpret_cast<pMR_RecvWindow*>(
+                    new pMR::RecvWindow<unsigned char>(
                         *reinterpret_cast<pMR::Connection*>(connection),
-                        static_cast<char*>(buffer), sizeByte));
+                        static_cast<unsigned char*>(buffer), sizeByte));
         }
         catch(const std::exception &e)
         {
@@ -144,7 +151,8 @@ extern "C"
     {
         try
         {
-            delete reinterpret_cast<pMR::RecvWindow<char>*>(recvWindow);
+            delete
+                reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow);
         }
         catch(const std::exception &e)
         {
@@ -158,8 +166,9 @@ extern "C"
     {
         try
         {
-            return static_cast<int>(reinterpret_cast<pMR::RecvWindow<char>*>
-                    (recvWindow)->isSame(static_cast<char*>(buffer), sizeByte));
+            return static_cast<int>(reinterpret_cast
+                    <pMR::RecvWindow<unsigned char>*>(recvWindow)
+                    ->isSame(static_cast<unsigned char*>(buffer), sizeByte));
         }
         catch(const std::exception &e)
         {
@@ -173,7 +182,8 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR::RecvWindow<char>*>(recvWindow)->init();
+            return reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow)
+                ->init();
         }
         catch(const std::exception &e)
         {
@@ -186,7 +196,8 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR::RecvWindow<char>*>(recvWindow)->post();
+            return reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow)
+                ->post();
         }
         catch(const std::exception &e)
         {
@@ -199,7 +210,8 @@ extern "C"
     {
         try
         {
-            return reinterpret_cast<pMR::RecvWindow<char>*>(recvWindow)->wait();
+            return reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow)
+                ->wait();
         }
         catch(const std::exception &e)
         {
