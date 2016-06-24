@@ -8,7 +8,7 @@ pMR::verbs::ODP::ODP(Context& context)
 
     if(ibv_query_device_ex(context.get(), NULL, &extendedAttr))
     {
-        throw pMR::verbs::DeviceExtendedQueryError();
+        throw std::runtime_error("pMR: Unable to (extended) query device.");
     }
 
     if(!(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT) ||
@@ -26,9 +26,4 @@ pMR::verbs::ODP::ODP(Context& context)
 int pMR::verbs::updateMemoryRegionAccessODP(int access)
 {
     return access | IBV_ACCESS_ON_DEMAND;
-}
-
-const char* pMR::verbs::DeviceExtendedQueryError::what() const throw()
-{
-    return "Unable to (extended) query device."
 }
