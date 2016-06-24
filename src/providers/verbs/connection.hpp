@@ -39,6 +39,7 @@ namespace pMR { namespace verbs
             void postRecvAddrRequestToActive();
             void postSendSyncRequestToActive();
             void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte,
                     MemoryAddress const &remoteMemoryAddress);
 
             void pollActiveCompletionQueue();
@@ -65,6 +66,8 @@ namespace pMR { namespace verbs
     {
         public:
             ScatterGatherList(MemoryRegion const&);
+            ScatterGatherList(MemoryRegion const&,
+                    std::uint32_t const sizeByte);
             ibv_sge* get();
             ibv_sge const* get() const;
             std::uint32_t getLength() const;

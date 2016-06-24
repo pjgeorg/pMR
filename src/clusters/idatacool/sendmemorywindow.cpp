@@ -8,7 +8,9 @@
 
 pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)
-    :   mProvider(connection.mProvider)
+    :   mBuffer(buffer),
+        mSizeByte(sizeByte),
+        mProvider(connection.mProvider)
 {
     switch(mProvider)
     {
@@ -86,31 +88,41 @@ void pMR::SendMemoryWindow::init()
 
 void pMR::SendMemoryWindow::post()
 {
+    post(mSizeByte);
+}
+
+void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
+{
+    if(sizeByte > mSizeByte)
+    {
+        throw std::length_error("pMR: Send message exceed SendWindow.");
+    }
+
     switch(mProvider)
     {
         case Provider::null:
         {
-            mNull->post();
+            mNull->post(sizeByte);
             break;
         }
         case Provider::self:
         {
-            mSelf->post();
+            mSelf->post(sizeByte);
             break;
         }
         case Provider::loop:
         {
-            mLoop->post();
+            mLoop->post(sizeByte);
             break;
         }
         case Provider::cma:
         {
-            mCMA->post();
+            mCMA->post(sizeByte);
             break;
         }
         case Provider::verbs:
         {
-            mVerbs->post();
+            mVerbs->post(sizeByte);
             break;
         }
     }
@@ -146,4 +158,19 @@ void pMR::SendMemoryWindow::wait()
             break;
         }
     }
+}
+
+void* pMR::SendMemoryWindow::data()
+{
+    return mBuffer;
+}
+
+void const* pMR::SendMemoryWindow::data() const
+{
+    return mBuffer;
+}
+
+std::uint32_t pMR::SendMemoryWindow::size() const
+{
+    return mSizeByte;
 }

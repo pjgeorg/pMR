@@ -23,10 +23,10 @@ pMR::cma::RecvMemoryWindow::RecvMemoryWindow(
 
 void pMR::cma::SendMemoryWindow::init() { }
 
-void pMR::cma::SendMemoryWindow::post()
+void pMR::cma::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
     mConnection->pollNotifySend();
-    mConnection->sendData(mBuffer);
+    mConnection->sendData(mBuffer, sizeByte);
     mConnection->postNotifyRecv();
 }
 

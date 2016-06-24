@@ -55,8 +55,10 @@ void pMR::cma::Connection::sendAddress(iovec &buffer)
     }
 }
 
-void pMR::cma::Connection::sendData(iovec const &buffer)
+void pMR::cma::Connection::sendData(iovec buffer, std::uint32_t const sizeByte)
 {
+    buffer.iov_len = sizeByte;
+
     checkBufferSize(buffer);
 
     auto vDestination = reinterpret_cast<iovec volatile *>(&mDestination);

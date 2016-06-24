@@ -109,10 +109,10 @@ void pMR::verbs::Connection::postSendSyncRequestToActive()
 }
 
 void pMR::verbs::Connection::postRDMAWriteRequestToActive(
-        MemoryRegion const &memoryRegion,
+        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte,
         MemoryAddress const &remoteMemoryAddress)
 {
-    ScatterGatherList scatterGatherList(memoryRegion);
+    ScatterGatherList scatterGatherList(memoryRegion, sizeByte);
 
     int sendFlags = IBV_SEND_SIGNALED;
     if(scatterGatherList.getLength() <= mMaxInlineDataSize)
@@ -195,6 +195,15 @@ pMR::verbs::ScatterGatherList::ScatterGatherList(
     mScatterGatherList = {};
     mScatterGatherList.addr = {memoryRegion.getAddress()};
     mScatterGatherList.length = {memoryRegion.getLength()};
+    mScatterGatherList.lkey = {memoryRegion.getLKey()};
+}
+
+pMR::verbs::ScatterGatherList::ScatterGatherList(
+        MemoryRegion const& memoryRegion, std::uint32_t const sizeByte)
+{
+    mScatterGatherList = {};
+    mScatterGatherList.addr = {memoryRegion.getAddress()};
+    mScatterGatherList.length = {sizeByte};
     mScatterGatherList.lkey = {memoryRegion.getLKey()};
 }
 

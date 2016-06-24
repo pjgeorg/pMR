@@ -19,7 +19,7 @@ namespace pMR { namespace null
             SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
             ~SendMemoryWindow() = default;
             void init();
-            void post();
+            void post(std::uint32_t const sizeByte);
             void wait();
     };
 

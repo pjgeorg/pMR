@@ -10,7 +10,7 @@ pMR::null::RecvMemoryWindow::RecvMemoryWindow(
 
 void pMR::null::SendMemoryWindow::init() { }
 
-void pMR::null::SendMemoryWindow::post() { }
+void pMR::null::SendMemoryWindow::post(std::uint32_t const) { }
 
 void pMR::null::SendMemoryWindow::wait() { }
 

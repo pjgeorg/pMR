@@ -18,25 +18,25 @@ pMR::self::RecvMemoryWindow::RecvMemoryWindow(
 
 void pMR::self::SendMemoryWindow::init() { }
 
-void pMR::self::SendMemoryWindow::post()
+void pMR::self::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
     auto vDestinationBuffer =
         reinterpret_cast<void *volatile*>(&mConnection->mDestinationBuffer);
     while(*vDestinationBuffer == nullptr) { }
 
-    if(mConnection->mDestinationSizeByte < mSizeByte)
+    if(mConnection->mDestinationSizeByte < sizeByte)
     {
         throw std::length_error("pMR: RecvWindow smaller than SendWindow.");
     }
 #ifdef HINT
     print("pMR: Hint: Using self communication. Intentional?");
-    if(mConnection->mDestinationSizeByte > mSizeByte)
+    if(mConnection->mDestinationSizeByte > sizeByte)
     {
         print("pMR: HINT: RecvWindow larger than SendWindow.");
     }
 #endif // HINT
 
-    std::memcpy(mConnection->mDestinationBuffer, mBuffer, mSizeByte);
+    std::memcpy(mConnection->mDestinationBuffer, mBuffer, sizeByte);
 
     mConnection->mDestinationBuffer = nullptr;
 }

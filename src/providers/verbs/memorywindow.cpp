@@ -29,25 +29,25 @@ void pMR::verbs::SendMemoryWindow::init()
     mConnection->postRecvAddrRequestToActive();
 }
 
-void pMR::verbs::SendMemoryWindow::post()
+void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
     // Recv memory address from target 
     mConnection->pollActiveCompletionQueue();
     
     MemoryAddress remoteMemoryAddress = mConnection->getRemoteMemoryAddress();
 
-    if(remoteMemoryAddress.getLength() < mMemoryRegion.getLength())
+    if(remoteMemoryAddress.getLength() < sizeByte)
     {
         throw std::length_error("pMR: RecvWindow smaller than SendWindow.");
     }
 #ifdef HINT
-    if(remoteMemoryAddress.getLength() > mMemoryRegion.getLength())
+    if(remoteMemoryAddress.getLength() > sizeByte)
     {
         print("pMR: HINT: RecvWindow larger than SendWindow.");
     }
 #endif // HINT
 
-    mConnection->postRDMAWriteRequestToActive(mMemoryRegion,
+    mConnection->postRDMAWriteRequestToActive(mMemoryRegion, sizeByte,
             mConnection->getRemoteMemoryAddress());
 }
 

@@ -8,7 +8,9 @@
 
 pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)
-    :   mProvider(connection.mProvider)
+    :   mBuffer(buffer),
+        mSizeByte(sizeByte),
+        mProvider(connection.mProvider)
 {
     switch(mProvider)
     {
@@ -146,4 +148,19 @@ void pMR::RecvMemoryWindow::wait()
             break;
         }
     }
+}
+
+void* pMR::RecvMemoryWindow::data()
+{
+    return mBuffer;
+}
+
+void const* pMR::RecvMemoryWindow::data() const
+{
+    return mBuffer;
+}
+
+std::uint32_t pMR::RecvMemoryWindow::size() const
+{
+    return mSizeByte;
 }

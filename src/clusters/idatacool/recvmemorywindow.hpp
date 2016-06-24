@@ -22,7 +22,12 @@ namespace pMR
             void init();
             void post();
             void wait();
+            void* data();
+            void const* data() const;
+            std::uint32_t size() const;
         private:
+            void *const mBuffer;
+            std::uint32_t mSizeByte;
             Provider mProvider = Provider::null;
             std::unique_ptr<null::RecvMemoryWindow,
                 null::RecvMemoryWindowDeleter> mNull;

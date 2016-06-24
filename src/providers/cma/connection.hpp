@@ -1,6 +1,7 @@
 #ifndef pMR_PROVIDERS_CMA_CONNECTION_H
 #define pMR_PROVIDERS_CMA_CONNECTION_H
 
+#include <cstdint>
 extern "C"
 {
 #include <sys/uio.h>
@@ -22,7 +23,7 @@ namespace pMR
                 Connection& operator=(Connection&&) = delete;
                 ~Connection() = default;
                 void sendAddress(iovec &buffer);
-                void sendData(iovec const &buffer);
+                void sendData(iovec buffer, std::uint32_t const sizeByte);
                 void postNotifySend() const;
                 void pollNotifySend();
                 void postNotifyRecv() const;

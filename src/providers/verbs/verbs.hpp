@@ -8,7 +8,6 @@ namespace pMR { namespace verbs
         VerbsRecvWRID = 1,
         VerbsSendWRID = 2,
         VerbsRDMAWRID = 3,
-        VerbsFenceWRID = 4,
         VerbsMaxSend = 1,
         VerbsMaxRecv = 1024,
         VerbsMaxCQEntry = 1024,
