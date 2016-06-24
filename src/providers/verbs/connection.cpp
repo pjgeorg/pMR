@@ -149,18 +149,6 @@ void pMR::verbs::Connection::pollPassiveCompletionQueue()
     mPassiveCompletionQueue.poll();
 }
 
-void pMR::verbs::Connection::initFence()
-{
-    postSendSyncRequestToActive();
-    postRecvSyncRequestToPassive();
-}
-
-void pMR::verbs::Connection::waitFence()
-{
-    pollActiveCompletionQueue();
-    pollPassiveCompletionQueue();
-}
-
 void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
         ibv_sge *scatterGatherList, int const numEntries)
 {

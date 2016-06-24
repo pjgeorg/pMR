@@ -11,60 +11,6 @@ pMR::Connection::Connection(Target const &target)
     connect(target);
 }
 
-void pMR::Connection::initFence()
-{
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->initFence();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->initFence();
-            break;
-        }
-        case Provider::loop:
-        {
-            mLoop->initFence();
-            break;
-        }
-        case Provider::verbs:
-        {
-            mVerbs->initFence();
-            break;
-        }
-    }
-}
-
-void pMR::Connection::waitFence()
-{
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->waitFence();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->waitFence();
-            break;
-        }
-        case Provider::loop:
-        {
-            mLoop->waitFence();
-            break;
-        }
-        case Provider::verbs:
-        {
-            mVerbs->waitFence();
-            break;
-        }
-    }
-}
-
 void pMR::Connection::setProvider(Target const &target)
 {
     if(target.isNull())

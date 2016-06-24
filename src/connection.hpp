@@ -31,13 +31,6 @@ namespace pMR
             Connection& operator=(const Connection&) = delete;
             Connection& operator=(Connection&&) = delete;
             ~Connection() = default;
-            //! @brief Non-blocking routine to synchronize origin and target.
-            //! @warning Any outstanding synchronization or data transfer,
-            //!     associated with the same connection, has to be finished
-            //!     before initializing a fence.
-            void initFence();
-            //! @brief Wait for initialized non-blocking initFence() to finish.
-            void waitFence();
     };
 }
 #endif // pMR_CONNECTION_H

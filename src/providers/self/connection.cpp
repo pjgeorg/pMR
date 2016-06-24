@@ -18,16 +18,3 @@ pMR::self::Connection::Connection(Target const &target)
     mRemoteSizeByte =
         reinterpret_cast<std::uint32_t*>(std::get<1>(targetAddress));
 }
-
-void pMR::self::Connection::initFence()
-{
-    *mRemoteBuffer = &mDestinationBuffer;
-}
-
-void pMR::self::Connection::waitFence()
-{
-    auto vDestinationBuffer =
-        reinterpret_cast<void *volatile*>(&mDestinationBuffer);
-    while(*vDestinationBuffer == nullptr) { }
-    mDestinationBuffer = nullptr;
-}

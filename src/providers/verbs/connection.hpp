@@ -43,9 +43,6 @@ namespace pMR { namespace verbs
 
             void pollActiveCompletionQueue();
             void pollPassiveCompletionQueue();
-
-            void initFence();
-            void waitFence();
         private:
             Context mContext;
             ProtectionDomain mProtectionDomain;

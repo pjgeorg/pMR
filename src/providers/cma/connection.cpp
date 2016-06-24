@@ -40,16 +40,6 @@ pMR::cma::Connection::Connection(Target const &target)
         static_cast<std::size_t>(std::get<6>(targetAddress));
 }
 
-void pMR::cma::Connection::initFence()
-{
-    postNotifySend();
-}
-
-void pMR::cma::Connection::waitFence()
-{
-    pollNotifySend();
-}
-
 void pMR::cma::Connection::sendAddress(iovec &buffer)
 {
     iovec originAddress;

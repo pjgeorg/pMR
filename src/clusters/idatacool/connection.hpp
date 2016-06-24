@@ -22,8 +22,6 @@ namespace pMR
             Connection& operator=(const Connection&) = delete;
             Connection& operator=(Connection&&) = default;
             ~Connection() = default;
-            void initFence();
-            void waitFence();
         private:
             Provider mProvider = Provider::null;
             std::shared_ptr<null::Connection> mNull;

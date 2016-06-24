@@ -21,8 +21,6 @@ namespace pMR
                 Connection& operator=(const Connection&) = delete;
                 Connection& operator=(Connection&&) = delete;
                 ~Connection() = default;
-                void initFence();
-                void waitFence();
                 void sendAddress(iovec &buffer);
                 void sendData(iovec const &buffer);
                 void postNotifySend() const;

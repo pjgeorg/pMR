@@ -18,8 +18,6 @@ namespace pMR
                 Connection& operator=(const Connection&) = delete;
                 Connection& operator=(Connection&&) = delete;
                 ~Connection() = default;
-                void initFence();
-                void waitFence();
                 void *mDestinationBuffer = nullptr;
                 std::uint32_t mDestinationSizeByte;
         };
