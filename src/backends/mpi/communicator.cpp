@@ -13,6 +13,12 @@ pMR::Communicator::Communicator(MPI_Comm const communicator)
                 "pMR: Unable to get size of MPI communicator.");
     }
 
+    // Get own ID
+    if(MPI_Comm_rank(mCommunicator, &mID))
+    {
+        throw std::runtime_error("pMR: Unable to determine own MPI rank.");
+    }
+
     int type;
     if(MPI_Topo_test(mCommunicator, &type))
     {
@@ -83,13 +89,14 @@ pMR::Communicator::Communicator(MPI_Comm const communicator,
     }
     mCartesian = true;
 
-    // Get own coordinates
-    int rank;
-    if(MPI_Comm_rank(mCommunicator, &rank))
+    // Get own ID
+    if(MPI_Comm_rank(mCommunicator, &mID))
     {
         throw std::runtime_error("pMR: Unable to determine own MPI rank.");
     }
-    if(MPI_Cart_coords(mCommunicator, rank, mTopology.size(),
+
+    // Get own coordinates
+    if(MPI_Cart_coords(mCommunicator, mID, mTopology.size(),
                 mCoordinates.data()))
     {
         throw std::runtime_error("pMR: Unable to determine own coordinates.");
@@ -131,6 +138,11 @@ bool pMR::Communicator::isPeriodic(int const dimension) const
     }
 }
 
+int pMR::Communicator::ID() const
+{
+    return mID;
+}
+
 int pMR::Communicator::coordinate(int const dimension) const
 {
     try
@@ -151,16 +163,10 @@ pMR::Target pMR::Communicator::getNeighbor(
         throw std::out_of_range("pMR: Communicator dimension out of range.");
     }
 
-    int origin;
-    if(MPI_Comm_rank(mCommunicator, &origin))
-    {
-        throw std::runtime_error("pMR: Unable to determine own MPI rank.");
-    }
-
     if(displacement == 0)
     {
         // Loop
-        return Target(mCommunicator, origin, 0, 0, false, false, true);
+        return Target(mCommunicator, mID, 0, 0, false, false, true);
     }
 
     int source;
@@ -181,7 +187,7 @@ pMR::Target pMR::Communicator::getNeighbor(
     int uniqueRecvID = -displacement + (dimension + 1) * 1e3;
 
     // Check if target is self
-    if(origin == target)
+    if(mID == target)
     {
         // Self
         return Target(mCommunicator, target, uniqueSendID, uniqueRecvID,
@@ -190,6 +196,28 @@ pMR::Target pMR::Communicator::getNeighbor(
 
     return Target(mCommunicator, target, uniqueSendID, uniqueRecvID,
             false, false, false);
+}
+
+pMR::Target pMR::Communicator::getTarget(int const ID) const
+{
+    // Null
+    if(ID < 0)
+    {
+        return Target(mCommunicator, MPI_PROC_NULL, 0, 0, true, false, false);
+    }
+
+    // Loop
+    if(ID == mID)
+    {
+        return Target(mCommunicator, mID, 0, 0, false, false, true);
+    }
+
+    if(ID >= mSize)
+    {
+        throw std::runtime_error("pMR: Target ID out of range.");
+    }
+
+    return Target(mCommunicator, ID, ID, mID, false, false, false);
 }
 
 MPI_Comm pMR::Communicator::get() const

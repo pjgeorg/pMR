@@ -52,6 +52,10 @@ namespace pMR
             //! @brief Get own coordinate of specified dimension.
             //! @param dimension Dimension.
             //! @return Own coordinate.
+            int ID() const;
+            //! @brief Get own identification number unique within this
+            //!     communicator.
+            //! @return Own ID.
             int coordinate(int const dimension) const;
             //! @brief Get the neighbor in specified dimension, direction and
             //!     displacement.
@@ -63,6 +67,12 @@ namespace pMR
             //!     null, check the target for further information.
             Target getNeighbor(int const dimension,
                     int const displacement) const;
+            //! @brief Get target by ID.
+            //! @param ID ID.
+            //! @return Target with requested ID.
+            //! @note Returns target loop in case ID is own ID.
+            //! @note Returns targel null in case of negative ID.
+            Target getTarget(int const ID) const;
             MPI_Comm get() const;
             //! @brief Get the communicator's topology.
             //! @return Vector of length dimensions containing the number of
@@ -74,6 +84,7 @@ namespace pMR
             std::vector<int> periodic() const;
         private:
             MPI_Comm mCommunicator;
+            int mID;
             int mSize;
             std::vector<int> mCoordinates;
             std::vector<int> mTopology;
