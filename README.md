@@ -48,6 +48,7 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 
 ### Supported options for THREAD ###
 - <b>None</b>: Suitable for single-threaded applications.
+- <b>Serialized</b>: Suitable for multi-threaded applications with serialized calls to pMR functions (except explicitely multi-threaded functions).
 - <b>OpenMP</b>: Support for OpenMP multi-threaded applications.
 
 ### Optional configurations ###

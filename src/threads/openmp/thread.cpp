@@ -13,7 +13,12 @@ pMR::thread::ScopedLock::~ScopedLock()
 
 pMR::thread::Mutex pMR::thread::ScopedLock::sMutex;
 
-bool pMR::thread::isMT()
+bool pMR::thread::isThreaded()
 {
     return true;
+}
+
+bool pMR::thread::isSerialized()
+{
+    return false;
 }

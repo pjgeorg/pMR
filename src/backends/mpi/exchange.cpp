@@ -12,7 +12,8 @@ extern "C"
 void pMR::backend::exchange(Target const &target,
         void *sendBuffer, void *recvBuffer, std::uint32_t const sizeByte)
 {
-    if(Singleton<ThreadSupport>::Instance().multiple() || !thread::isMT())
+    if(Singleton<ThreadSupport>::Instance().multiple() ||
+            !thread::isThreaded() || thread::isSerialized())
     {
         if(MPI_Sendrecv(sendBuffer, sizeByte, MPI_BYTE,
                 target.getTargetRank(),

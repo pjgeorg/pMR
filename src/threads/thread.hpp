@@ -19,6 +19,7 @@ namespace pMR { namespace thread
             static Mutex sMutex;
     };
 
-    bool isMT();
+    bool isThreaded();
+    bool isSerialized();
 }}
 #endif // pMR_THREADS_THREAD_H
