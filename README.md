@@ -9,12 +9,6 @@ Its main purpose is to hide Hardware (and Vendor) specific APIs behind a common,
 It uses a connection oriented communication pattern that maps quite well to various communication hardware.
 This approach allows developers to have full control and push the Hardware to its limits without having to deal with any Hardware specific code.
 
-The public API constists of two layers.
-The lower-level layer implements a Window used for point to point data transfer.
-The higher-level layer implements various routines that itself relies on the Window mechanism.
-It is highly recommend to not use Windows for data transfer directly, but use the higher-level routines.
-These higher-level routines include global reduction (Allreduce) and data exchange.
-
 ### C API ###
 In addition, a limited and optional, C API is provided for C projects.
 
