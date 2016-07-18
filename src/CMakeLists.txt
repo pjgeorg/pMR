@@ -26,7 +26,7 @@ if(HINT)
     add_definitions(-DHINT)
 endif()
 
-set(ALIGNMENT 256)
+set(ALIGNMENT 64)
 
 if("${THREAD}" STREQUAL "")
     message(FATAL_ERROR "No thread given!")
@@ -73,6 +73,7 @@ elseif(${CLUSTER} STREQUAL "QPACE2")
     set(PROVIDER_LOOP ON)
     set(PROVIDER_VERBS ON)
     set(PROVIDER_SCIF ON)
+    set(ALLREDUCE "RECURSIVEDOUBLING")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/qpaceb)
     add_subdirectory(clusters/qpace2)
 elseif(${CLUSTER} STREQUAL "QPACEB")
@@ -80,6 +81,7 @@ elseif(${CLUSTER} STREQUAL "QPACEB")
     set(PROVIDER_SELF ON)
     set(PROVIDER_LOOP ON)
     set(PROVIDER_VERBS ON)
+    set(ALLREDUCE "RECURSIVEDOUBLING")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/qpaceb)
     add_subdirectory(clusters/qpaceb)
 elseif(${CLUSTER} STREQUAL "iDataCool")
@@ -88,11 +90,26 @@ elseif(${CLUSTER} STREQUAL "iDataCool")
     set(PROVIDER_LOOP ON)
     set(PROVIDER_CMA ON)
     set(PROVIDER_VERBS ON)
+    set(ALLREDUCE "RECURSIVEDOUBLING")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/idatacool)
     add_subdirectory(clusters/idatacool)
 else()
     message(FATAL_ERROR "Unknown target cluster given!")
 endif()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+install(FILES recvwindow.hpp sendwindow.hpp window.hpp DESTINATION include/pmr)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(misc)
+
+string(TOLOWER ${ALLREDUCE} ALLREDUCE)
+add_subdirectory(allreduce/recursivedoubling)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/allreduce/recursivedoubling)
 
 if(PROVIDER_NULL)
     add_subdirectory(providers/null)
@@ -138,14 +155,6 @@ if(PROVIDER_NUMA)
     list(APPEND LIBRARIES ${NUMA})
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
-    ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-install(FILES recvwindow.hpp sendwindow.hpp window.hpp DESTINATION include/pmr)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 if(CAPI)
     if(NOT ${BACKEND} STREQUAL "MPI")
         message(FATAL_ERROR "C API only available for backend MPI!")
@@ -154,13 +163,12 @@ if(CAPI)
     list(APPEND API_SRC $<TARGET_OBJECTS:API_C>)
 endif()
 
-add_subdirectory(misc)
-
 add_library(pmr STATIC
     $<TARGET_OBJECTS:MISC>
     $<TARGET_OBJECTS:THREAD>
     $<TARGET_OBJECTS:BACKEND>
     $<TARGET_OBJECTS:CLUSTER>
+    $<TARGET_OBJECTS:ALLREDUCE>
     ${PROVIDERS}
     ${API_SRC})
 
