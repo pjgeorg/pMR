@@ -28,6 +28,8 @@ extern "C"
 #include "connection.hpp"
 #include "sendwindow.hpp"
 #include "recvwindow.hpp"
+#include "allreduce.hpp"
+#include "reduce.hpp"
 
 void runBenchmark(int argc, char **argv)
 {
@@ -40,6 +42,7 @@ void runBenchmark(int argc, char **argv)
     std::uint32_t minMsgSize = 0;
     std::uint32_t maxMsgSize = 128 * 1024;
     std::uint32_t deltaMsgSize = 4 * 1024;
+    std::uint32_t granularity = 4;
     bool bufferedSend = false;
     bool bufferedRecv = false;
 
@@ -58,6 +61,8 @@ void runBenchmark(int argc, char **argv)
             maxMsgSize);
     parameterOption<std::uint32_t>(argv, argv + argc, "--deltaMsgSize",
             deltaMsgSize);
+    parameterOption<std::uint32_t>(argv, argv + argc, "--granularity",
+            granularity);
     if(parameterExists(argv, argv + argc, "--bufferedSend"))
     {
         bufferedSend = true;
@@ -66,15 +71,67 @@ void runBenchmark(int argc, char **argv)
     {
         bufferedRecv = true;
     }
+
+    // Prepare benchmark environment
+    pMR::Communicator communicator(MPI_COMM_WORLD, geom, periodic);
+
     std::string benchmark;
     parameterOption<std::string>(argv, argv + argc, "--benchmark", benchmark);
+    if(benchmark == "allreduce")
+    {
+        // Print Benchmark Information
+        printMaster("Benchmark:   ", benchmark);
+        printMaster("Processes:   ", communicator.size());
+        printMaster();
+    
+        printMaster(" MPIRank Size[By] WSize[By] Iteration  Time/It[s]");
+
+        deltaMsgSize = (deltaMsgSize / sizeof(float)) * sizeof(float);
+        if(deltaMsgSize == 0)
+        {
+            deltaMsgSize += sizeof(float);
+        }
+
+        // Loop Message Sizes
+        auto msgSize = minMsgSize;
+        while(msgSize <= maxMsgSize)
+        {
+            msgSize = (msgSize / sizeof(float)) * sizeof(float);
+            // Calculate iterations count
+            auto iter = maxIter;
+            if(msgSize)
+            {
+                iter = std::min(iter, overallSize / msgSize /
+                        static_cast<std::uint64_t>(communicator.size()));
+            }
+
+            pMR::AllReduce allReduce(communicator,
+                    std::ceil(static_cast<double>(msgSize) / granularity) *
+                    granularity);
+
+            std::vector<float> vSum;
+            vSum.resize(msgSize / sizeof(float));
+            double time = -pMR::getTimeInSeconds();
+            for(decltype(iter) i = 0; i != iter; ++i)
+            {
+                allReduce.insert<float>(vSum.cbegin(), msgSize / sizeof(float));
+                allReduce.execute(&plus, msgSize / sizeof(float));
+                allReduce.extract<float>(vSum.begin(), msgSize / sizeof(float));
+            }
+            time += pMR::getTimeInSeconds();
+            pMR::print(static_cast<std::uint32_t>(getRank(MPI_COMM_WORLD)),
+                    msgSize, allReduce.size<unsigned char>(),
+                    iter, time / iter);
+            msgSize += deltaMsgSize;
+        }
+
+        // Exit application
+        finalize();
+    }
     if(benchmark != "exchange" and benchmark != "sendrecv")
     {
         printUsage();
     }
-
-    // Prepare benchmark environment
-    pMR::Communicator communicator(MPI_COMM_WORLD, geom, periodic);
     
     // Establish connections
     std::vector<pMR::Connection> connections;
@@ -114,8 +171,8 @@ void runBenchmark(int argc, char **argv)
     auto msgSize = minMsgSize;
     while(msgSize <= maxMsgSize)
     {
-        std::vector<std::vector<unsigned char, pMR::AlignedAllocator<unsigned char>>>
-            sendBuffers, recvBuffers;
+        std::vector<std::vector<unsigned char,
+            pMR::AlignedAllocator<unsigned char>>> sendBuffers, recvBuffers;
         std::vector<pMR::SendWindow<unsigned char>> sendWindows;
         std::vector<pMR::RecvWindow<unsigned char>> recvWindows;
         
@@ -150,12 +207,11 @@ void runBenchmark(int argc, char **argv)
             }
         }
 
-        // Increment msgSize for next loop
-        msgSize += deltaMsgSize;
-
         // Go to next loop if nothing to do
         if(sendWindows.size() == 0 and recvWindows.size() == 0)
         {
+            // Increment msgSize for next loop
+            msgSize += deltaMsgSize;
             continue;
         }
 
@@ -210,11 +266,15 @@ void runBenchmark(int argc, char **argv)
                     recvWindows[r].extract(recvBuffers[r].begin());
                 }
             }
+
         }
         time += pMR::getTimeInSeconds();
         pMR::print(static_cast<std::uint32_t>(getRank(MPI_COMM_WORLD)),
                 msgSize, iter, time / iter,
                 msgSize * iter * sendWindows.size() / time / 1024 / 1024 );
+
+        // Increment msgSize for next loop
+        msgSize += deltaMsgSize;
     }
 
     // Exit application

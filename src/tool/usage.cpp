@@ -38,7 +38,7 @@ void printUsage()
     printMaster("Benchmark:");
     printMaster("  Use to run simple benchmarks.");
     printMaster("  Select benchmark:");
-    printMaster("    --benchmark         exchange | sendrecv");
+    printMaster("    --benchmark         exchange | sendrecv | allreduce");
     printMaster();
     printMaster("  Optional parameters:");
     printMaster("    --dim D             Set number of dimensions.");
@@ -49,6 +49,7 @@ void printUsage()
     printMaster("    --minMsgSize m      Set minimum message size.");
     printMaster("    --MaxMsgSize M      Set maximum message size.");
     printMaster("    --deltaMsgSize d    Set message size delta.");
+    printMaster("    --granularity g     Set allreduse size granulrity.");
     printMaster("    --bufferedSend      Enable buffered send.");
     printMaster("    --bufferedRecv      Enable buffered receive.");
 

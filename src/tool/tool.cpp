@@ -19,6 +19,8 @@
 #include "parameter.hpp"
 #include "usage.hpp"
 #include "benchmark.hpp"
+#include "tests/exchange.hpp"
+#include "tests/global.hpp"
 
 int main(int argc, char **argv)
 {
@@ -30,6 +32,13 @@ int main(int argc, char **argv)
             parameterExists(argv, argv + argc, "--help"))
         {
             printUsage();
+        }
+
+        // Run tests
+        if(parameterExists(argv, argv + argc, "--tests"))
+        {
+            runExchangeTest();
+            runGlobalTest();
         }
     
         // Run desired benchmark
