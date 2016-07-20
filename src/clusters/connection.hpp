@@ -14,6 +14,9 @@
 
 //! @file connection.hpp
 //! @brief Public interface for connections.
+//!     This file is only required to generate common connection documentation,
+//!     so that documentation has not to be added to every cluster specific
+//!     file.
 //!
 //! @author Peter Georg
 #ifndef pMR_CONNECTION_H

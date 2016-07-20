@@ -14,6 +14,9 @@
 
 //! @file allreduce.hpp
 //! @brief Public interface for global reducation.
+//!     This file is only required to generate common global reduction
+//!     documentation, so that documentation has not to be added to every
+//!     specific global reduction implementation.
 //!
 //! @author Peter Georg
 #ifndef pMR_ALLREDUCE_H
