@@ -36,6 +36,7 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 - <b>QPACE2</b>: Cluster with 1D Infiniband FHT topology. IB Verbs only, no shared memory.
 - <b>QPACEB</b>: Cluster with single port Infiniband HCA. IB Verbs only, no shared memory.
 - <b>iDataCool</b>: Cluster with single port Infiniband HCA. IB Verbs and shared memory (CMA).
+- <b>SHM</b>: Single node using shared memory (CMA) only.
 
 ### Supported options for BACKEND ###
 - <b>MPI</b>: For applications using MPI for multi-processing.
