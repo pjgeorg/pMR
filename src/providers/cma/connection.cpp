@@ -20,6 +20,7 @@ extern "C"
 #include <unistd.h>
 }
 #include "../../backends/backend.hpp"
+#include "../../arch/processor.hpp"
 #ifdef HINT
 #include "../../misc/print.hpp"
 #endif // HINT
@@ -32,10 +33,10 @@ pMR::cma::Connection::Connection(Target const &target)
     std::get<1>(originAddress) =
         reinterpret_cast<std::uintptr_t>(&mDestination);
     std::get<2>(originAddress) = sizeof(mDestination);
-    std::get<3>(originAddress) = reinterpret_cast<std::uintptr_t>(&mNotifySend);
-    std::get<4>(originAddress) = sizeof(mNotifySend);
-    std::get<5>(originAddress) = reinterpret_cast<std::uintptr_t>(&mNotifyRecv);
-    std::get<6>(originAddress) = sizeof(mNotifyRecv);
+    std::get<3>(originAddress) = reinterpret_cast<std::uintptr_t>(mNotifySend);
+    std::get<4>(originAddress) = sizeof(mNotifySend[0]);
+    std::get<5>(originAddress) = reinterpret_cast<std::uintptr_t>(mNotifyRecv);
+    std::get<6>(originAddress) = sizeof(mNotifyRecv[0]);
 
     backend::exchange(target, originAddress, targetAddress);
 
@@ -54,35 +55,43 @@ pMR::cma::Connection::Connection(Target const &target)
         static_cast<std::size_t>(std::get<6>(targetAddress));
 }
 
-void pMR::cma::Connection::sendAddress(iovec &buffer)
+void pMR::cma::Connection::sendAddress(iovec &buffer) const
 {
-    iovec originAddress;
-    originAddress.iov_base = &buffer;
-    originAddress.iov_len = sizeof(buffer);
+    iovec localBuffer;
+    localBuffer.iov_base = &buffer;
+    localBuffer.iov_len = sizeof(buffer);
 
-    auto ret = process_vm_writev(mRemotePID, &originAddress, 1,
-            &mRemoteAddress, 1, 0);
-
-    if(ret < 0 || static_cast<std::size_t>(ret) != originAddress.iov_len)
-    {
-        throw std::runtime_error("pMR: CMA failed to send address.");
-    }
+    writeData(localBuffer, mRemoteAddress);
 }
 
 void pMR::cma::Connection::sendData(iovec buffer, std::uint32_t const sizeByte)
+    const
 {
     buffer.iov_len = sizeByte;
-
     checkBufferSize(buffer);
 
-    auto vDestination = reinterpret_cast<iovec volatile *>(&mDestination);
+    writeData(buffer, mDestination);
+}
 
-    auto ret = process_vm_writev(mRemotePID, &buffer, 1,
-            const_cast<iovec*>(vDestination), 1, 0);
-
-    if(ret < 0 || static_cast<std::size_t>(ret) != buffer.iov_len)
+void pMR::cma::Connection::writeData(iovec localBuffer, iovec remoteBuffer)
+    const
+{
+    while(localBuffer.iov_len > 0)
     {
-        throw std::runtime_error("pMR: CMA failed to write data.");
+        auto ret = process_vm_writev(mRemotePID, &localBuffer, 1,
+                &remoteBuffer, 1, 0);
+
+        if(ret < 0)
+        {
+            throw std::runtime_error("pMR: CMA failed to write data.");
+        }
+
+        localBuffer.iov_base =
+            static_cast<void*>(static_cast<char*>(localBuffer.iov_base) + ret);
+        localBuffer.iov_len -= ret;
+        remoteBuffer.iov_base =
+            static_cast<void*>(static_cast<char*>(remoteBuffer.iov_base) + ret);
+        remoteBuffer.iov_len -= ret;
     }
 }
 
@@ -108,28 +117,24 @@ void pMR::cma::Connection::pollNotifyRecv()
 
 void pMR::cma::Connection::postNotify(iovec const &remoteNotify) const
 {
-    bool notify = true;
+    std::uint8_t notify = 1;
     iovec localNotify;
     localNotify.iov_base = &notify;
     localNotify.iov_len = sizeof(notify);
 
-    auto ret = process_vm_writev(mRemotePID, &localNotify, 1,
-            &remoteNotify, 1, 0);
-
-    if(ret < 0 || static_cast<std::size_t>(ret) != localNotify.iov_len)
-    {
-        throw std::runtime_error("pMR: CMA failed to send notification.");
-    }
+    writeData(localNotify, remoteNotify);
 }
 
-void pMR::cma::Connection::pollNotify(bool &notify)
+void pMR::cma::Connection::pollNotify(std::uint8_t (&notify)[64])
 {
-    auto vNotify = reinterpret_cast<bool volatile*>(&notify);
-    while(*vNotify == false) { }
-    notify = false;
+    while(notify[0] == 0)
+    {
+        CPURelax();
+    }
+    notify[0] = 0;
 }
 
-void pMR::cma::Connection::checkBufferSize(iovec const &buffer)
+void pMR::cma::Connection::checkBufferSize(iovec const &buffer) const
 {
     if(mDestination.iov_len < buffer.iov_len)
     {

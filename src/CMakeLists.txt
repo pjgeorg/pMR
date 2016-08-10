@@ -75,15 +75,12 @@ elseif(${CLUSTER} STREQUAL "QPACE2")
     set(PROVIDER_SCIF ON)
     set(ALLREDUCE "RECURSIVEDOUBLING")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/qpaceb)
-    add_subdirectory(clusters/qpace2)
 elseif(${CLUSTER} STREQUAL "QPACEB")
     set(PROVIDER_NULL ON)
     set(PROVIDER_SELF ON)
     set(PROVIDER_LOOP ON)
     set(PROVIDER_VERBS ON)
     set(ALLREDUCE "RECURSIVEDOUBLING")
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/qpaceb)
-    add_subdirectory(clusters/qpaceb)
 elseif(${CLUSTER} STREQUAL "iDataCool")
     set(PROVIDER_NULL ON)
     set(PROVIDER_SELF ON)
@@ -91,8 +88,6 @@ elseif(${CLUSTER} STREQUAL "iDataCool")
     set(PROVIDER_CMA ON)
     set(PROVIDER_VERBS ON)
     set(ALLREDUCE "RECURSIVEDOUBLING")
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/idatacool)
-    add_subdirectory(clusters/idatacool)
 else()
     message(FATAL_ERROR "Unknown target cluster given!")
 endif()
@@ -102,14 +97,24 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+string(TOLOWER ${CLUSTER} CLUSTER)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/${CLUSTER})
+add_subdirectory(clusters/${CLUSTER})
+
 install(FILES recvwindow.hpp sendwindow.hpp window.hpp DESTINATION include/pmr)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)|(k1om)")
+    add_subdirectory(arch/x86)
+else()
+    message(FATAL_ERROR "Unkown architecture!")
+endif()
 
 add_subdirectory(misc)
 
 string(TOLOWER ${ALLREDUCE} ALLREDUCE)
-add_subdirectory(allreduce/recursivedoubling)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/allreduce/recursivedoubling)
+add_subdirectory(allreduce/${ALLREDUCE})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/allreduce/${ALLREDUCE})
 
 if(PROVIDER_NULL)
     add_subdirectory(providers/null)
@@ -164,6 +169,7 @@ if(CAPI)
 endif()
 
 add_library(pmr STATIC
+    $<TARGET_OBJECTS:ARCH>
     $<TARGET_OBJECTS:MISC>
     $<TARGET_OBJECTS:THREAD>
     $<TARGET_OBJECTS:BACKEND>

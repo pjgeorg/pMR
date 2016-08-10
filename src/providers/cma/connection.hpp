@@ -20,6 +20,7 @@ extern "C"
 {
 #include <sys/uio.h>
 }
+#include "config.hpp"
 
 namespace pMR
 {
@@ -36,8 +37,9 @@ namespace pMR
                 Connection& operator=(const Connection&) = delete;
                 Connection& operator=(Connection&&) = delete;
                 ~Connection() = default;
-                void sendAddress(iovec &buffer);
-                void sendData(iovec buffer, std::uint32_t const sizeByte);
+                void sendAddress(iovec &buffer) const;
+                void sendData(iovec buffer, std::uint32_t const sizeByte) const;
+                void writeData(iovec localBuffer, iovec remoteBuffer) const;
                 void postNotifySend() const;
                 void pollNotifySend();
                 void postNotifyRecv() const;
@@ -47,12 +49,14 @@ namespace pMR
                 iovec mRemoteAddress;
                 iovec mDestination;
                 iovec mRemoteNotifySend;
-                bool mNotifySend = false;
                 iovec mRemoteNotifyRecv;
-                bool mNotifyRecv = false;
+                // Occupy a full cache line for notifier to avoid false cache line sharing.
+                // However we only use the first element of the array.
+                alignas(alignment) std::uint8_t mNotifySend[alignment] = { };
+                alignas(alignment) std::uint8_t mNotifyRecv[alignment] = { };
                 void postNotify(iovec const&) const;
-                void pollNotify(bool&);
-                void checkBufferSize(iovec const &buffer);
+                void pollNotify(std::uint8_t (&notify)[alignment]);
+                void checkBufferSize(iovec const &buffer) const;
         };
     }
 }
