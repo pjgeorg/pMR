@@ -136,20 +136,33 @@ void runBenchmark(int argc, char **argv)
     // Establish connections
     std::vector<pMR::Connection> connections;
 
+    // Store number of real data transfers per iteration
+    unsigned int nDataTransfers = 0;
+
     for(int n = 0; n != communicator.dimensions(); ++n)
     {
         if(communicator.size(n) > 1)
         {
+            pMR::Target rNeighbor = communicator.getNeighbor(n, +1);
+            pMR::Target lNeighbor = communicator.getNeighbor(n, -1);
+            if(!lNeighbor.isNull())
+            {
+                ++nDataTransfers;
+            }
+            if(!rNeighbor.isNull())
+            {
+                ++nDataTransfers;
+            }
+
             if(communicator.coordinate(n) % 2 == 1)
             {
-                connections.emplace_back(communicator.getNeighbor(n, -1));
-                connections.emplace_back(communicator.getNeighbor(n, +1));
+                connections.emplace_back(lNeighbor);
+                connections.emplace_back(rNeighbor);
             }
             else
             {
-                connections.emplace_back(communicator.getNeighbor(n, +1));
-                connections.emplace(connections.end() - 1,
-                        communicator.getNeighbor(n, -1));
+                connections.emplace_back(rNeighbor);
+                connections.emplace(connections.end() - 1, lNeighbor);
             }
         }
     }
@@ -271,7 +284,7 @@ void runBenchmark(int argc, char **argv)
         time += pMR::getTimeInSeconds();
         pMR::print(static_cast<std::uint32_t>(getRank(MPI_COMM_WORLD)),
                 msgSize, iter, time / iter,
-                msgSize * iter * sendWindows.size() / time / 1024 / 1024 );
+                msgSize * iter * nDataTransfers / time / 1024 / 1024 );
 
         // Increment msgSize for next loop
         msgSize += deltaMsgSize;
