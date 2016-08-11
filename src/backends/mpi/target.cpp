@@ -17,7 +17,7 @@
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
         unsigned const uniqueSendID, unsigned const uniqueRecvID,
-        bool const self, bool const null, bool const loop)
+        bool const null, bool const self, bool const loop)
     :   mCommunicator(communicator),
         mTarget(targetRank),
         mUniqueSendID(uniqueSendID),
