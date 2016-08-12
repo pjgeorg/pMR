@@ -25,5 +25,5 @@ bool pMR::thread::isThreaded()
 
 bool pMR::thread::isSerialized()
 {
-    return false;
+    return true;
 }
