@@ -99,6 +99,7 @@ namespace pMR
             bool mNull = false;
             bool mSelf = false;
             bool mLoop = false;
+            int queryRank() const;
             void queryTarget();
     };
 }

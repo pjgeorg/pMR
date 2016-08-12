@@ -85,6 +85,16 @@ MPI_Comm pMR::Target::getMPICommunicator() const
     return mCommunicator;
 }
 
+int pMR::Target::queryRank() const
+{
+    int ownRank;
+    if(MPI_Comm_rank(mCommunicator, &ownRank))
+    {
+        throw std::runtime_error("pMR: Unable to determine own MPI rank.");
+    }
+    return ownRank;
+}
+
 void pMR::Target::queryTarget()
 {
     // Check if target is null
@@ -94,13 +104,7 @@ void pMR::Target::queryTarget()
     }
 
     // Check if target is self/loop
-    int ownRank;
-    if(MPI_Comm_rank(mCommunicator, &ownRank))
-    {
-        throw std::runtime_error("pMR: Unable to determine own MPI rank.");
-    }
-
-    if(ownRank == mTarget)
+    if(queryRank() == mTarget)
     {
         if(mUniqueSendID == mUniqueRecvID)
         {
