@@ -51,6 +51,7 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 - <b>-DCAPI=ON</b>: Include optional C API.
 - <b>-DPROFILING=ON</b>: Enable profiling capability. 
 - <b>-DHINT=ON</b>: Enable hints that might help to spot performance issues.
+- <b>-DMPI=PERSISTENT</b>: Enable persistent point-to-point communication for MPI provider.
 
 ## Build & Install ##
 To build a static library and install all required files:
