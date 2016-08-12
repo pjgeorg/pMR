@@ -50,8 +50,8 @@ namespace pMR
                 iovec mDestination;
                 iovec mRemoteNotifySend;
                 iovec mRemoteNotifyRecv;
-                // Occupy a full cache line for notifier to avoid false cache line sharing.
-                // However we only use the first element of the array.
+                // Occupy a full cache line for notifier to avoid false cache
+                // line sharing. However we only use the first element.
                 alignas(alignment) std::uint8_t mNotifySend[alignment] = { };
                 alignas(alignment) std::uint8_t mNotifyRecv[alignment] = { };
                 void postNotify(iovec const&) const;
