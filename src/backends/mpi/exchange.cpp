@@ -24,7 +24,7 @@ extern "C"
 #include "../../threads/thread.hpp"
 
 void pMR::backend::exchange(Target const &target,
-        void *sendBuffer, void *recvBuffer, std::uint32_t const sizeByte)
+        void const *sendBuffer, void *recvBuffer, std::uint32_t const sizeByte)
 {
     if(Singleton<ThreadSupport>::Instance().multiple() ||
             !thread::isThreaded() || thread::isSerialized())

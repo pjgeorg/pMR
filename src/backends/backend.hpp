@@ -27,19 +27,19 @@ namespace pMR
         void sync(Target const &target);
     
         void exchange(Target const &target,
-                void *sendBuffer, void *recvBuffer,
+                void const *sendBuffer, void *recvBuffer,
                 std::uint32_t const sizeByte);
     
         template<typename T>
-        void exchange(Target const &target, T &sendBuffer, T &recvBuffer)
+        void exchange(Target const &target, T const &sendBuffer, T &recvBuffer)
         {
-            return exchange(target, static_cast<void*>(&sendBuffer),
+            return exchange(target, static_cast<void const*>(&sendBuffer),
                     static_cast<void*>(&recvBuffer), sizeof(sendBuffer));
         }
 
         template<typename T, std::size_t N>
         void exchange(Target const &target,
-                std::array<T, N> &sendBuffer, std::array<T, N> &recvBuffer)
+                std::array<T, N> const &sendBuffer, std::array<T, N> &recvBuffer)
         {
             return exchange(target, sendBuffer.data(),
                     recvBuffer.data(), sizeof(sendBuffer));
