@@ -15,8 +15,6 @@
 #include "memorywindow.hpp"
 #include "connection.hpp"
 
-#include "../../misc/print.hpp"
-
 pMR::cma::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
         void *buffer, std::uint32_t const sizeByte)
