@@ -61,8 +61,12 @@ void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
     }
 #endif // HINT
 
+#ifndef VERBS_RDMA
+    mConnection->postSendDataRequestToActive(mMemoryRegion, sizeByte);
+#else
     mConnection->postRDMAWriteRequestToActive(mMemoryRegion, sizeByte,
             mConnection->getRemoteMemoryAddress());
+#endif // VERBS_RDMA
 }
 
 void pMR::verbs::SendMemoryWindow::wait()
@@ -72,10 +76,15 @@ void pMR::verbs::SendMemoryWindow::wait()
 
 void pMR::verbs::RecvMemoryWindow::init()
 {
+#ifndef VERBS_RDMA
+    mConnection->postRecvDataRequestToPassive(mMemoryRegion);
+#else
+    mConnection->postRecvRDMARequestToPassive();
+#endif // VERBS_RDMA
+
+    // Send memory region to target
     mConnection->setLocalMemoryAddress(mMemoryRegion);
-    // Send memory address to target
     mConnection->postSendAddrRequestToPassive();
-    mConnection->postRecvSyncRequestToPassive();
 }
 
 void pMR::verbs::RecvMemoryWindow::post() { }

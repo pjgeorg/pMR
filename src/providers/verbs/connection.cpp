@@ -54,7 +54,6 @@ pMR::verbs::Connection::Connection(Target const &target,
     for(int i=0; i != VerbsInitialPostRecv; ++i)
     {
         postRecvAddrRequestToActive();
-        postRecvSyncRequestToPassive();
     }
 
     // Sync with remote side to assure both sides are in state RTR.
@@ -100,11 +99,6 @@ pMR::verbs::Connection::getRemoteMemoryAddress() const
     return mRemoteMemoryAddress;
 }
 
-void pMR::verbs::Connection::postRecvSyncRequestToPassive()
-{
-    postRecvRequest(mPassiveQueuePair, nullptr, 0);
-}
-
 void pMR::verbs::Connection::postSendAddrRequestToPassive()
 {
     ScatterGatherList scatterGatherList(mSendMemoryRegion);
@@ -117,9 +111,18 @@ void pMR::verbs::Connection::postRecvAddrRequestToActive()
     postRecvRequest(mActiveQueuePair, scatterGatherList.get(), 1);
 }
 
-void pMR::verbs::Connection::postSendSyncRequestToActive()
+void pMR::verbs::Connection::postSendDataRequestToActive(
+        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
 {
-    postSendRequest(mActiveQueuePair, nullptr, 0);
+    ScatterGatherList scatterGatherList(memoryRegion, sizeByte);
+    postSendRequest(mActiveQueuePair, scatterGatherList.get(), 1);
+}
+
+void pMR::verbs::Connection::postRecvDataRequestToPassive(
+        MemoryRegion const &memoryRegion)
+{
+    ScatterGatherList scatterGatherList(memoryRegion);
+    postRecvRequest(mPassiveQueuePair, scatterGatherList.get(), 1);
 }
 
 void pMR::verbs::Connection::postRDMAWriteRequestToActive(
@@ -152,6 +155,13 @@ void pMR::verbs::Connection::postRDMAWriteRequestToActive(
         throw std::runtime_error("pMR: Unable to post RDMA Work Request.");
     }
 }
+
+void pMR::verbs::Connection::postRecvRDMARequestToPassive()
+{
+    postRecvRequest(mPassiveQueuePair, nullptr, 0);
+}
+
+
 
 void pMR::verbs::Connection::pollActiveCompletionQueue()
 {

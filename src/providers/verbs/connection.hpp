@@ -47,14 +47,15 @@ namespace pMR { namespace verbs
             void setLocalMemoryAddress(MemoryRegion const&);
             MemoryAddress const& getRemoteMemoryAddress() const;
 
-            void postRecvSyncRequestToPassive();
             void postSendAddrRequestToPassive();
-
             void postRecvAddrRequestToActive();
-            void postSendSyncRequestToActive();
+            void postSendDataRequestToActive(MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte);
+            void postRecvDataRequestToPassive(MemoryRegion const &memoryRegion);
             void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
                     std::uint32_t const sizeByte,
                     MemoryAddress const &remoteMemoryAddress);
+            void postRecvRDMARequestToPassive();
 
             void pollActiveCompletionQueue();
             void pollPassiveCompletionQueue();
