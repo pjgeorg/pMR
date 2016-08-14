@@ -25,6 +25,7 @@ namespace pMR { namespace verbs
     {
         public:
             MemoryAddress() = default;
+            MemoryAddress(MemoryRegion const &memoryRegion);
             void set(MemoryRegion const&);
             std::uint64_t getAddress() const;
             std::uint32_t getRKey() const;

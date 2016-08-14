@@ -14,6 +14,11 @@
 
 #include "memoryaddress.hpp"
 
+pMR::verbs::MemoryAddress::MemoryAddress(MemoryRegion const &memoryRegion)
+{
+    set(memoryRegion);
+}
+
 void pMR::verbs::MemoryAddress::set(MemoryRegion const &memoryRegion)
 {
     std::get<0>(mData) =
