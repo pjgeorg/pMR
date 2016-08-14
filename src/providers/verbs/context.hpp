@@ -38,4 +38,4 @@ namespace pMR { namespace verbs
             ibv_context *mContext = nullptr;
     };
 }}
-#endif // pMR_PROVIDERS_VERBS_PROTECTIONDOMAIN_H
+#endif // pMR_PROVIDERS_VERBS_CONTEXT_H
