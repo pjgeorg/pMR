@@ -36,7 +36,11 @@ pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
         mMemoryRegion(mConnection->getContext(),
                 mConnection->getProtectionDomain(),
                 buffer, sizeByte,
+#ifndef VERBS_RDMA
+                IBV_ACCESS_LOCAL_WRITE) { }
+#else
                 IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE) { }
+#endif // VERBS_RDMA
 
 void pMR::verbs::SendMemoryWindow::init()
 {
