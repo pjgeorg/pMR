@@ -27,6 +27,7 @@ extern "C"
 #include "connectionaddress.hpp"
 #include "memoryaddress.hpp"
 #include "memoryregion.hpp"
+#include "config.hpp"
 
 namespace pMR { namespace verbs
 {
@@ -85,8 +86,8 @@ namespace pMR { namespace verbs
             QueuePair mPassiveQueuePair;
             MemoryAddress mLocalMemoryAddress;
             MemoryAddress mRemoteMemoryAddress;
-            MemoryRegion mSendMemoryRegion;
-            MemoryRegion mRecvMemoryRegion;
+            alignas(alignment) MemoryRegion mSendMemoryRegion;
+            alignas(alignment) MemoryRegion mRecvMemoryRegion;
             std::uint32_t mMaxInlineDataSize = 0;
             void postSendRequest(QueuePair &queuePair,
                     MemoryRegion const &memoryRegion);
