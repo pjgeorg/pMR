@@ -30,6 +30,8 @@ extern "C"
 
 namespace pMR { namespace verbs
 {
+    class ScatterGatherList;
+
     class Connection
     {
         public:
@@ -49,13 +51,28 @@ namespace pMR { namespace verbs
 
             void postSendAddrRequestToPassive();
             void postRecvAddrRequestToActive();
-            void postSendDataRequestToActive(MemoryRegion const &memoryRegion,
+
+            void postSendRequestToActive(MemoryRegion const &memoryRegion);
+            void postSendRequestToActive(MemoryRegion const &memoryRegion,
                     std::uint32_t const sizeByte);
-            void postRecvDataRequestToPassive(MemoryRegion const &memoryRegion);
+            void postSendRequestToPassive(MemoryRegion const &memoryRegion);
+            void postSendRequestToPassive(MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte);
+            void postRecvRequestToActive(MemoryRegion const &memoryRegion);
+            void postRecvRequestToPassive(MemoryRegion const &memoryRegion);
+
+            void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
+                    MemoryAddress const &remoteMemoryAddress);
             void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
                     std::uint32_t const sizeByte,
                     MemoryAddress const &remoteMemoryAddress);
-            void postRecvRDMARequestToPassive();
+            void postRDMAWriteRequestToPassive(MemoryRegion const &memoryRegion,
+                    MemoryAddress const &remoteMemoryAddress);
+            void postRDMAWriteRequestToPassive(MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte,
+                    MemoryAddress const &remoteMemoryAddress);
+            void postRecvRequestToActive();
+            void postRecvRequestToPassive();
 
             void pollActiveCompletionQueue();
             void pollPassiveCompletionQueue();
@@ -71,10 +88,28 @@ namespace pMR { namespace verbs
             MemoryRegion mSendMemoryRegion;
             MemoryRegion mRecvMemoryRegion;
             std::uint32_t mMaxInlineDataSize = 0;
-            void postRecvRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const numEntries);
+            void postSendRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion);
+            void postSendRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte);
             void postSendRequest(QueuePair &queuePair,
                     ibv_sge *scatterGatherList, int const numEntries);
+            void postRecvRequest(QueuePair &queuePair);
+            void postRecvRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion);
+            void postRecvRequest(QueuePair &queuePair,
+                    ibv_sge *scatterGatherList, int const numEntries);
+            void postRDMAWriteRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion,
+                    MemoryAddress const &remoteMemoryAddress);
+            void postRDMAWriteRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte,
+                    MemoryAddress const &remoteMemoryAddress);
+            void postRDMAWriteRequest(QueuePair &queuePair,
+                    ScatterGatherList &scatterGatherList,
+                    MemoryAddress const &remoteMemoryAddress);
     };
 
     class ScatterGatherList
