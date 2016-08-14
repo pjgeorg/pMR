@@ -156,7 +156,8 @@ void pMR::verbs::Connection::postRDMAWriteRequestToActive(
         MemoryRegion const &memoryRegion, std::uint32_t const sizeByte,
         MemoryAddress const &remoteMemoryAddress)
 {
-    postRDMAWriteRequest(mActiveQueuePair, memoryRegion, sizeByte, remoteMemoryAddress);
+    postRDMAWriteRequest(mActiveQueuePair, memoryRegion, sizeByte,
+            remoteMemoryAddress);
 }
 
 void pMR::verbs::Connection::postRDMAWriteRequestToPassive(
@@ -170,7 +171,8 @@ void pMR::verbs::Connection::postRDMAWriteRequestToPassive(
         MemoryRegion const &memoryRegion, std::uint32_t const sizeByte,
         MemoryAddress const &remoteMemoryAddress)
 {
-    postRDMAWriteRequest(mPassiveQueuePair, memoryRegion, sizeByte, remoteMemoryAddress);
+    postRDMAWriteRequest(mPassiveQueuePair, memoryRegion, sizeByte,
+            remoteMemoryAddress);
 }
 
 void pMR::verbs::Connection::postRecvRequestToActive()
