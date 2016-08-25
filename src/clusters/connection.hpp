@@ -19,6 +19,9 @@
 //!     file.
 //!
 //! @author Peter Georg
+//!
+//! @mainpage
+//! @htmlinclude redirect.html
 #ifndef pMR_CONNECTION_H
 #define pMR_CONNECTION_H
 
