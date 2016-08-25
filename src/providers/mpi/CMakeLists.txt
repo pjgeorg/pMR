@@ -1,4 +1,4 @@
-if("${MPI}" STREQUAL "PERSISTENT")
+if(MPI.PERSISTENT)
     message(STATUS "MPI Provider: Persistent communication enabled.")
     add_definitions(-DMPI_PERSISTENT)
 endif()

@@ -13,6 +13,7 @@ set(CAPI OFF CACHE BOOL "Build C API.")
 set(MIC OFF CACHE BOOL "Build for Intel MIC.")
 set(PROFILING OFF CACHE BOOL "Enable profiling.")
 set(HINT OFF CACHE BOOL "Enable performance hints.")
+set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication for MPI provider.")
 
 add_subdirectory(src)
 add_subdirectory(doxygen)
