@@ -20,6 +20,8 @@ I.e., calls to functions associated with a particular connection have to be seri
 ### Documentation ###
 pMR uses [Doxygen](http://www.doxygen.org) to generate documentation (HTML) from its annotated sources. Check out section [Compilation](#compilation) about how to build the documentation in ./doc/html.
 
+Open current pMR API documentation: [pMR API Documentation](https://pjgeorg.github.io/pMR)
+
 ## Compilation ##
 It is suggested to build pMR as a static library using the included CMake files.
 Set up build environment using [CMake](http://www.cmake.org) (only out-of-source builds are allowed):
