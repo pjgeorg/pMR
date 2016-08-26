@@ -1,6 +1,6 @@
 # pMR #
 ## pico Message Passing for RDMA ##
-pMR is a C++ communication library in particularly optimized for small messages.
+pMR is a C++ communication library particularly optimized for small messages.
 It exploits communication offloading and persistence provided by the NIC, which are typical features of RDMA.
 It only supports a limited low-level feature set, which allows to design a lightweight library that keeps software overhead to a minimum.
 
@@ -13,8 +13,8 @@ Apart from low-level point-to-point data transfers, pMR currently only supports 
 In addition to the C++ API a limited C API is provided.
 
 ### Thread Support ###
-pMR supports multithreaded communication.
-Thread support is limited to only one thread working on a particular connection, or a resource associated with it, simultanously.
+pMR supports multi-threaded communication.
+Thread support is limited to only one thread working on a particular connection, or a resource associated with it, simultaneously.
 I.e., calls to functions associated with a particular connection have to be serialized.
 
 ### Documentation ###
@@ -35,22 +35,22 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
         ../
 
 ### Supported options for CLUSTER ###
-- <b>QPACE2</b>: Cluster with 1D FBT Infiniband topology. IB Verbs only, no shared memory.
-- <b>QPACEB</b>: Cluster with single port Infiniband HCA. IB Verbs only, no shared memory.
-- <b>iDataCool</b>: Cluster with single port Infiniband HCA. IB Verbs and shared memory (CMA).
-- <b>SHM</b>: Single node using shared memory (CMA) only.
-- <b>MPI</b>: MPI fallback support. Uses MPI for any communication.
+- <b>QPACE2</b>: Cluster with 1D FBT InfiniBand topology. InfiniBand verbs only, no shared memory.
+- <b>QPACEB</b>: Cluster with single port InfiniBand HCA. InfiniBand verbs only, no shared memory.
+- <b>iDataCool</b>: Cluster with single port InfiniBand HCA. InfiniBand Verbs and shared memory (Cross-Memory Attach).
+- <b>SHM</b>: Single node using shared memory (Cross-Memory Attach) only.
+- <b>MPI</b>: MPI fallback support. Uses MPI for intra- and inter-node communication.
 
 ### Supported options for BACKEND ###
 - <b>MPI</b>: For applications using MPI for multi-processing.
 
 ### Supported options for THREAD ###
 - <b>None</b>: Suitable for single-threaded applications.
-- <b>Serialized</b>: Suitable for multi-threaded applications with serialized calls to pMR functions (except explicitely multi-threaded functions).
+- <b>Serialized</b>: Suitable for multi-threaded applications with serialized calls to pMR functions (except explicitly multi-threaded functions).
 - <b>OpenMP</b>: Support for OpenMP multi-threaded applications.
 
 ### Optional configurations ###
-- <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KN). Requires Intel Compiler and Intel MPSS 3.6 (or newer).
+- <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KNC). Requires Intel Compiler and Intel MPSS 3.6 (or newer).
 - <b>-DCAPI=ON</b>: Include optional C API.
 - <b>-DPROFILING=ON</b>: Enable profiling capability. 
 - <b>-DHINT=ON</b>: Enable hints that might help to spot performance issues.
