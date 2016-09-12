@@ -143,13 +143,13 @@ void runBenchmark(int argc, char **argv)
     {
         if(communicator.size(n) > 1)
         {
-            pMR::Target rNeighbor = communicator.getNeighbor(n, +1);
             pMR::Target lNeighbor = communicator.getNeighbor(n, -1);
+            pMR::Target rNeighbor = communicator.getNeighbor(n, +1);
             if(!lNeighbor.isNull())
             {
                 ++nDataTransfers;
             }
-            if(!rNeighbor.isNull())
+            if(!rNeighbor.isNull() && benchmark != "sendrecv")
             {
                 ++nDataTransfers;
             }
