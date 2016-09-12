@@ -15,10 +15,11 @@
 #include "mpi.hpp"
 #include <cstdlib>
 #include <stdexcept>
+#include "../misc/print.hpp"
 
 void init(int argc, char **argv)
 {
-    int required = MPI_THREAD_MULTIPLE;
+    int required = MPI_THREAD_SERIALIZED;
     int provided;
 
     if(MPI_Init_thread(&argc, &argv, required, &provided))
