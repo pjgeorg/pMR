@@ -13,6 +13,9 @@ set(CAPI OFF CACHE BOOL "Build C API.")
 set(MIC OFF CACHE BOOL "Build for Intel MIC.")
 set(PROFILING OFF CACHE BOOL "Enable profiling.")
 set(HINT OFF CACHE BOOL "Enable performance hints.")
+
+#Provider specific setting (might be overwritten by cluster defaults)
+set(VERBS.RDMA ON CACHE BOOL "Use RDMA capability of verbs provider.")
 set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication for MPI provider.")
 
 add_subdirectory(src)

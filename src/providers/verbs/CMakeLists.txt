@@ -33,4 +33,11 @@ else()
     list(APPEND VERBS_SRC memoryregion_without_odp.cpp)
 endif()
 
+#Check RDMA
+if (VERBS.RDMA)
+    add_definitions(-DVERBS_RDMA)
+else()
+    message(STATUS "Verbs provider: Not using RDMA.")
+endif()
+
 add_library(PROVIDER_VERBS OBJECT ${VERBS_SRC})
