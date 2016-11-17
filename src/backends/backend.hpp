@@ -17,6 +17,7 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 namespace pMR
 {
@@ -43,6 +44,14 @@ namespace pMR
         {
             return exchange(target, sendBuffer.data(),
                     recvBuffer.data(), sizeof(sendBuffer));
+        }
+
+        template<typename T>
+        void exchange(Target const &target, std::vector<T> const &sendBuffer,
+                std::vector<T> &recvBuffer)
+        {
+            return exchange(target, sendBuffer.data(),
+                    recvBuffer.data(), sendBuffer.size() * sizeof(T));
         }
     }
 }
