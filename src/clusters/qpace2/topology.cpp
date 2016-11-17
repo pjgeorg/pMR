@@ -19,9 +19,7 @@
 #include "../../providers/verbs/topology.hpp"
 #include "../../misc/singleton.hpp"
 #include "../../backends/backend.hpp"
-#ifdef HINT
 #include "../../misc/print.hpp"
-#endif // HINT
 
 void pMR::Connection::connectVerbs(Target const &target)
 {
@@ -81,9 +79,7 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
     }
 
     // No common switch
-#ifdef HINT
-    print("pMR: HINT: Using bad path. Check topology.");
-#endif // HINT
+    print("pMR: Using bad path. Check topology.");
     if(origin.getSCIFNodeID() + target.getSCIFNodeID() < 6)
     {
         return 1;
