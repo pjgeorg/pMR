@@ -12,11 +12,6 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-//! @file allreduce/recursivedoubling/allreduce.hpp
-//! @brief Collective routine, Allreduce, using the recursive-doubling
-//!     algorithm.
-//!
-//! @author Peter Georg
 #ifndef pMR_ALLREDUCE_RECURSIVEDOUBLING_ALLREDUCE_H
 #define pMR_ALLREDUCE_RECURSIVEDOUBLING_ALLREDUCE_H
 
