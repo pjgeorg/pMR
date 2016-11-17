@@ -21,7 +21,7 @@ pMR::cma::SendMemoryWindow::SendMemoryWindow(
     :   mConnection(connection)
 {
     mBuffer.iov_base = buffer;
-    mBuffer.iov_len = sizeByte;
+    mBuffer.iov_len = {sizeByte};
 }
 
 pMR::cma::RecvMemoryWindow::RecvMemoryWindow(
@@ -30,7 +30,7 @@ pMR::cma::RecvMemoryWindow::RecvMemoryWindow(
     :   mConnection(connection)
 {
     mBuffer.iov_base = buffer;
-    mBuffer.iov_len = sizeByte;
+    mBuffer.iov_len = {sizeByte};
 }
 
 void pMR::cma::SendMemoryWindow::init() { }

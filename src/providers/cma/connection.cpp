@@ -21,22 +21,19 @@ extern "C"
 }
 #include "../../backends/backend.hpp"
 #include "../../arch/processor.hpp"
-#ifdef HINT
-#include "../../misc/print.hpp"
-#endif // HINT
 
 pMR::cma::Connection::Connection(Target const &target)
 {
     std::array<std::uint64_t, 7> originAddress, targetAddress;
 
-    std::get<0>(originAddress) = getpid();
-    std::get<1>(originAddress) =
-        reinterpret_cast<std::uintptr_t>(&mDestination);
-    std::get<2>(originAddress) = sizeof(mDestination);
-    std::get<3>(originAddress) = reinterpret_cast<std::uintptr_t>(mNotifySend);
-    std::get<4>(originAddress) = sizeof(mNotifySend[0]);
-    std::get<5>(originAddress) = reinterpret_cast<std::uintptr_t>(mNotifyRecv);
-    std::get<6>(originAddress) = sizeof(mNotifyRecv[0]);
+    std::get<0>(originAddress) = {getpid()};
+    std::get<1>(originAddress) = 
+        {reinterpret_cast<std::uintptr_t>(&mDestination)};
+    std::get<2>(originAddress) = {sizeof(mDestination)};
+    std::get<3>(originAddress) = {reinterpret_cast<std::uintptr_t>(mNotifySend)};
+    std::get<4>(originAddress) = {sizeof(mNotifySend[0])};
+    std::get<5>(originAddress) = {reinterpret_cast<std::uintptr_t>(mNotifyRecv)};
+    std::get<6>(originAddress) = {sizeof(mNotifyRecv[0])};
 
     backend::exchange(target, originAddress, targetAddress);
 
@@ -140,11 +137,4 @@ void pMR::cma::Connection::checkBufferSize(iovec const &buffer) const
     {
         throw std::length_error("pMR: RecvWindow smaller than SendWindow.");
     }
-
-#ifdef HINT
-    if(mDestination.iov_len > buffer.iov_len)
-    {
-        print("pMR: HINT: RecvWindow larger than SendWindow.");
-    }
-#endif // HINT
 }
