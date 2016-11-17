@@ -13,42 +13,44 @@
 //  limitations under the License.
 
 #include "xdump.hpp"
-#include <iostream>
+#include <sstream>
 #include <iomanip>
-#include <algorithm>
 
-void pMR::xdump(void const *data, std::uint64_t sizeByte)
+std::string pMR::xdump(void const *data, std::uint64_t sizeByte)
 {
     char const *const start = static_cast<char const*>(data);
     char const *const end = start + sizeByte;
     const char *line = start;
 
+    std::stringstream dump;
     while(line != end)
     {
         auto length = end - line;
         decltype(length) maxLength = 16;
         length = std::min(length, maxLength);
 
-        std::cout << std::setw(4);
-        std::cout << std::setfill('0');
-        std::cout << std::hex << line - start << ": ";
+        dump << std::setw(4);
+        dump << std::setfill('0');
+        dump << std::hex << line - start << ": ";
 
         for(char const *c = line; c != line + length; ++c)
         {
-            std::cout << std::setw(2);
-            std::cout << std::setfill('0');
-            std::cout << std::hex << std::uppercase
+            dump << std::setw(2);
+            dump << std::setfill('0');
+            dump << std::hex << std::uppercase
                 << static_cast<int>(static_cast<unsigned char>(*c)) << ' ';
         }
 
-        std::cout << std::string((16 - length) * 3, ' ');
+        dump << std::string((16 - length) * 3, ' ');
 
         for(char const *c = line; c != line + length; ++c)
         {
-            std::cout << (*c < 32 ? '.' : *c);
+            dump << (*c < 32 ? '.' : *c);
         }
 
-        std::cout << std::endl;
+        dump << std::endl;
         line += length;
     }
+
+    return dump.str();
 }
