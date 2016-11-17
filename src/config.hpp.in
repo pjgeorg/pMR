@@ -19,10 +19,6 @@
 #cmakedefine PROFILING
 #endif
 
-#ifndef HINT
-#cmakedefine HINT
-#endif
-
 namespace pMR
 {
     constexpr unsigned int alignment = @ALIGNMENT@;

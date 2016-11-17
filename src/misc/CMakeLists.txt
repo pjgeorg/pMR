@@ -1,4 +1,8 @@
-add_library(MISC OBJECT string.cpp time.cpp)
+add_library(MISC OBJECT
+    string.cpp
+    time.cpp
+    xdump.cpp)
+
 install(FILES
     allocator.hpp
     numeric.hpp
@@ -9,4 +13,5 @@ install(FILES
     string.hpp
     thread.hpp
     time.hpp
-    type.hpp DESTINATION include/pmr/misc)
+    type.hpp
+    xdump.hpp DESTINATION include/pmr/misc)

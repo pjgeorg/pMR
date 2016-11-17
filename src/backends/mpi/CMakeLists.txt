@@ -5,4 +5,6 @@ add_library(BACKEND OBJECT
     target.cpp
     threadsupport.cpp)
 
-install(FILES communicator.hpp target.hpp DESTINATION include/pmr)
+install(FILES
+    communicator.hpp
+    target.hpp DESTINATION include/pmr)

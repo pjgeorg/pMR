@@ -1,0 +1,18 @@
+if(NOT ${CMAKE_C_COMPILER} MATCHES "icc.*$")
+    ERROR("Intel Compiler required for first generation Intel Xeon Phi!")
+endif()
+if("$ENV{MPSS_SYSROOTS}" STREQUAL "")
+    ERROR("MPSS not found!")
+endif()
+
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR k1om)
+set(CMAKE_SYSTEM_VERSION 1)
+set(_CMAKE_TOOLCHAIN_PREFIX  x86_64-k1om-linux-)
+set(CMAKE_FIND_ROOT_PATH $ENV{MPSS_SYSROOTS}/k1om-mpss-linux)
+set(CMAKE_C_FLAGS "-mmic ${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "-mmic ${CMAKE_CXX_FLAGS}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_EXECUTABLE_SUFFIX ".mic")
+
+INFO("Building for first generation Intel Xeon Phi.")

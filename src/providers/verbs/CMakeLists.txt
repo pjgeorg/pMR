@@ -1,5 +1,4 @@
-set(VERBS_SRC)
-list(APPEND VERBS_SRC
+add_library(PROVIDER_VERBS OBJECT
     completionqueue.cpp
     connectionaddress.cpp
     connection.cpp
@@ -10,34 +9,19 @@ list(APPEND VERBS_SRC
     memoryaddress.cpp
     memoryregion.cpp
     memorywindow.cpp
+    odp.cpp
     portattributes.cpp
     protectiondomain.cpp
     queuepair.cpp
+    scattergather.cpp
     topology/adapter.cpp
-    topology/device.cpp
-    topology/port.cpp
+    topology/guid.cpp
+    topology/lid.cpp
+    topology/ports.cpp
     topology/subnet.cpp
     topology/switch.cpp
     topology/mad/address.cpp
+    topology/mad/addresshandle.cpp
     topology/mad/mad.cpp
     topology/mad/queuepair.cpp
     topology/mad/switch.cpp)
-
-#Check for ODP
-include(CheckStructHasMember)
-check_struct_has_member("struct ibv_device_attr_ex" odp_caps
-    infiniband/verbs.h HAVE_IBVERBS_ODP LANGUAGE C)
-if(HAVE_IBVERBS_ODP)
-    list(APPEND VERBS_SRC memoryregion_with_odp.cpp)
-else()
-    list(APPEND VERBS_SRC memoryregion_without_odp.cpp)
-endif()
-
-#Check RDMA
-if (VERBS.RDMA)
-    add_definitions(-DVERBS_RDMA)
-else()
-    message(STATUS "Verbs provider: Not using RDMA.")
-endif()
-
-add_library(PROVIDER_VERBS OBJECT ${VERBS_SRC})

@@ -1,1 +1,3 @@
-add_library(PROVIDER_LOOP OBJECT connection.cpp memorywindow.cpp)
+add_library(PROVIDER_LOOP OBJECT
+    connection.cpp
+    memorywindow.cpp)
