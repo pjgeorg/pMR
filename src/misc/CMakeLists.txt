@@ -1,10 +1,12 @@
 add_library(MISC OBJECT
+    ip.cpp
     string.cpp
     time.cpp
     xdump.cpp)
 
 install(FILES
     allocator.hpp
+    ip.hpp
     numeric.hpp
     print.hpp
     profiling.hpp
