@@ -62,15 +62,15 @@ void pMR::verbs::QueuePair::setStateINIT(std::uint8_t const portNumber)
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_INIT;
+    attr.qp_access_flags = IBV_ACCESS_REMOTE_WRITE;
     attr.pkey_index = VerbsPKeyIndex;
     attr.port_num = portNumber;
-    attr.qp_access_flags = IBV_ACCESS_REMOTE_WRITE;
 
     if(ibv_modify_qp(this->get(), &attr,
                 IBV_QP_STATE |
+                IBV_QP_ACCESS_FLAGS |
                 IBV_QP_PKEY_INDEX |
-                IBV_QP_PORT |
-                IBV_QP_ACCESS_FLAGS))
+                IBV_QP_PORT ))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to INIT.");
     }
@@ -81,25 +81,26 @@ void pMR::verbs::QueuePair::setStateRTR(std::uint8_t const portNumber,
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTR;
-    attr.path_mtu = targetAddress.getMTU();
-    attr.dest_qp_num = targetAddress.getQPN();
+    attr.path_mtu = VerbsMTU;
     attr.rq_psn = VerbsPSN;
-    attr.max_dest_rd_atomic = VerbsRDAtomic;
+    attr.dest_qp_num = targetAddress.getQPN();
+    attr.max_dest_rd_atomic = VerbsDestRDAtomic;
     attr.min_rnr_timer = VerbsRNRTimer;
     attr.ah_attr.dlid = targetAddress.getLID();
     attr.ah_attr.sl = VerbsServiceLevel;
     attr.ah_attr.src_path_bits = VerbsSrcPath;
+    attr.ah_attr.static_rate = VerbsStaticRate;
+    attr.ah_attr.is_global = VerbsGlobal;
     attr.ah_attr.port_num = portNumber;
-    attr.ah_attr.grh.hop_limit = VerbsHopLimit;
     attr.ah_attr.grh.dgid = targetAddress.getGID();
     attr.ah_attr.grh.sgid_index = VerbsSGIDIndex;
-    attr.ah_attr.is_global = VerbsGlobal;
+    attr.ah_attr.grh.hop_limit = VerbsHopLimit;
 
     if(ibv_modify_qp(this->get(), &attr,
                 IBV_QP_STATE |
                 IBV_QP_PATH_MTU |
-                IBV_QP_DEST_QPN |
                 IBV_QP_RQ_PSN |
+                IBV_QP_DEST_QPN |
                 IBV_QP_MAX_DEST_RD_ATOMIC |
                 IBV_QP_MIN_RNR_TIMER |
                 IBV_QP_AV ))
@@ -112,19 +113,19 @@ void pMR::verbs::QueuePair::setStateRTS()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTS;
-    attr.timeout = VerbsTimeout;
-    attr.retry_cnt = VerbsRetry;
-    attr.rnr_retry = VerbsRetry;
     attr.sq_psn = VerbsPSN;
     attr.max_rd_atomic = VerbsRDAtomic;
+    attr.timeout = VerbsTimeout;
+    attr.retry_cnt = VerbsRetryCounter;
+    attr.rnr_retry = VerbsRNRRetry;
 
     if(ibv_modify_qp(this->get(), &attr,
                 IBV_QP_STATE |
+                IBV_QP_SQ_PSN |
+                IBV_QP_MAX_QP_RD_ATOMIC |
                 IBV_QP_TIMEOUT |
                 IBV_QP_RETRY_CNT |
-                IBV_QP_RNR_RETRY |
-                IBV_QP_SQ_PSN |
-                IBV_QP_MAX_QP_RD_ATOMIC ))
+                IBV_QP_RNR_RETRY ))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to RTS.");
     }

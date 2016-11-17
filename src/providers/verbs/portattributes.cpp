@@ -29,9 +29,14 @@ std::uint16_t pMR::verbs::PortAttributes::getLID() const
     return mPortAttributes.lid;
 }
 
-ibv_mtu pMR::verbs::PortAttributes::getMTU() const
+ibv_mtu pMR::verbs::PortAttributes::getActiveMTU() const
 {
     return mPortAttributes.active_mtu;
+}
+
+ibv_mtu pMR::verbs::PortAttributes::getMaxMTU() const
+{
+    return mPortAttributes.max_mtu;
 }
 
 std::uint16_t pMR::verbs::PortAttributes::getSubnetManagerLID() const

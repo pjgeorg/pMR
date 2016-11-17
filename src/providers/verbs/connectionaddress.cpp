@@ -25,7 +25,6 @@ pMR::verbs::ConnectionAddress::ConnectionAddress(Context &context,
 {
     PortAttributes portAttributes(context, portNumber);
     mLID = portAttributes.getLID();
-    mMTU = portAttributes.getMTU();
 }
 
 pMR::verbs::ConnectionAddress::ConnectionAddress(
@@ -33,8 +32,7 @@ pMR::verbs::ConnectionAddress::ConnectionAddress(
         QueuePair const &queuePair)
     :   mQPN(queuePair.getQPN()),
         mGID(connectionAddress.getGID()),
-        mLID(connectionAddress.getLID()),
-        mMTU(connectionAddress.getMTU()) { }
+        mLID(connectionAddress.getLID()) { }
 
 void pMR::verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
 {
@@ -55,11 +53,6 @@ void pMR::verbs::ConnectionAddress::setSubnetPrefix(
         std::uint64_t const subnetPrefix)
 {
     mGID.setSubnetPrefix(subnetPrefix);
-}
-
-void pMR::verbs::ConnectionAddress::setMTU(ibv_mtu const MTU)
-{
-    mMTU = MTU;
 }
 
 std::uint32_t pMR::verbs::ConnectionAddress::getQPN() const
@@ -87,23 +80,17 @@ std::uint64_t pMR::verbs::ConnectionAddress::getSubnetPrefix() const
     return mGID.getSubnetPrefix();
 }
 
-ibv_mtu pMR::verbs::ConnectionAddress::getMTU() const
-{
-    return mMTU;
-}
-
 void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,
         ConnectionAddress const &originActiveAddress,
         ConnectionAddress const &originPassiveAddress,
         ConnectionAddress &targetActiveAddress,
         ConnectionAddress &targetPassiveAddress)
 {
-    std::array<std::uint64_t, 6> sendBuffer = {
+    std::array<std::uint64_t, 5> sendBuffer = {
         originActiveAddress.getQPN(),
         originActiveAddress.getLID(),
         originActiveAddress.getSubnetPrefix(),
         originActiveAddress.getGUID(),
-        originActiveAddress.getMTU(),
         originPassiveAddress.getQPN(),
     };
     decltype(sendBuffer) recvBuffer;
@@ -114,13 +101,7 @@ void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,
     targetActiveAddress.setLID(std::get<1>(recvBuffer));
     targetActiveAddress.setSubnetPrefix(std::get<2>(recvBuffer));
     targetActiveAddress.setGUID(std::get<3>(recvBuffer));
-    targetActiveAddress.setMTU(static_cast<ibv_mtu>(std::get<4>(recvBuffer)));
 
     targetPassiveAddress = targetActiveAddress;
-    targetPassiveAddress.setQPN(std::get<5>(recvBuffer));
-
-    if(originActiveAddress.getMTU() != targetActiveAddress.getMTU())
-    {
-        throw std::runtime_error("pMR: Connection MTU mismatch.");
-    }
+    targetPassiveAddress.setQPN(std::get<4>(recvBuffer));
 }

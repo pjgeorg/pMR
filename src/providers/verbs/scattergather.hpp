@@ -12,30 +12,33 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
-#define pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
+#ifndef pMR_PROVIDERS_VERBS_SCATTERGATHER_H
+#define pMR_PROVIDERS_VERBS_SCATTERGATHER_H
 
 #include <cstdint>
 extern "C"
 {
 #include <infiniband/verbs.h>
 }
-#include "context.hpp"
+#include "memoryregion.hpp"
 
 namespace pMR { namespace verbs
 {
-    class PortAttributes
+    class ScatterGatherElement
     {
         public:
-            PortAttributes(Context&, std::uint8_t const portNumber);
-            ~PortAttributes() = default;
-            std::uint16_t getLID() const;
-            ibv_mtu getActiveMTU() const;
-            ibv_mtu getMaxMTU() const;
-            std::uint16_t getSubnetManagerLID() const;
-            std::uint8_t getSubnetManagerServiceLevel() const;
+            ScatterGatherElement() = default;
+            ScatterGatherElement(MemoryRegion const&);
+            ScatterGatherElement(MemoryRegion const&,
+                    std::uint32_t const sizeByte);
+            ScatterGatherElement(void *address, std::uint32_t const sizeByte);
+            ~ScatterGatherElement() = default;
+            ibv_sge* get();
+            ibv_sge const* get() const;
+            std::uint32_t getLength() const;
+            int getNumEntries() const;
         private:
-            ibv_port_attr mPortAttributes;
+            ibv_sge mScatterGatherElement = {};
     };
 }}
-#endif // pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
+#endif // pMR_PROVIDERS_VERBS_SCATTERGATHER_H

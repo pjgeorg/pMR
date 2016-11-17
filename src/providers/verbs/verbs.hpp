@@ -15,35 +15,42 @@
 #ifndef pMR_PROVIDERS_VERBS_VERBS_H
 #define pMR_PROVIDERS_VERBS_VERBS_H
 
+#include <cstdint>
+extern "C"
+{
+#include <infiniband/verbs.h>
+}
+
 namespace pMR { namespace verbs
 {
-    enum Verbs
-    {
-        VerbsRecvWRID = 1,
-        VerbsSendWRID = 2,
-        VerbsRDMAWRID = 3,
-        VerbsMaxSend = 1,
-        VerbsMaxRecv = 1024,
-        VerbsMaxCQEntry = 1024,
-        VerbsInitialPostRecv = 512,
-        VerbsMaxSendSG = 1,
-        VerbsMaxRecvSG = 1,
-        VerbsServiceLevel = 0,
-        VerbsPSN = 0,
-        VerbsTimeout = 14,
-        VerbsRetry = 7,
-        VerbsPKeyIndex = 0,
-        VerbsRDAtomic = 1,
-        VerbsRNRTimer = 12,
-        VerbsSrcPath = 0,
-        VerbsStaticRate = 0,
-        VerbsSGIDIndex = 0,
-        VerbsHopLimit = 1,
-        VerbsGlobal = 1,
-        VerbsMADBlockSize = 256,
-        VerbsMADBlockGRHSize = 296,
-        VerbsGRHSize = VerbsMADBlockGRHSize - VerbsMADBlockSize,
-        VerbsDefaultQP1QKey = 0x80010000
-    };
+   constexpr std::uint64_t VerbsRecvWRID = 1;
+   constexpr std::uint64_t VerbsSendWRID = 2;
+   constexpr std::uint64_t VerbsWriteWRID = 3;
+   constexpr int VerbsMaxCQEntry = 16;
+   constexpr std::uint32_t VerbsMaxSend = 1;
+   constexpr std::uint32_t VerbsMaxRecv = 32;
+   constexpr std::uint32_t VerbsMaxSendSG = 1;
+   constexpr std::uint32_t VerbsMaxRecvSG = 1;
+   constexpr std::uint16_t VerbsPKeyIndex = 0;
+   constexpr ibv_mtu VerbsMTU = VERBS_MTU;
+   constexpr std::uint32_t VerbsPSN = 0;
+   constexpr std::uint8_t VerbsDestRDAtomic = 1;
+   constexpr std::uint8_t VerbsRNRTimer = 12;
+   constexpr std::uint8_t VerbsServiceLevel = 0;
+   constexpr std::uint8_t VerbsSrcPath = 0;
+   constexpr std::uint8_t VerbsStaticRate = 0;
+   constexpr std::uint8_t VerbsGlobal = 1;
+   constexpr std::uint8_t VerbsSGIDIndex = 0;
+   constexpr std::uint8_t VerbsHopLimit = 1;
+   constexpr std::uint8_t VerbsRDAtomic = 1;
+   constexpr std::uint8_t VerbsTimeout = 14;
+   constexpr std::uint8_t VerbsRetryCounter = 7;
+   constexpr std::uint8_t VerbsRNRRetry = 7;
+   constexpr int VerbsInitialPostRecv = 16;
+   constexpr std::uint32_t VerbsDefaultQP1QKey = 0x80010000;
+   constexpr int VerbsMADPollCQRetry = 1000;
+   constexpr int VerbsMADBlockSize = 256;
+   constexpr int VerbsMADBlockGRHSize = 296;
+   constexpr int VerbsGRHSize = VerbsMADBlockGRHSize - VerbsMADBlockSize;
 }}
 #endif // pMR_PROVIDERS_VERBS_VERBS_H

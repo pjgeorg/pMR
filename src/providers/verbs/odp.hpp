@@ -12,30 +12,24 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
-#define pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
+#ifndef pMR_PROVIDERS_VERBS_ODP_H
+#define pMR_PROVIDERS_VERBS_ODP_H
 
-#include <cstdint>
-extern "C"
-{
-#include <infiniband/verbs.h>
-}
-#include "context.hpp"
-
+#ifdef VERBS_ODP
 namespace pMR { namespace verbs
 {
-    class PortAttributes
+    class ODP
     {
         public:
-            PortAttributes(Context&, std::uint8_t const portNumber);
-            ~PortAttributes() = default;
-            std::uint16_t getLID() const;
-            ibv_mtu getActiveMTU() const;
-            ibv_mtu getMaxMTU() const;
-            std::uint16_t getSubnetManagerLID() const;
-            std::uint8_t getSubnetManagerServiceLevel() const;
+            ODP(Context&);
+            ~ODP() = default;
+            bool isTrue() const;
         private:
-            ibv_port_attr mPortAttributes;
+            bool mHasODP = false;
     };
+
+    int updateMemoryRegionAccessODP(Context &context, int const access);
 }}
-#endif // pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
+#endif // VERBS_ODP
+
+#endif // pMR_PROVIDERS_VERBS_ODP_H

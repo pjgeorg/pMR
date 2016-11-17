@@ -12,20 +12,21 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_SWITCH_H
-#define pMR_PROVIDERS_VERBS_TOPOLOGY_SWITCH_H
+#include "../topology.hpp"
 
-#include <cstdint>
-extern "C"
+std::uint64_t pMR::verbs::getNodeGUID(Device const &device)
 {
-#include <infiniband/verbs.h>
+    Context context(device);
+    return getNodeGUID(context);
 }
-#include "../device.hpp"
-#include "../context.hpp"
 
-namespace pMR { namespace verbs
+std::uint64_t pMR::verbs::getNodeGUID(Context &context)
 {
-    std::uint16_t getSwitchLID(Device const&, std::uint8_t const portNumber);
-    std::uint16_t getSwitchLID(Context&, std::uint8_t const portNumber);
-}}
-#endif // pMR_PROVIDERS_VERBS_TOPOLOGY_SWITCH_H
+    DeviceAttributes const deviceAttributes(context);
+    return getNodeGUID(deviceAttributes);
+}
+
+std::uint64_t pMR::verbs::getNodeGUID(DeviceAttributes const &deviceAttributes)
+{
+    return deviceAttributes.getNodeGUID();
+}

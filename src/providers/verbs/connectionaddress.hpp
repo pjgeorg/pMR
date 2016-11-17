@@ -43,18 +43,15 @@ namespace pMR { namespace verbs
             void setLID(std::uint16_t const);
             void setGUID(std::uint64_t const);
             void setSubnetPrefix(std::uint64_t const);
-            void setMTU(ibv_mtu const);
             std::uint32_t getQPN() const;
             std::uint16_t getLID() const;
             ibv_gid getGID() const;
             std::uint64_t getGUID() const;
             std::uint64_t getSubnetPrefix() const;
-            ibv_mtu getMTU() const;
         private:
             std::uint32_t mQPN;
             GID mGID;
             std::uint16_t mLID;
-            ibv_mtu mMTU;
     };
 
     void exchangeConnectionAddress(Target const &target,

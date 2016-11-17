@@ -12,34 +12,32 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESS_H
-#define pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESS_H
+#ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESSHANDLE_H
+#define pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESSHANDLE_H
 
 #include <cstdint>
 extern "C"
 {
 #include <infiniband/verbs.h>
 }
-#include "../../portattributes.hpp"
+#include "../../protectiondomain.hpp"
+#include "address.hpp"
 
 namespace pMR { namespace verbs { namespace mad
 {
-    class Address
+    class AddressHandle
     {
         public:
-            Address(std::uint8_t const portNumber);
-            ~Address() = default;
-            ibv_ah_attr* get();
-            ibv_ah_attr const* get() const;
-        protected:
-            ibv_ah_attr mAddress = {};
-    };
-
-    class SubnetManager : public Address
-    {
-        public:
-            SubnetManager(PortAttributes&, std::uint8_t const portNumber);
-            ~SubnetManager() = default;
+            AddressHandle(ProtectionDomain&, Address&);
+            AddressHandle(const AddressHandle&) = delete;
+            AddressHandle(AddressHandle&&) = delete;
+            AddressHandle& operator=(const AddressHandle&) = delete;
+            AddressHandle& operator=(AddressHandle&&) = delete;
+            ~AddressHandle();
+            ibv_ah* get();
+            ibv_ah const* get() const;
+        private:
+            ibv_ah *mAddressHandle = nullptr;
     };
 }}}
-#endif // pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESS_H
+#endif // pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESSHANDLE_H

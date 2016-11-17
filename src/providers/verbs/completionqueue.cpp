@@ -15,6 +15,7 @@
 #include "completionqueue.hpp"
 #include <stdexcept>
 #include "../../misc/string.hpp"
+#include "../../arch/processor.hpp"
 
 pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
 {
@@ -44,11 +45,19 @@ ibv_cq const* pMR::verbs::CompletionQueue::get() const
 void pMR::verbs::CompletionQueue::poll()
 {
     ibv_wc workCompletion;
-    int received = 0;
-    while(received <= 0)
+    int numCompletion;
+    do
     {
-        received = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
+        numCompletion = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
+        CPURelax();
     }
+    while(numCompletion == 0);
+
+    if(numCompletion < 0)
+    {
+        throw std::runtime_error("pMR: Failed to poll CQ.");
+    }
+
     if(workCompletion.status != IBV_WC_SUCCESS)
     {
         throw std::runtime_error(toString("pMR: Completion Queue ID",
@@ -57,23 +66,35 @@ void pMR::verbs::CompletionQueue::poll()
     }
 }
 
-bool pMR::verbs::CompletionQueue::poll(int count)
+bool pMR::verbs::CompletionQueue::poll(int retry)
 {
     ibv_wc workCompletion;
-    int returnValue = 0;
+    int numCompletion;
     do
     {
-        if((returnValue = ibv_poll_cq(mCompletionQueue, 1, &workCompletion)))
-        {
-            if(returnValue < 0 || workCompletion.status != IBV_WC_SUCCESS)
-            {
-                throw std::runtime_error(toString("pMR: Completion Queue ID",
-                            workCompletion.wr_id, "failed with status",
-                            workCompletion.status));
-            }
-            return true;
-        }
+        numCompletion = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
+        CPURelax();
     }
-    while(--count);
-    return false;
+    while(numCompletion == 0 && --retry);
+
+    if(numCompletion < 0)
+    {
+        throw std::runtime_error("pMR: Failed to poll CQ.");
+    }
+
+    if(workCompletion.status != IBV_WC_SUCCESS)
+    {
+        throw std::runtime_error(toString("pMR: Completion Queue ID",
+                    workCompletion.wr_id, "failed with status",
+                    workCompletion.status));
+    }
+
+    if(numCompletion)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

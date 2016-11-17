@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "switch.hpp"
+#include "../topology.hpp"
 #include "mad/switch.hpp"
 
 std::uint16_t pMR::verbs::getSwitchLID(Device const &device,

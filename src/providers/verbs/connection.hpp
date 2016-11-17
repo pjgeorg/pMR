@@ -27,12 +27,11 @@ extern "C"
 #include "connectionaddress.hpp"
 #include "memoryaddress.hpp"
 #include "memoryregion.hpp"
+#include "scattergather.hpp"
 #include "config.hpp"
 
 namespace pMR { namespace verbs
 {
-    class ScatterGatherList;
-
     class Connection
     {
         public:
@@ -47,84 +46,60 @@ namespace pMR { namespace verbs
             Context const& getContext() const;
             ProtectionDomain& getProtectionDomain();
             ProtectionDomain const& getProtectionDomain() const;
+
             void setLocalMemoryAddress(MemoryRegion const&);
-            MemoryAddress const& getRemoteMemoryAddress() const;
 
-            void postSendAddrRequestToPassive();
-            void postRecvAddrRequestToActive();
-
-            void postSendRequestToActive(MemoryRegion const &memoryRegion);
-            void postSendRequestToActive(MemoryRegion const &memoryRegion,
+            void postRecvAddressToActive();
+            void postSendAddressToPassive();
+            void postRecvToPassive();
+            void postWriteToActive(MemoryRegion const &memoryRegion,
                     std::uint32_t const sizeByte);
-            void postSendRequestToPassive(MemoryRegion const &memoryRegion);
-            void postSendRequestToPassive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
-            void postRecvRequestToActive(MemoryRegion const &memoryRegion);
-            void postRecvRequestToPassive(MemoryRegion const &memoryRegion);
 
-            void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequestToPassive(MemoryRegion const &memoryRegion,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequestToPassive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRecvRequestToActive();
-            void postRecvRequestToPassive();
+            void postRecvToActive();
+            void postSendToPassive();
+            void postRecvToPassive(MemoryRegion const &memoryRegion);
+            void postSendToActive(MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte);
 
             void pollActiveCompletionQueue();
             void pollPassiveCompletionQueue();
         private:
             Context mContext;
             ProtectionDomain mProtectionDomain;
+#ifdef VERBS_RDMA
+            alignas(alignment) MemoryAddress mLocalMemoryAddress;
+            alignas(alignment) MemoryAddress mRemoteMemoryAddress;
+            MemoryRegion mSendLocalAddress;
+            MemoryRegion mRecvRemoteAddress;
+#endif // VERBS_RDMA
             CompletionQueue mActiveCompletionQueue;
             CompletionQueue mPassiveCompletionQueue;
             QueuePair mActiveQueuePair;
             QueuePair mPassiveQueuePair;
-            MemoryAddress mLocalMemoryAddress;
-            MemoryAddress mRemoteMemoryAddress;
-            alignas(alignment) MemoryRegion mSendMemoryRegion;
-            alignas(alignment) MemoryRegion mRecvMemoryRegion;
             std::uint32_t mMaxInlineDataSize = 0;
-            void postSendRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion);
-            void postSendRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
-            void postSendRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const numEntries);
-            void postRecvRequest(QueuePair &queuePair);
-            void postRecvRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion);
-            void postRecvRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const numEntries);
-            void postRDMAWriteRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequest(QueuePair &queuePair,
-                    ScatterGatherList &scatterGatherList,
-                    MemoryAddress const &remoteMemoryAddress);
-    };
 
-    class ScatterGatherList
-    {
-        public:
-            ScatterGatherList(MemoryRegion const&);
-            ScatterGatherList(MemoryRegion const&,
+            void postSendRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion);
+            void postSendRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion,
                     std::uint32_t const sizeByte);
-            ibv_sge* get();
-            ibv_sge const* get() const;
-            std::uint32_t getLength() const;
-            int getNumEntries() const;
-        private:
-            ibv_sge mScatterGatherList;
+            void postSendRequest(QueuePair &queuePair,
+                    ScatterGatherElement &scatterGatherElement);
+
+#ifdef VERBS_RDMA
+            void postWriteRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion);
+            void postWriteRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion,
+                    std::uint32_t const sizeByte);
+            void postWriteRequest(QueuePair &queuePair,
+                    ScatterGatherElement &scatterGatherElement);
+#endif // VERBS_RDMA
+
+            void postRecvRequest(QueuePair &queuePair,
+                    MemoryRegion const &memoryRegion);
+            void postRecvRequest(QueuePair &queuePair,
+                    ScatterGatherElement &scatterGatherElement);
     };
 }}
 #endif // pMR_PROVIDERS_VERBS_CONNECTION_H

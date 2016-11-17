@@ -12,14 +12,25 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "memoryregion.hpp"
+#include "addresshandle.hpp"
 
-pMR::verbs::ODP::ODP(Context& context)
+pMR::verbs::mad::AddressHandle::AddressHandle(
+        ProtectionDomain &protectionDomain, Address &address)
 {
-    mHasODP = false;
+    mAddressHandle = ibv_create_ah(protectionDomain.get(), address.get());
 }
 
-int pMR::verbs::updateMemoryRegionAccessODP(int access)
+pMR::verbs::mad::AddressHandle::~AddressHandle()
 {
-    return access;
+    ibv_destroy_ah(mAddressHandle);
+}
+
+ibv_ah* pMR::verbs::mad::AddressHandle::get()
+{
+    return mAddressHandle;
+}
+
+ibv_ah const* pMR::verbs::mad::AddressHandle::get() const
+{
+    return mAddressHandle;
 }

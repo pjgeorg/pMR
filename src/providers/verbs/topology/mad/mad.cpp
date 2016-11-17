@@ -15,7 +15,10 @@
 #include "mad.hpp"
 #include <stdexcept>
 #include "address.hpp"
+#include "addresshandle.hpp"
 #include "../../connection.hpp"
+#include "../../scattergather.hpp"
+#include "../../verbs.hpp"
 
 pMR::verbs::mad::MAD::MAD(Context &context,
         std::uint8_t const portNumber)
@@ -37,11 +40,11 @@ pMR::verbs::mad::MAD::MAD(Context &context,
 
 void pMR::verbs::mad::MAD::postRecvRequest()
 {
-    ScatterGatherList scatterGatherList(mRecvMemoryRegion);
+    ScatterGatherElement scatterGatherElement(mRecvMemoryRegion);
 
     ibv_recv_wr workRequest = {};
     workRequest.wr_id = VerbsRecvWRID;
-    workRequest.sg_list = scatterGatherList.get();
+    workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = 1;
 
     ibv_recv_wr *badRequest;
@@ -54,18 +57,16 @@ void pMR::verbs::mad::MAD::postRecvRequest()
 
 void pMR::verbs::mad::MAD::postSendRequest()
 {
-    ibv_sge scatterGatherList = {};
-    scatterGatherList.addr = reinterpret_cast<std::uint64_t>(mSendMAD.data());
-    scatterGatherList.length = sizeof(mSendMAD);
-    scatterGatherList.lkey = 0;
+    ScatterGatherElement scatterGatherElement(mSendMAD.data(),
+            sizeof(mSendMAD));
 
     SubnetManager subnetManager(mPortAttributes, mPortNumber);
     AddressHandle addressHandle(mProtectionDomain, subnetManager);
 
     ibv_send_wr workRequest = {};
     workRequest.wr_id = VerbsSendWRID;
-    workRequest.sg_list = &scatterGatherList;
-    workRequest.num_sge = 1;
+    workRequest.sg_list = scatterGatherElement.get();
+    workRequest.num_sge = scatterGatherElement.getNumEntries();
     workRequest.opcode = IBV_WR_SEND;
     workRequest.send_flags = IBV_SEND_INLINE;
     workRequest.wr.ud.ah = addressHandle.get();
@@ -88,5 +89,5 @@ void pMR::verbs::mad::MAD::query()
         postSendRequest();
         mSendCompletionQueue.poll();
     }
-    while(!mRecvCompletionQueue.poll(1e6));
+    while(!mRecvCompletionQueue.poll(VerbsMADPollCQRetry));
 }

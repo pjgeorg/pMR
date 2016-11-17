@@ -21,33 +21,27 @@ pMR::verbs::MemoryAddress::MemoryAddress(MemoryRegion const &memoryRegion)
 
 void pMR::verbs::MemoryAddress::set(MemoryRegion const &memoryRegion)
 {
-    std::get<0>(mData) =
-        reinterpret_cast<std::uint64_t>(memoryRegion.get()->addr);
-    std::get<1>(mData) = memoryRegion.get()->rkey;
-    std::get<2>(mData) = memoryRegion.get()->length;
+    *reinterpret_cast<std::uint64_t*>(mData.data())
+        = {memoryRegion.getAddress()};
+    std::get<2>(mData) = {memoryRegion.getRKey()};
 }
 
 std::uint64_t pMR::verbs::MemoryAddress::getAddress() const
 {
-    return std::get<0>(mData);
+    return *reinterpret_cast<std::uint64_t const*>(mData.data());
 }
 
 std::uint32_t pMR::verbs::MemoryAddress::getRKey() const
 {
-    return static_cast<std::uint32_t>(std::get<1>(mData));
-}
-
-std::uint32_t pMR::verbs::MemoryAddress::getLength() const
-{
     return static_cast<std::uint32_t>(std::get<2>(mData));
 }
 
-std::uint64_t* pMR::verbs::MemoryAddress::rawData()
+std::uint32_t* pMR::verbs::MemoryAddress::rawData()
 {
     return mData.data();
 }
 
-std::uint64_t const* pMR::verbs::MemoryAddress::rawData() const
+std::uint32_t const* pMR::verbs::MemoryAddress::rawData() const
 {
     return mData.data();
 }

@@ -14,21 +14,19 @@
 
 #include "memoryregion.hpp"
 #include <stdexcept>
-#include "../../misc/singleton.hpp"
 
-bool pMR::verbs::ODP::isTrue() const
-{
-    return mHasODP;
-}
+#ifdef VERBS_ODP
+#   include "odp.hpp"
+#endif // VERBS_ODP
 
 pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
         ProtectionDomain &protectionDomain,
         void* buffer, std::uint32_t size, int access)
 {
-    if(Singleton<ODP>::Instance(context).isTrue())
-    {
-        access = updateMemoryRegionAccessODP(access);
-    }
+#ifdef VERBS_ODP
+    access = updateMemoryRegionAccessODP(context, access);
+#endif // VERBS_ODP
+
     registerMemoryRegion(protectionDomain, buffer, size, access);
 }
 
@@ -56,7 +54,7 @@ ibv_mr const* pMR::verbs::MemoryRegion::get() const
 
 std::uint64_t pMR::verbs::MemoryRegion::getAddress() const
 {
-    return reinterpret_cast<std::uint64_t>(mMemoryRegion->addr);
+    return reinterpret_cast<std::uintptr_t>(mMemoryRegion->addr);
 }
 
 std::uint32_t pMR::verbs::MemoryRegion::getLKey() const

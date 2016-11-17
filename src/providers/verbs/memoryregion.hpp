@@ -24,18 +24,6 @@ extern "C"
 
 namespace pMR { namespace verbs
 {
-    class ODP
-    {
-        public:
-            ODP(Context&);
-            ~ODP() = default;
-            bool isTrue() const;
-        private:
-            bool mHasODP;
-    };
-
-    int updateMemoryRegionAccessODP(int access);
-
     class MemoryRegion
     {
         public:

@@ -12,11 +12,20 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "memoryregion.hpp"
+#ifdef VERBS_ODP
 
-pMR::verbs::ODP::ODP(Context& context)
+extern "C"
 {
-    std::uint32_t const capMask = IBV_ODP_SUPPORT_SEND | IBV_ODP_SUPPORT_RECV;
+#include <infiniband/verbs.h>
+}
+#include "context.hpp"
+#include "odp.hpp"
+#include "../../misc/singleton.hpp"
+
+pMR::verbs::ODP::ODP(Context &context)
+{
+    constexpr std::uint32_t capMask
+        = IBV_ODP_SUPPORT_SEND | IBV_ODP_SUPPORT_RECV;
 
     ibv_device_attr_ex extendedAttr;
 
@@ -37,7 +46,20 @@ pMR::verbs::ODP::ODP(Context& context)
     }
 }
 
-int pMR::verbs::updateMemoryRegionAccessODP(int access)
+bool pMR::verbs::ODP::isTrue() const
 {
-    return access | IBV_ACCESS_ON_DEMAND;
+    return mHasODP;
 }
+
+int pMR::verbs::updateMemoryRegionAccessODP(Context &context, int const access)
+{
+    if(Singleton<ODP>::Instance(context).isTrue())
+    {
+        return access | IBV_ACCESS_ON_DEMAND;
+    }
+    else
+    {
+        return access;
+    }
+}
+#endif // VERBS_ODP

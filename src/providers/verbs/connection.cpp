@@ -21,18 +21,20 @@ pMR::verbs::Connection::Connection(Target const &target,
         Device const &device, std::uint8_t const portNumber)
     :   mContext(device),
         mProtectionDomain(mContext),
+#ifdef VERBS_RDMA
+        mSendLocalAddress(mContext, mProtectionDomain,
+                mLocalMemoryAddress.rawData(), mLocalMemoryAddress.size(),
+                IBV_ACCESS_LOCAL_WRITE),
+        mRecvRemoteAddress(mContext, mProtectionDomain,
+                mRemoteMemoryAddress.rawData(), mRemoteMemoryAddress.size(),
+                IBV_ACCESS_LOCAL_WRITE),
+#endif // VERBS_RDMA
         mActiveCompletionQueue(mContext, VerbsMaxCQEntry),
         mPassiveCompletionQueue(mContext, VerbsMaxCQEntry),
         mActiveQueuePair(mProtectionDomain, mActiveCompletionQueue,
                 mActiveCompletionQueue),
         mPassiveQueuePair(mProtectionDomain, mPassiveCompletionQueue,
-                mPassiveCompletionQueue),
-        mSendMemoryRegion(mContext, mProtectionDomain,
-                mLocalMemoryAddress.rawData(), mLocalMemoryAddress.size(),
-                IBV_ACCESS_LOCAL_WRITE),
-        mRecvMemoryRegion(mContext, mProtectionDomain,
-                mRemoteMemoryAddress.rawData(), mRemoteMemoryAddress.size(),
-                IBV_ACCESS_LOCAL_WRITE)
+                mPassiveCompletionQueue)
 {
     mActiveQueuePair.setStateINIT(portNumber);
     mPassiveQueuePair.setStateINIT(portNumber);
@@ -53,16 +55,18 @@ pMR::verbs::Connection::Connection(Target const &target,
 
     for(int i=0; i != VerbsInitialPostRecv; ++i)
     {
-        postRecvAddrRequestToActive();
+#ifdef VERBS_RDMA
+        postRecvAddressToActive();
+#else
+        postRecvToActive();
+#endif // VERBS_RDMA
     }
 
-    // Sync with remote side to assure both sides are in state RTR.
     pMR::backend::sync(target);
 
     mActiveQueuePair.setStateRTS();
     mPassiveQueuePair.setStateRTS();
 
-    // Get max inline data size
     mMaxInlineDataSize = mActiveQueuePair.getMaxInlineDataSize();
 }
 
@@ -87,103 +91,64 @@ pMR::verbs::Connection::getProtectionDomain() const
     return mProtectionDomain;
 }
 
+#ifdef VERBS_RDMA
 void pMR::verbs::Connection::setLocalMemoryAddress(
         MemoryRegion const &memoryRegion)
 {
     mLocalMemoryAddress.set(memoryRegion);
 }
 
-pMR::verbs::MemoryAddress const&
-pMR::verbs::Connection::getRemoteMemoryAddress() const
+void pMR::verbs::Connection::postRecvAddressToActive()
 {
-    return mRemoteMemoryAddress;
+    ScatterGatherElement scatterGatherElement(mRecvRemoteAddress);
+    postRecvRequest(mActiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postSendAddrRequestToPassive()
+void pMR::verbs::Connection::postSendAddressToPassive()
 {
-    postSendRequestToPassive(mSendMemoryRegion);
+    ScatterGatherElement scatterGatherElement(mSendLocalAddress);
+    postSendRequest(mPassiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postRecvAddrRequestToActive()
+void pMR::verbs::Connection::postRecvToPassive()
 {
-    postRecvRequestToActive(mRecvMemoryRegion);
+    ScatterGatherElement scatterGatherElement;
+    postRecvRequest(mPassiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postSendRequestToActive(
-        MemoryRegion const &memoryRegion)
+void pMR::verbs::Connection::postWriteToActive(MemoryRegion const &memoryRegion,
+        std::uint32_t const sizeByte)
 {
-    postSendRequest(mActiveQueuePair, memoryRegion);
+    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
+    postWriteRequest(mActiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postSendRequestToActive(
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
+#else
+void pMR::verbs::Connection::postRecvToActive()
 {
-    postSendRequest(mActiveQueuePair, memoryRegion, sizeByte);
+    ScatterGatherElement scatterGatherElement;
+    postRecvRequest(mActiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postSendRequestToPassive(
-        MemoryRegion const &memoryRegion)
+void pMR::verbs::Connection::postSendToPassive()
 {
-    postSendRequest(mPassiveQueuePair, memoryRegion);
+    ScatterGatherElement scatterGatherElement;
+    postSendRequest(mPassiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postSendRequestToPassive(
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
+void pMR::verbs::Connection::postRecvToPassive(MemoryRegion const &memoryRegion)
 {
-    postSendRequest(mPassiveQueuePair, memoryRegion, sizeByte);
+    ScatterGatherElement scatterGatherElement(memoryRegion);
+    postRecvRequest(mPassiveQueuePair, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postRecvRequestToActive(
-        MemoryRegion const &memoryRegion)
+void pMR::verbs::Connection::postSendToActive(MemoryRegion const &memoryRegion,
+        std::uint32_t const sizeByte)
 {
-    postRecvRequest(mActiveQueuePair, memoryRegion);
+    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
+    postSendRequest(mActiveQueuePair, scatterGatherElement);
 }
-
-void pMR::verbs::Connection::postRecvRequestToPassive(
-        MemoryRegion const &memoryRegion)
-{
-    postRecvRequest(mPassiveQueuePair, memoryRegion);
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequestToActive(
-        MemoryRegion const &memoryRegion,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    postRDMAWriteRequest(mActiveQueuePair, memoryRegion, remoteMemoryAddress);
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequestToActive(
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    postRDMAWriteRequest(mActiveQueuePair, memoryRegion, sizeByte,
-            remoteMemoryAddress);
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequestToPassive(
-        MemoryRegion const &memoryRegion,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    postRDMAWriteRequest(mPassiveQueuePair, memoryRegion, remoteMemoryAddress);
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequestToPassive(
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    postRDMAWriteRequest(mPassiveQueuePair, memoryRegion, sizeByte,
-            remoteMemoryAddress);
-}
-
-void pMR::verbs::Connection::postRecvRequestToActive()
-{
-    postRecvRequest(mActiveQueuePair);
-}
-
-void pMR::verbs::Connection::postRecvRequestToPassive()
-{
-    postRecvRequest(mPassiveQueuePair);
-}
+#endif // VERBS_RDMA
 
 void pMR::verbs::Connection::pollActiveCompletionQueue()
 {
@@ -198,32 +163,30 @@ void pMR::verbs::Connection::pollPassiveCompletionQueue()
 void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
         MemoryRegion const &memoryRegion)
 {
-    ScatterGatherList scatterGatherList(memoryRegion);
-    postSendRequest(queuePair, scatterGatherList.get(), 1);
+    postSendRequest(queuePair, memoryRegion, memoryRegion.getLength());
 }
 
 void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
         MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
 {
-    ScatterGatherList scatterGatherList(memoryRegion, sizeByte);
-    postSendRequest(queuePair, scatterGatherList.get(), 1);
+    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
+    postSendRequest(queuePair, scatterGatherElement);
 }
 
 void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
-        ibv_sge *scatterGatherList, int const numEntries)
+        ScatterGatherElement &scatterGatherElement)
 {
-    int sendFlags = IBV_SEND_SIGNALED;
-    if(scatterGatherList->length <= mMaxInlineDataSize)
-    {
-        sendFlags |= IBV_SEND_INLINE;
-    }
-
     ibv_send_wr workRequest = {};
+
     workRequest.wr_id = VerbsSendWRID;
-    workRequest.sg_list = scatterGatherList;
-    workRequest.num_sge = numEntries;
+    workRequest.sg_list = scatterGatherElement.get();
+    workRequest.num_sge = scatterGatherElement.getNumEntries();
     workRequest.opcode = IBV_WR_SEND;
-    workRequest.send_flags = sendFlags;
+
+    if(scatterGatherElement.getLength() <= mMaxInlineDataSize)
+    {
+        workRequest.send_flags = IBV_SEND_INLINE;
+    }
 
     ibv_send_wr *badRequest;
 
@@ -233,120 +196,66 @@ void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
     }
 }
 
-void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair)
+#ifdef VERBS_RDMA
+void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
+        MemoryRegion const &memoryRegion)
 {
-    postRecvRequest(queuePair, nullptr, 0);
+    postWriteRequest(queuePair, memoryRegion, memoryRegion.getLength());
 }
+
+void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
+        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
+{
+    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
+    postWriteRequest(queuePair, scatterGatherElement);
+}
+
+void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
+        ScatterGatherElement &scatterGatherElement)
+{
+    ibv_send_wr workRequest = {};
+
+    workRequest.wr_id = VerbsWriteWRID;
+    workRequest.sg_list = scatterGatherElement.get();
+    workRequest.num_sge = scatterGatherElement.getNumEntries();
+    workRequest.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
+    workRequest.wr.rdma.remote_addr = mRemoteMemoryAddress.getAddress();
+    workRequest.wr.rdma.rkey = mRemoteMemoryAddress.getRKey();
+
+    if(scatterGatherElement.getLength() <= mMaxInlineDataSize)
+    {
+        workRequest.send_flags = IBV_SEND_INLINE;
+    }
+
+    ibv_send_wr *badRequest;
+
+    if(ibv_post_send(queuePair.get(), &workRequest, &badRequest))
+    {
+        throw std::runtime_error("pMR: Unable to post RDMA Work Request.");
+    }
+}
+#endif // VERBS_RDMA
 
 void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
         MemoryRegion const &memoryRegion)
 {
-    ScatterGatherList scatterGatherList(memoryRegion);
-    postRecvRequest(queuePair, scatterGatherList.get(), 1);
+    ScatterGatherElement scatterGatherElement(memoryRegion);
+    postRecvRequest(queuePair, scatterGatherElement);
 }
 
 void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
-        ibv_sge *scatterGatherList, int const numEntries)
+        ScatterGatherElement &scatterGatherElement)
 {
     ibv_recv_wr workRequest = {};
+
     workRequest.wr_id = VerbsRecvWRID;
-    workRequest.sg_list = scatterGatherList;
-    workRequest.num_sge = numEntries;
+    workRequest.sg_list = scatterGatherElement.get();
+    workRequest.num_sge = scatterGatherElement.getNumEntries();
 
     ibv_recv_wr *badRequest;
 
     if(ibv_post_recv(queuePair.get(), &workRequest, &badRequest))
     {
         throw std::runtime_error("pMR: Unable to post Receive Work Request.");
-    }
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    ScatterGatherList scatterGatherList(memoryRegion);
-    postRDMAWriteRequest(queuePair, scatterGatherList, remoteMemoryAddress);
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    ScatterGatherList scatterGatherList(memoryRegion, sizeByte);
-    postRDMAWriteRequest(queuePair, scatterGatherList, remoteMemoryAddress);
-}
-
-void pMR::verbs::Connection::postRDMAWriteRequest(QueuePair &queuePair,
-        ScatterGatherList &scatterGatherList,
-        MemoryAddress const &remoteMemoryAddress)
-{
-    int sendFlags = IBV_SEND_SIGNALED;
-    if(scatterGatherList.getLength() <= mMaxInlineDataSize)
-    {
-        sendFlags |= IBV_SEND_INLINE;
-    }
-
-    ibv_send_wr workRequest = {};
-    workRequest.wr_id = VerbsRDMAWRID;
-    workRequest.sg_list = scatterGatherList.get();
-    workRequest.num_sge = scatterGatherList.getNumEntries();
-    workRequest.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
-    workRequest.send_flags = sendFlags;
-    workRequest.imm_data = 0;
-    workRequest.wr.rdma.remote_addr = remoteMemoryAddress.getAddress();
-    workRequest.wr.rdma.rkey = remoteMemoryAddress.getRKey();
-
-    ibv_send_wr *badRequest;
-
-    int ret;
-    if((ret = ibv_post_send(queuePair.get(), &workRequest, &badRequest)))
-    {
-        throw std::runtime_error("pMR: Unable to post RDMA Work Request.");
-    }
-}
-
-pMR::verbs::ScatterGatherList::ScatterGatherList(
-        MemoryRegion const& memoryRegion)
-{
-    mScatterGatherList = {};
-    mScatterGatherList.addr = {memoryRegion.getAddress()};
-    mScatterGatherList.length = {memoryRegion.getLength()};
-    mScatterGatherList.lkey = {memoryRegion.getLKey()};
-}
-
-pMR::verbs::ScatterGatherList::ScatterGatherList(
-        MemoryRegion const& memoryRegion, std::uint32_t const sizeByte)
-{
-    mScatterGatherList = {};
-    mScatterGatherList.addr = {memoryRegion.getAddress()};
-    mScatterGatherList.length = {sizeByte};
-    mScatterGatherList.lkey = {memoryRegion.getLKey()};
-}
-
-ibv_sge* pMR::verbs::ScatterGatherList::get()
-{
-    return &mScatterGatherList;
-}
-
-ibv_sge const* pMR::verbs::ScatterGatherList::get() const
-{
-    return &mScatterGatherList;
-}
-
-std::uint32_t pMR::verbs::ScatterGatherList::getLength() const
-{
-    return mScatterGatherList.length;
-}
-
-int pMR::verbs::ScatterGatherList::getNumEntries() const
-{
-    if(mScatterGatherList.length == 0)
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
     }
 }

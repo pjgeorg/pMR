@@ -16,10 +16,6 @@
 #include <stdexcept>
 #include "memoryaddress.hpp"
 #include "connection.hpp"
-#ifdef HINT
-#include "../../misc/print.hpp"
-#endif // HINT
-#include "../../misc/print.hpp"
 
 pMR::verbs::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
@@ -36,40 +32,29 @@ pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
         mMemoryRegion(mConnection->getContext(),
                 mConnection->getProtectionDomain(),
                 buffer, sizeByte,
-#ifndef VERBS_RDMA
-                IBV_ACCESS_LOCAL_WRITE) { }
-#else
+#ifdef VERBS_RDMA
                 IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE) { }
+#else
+                IBV_ACCESS_LOCAL_WRITE) { }
 #endif // VERBS_RDMA
 
 void pMR::verbs::SendMemoryWindow::init()
 {
-    mConnection->postRecvAddrRequestToActive();
+#ifdef VERBS_RDMA
+    mConnection->postRecvAddressToActive();
+#else
+    mConnection->postRecvToActive();
+#endif // VERBS_RDMA
 }
 
 void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
-    // Recv memory address from target 
     mConnection->pollActiveCompletionQueue();
-    
-    MemoryAddress remoteMemoryAddress = mConnection->getRemoteMemoryAddress();
 
-    if(remoteMemoryAddress.getLength() < sizeByte)
-    {
-        throw std::length_error("pMR: RecvWindow smaller than SendWindow.");
-    }
-#ifdef HINT
-    if(remoteMemoryAddress.getLength() > sizeByte)
-    {
-        print("pMR: HINT: RecvWindow larger than SendWindow.");
-    }
-#endif // HINT
-
-#ifndef VERBS_RDMA
-    mConnection->postSendRequestToActive(mMemoryRegion, sizeByte);
+#ifdef VERBS_RDMA
+    mConnection->postWriteToActive(mMemoryRegion, sizeByte);
 #else
-    mConnection->postRDMAWriteRequestToActive(mMemoryRegion, sizeByte,
-            mConnection->getRemoteMemoryAddress());
+    mConnection->postSendToActive(mMemoryRegion, sizeByte);
 #endif // VERBS_RDMA
 }
 
@@ -80,15 +65,14 @@ void pMR::verbs::SendMemoryWindow::wait()
 
 void pMR::verbs::RecvMemoryWindow::init()
 {
-#ifndef VERBS_RDMA
-    mConnection->postRecvRequestToPassive(mMemoryRegion);
-#else
-    mConnection->postRecvRequestToPassive();
-#endif // VERBS_RDMA
-
-    // Send memory region to target
+#ifdef VERBS_RDMA
+    mConnection->postRecvToPassive();
     mConnection->setLocalMemoryAddress(mMemoryRegion);
-    mConnection->postSendAddrRequestToPassive();
+    mConnection->postSendAddressToPassive();
+#else
+    mConnection->postRecvToPassive(mMemoryRegion);
+    mConnection->postSendToPassive();
+#endif // VERBS_RDMA
 }
 
 void pMR::verbs::RecvMemoryWindow::post() { }
