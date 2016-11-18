@@ -25,15 +25,6 @@ namespace pMR
 {
     std::string toString();
 
-    template<typename ...Types>
-    std::string toString(double const &arg, Types const &...args);
-
-    template<typename ...Types>
-    std::string toString(std::uint32_t const &arg, Types const &...args);
-
-    template<typename ...Types>
-    std::string toString(std::uint64_t const &arg, Types const &...args);
-
     template<typename T, typename ...Types>
     std::string toString(std::vector<T> const &arg, Types const &...args);
 
@@ -45,42 +36,6 @@ namespace pMR
 
     template<std::size_t N, typename ...Types>
     std::string toString(char const (&arg)[N], Types const &...args);
-}
-
-template<typename ...Types>
-std::string pMR::toString(double const &arg, Types const &...args)
-{
-    std::string str;
-    std::ostringstream oss;
-    oss << std::scientific << arg;
-    str += oss.str();
-    str += " ";
-    str += toString(args...);
-    return str;
-}
-
-template<typename ...Types>
-std::string pMR::toString(std::uint32_t const &arg, Types const &...args)
-{
-    std::string str;
-    std::ostringstream oss;
-    oss << std::setw(8) << arg;
-    str += oss.str();
-    str += " ";
-    str += toString(args...);
-    return str;
-}
-
-template<typename ...Types>
-std::string pMR::toString(std::uint64_t const &arg, Types const &...args)
-{
-    std::string str;
-    std::ostringstream oss;
-    oss << std::setw(8) << arg;
-    str += oss.str();
-    str += " ";
-    str += toString(args...);
-    return str;
 }
 
 template<typename T, typename ...Types>
