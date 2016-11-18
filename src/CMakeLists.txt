@@ -11,7 +11,6 @@ endif()
 include(arch)
 include(thread)
 include(backend)
-include(cluster)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
