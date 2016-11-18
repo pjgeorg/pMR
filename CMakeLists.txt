@@ -20,6 +20,7 @@ set(ALIGNMENT 64 CACHE STRING "Set preferred memory alignment.")
 #Provider specific setting (might be overwritten by cluster defaults)
 set(VERBS.RDMA ON CACHE BOOL "Use RDMA capability.")
 set(VERBS.MTU 1024 CACHE STRING "Set MTU size.")
+set(VERBS.INLINE 128 CACHE STRING "Set max inline data size.")
 set(VERBS.ODP OFF CACHE BOOL "Use ODP capability.")
 set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication.")
 

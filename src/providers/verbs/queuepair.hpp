@@ -45,7 +45,6 @@ namespace pMR { namespace verbs
             void setStateRTR(std::uint8_t const portNumber,
                     ConnectionAddress const&);
             void setStateRTS();
-            std::uint32_t getMaxInlineDataSize() const;
         private:
             ibv_qp *mQueuePair = nullptr;
     };

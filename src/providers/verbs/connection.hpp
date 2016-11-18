@@ -76,7 +76,6 @@ namespace pMR { namespace verbs
             CompletionQueue mPassiveCompletionQueue;
             QueuePair mActiveQueuePair;
             QueuePair mPassiveQueuePair;
-            std::uint32_t mMaxInlineDataSize = 0;
 
             void postSendRequest(QueuePair &queuePair,
                     MemoryRegion const &memoryRegion);

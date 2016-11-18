@@ -31,6 +31,7 @@ namespace pMR { namespace verbs
    constexpr std::uint32_t VerbsMaxRecv = 32;
    constexpr std::uint32_t VerbsMaxSendSG = 1;
    constexpr std::uint32_t VerbsMaxRecvSG = 1;
+   constexpr std::uint32_t VerbsMaxInlineDataSize = VERBS_INLINE;
    constexpr std::uint16_t VerbsPKeyIndex = 0;
    constexpr ibv_mtu VerbsMTU = VERBS_MTU;
    constexpr std::uint32_t VerbsPSN = 0;

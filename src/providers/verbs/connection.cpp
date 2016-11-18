@@ -66,8 +66,6 @@ pMR::verbs::Connection::Connection(Target const &target,
 
     mActiveQueuePair.setStateRTS();
     mPassiveQueuePair.setStateRTS();
-
-    mMaxInlineDataSize = mActiveQueuePair.getMaxInlineDataSize();
 }
 
 pMR::verbs::Context& pMR::verbs::Connection::getContext()
@@ -183,7 +181,7 @@ void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
     workRequest.num_sge = scatterGatherElement.getNumEntries();
     workRequest.opcode = IBV_WR_SEND;
 
-    if(scatterGatherElement.getLength() <= mMaxInlineDataSize)
+    if(scatterGatherElement.getLength() <= VerbsMaxInlineDataSize)
     {
         workRequest.send_flags = IBV_SEND_INLINE;
     }
@@ -222,7 +220,7 @@ void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
     workRequest.wr.rdma.remote_addr = mRemoteMemoryAddress.getAddress();
     workRequest.wr.rdma.rkey = mRemoteMemoryAddress.getRKey();
 
-    if(scatterGatherElement.getLength() <= mMaxInlineDataSize)
+    if(scatterGatherElement.getLength() <= VerbsMaxInlineDataSize)
     {
         workRequest.send_flags = IBV_SEND_INLINE;
     }

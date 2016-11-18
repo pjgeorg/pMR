@@ -27,6 +27,7 @@ pMR::verbs::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     initialAttributes.cap.max_recv_wr = VerbsMaxRecv;
     initialAttributes.cap.max_send_sge = VerbsMaxSendSG;
     initialAttributes.cap.max_recv_sge = VerbsMaxRecvSG;
+    initialAttributes.cap.max_inline_data = VerbsMaxInlineDataSize;
     initialAttributes.sq_sig_all = 1;
     initialAttributes.qp_type = IBV_QPT_RC;
 
@@ -129,17 +130,4 @@ void pMR::verbs::QueuePair::setStateRTS()
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to RTS.");
     }
-}
-
-std::uint32_t pMR::verbs::QueuePair::getMaxInlineDataSize() const
-{
-    ibv_qp_attr attr = {};
-    ibv_qp_init_attr init_attr = {};
-
-    if(ibv_query_qp(mQueuePair, &attr, IBV_QP_CAP, &init_attr))
-    {
-        throw std::runtime_error("pMR: Unable to query QueuePair.");
-    }
-    
-    return init_attr.cap.max_inline_data;
 }

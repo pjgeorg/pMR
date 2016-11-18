@@ -92,6 +92,12 @@ if(PROVIDER.VERBS)
     endif()
     set(VERBS_CAPS "${VERBS_CAPS} MTU=${VERBS.MTU}")
 
+    if(VERBS.INLINE STREQUAL "")
+        ERROR("verbs: No max inline data size set")
+    endif()
+    add_definitions(-DVERBS_INLINE=${VERBS.INLINE})
+    set(VERBS_CAPS "${VERBS_CAPS} MaxInlineData=${VERBS.INLINE}")
+
     if(VERBS.ODP)
         include(CheckStructHasMember)
         check_struct_has_member("struct ibv_device_attr_ex" odp_caps infiniband/verbs.h HAVE_IBVERBS_ODP LANGUAGE C)
