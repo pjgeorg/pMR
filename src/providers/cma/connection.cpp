@@ -26,7 +26,8 @@ pMR::cma::Connection::Connection(Target const &target)
 {
     std::array<std::uint64_t, 7> originAddress, targetAddress;
 
-    std::get<0>(originAddress) = {getpid()};
+    std::int64_t pid = {getpid()};
+    std::get<0>(originAddress) = *reinterpret_cast<std::uint64_t*>(&pid);
     std::get<1>(originAddress) = 
         {reinterpret_cast<std::uintptr_t>(&mDestination)};
     std::get<2>(originAddress) = {sizeof(mDestination)};
@@ -37,7 +38,7 @@ pMR::cma::Connection::Connection(Target const &target)
 
     backend::exchange(target, originAddress, targetAddress);
 
-    mRemotePID = std::get<0>(targetAddress);
+    mRemotePID = *reinterpret_cast<std::int64_t*>(&std::get<0>(targetAddress));
     mRemoteAddress.iov_base =
         reinterpret_cast<void*>(std::get<1>(targetAddress));
     mRemoteAddress.iov_len =
