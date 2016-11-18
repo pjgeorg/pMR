@@ -29,12 +29,12 @@ namespace pMR { namespace verbs
             void set(MemoryRegion const&);
             std::uint64_t getAddress() const;
             std::uint32_t getRKey() const;
-            std::uint32_t* rawData();
-            std::uint32_t const* rawData() const;
+            std::uint64_t* rawData();
+            std::uint64_t const* rawData() const;
             std::size_t size() const;
             ~MemoryAddress() = default;
         private:
-            std::array<std::uint32_t,3> mData;
+            std::array<std::uint64_t,2> mData;
     };
 }}
 #endif // pMR_PROVIDERS_VERBS_MEMORYADDRESS_H
