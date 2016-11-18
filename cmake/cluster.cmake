@@ -22,6 +22,8 @@ elseif(${CLUSTER} STREQUAL "QPACE2")
     set(PROVIDER.LOOP ON)
     set(PROVIDER.SCIF ON)
     set(PROVIDER.VERBS ON)
+    set(VERBS.MTU 2048)
+    set(VERBS.INLINE 256)
     set(ALLREDUCE "RECURSIVEDOUBLING")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/qpaceb)
 
