@@ -19,7 +19,10 @@
 #include "../../providers/verbs/topology.hpp"
 #include "../../misc/singleton.hpp"
 #include "../../backends/backend.hpp"
-#include "../../misc/print.hpp"
+
+#ifdef QPACE2_WARN_TOPOLOGY
+#   include "../../misc/print.hpp"
+#endif // QPACE2_WARN TOPOLOGY
 
 void pMR::Connection::connectVerbs(Target const &target)
 {
@@ -79,7 +82,10 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
     }
 
     // No common switch
+#ifdef QPACE2_WARN_TOPOLOGY
     print("pMR: Using bad path. Check topology.");
+#endif // QPACE2_WARN TOPOLOGY
+
     if(origin.getSCIFNodeID() + target.getSCIFNodeID() < 6)
     {
         return 1;

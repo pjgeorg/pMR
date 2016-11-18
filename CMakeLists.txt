@@ -24,5 +24,7 @@ set(VERBS.INLINE 128 CACHE STRING "Set max inline data size.")
 set(VERBS.ODP OFF CACHE BOOL "Use ODP capability.")
 set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication.")
 
+set(QPACE2.WARN.TOPOLOGY ON CACHE BOOL "Warning about misuse of topology.")
+
 add_subdirectory(src)
 add_subdirectory(doxygen)
