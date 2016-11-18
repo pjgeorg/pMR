@@ -119,9 +119,15 @@ void runBenchmark(int argc, char **argv)
                 allReduce.extract<float>(vSum.begin(), msgSize / sizeof(float));
             }
             time += pMR::getTimeInSeconds();
-            pMR::print(static_cast<std::uint32_t>(getRank(MPI_COMM_WORLD)),
-                    msgSize, allReduce.size<unsigned char>(),
-                    iter, time / iter);
+
+            std::ostringstream oss;
+            oss << std::setw(8) << getRank(MPI_COMM_WORLD) << " "
+                << std::setw(8) << msgSize << "  "
+                << std::setw(8) << allReduce.size<unsigned char>() << " "
+                << std::setw(8) << iter << " "
+                << std::scientific << time / iter << std::endl;
+            std::cout << oss.str();
+
             msgSize += deltaMsgSize;
         }
 
@@ -282,9 +288,14 @@ void runBenchmark(int argc, char **argv)
 
         }
         time += pMR::getTimeInSeconds();
-        pMR::print(static_cast<std::uint32_t>(getRank(MPI_COMM_WORLD)),
-                msgSize, iter, time / iter,
-                msgSize * iter * nDataTransfers / time / 1024 / 1024 );
+        std::ostringstream oss;
+        oss << std::setw(8) << getRank(MPI_COMM_WORLD) << " "
+            << std::setw(8) << msgSize << " "
+            << std::setw(8) << iter << " "
+            << std::scientific << time / iter << " "
+            << std::scientific
+            << msgSize * iter * nDataTransfers / time / 1024 / 1024 << std::endl;
+        std::cout << oss.str();
 
         // Increment msgSize for next loop
         msgSize += deltaMsgSize;
