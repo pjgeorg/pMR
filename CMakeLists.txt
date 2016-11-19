@@ -19,6 +19,8 @@ set(MIC OFF CACHE BOOL "Build for for first generation Intel Xeon Phi.")
 set(PROFILING OFF CACHE BOOL "Enable profiling.")
 set(ALIGNMENT 64 CACHE STRING "Set preferred memory alignment.")
 
+set(NULL.WARN ON CACHE BOOL "Warn when using provider null.")
+set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
 set(VERBS.RDMA ON CACHE BOOL "Use RDMA capability.")
 set(VERBS.MTU 1024 CACHE STRING "Set MTU size.")
 set(VERBS.INLINE 128 CACHE STRING "Set max inline data size.")

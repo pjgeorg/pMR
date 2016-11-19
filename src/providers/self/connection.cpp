@@ -19,8 +19,16 @@
 #include "../../backends/backend.hpp"
 #include "../../arch/processor.hpp"
 
+#ifdef SELF_WARN
+#   include "../../misc/print.hpp"
+#endif // SELF_WARN
+
 pMR::self::Connection::Connection(Target const &target)
 {
+#ifdef SELF_WARN
+    print("pMR: Using provider self.");
+#endif // SELF_WARN
+
     std::array<std::uintptr_t, 2> originAddress, targetAddress;
 
     std::get<0>(originAddress) =

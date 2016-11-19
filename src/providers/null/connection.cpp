@@ -14,4 +14,13 @@
 
 #include "connection.hpp"
 
-pMR::null::Connection::Connection(Target const &target) { }
+#ifdef NULL_WARN
+#   include "../../misc/print.hpp"
+#endif // NULL_WARN
+
+pMR::null::Connection::Connection(Target const &target)
+{
+#ifdef NULL_WARN
+    print("pMR: Using provider null.");
+#endif // NULL_WARN
+}
