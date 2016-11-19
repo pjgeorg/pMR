@@ -14,7 +14,10 @@
 
 #include "connection.hpp"
 #include <array>
+#include <cstring>
+#include <stdexcept>
 #include "../../backends/backend.hpp"
+#include "../../arch/processor.hpp"
 
 pMR::self::Connection::Connection(Target const &target)
 {
@@ -31,4 +34,56 @@ pMR::self::Connection::Connection(Target const &target)
         reinterpret_cast<void**>(std::get<0>(targetAddress));
     mRemoteSizeByte =
         reinterpret_cast<std::uint32_t*>(std::get<1>(targetAddress));
+}
+
+void pMR::self::Connection::postAddress(void *const buffer,
+        std::uint32_t const sizeByte)
+{
+    if(sizeByte == 0)
+    {
+        //Buffer might be nullptr, require any valid value != nullptr
+        *mRemoteBuffer = mRemoteSizeByte;
+    }
+    else
+    {
+        *mRemoteBuffer = buffer;
+    }
+    *mRemoteSizeByte = sizeByte;
+}
+
+void pMR::self::Connection::pollAddress() const
+{
+    while(mDestinationBuffer == nullptr)
+    {
+        CPURelax();
+    }
+}
+
+void pMR::self::Connection::sendData(void *const buffer,
+        std::uint32_t const sizeByte)
+{
+    checkBufferSizeByte(sizeByte);
+    std::memcpy(mDestinationBuffer, buffer, sizeByte);
+}
+
+void pMR::self::Connection::postNotify()
+{
+    mDestinationBuffer = nullptr;
+    mDestinationSizeByte = 0;
+}
+
+void pMR::self::Connection::pollNotify() const
+{
+    while(*mRemoteBuffer != nullptr)
+    {
+        CPURelax();
+    }
+}
+
+void pMR::self::Connection::checkBufferSizeByte(std::uint32_t const sizeByte) const
+{
+    if(mDestinationSizeByte < sizeByte)
+    {
+        throw std::length_error("pMR: RecvWindow smaller than SendWindow.");
+    }
 }

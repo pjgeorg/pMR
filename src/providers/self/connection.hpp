@@ -32,10 +32,18 @@ namespace pMR
                 Connection& operator=(const Connection&) = delete;
                 Connection& operator=(Connection&&) = delete;
                 ~Connection() = default;
+                void postAddress(void *const buffer, std::uint32_t const sizeByte);
+                void pollAddress() const;
+                void sendData(void *const buffer, std::uint32_t const sizeByte);
+                void postNotify();
+                void pollNotify() const;
+            private:
                 void **mRemoteBuffer = nullptr;
                 std::uint32_t *mRemoteSizeByte = nullptr;
                 void *mDestinationBuffer = nullptr;
-                std::uint32_t mDestinationSizeByte;
+                std::uint32_t mDestinationSizeByte = 0;
+
+                void checkBufferSizeByte(std::uint32_t const sizeByte) const;
         };
     }
 }
