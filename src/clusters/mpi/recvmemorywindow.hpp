@@ -42,11 +42,6 @@ namespace pMR
         private:
             void *const mBuffer;
             std::uint32_t mSizeByte;
-            Provider mProvider = Provider::null;
-            std::unique_ptr<null::RecvMemoryWindow,
-                null::RecvMemoryWindowDeleter> mNull;
-            std::unique_ptr<self::RecvMemoryWindow,
-                self::RecvMemoryWindowDeleter> mSelf;
             std::unique_ptr<mpi::RecvMemoryWindow,
                 mpi::RecvMemoryWindowDeleter> mMPI;
     };

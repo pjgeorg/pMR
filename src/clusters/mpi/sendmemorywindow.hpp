@@ -43,11 +43,6 @@ namespace pMR
         private:
             void *const mBuffer;
             std::uint32_t mSizeByte;
-            Provider mProvider = Provider::null;
-            std::unique_ptr<null::SendMemoryWindow,
-                null::SendMemoryWindowDeleter> mNull;
-            std::unique_ptr<self::SendMemoryWindow,
-                self::SendMemoryWindowDeleter> mSelf;
             std::unique_ptr<mpi::SendMemoryWindow,
                 mpi::SendMemoryWindowDeleter> mMPI;
     };

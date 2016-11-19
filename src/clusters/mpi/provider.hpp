@@ -17,45 +17,6 @@
 
 namespace pMR
 {
-    enum class Provider
-    {
-        null,
-        self,
-        mpi
-    };
-
-    namespace null
-    {
-        class Connection;
-        class SendMemoryWindow;
-        class SendMemoryWindowDeleter
-        {
-            public:
-                void operator()(SendMemoryWindow*) const;
-        };
-        class RecvMemoryWindow;
-        class RecvMemoryWindowDeleter
-        {
-            public:
-                void operator()(RecvMemoryWindow*) const;
-        };
-    }
-    namespace self
-    {
-        class Connection;
-        class SendMemoryWindow;
-        class SendMemoryWindowDeleter
-        {
-            public:
-                void operator()(SendMemoryWindow*) const;
-        };
-        class RecvMemoryWindow;
-        class RecvMemoryWindowDeleter
-        {
-            public:
-                void operator()(RecvMemoryWindow*) const;
-        };
-    }
     namespace mpi
     {
         class Connection;

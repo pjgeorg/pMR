@@ -14,64 +14,22 @@
 
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
-#include "../../providers/null/memorywindow.hpp"
-#include "../../providers/self/memorywindow.hpp"
 #include "../../providers/mpi/memorywindow.hpp"
 
 pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)
     :   mBuffer(buffer),
-        mSizeByte(sizeByte),
-        mProvider(connection.mProvider)
+        mSizeByte(sizeByte)
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull = std::unique_ptr<null::SendMemoryWindow,
-                    null::SendMemoryWindowDeleter>(new null::SendMemoryWindow(
-                                connection.mNull, buffer, sizeByte));
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf = std::unique_ptr<self::SendMemoryWindow,
-                    self::SendMemoryWindowDeleter>(new self::SendMemoryWindow(
-                                connection.mSelf, buffer, sizeByte));
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI = std::unique_ptr<mpi::SendMemoryWindow,
-                    mpi::SendMemoryWindowDeleter>(new mpi::SendMemoryWindow(
-                                connection.mMPI, buffer, sizeByte));
-            break;
-        }
-    }
+    mMPI = std::unique_ptr<mpi::SendMemoryWindow, mpi::SendMemoryWindowDeleter>(
+            new mpi::SendMemoryWindow(connection.mMPI, buffer, sizeByte));
 }
 
 pMR::SendMemoryWindow::~SendMemoryWindow() { }
 
 void pMR::SendMemoryWindow::init()
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->init();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->init();
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI->init();
-            break;
-        }
-    }
+    mMPI->init();
 }
 
 void pMR::SendMemoryWindow::post()
@@ -86,46 +44,12 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
         throw std::length_error("pMR: Send message exceed SendWindow.");
     }
 
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->post(sizeByte);
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->post(sizeByte);
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI->post(sizeByte);
-            break;
-        }
-    }
+    mMPI->post(sizeByte);
 }
 
 void pMR::SendMemoryWindow::wait()
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->wait();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->wait();
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI->wait();
-            break;
-        }
-    }
+    mMPI->wait();
 }
 
 void* pMR::SendMemoryWindow::data()

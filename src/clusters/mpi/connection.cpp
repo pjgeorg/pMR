@@ -14,66 +14,9 @@
 
 #include "connection.hpp"
 #include "target.hpp"
-#include "../../providers/null/connection.hpp"
-#include "../../providers/self/connection.hpp"
 #include "../../providers/mpi/connection.hpp"
 
 pMR::Connection::Connection(Target const &target)
-{
-    setProvider(target);
-    connect(target);
-}
-
-void pMR::Connection::setProvider(Target const &target)
-{
-    if(target.isNull())
-    {
-        mProvider = Provider::null;
-        return;
-    }
-
-    if(target.isSelf())
-    {
-        mProvider = Provider::self;
-        return;
-    }
-
-    mProvider = Provider::mpi;
-}
-
-void pMR::Connection::connect(Target const &target)
-{
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            connectNull(target);
-            break;
-        }
-        case Provider::self:
-        {
-            connectSelf(target);
-            break;
-        }
-        case Provider::mpi:
-        {
-            connectMPI(target);
-            break;
-        }
-    }
-}
-
-void pMR::Connection::connectNull(Target const &target)
-{
-    mNull = std::make_shared<null::Connection>(target);
-}
-
-void pMR::Connection::connectSelf(Target const &target)
-{
-    mSelf = std::make_shared<self::Connection>(target);
-}
-
-void pMR::Connection::connectMPI(Target const &target)
 {
     mMPI = std::make_shared<mpi::Connection>(target);
 }

@@ -37,15 +37,7 @@ namespace pMR
             Connection& operator=(Connection&&) = default;
             ~Connection() = default;
         private:
-            Provider mProvider = Provider::null;
-            std::shared_ptr<null::Connection> mNull;
-            std::shared_ptr<self::Connection> mSelf;
             std::shared_ptr<mpi::Connection> mMPI;
-            void setProvider(Target const &target);
-            void connect(Target const &target);
-            void connectNull(Target const &target);
-            void connectSelf(Target const &target);
-            void connectMPI(Target const &target);
     };
 }
 #endif // pMR_CLUSTERS_MPI_CONNECTION_H

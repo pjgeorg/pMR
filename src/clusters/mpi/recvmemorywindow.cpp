@@ -14,108 +14,32 @@
 
 #include "recvmemorywindow.hpp"
 #include "connection.hpp"
-#include "../../providers/null/memorywindow.hpp"
-#include "../../providers/self/memorywindow.hpp"
 #include "../../providers/mpi/memorywindow.hpp"
 
 pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)
     :   mBuffer(buffer),
-        mSizeByte(sizeByte),
-        mProvider(connection.mProvider)
+        mSizeByte(sizeByte)
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull = std::unique_ptr<null::RecvMemoryWindow,
-                    null::RecvMemoryWindowDeleter>(new null::RecvMemoryWindow(
-                                connection.mNull, buffer, sizeByte));
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf = std::unique_ptr<self::RecvMemoryWindow,
-                    self::RecvMemoryWindowDeleter>(new self::RecvMemoryWindow(
-                                connection.mSelf, buffer, sizeByte));
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI = std::unique_ptr<mpi::RecvMemoryWindow,
-                    mpi::RecvMemoryWindowDeleter>(new mpi::RecvMemoryWindow(
-                                connection.mMPI, buffer, sizeByte));
-            break;
-        }
-    }
+    mMPI = std::unique_ptr<mpi::RecvMemoryWindow, mpi::RecvMemoryWindowDeleter>(
+            new mpi::RecvMemoryWindow(connection.mMPI, buffer, sizeByte));
 }
 
 pMR::RecvMemoryWindow::~RecvMemoryWindow() { }
 
 void pMR::RecvMemoryWindow::init()
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->init();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->init();
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI->init();
-            break;
-        }
-    }
+    mMPI->init();
 }
 
 void pMR::RecvMemoryWindow::post()
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->post();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->post();
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI->post();
-            break;
-        }
-    }
+    mMPI->post();
 }
 
 void pMR::RecvMemoryWindow::wait()
 {
-    switch(mProvider)
-    {
-        case Provider::null:
-        {
-            mNull->wait();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->wait();
-            break;
-        }
-        case Provider::mpi:
-        {
-            mMPI->wait();
-            break;
-        }
-    }
+    mMPI->wait();
 }
 
 void* pMR::RecvMemoryWindow::data()

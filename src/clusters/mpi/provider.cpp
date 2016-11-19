@@ -13,29 +13,7 @@
 //  limitations under the License.
 
 #include "provider.hpp"
-#include "../../providers/null/memorywindow.hpp"
-#include "../../providers/self/memorywindow.hpp"
 #include "../../providers/mpi/memorywindow.hpp"
-
-void pMR::null::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
-{
-    delete p;
-}
-
-void pMR::null::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
-{
-    delete p;
-}
-
-void pMR::self::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
-{
-    delete p;
-}
-
-void pMR::self::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
-{
-    delete p;
-}
 
 void pMR::mpi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
