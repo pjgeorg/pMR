@@ -31,9 +31,11 @@ pMR::cma::Connection::Connection(Target const &target)
     std::get<1>(originAddress) = 
         {reinterpret_cast<std::uintptr_t>(&mDestination)};
     std::get<2>(originAddress) = {sizeof(mDestination)};
-    std::get<3>(originAddress) = {reinterpret_cast<std::uintptr_t>(mNotifySend)};
+    std::get<3>(originAddress)
+        = {reinterpret_cast<std::uintptr_t>(mNotifySend)};
     std::get<4>(originAddress) = {sizeof(mNotifySend[0])};
-    std::get<5>(originAddress) = {reinterpret_cast<std::uintptr_t>(mNotifyRecv)};
+    std::get<5>(originAddress)
+        = {reinterpret_cast<std::uintptr_t>(mNotifyRecv)};
     std::get<6>(originAddress) = {sizeof(mNotifyRecv[0])};
 
     backend::exchange(target, originAddress, targetAddress);

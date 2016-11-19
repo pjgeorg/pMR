@@ -294,7 +294,8 @@ void runBenchmark(int argc, char **argv)
             << std::setw(8) << iter << " "
             << std::scientific << time / iter << " "
             << std::scientific
-            << msgSize * iter * nDataTransfers / time / 1024 / 1024 << std::endl;
+            << msgSize * iter * nDataTransfers / time / 1024 / 1024
+            << std::endl;
         std::cout << oss.str();
 
         // Increment msgSize for next loop

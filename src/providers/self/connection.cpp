@@ -88,7 +88,8 @@ void pMR::self::Connection::pollNotify() const
     }
 }
 
-void pMR::self::Connection::checkBufferSizeByte(std::uint32_t const sizeByte) const
+void pMR::self::Connection::checkBufferSizeByte(std::uint32_t const sizeByte)
+    const
 {
     if(mDestinationSizeByte < sizeByte)
     {

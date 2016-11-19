@@ -72,7 +72,7 @@ if(PROVIDER.VERBS)
         ERROR("Library ibverbs not found!")
     endif()
 
-    if (VERBS.RDMA)
+    if(VERBS.RDMA)
         set(VERBS_CAPS "${VERBS_CAPS} RDMA")
         add_definitions(-DVERBS_RDMA)
     endif()
