@@ -16,7 +16,6 @@
 #include "connection.hpp"
 #include "../../providers/null/memorywindow.hpp"
 #include "../../providers/self/memorywindow.hpp"
-#include "../../providers/loop/memorywindow.hpp"
 #include "../../providers/mpi/memorywindow.hpp"
 
 pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
@@ -39,13 +38,6 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
             mSelf = std::unique_ptr<self::SendMemoryWindow,
                     self::SendMemoryWindowDeleter>(new self::SendMemoryWindow(
                                 connection.mSelf, buffer, sizeByte));
-            break;
-        }
-        case Provider::loop:
-        {
-            mLoop = std::unique_ptr<loop::SendMemoryWindow,
-                    loop::SendMemoryWindowDeleter>(new loop::SendMemoryWindow(
-                                connection.mLoop, buffer, sizeByte));
             break;
         }
         case Provider::mpi:
@@ -72,11 +64,6 @@ void pMR::SendMemoryWindow::init()
         case Provider::self:
         {
             mSelf->init();
-            break;
-        }
-        case Provider::loop:
-        {
-            mLoop->init();
             break;
         }
         case Provider::mpi:
@@ -111,11 +98,6 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
             mSelf->post(sizeByte);
             break;
         }
-        case Provider::loop:
-        {
-            mLoop->post(sizeByte);
-            break;
-        }
         case Provider::mpi:
         {
             mMPI->post(sizeByte);
@@ -136,11 +118,6 @@ void pMR::SendMemoryWindow::wait()
         case Provider::self:
         {
             mSelf->wait();
-            break;
-        }
-        case Provider::loop:
-        {
-            mLoop->wait();
             break;
         }
         case Provider::mpi:

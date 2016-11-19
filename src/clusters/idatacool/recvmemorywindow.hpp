@@ -47,8 +47,6 @@ namespace pMR
                 null::RecvMemoryWindowDeleter> mNull;
             std::unique_ptr<self::RecvMemoryWindow,
                 self::RecvMemoryWindowDeleter> mSelf;
-            std::unique_ptr<loop::RecvMemoryWindow,
-                loop::RecvMemoryWindowDeleter> mLoop;
             std::unique_ptr<cma::RecvMemoryWindow,
                 cma::RecvMemoryWindowDeleter> mCMA;
             std::unique_ptr<verbs::RecvMemoryWindow,

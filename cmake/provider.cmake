@@ -10,12 +10,6 @@ if(PROVIDER.CMA)
     set(PROVIDER_STRING "${PROVIDER_STRING} CMA")
 endif()
 
-if(PROVIDER.LOOP)
-    add_subdirectory(providers/loop)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_LOOP>)
-    set(PROVIDER_STRING "${PROVIDER_STRING} loop")
-endif()
-
 if(PROVIDER.MPI)
     if(NOT ${BACKEND} STREQUAL "MPI")
         ERROR("MPI provider only available for backend MPI!")

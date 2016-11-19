@@ -40,7 +40,6 @@ namespace pMR
             Provider mProvider = Provider::null;
             std::shared_ptr<null::Connection> mNull;
             std::shared_ptr<self::Connection> mSelf;
-            std::shared_ptr<loop::Connection> mLoop;
             std::shared_ptr<cma::Connection> mCMA;
             std::shared_ptr<verbs::Connection> mVerbs;
             void setProvider(Target const &target);
@@ -48,7 +47,6 @@ namespace pMR
             void connect(Target const &target);
             void connectNull(Target const &target);
             void connectSelf(Target const &target);
-            void connectLoop(Target const &target);
             void connectCMA(Target const &target);
             void connectVerbs(Target const &target);
     };

@@ -177,12 +177,6 @@ pMR::Target pMR::Communicator::getNeighbor(
         throw std::out_of_range("pMR: Communicator dimension out of range.");
     }
 
-    if(displacement == 0)
-    {
-        // Loop
-        return Target(mCommunicator, mID, 0, 0, false, false, true);
-    }
-
     int source;
     int target;
     if(MPI_Cart_shift(mCommunicator, dimension, displacement, &source, &target))
@@ -190,40 +184,34 @@ pMR::Target pMR::Communicator::getNeighbor(
         throw std::runtime_error("pMR: Unable to shift MPI rank.");
     }
 
-    // Check if target is null
     if(target == MPI_PROC_NULL)
     {
-        // Null
-        return Target(mCommunicator, target, 0, 0, true, false, false);
+        return Target(mCommunicator, target, 0, 0, true, false);
     }
 
     int uniqueSendID = +displacement + (dimension + 1) * 1e3;
     int uniqueRecvID = -displacement + (dimension + 1) * 1e3;
 
-    // Check if target is self
     if(mID == target)
     {
-        // Self
         return Target(mCommunicator, target, uniqueSendID, uniqueRecvID,
-                false, true, false);
+                false, true);
     }
 
     return Target(mCommunicator, target, uniqueSendID, uniqueRecvID,
-            false, false, false);
+            false, false);
 }
 
 pMR::Target pMR::Communicator::getTarget(int const ID) const
 {
-    // Null
     if(ID < 0)
     {
-        return Target(mCommunicator, MPI_PROC_NULL, 0, 0, true, false, false);
+        return Target(mCommunicator, MPI_PROC_NULL, 0, 0, true, false);
     }
 
-    // Loop
     if(ID == mID)
     {
-        return Target(mCommunicator, mID, 0, 0, false, false, true);
+        return Target(mCommunicator, mID, 0, 0, false, true);
     }
 
     if(ID >= mSize)
@@ -231,7 +219,7 @@ pMR::Target pMR::Communicator::getTarget(int const ID) const
         throw std::runtime_error("pMR: Target ID out of range.");
     }
 
-    return Target(mCommunicator, ID, ID, mID, false, false, false);
+    return Target(mCommunicator, ID, ID, mID, false, false);
 }
 
 MPI_Comm pMR::Communicator::get() const

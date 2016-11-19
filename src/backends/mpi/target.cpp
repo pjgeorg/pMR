@@ -17,26 +17,17 @@
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
         unsigned const uniqueSendID, unsigned const uniqueRecvID,
-        bool const null, bool const self, bool const loop)
+        bool const null, bool const self)
     :   mCommunicator(communicator),
         mTarget(targetRank),
         mUniqueSendID(uniqueSendID),
         mUniqueRecvID(uniqueRecvID),
         mNull(null),
-        mSelf(self),
-        mLoop(loop)
+        mSelf(self)
 {
     if(mNull && mSelf)
     {
         throw std::logic_error("pMR: Target specified as both null and self.");
-    }
-    if(mNull && mLoop)
-    {
-        throw std::logic_error("pMR: Target specified as both null and loop.");
-    }
-    if(mSelf && mLoop)
-    {
-        throw std::logic_error("pMR: Target specified as both self and loop.");
     }
 }
 
@@ -58,11 +49,6 @@ bool pMR::Target::isNull() const
 bool pMR::Target::isSelf() const
 {
     return mSelf;
-}
-
-bool pMR::Target::isLoop() const
-{
-    return mLoop;
 }
 
 int pMR::Target::getTargetRank() const
@@ -97,22 +83,13 @@ int pMR::Target::queryRank() const
 
 void pMR::Target::queryTarget()
 {
-    // Check if target is null
     if(mTarget == MPI_PROC_NULL)
     {
         mNull = true;
     }
 
-    // Check if target is self/loop
     if(queryRank() == mTarget)
     {
-        if(mUniqueSendID == mUniqueRecvID)
-        {
-            mLoop = true;
-        }
-        else
-        {
-            mSelf = true;
-        }
+        mSelf = true;
     }
 }

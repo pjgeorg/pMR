@@ -21,7 +21,6 @@ namespace pMR
     {
         null,
         self,
-        loop,
         cma,
         verbs
     };
@@ -43,22 +42,6 @@ namespace pMR
         };
     }
     namespace self
-    {
-        class Connection;
-        class SendMemoryWindow;
-        class SendMemoryWindowDeleter
-        {
-            public:
-                void operator()(SendMemoryWindow*) const;
-        };
-        class RecvMemoryWindow;
-        class RecvMemoryWindowDeleter
-        {
-            public:
-                void operator()(RecvMemoryWindow*) const;
-        };
-    }
-    namespace loop
     {
         class Connection;
         class SendMemoryWindow;

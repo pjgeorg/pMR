@@ -16,7 +16,6 @@
 #include "target.hpp"
 #include "../../providers/null/connection.hpp"
 #include "../../providers/self/connection.hpp"
-#include "../../providers/loop/connection.hpp"
 #include "../../providers/cma/connection.hpp"
 #include "../../providers/verbs/connection.hpp"
 
@@ -40,12 +39,6 @@ void pMR::Connection::setProvider(Target const &target)
         return;
     }
 
-    if(target.isLoop())
-    {
-        mProvider = Provider::loop;
-        return;
-    }
-
     mProvider = detectProvider(target);
 }
 
@@ -61,11 +54,6 @@ void pMR::Connection::connect(Target const &target)
         case Provider::self:
         {
             connectSelf(target);
-            break;
-        }
-        case Provider::loop:
-        {
-            connectLoop(target);
             break;
         }
         case Provider::cma:
@@ -89,11 +77,6 @@ void pMR::Connection::connectNull(Target const &target)
 void pMR::Connection::connectSelf(Target const &target)
 {
     mSelf = std::make_shared<self::Connection>(target);
-}
-
-void pMR::Connection::connectLoop(Target const &target)
-{
-    mLoop = std::make_shared<loop::Connection>(target);
 }
 
 void pMR::Connection::connectCMA(Target const &target)

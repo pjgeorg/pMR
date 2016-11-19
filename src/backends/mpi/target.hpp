@@ -32,8 +32,7 @@ namespace pMR
     {
         public:
             //! @brief Convert MPI Target to backend-agnostic Target.
-            //! @warning Only one of the paramteter null, self and loop
-            //!     can be true.
+            //! @warning Only one of the paramteter null and self can be true.
             //! @param communicator MPI Communicator.
             //! @param targetRank Target MPI rank.
             //! @param uniqueSendID Unique ID to distiguish MPI messages
@@ -42,11 +41,10 @@ namespace pMR
             //!     (Recv Tag).
             //! @param null Target is no communication (MPI_PROC_NULL).
             //! @param self Target is self communication.
-            //! @param loop Target is loop communication.
             //! @return Return backend-agnostic Target.
             Target(MPI_Comm const communicator, int const targetRank,
                     unsigned const uniqueSendID, unsigned const uniqueRecvID,
-                    bool const null, bool const self, bool const loop);
+                    bool const null, bool const self);
             //! @brief Convert MPI Target to backend-agnostic Target.
             //! @param communicator MPI Communicator.
             //! @param targetRank Target MPI rank.
@@ -61,32 +59,20 @@ namespace pMR
             //! @brief Checks whether the target is null (MPI_PROC_NULL).
             //! @return true if null, false otherwise.
             bool isNull() const;
-            //! @brief Checks whether the target is the same process and self.
-            //! @details Connections to the same process can be of two
-            //!     different types: Self and Loop.
-            //!     Self means that there is another connection attempt by the
-            //!     same process - RecvWindows are linked to the other
-            //!     connections's SendWindow and vice versa.
-            //! @note A self connection to the same process can be created by
-            //!     explicitely specifying at Target creation, creating a Target
-            //!     with unique IDs that are sufficient to distinguish the
-            //!     connections, or by using Communicator::getNeighbor() with a
-            //!     displacement other than 0.
+            //! @brief Checks whether the target is the same process.
+            //! @details Connections to the same process may or may not require
+            //!     a second connection attempt by the same process. Using only
+            //!     the backend-agnostic communicator the bahavior is naturally.
+            //!     A connection to a Target retrieved calling getNeighbor with
+            //!     a displacement not equal to zero, but still being the same
+            //!     process, assume there is a second connection attempt. For
+            //!     all other cases, getNeighbor with displacement of zero or
+            //!     getTarget of own ID, there is no other connection attempt
+            //!     required.
+            //!     In terms of MPI: The second is a SendRecv call with both
+            //!     same source and destination rank, and send and receive tag.
             //! @return true if self, false otherwise.
             bool isSelf() const;
-            //! @brief Checks whether the target is the same process and loop.
-            //! @details Connections to the same process can be of two
-            //!     different types: Self and Loop.
-            //!     Loop means that RecvWindows associated with the connection
-            //!     are linked with SendWindows of the same connection. No other
-            //!     connection is involved.
-            //! @note A loop to the same process can be created by explicitely
-            //!     specifying at Target creation, creating a Target with unique
-            //!     IDs that are not sufficient to distinguish the connections,
-            //!     or by using Communicator::getNeighbor() with a displacement
-            //!     of 0.
-            //! @return true if loop, false otherwise.
-            bool isLoop() const;
             int getTargetRank() const;
             int getUniqueSendID() const;
             int getUniqueRecvID() const;
@@ -98,7 +84,6 @@ namespace pMR
             unsigned const mUniqueRecvID;
             bool mNull = false;
             bool mSelf = false;
-            bool mLoop = false;
             int queryRank() const;
             void queryTarget();
     };

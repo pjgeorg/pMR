@@ -84,7 +84,7 @@ namespace pMR
             //! @brief Get target by ID.
             //! @param ID ID.
             //! @return Target with requested ID.
-            //! @note Returns target loop in case ID is own ID.
+            //! @note Returns target self in case ID is own ID.
             //! @note Returns targel null in case of negative ID.
             Target getTarget(int const ID) const;
             MPI_Comm get() const;

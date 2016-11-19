@@ -15,7 +15,6 @@
 #include "provider.hpp"
 #include "../../providers/null/memorywindow.hpp"
 #include "../../providers/self/memorywindow.hpp"
-#include "../../providers/loop/memorywindow.hpp"
 #include "../../providers/cma/memorywindow.hpp"
 #include "../../providers/verbs/memorywindow.hpp"
 
@@ -35,16 +34,6 @@ void pMR::self::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 }
 
 void pMR::self::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
-{
-    delete p;
-}
-
-void pMR::loop::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
-{
-    delete p;
-}
-
-void pMR::loop::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }

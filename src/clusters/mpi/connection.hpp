@@ -40,13 +40,11 @@ namespace pMR
             Provider mProvider = Provider::null;
             std::shared_ptr<null::Connection> mNull;
             std::shared_ptr<self::Connection> mSelf;
-            std::shared_ptr<loop::Connection> mLoop;
             std::shared_ptr<mpi::Connection> mMPI;
             void setProvider(Target const &target);
             void connect(Target const &target);
             void connectNull(Target const &target);
             void connectSelf(Target const &target);
-            void connectLoop(Target const &target);
             void connectMPI(Target const &target);
     };
 }

@@ -48,8 +48,6 @@ namespace pMR
                 null::SendMemoryWindowDeleter> mNull;
             std::unique_ptr<self::SendMemoryWindow,
                 self::SendMemoryWindowDeleter> mSelf;
-            std::unique_ptr<loop::SendMemoryWindow,
-                loop::SendMemoryWindowDeleter> mLoop;
             std::unique_ptr<verbs::SendMemoryWindow,
                 verbs::SendMemoryWindowDeleter> mVerbs;
     };
