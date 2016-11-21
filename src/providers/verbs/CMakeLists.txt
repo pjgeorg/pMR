@@ -8,12 +8,13 @@ add_library(PROVIDER_VERBS OBJECT
     gid.cpp
     memoryaddress.cpp
     memoryregion.cpp
-    memorywindow.cpp
     odp.cpp
     portattributes.cpp
     protectiondomain.cpp
     queuepair.cpp
+    recvmemorywindow.cpp
     scattergather.cpp
+    sendmemorywindow.cpp
     topology/adapter.cpp
     topology/guid.cpp
     topology/lid.cpp

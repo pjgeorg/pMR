@@ -12,24 +12,21 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "memorywindow.hpp"
+#include "sendmemorywindow.hpp"
+#include "connection.hpp"
 
-pMR::null::SendMemoryWindow::SendMemoryWindow(
+pMR::self::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte) { }
+        void *buffer, std::uint32_t const sizeByte)
+    :   mConnection(connection), mBuffer(buffer), mSizeByte(sizeByte) { }
 
-pMR::null::RecvMemoryWindow::RecvMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte) { }
+void pMR::self::SendMemoryWindow::init() { }
 
-void pMR::null::SendMemoryWindow::init() { }
+void pMR::self::SendMemoryWindow::post(std::uint32_t const sizeByte)
+{
+    mConnection->pollAddress();
+    mConnection->sendData(mBuffer, sizeByte);
+    mConnection->postNotify();
+}
 
-void pMR::null::SendMemoryWindow::post(std::uint32_t const) { }
-
-void pMR::null::SendMemoryWindow::wait() { }
-
-void pMR::null::RecvMemoryWindow::init() { }
-
-void pMR::null::RecvMemoryWindow::post() { }
-
-void pMR::null::RecvMemoryWindow::wait() { }
+void pMR::self::SendMemoryWindow::wait() { }

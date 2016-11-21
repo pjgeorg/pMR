@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_MPI_MEMORYWINDOW_H
-#define pMR_PROVIDERS_MPI_MEMORYWINDOW_H
+#ifndef pMR_PROVIDERS_MPI_RECVMEMORYWINDOW_H
+#define pMR_PROVIDERS_MPI_RECVMEMORYWINDOW_H
 
 #include <memory>
 #include <cstdint>
@@ -25,32 +25,6 @@ extern "C"
 namespace pMR { namespace mpi
 {
     class Connection;
-
-    class SendMemoryWindow
-    {
-        public:
-            SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
-            SendMemoryWindow(const SendMemoryWindow&) = delete;
-            SendMemoryWindow(SendMemoryWindow&&) = delete;
-            SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
-            SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
-            ~SendMemoryWindow();
-            void init();
-            void post(std::uint32_t const sizeByte);
-            void wait();
-        private:
-            std::shared_ptr<Connection> const mConnection;
-            void *const mBuffer;
-            std::uint32_t mSizeByte;
-            MPI_Request mRequest = MPI_REQUEST_NULL;
-
-#ifdef MPI_PERSISTENT
-            void initSend();
-#endif // MPI_PERSISTENT
-            void send(std::uint32_t const sizeByte);
-            void freeRequest();
-    };
 
     class RecvMemoryWindow
     {
@@ -78,4 +52,4 @@ namespace pMR { namespace mpi
             void freeRequest();
     };
 }}
-#endif // pMR_PROVIDERS_MPI_MEMORYWINDOW_H
+#endif // pMR_PROVIDERS_MPI_RECVMEMORYWINDOW_H

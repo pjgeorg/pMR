@@ -12,16 +12,27 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "provider.hpp"
-#include "../../providers/mpi/sendmemorywindow.hpp"
-#include "../../providers/mpi/recvmemorywindow.hpp"
+#include "recvmemorywindow.hpp"
+#include "connection.hpp"
 
-void pMR::mpi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+pMR::cma::RecvMemoryWindow::RecvMemoryWindow(
+        std::shared_ptr<Connection> const connection,
+        void *buffer, std::uint32_t const sizeByte)
+    :   mConnection(connection)
 {
-    delete p;
+    mBuffer.iov_base = buffer;
+    mBuffer.iov_len = {sizeByte};
 }
 
-void pMR::mpi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::cma::RecvMemoryWindow::init()
 {
-    delete p;
+    mConnection->sendAddress(mBuffer);
+    mConnection->postNotifySend();
+}
+
+void pMR::cma::RecvMemoryWindow::post() { }
+
+void pMR::cma::RecvMemoryWindow::wait()
+{
+    mConnection->pollNotifyRecv();
 }

@@ -14,7 +14,7 @@
 
 #include "recvmemorywindow.hpp"
 #include "connection.hpp"
-#include "../../providers/mpi/memorywindow.hpp"
+#include "../../providers/mpi/recvmemorywindow.hpp"
 
 pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)

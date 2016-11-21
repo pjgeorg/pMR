@@ -12,42 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "memorywindow.hpp"
+#include "recvmemorywindow.hpp"
 #include "connection.hpp"
 #include "../../threads/thread.hpp"
-
-pMR::mpi::SendMemoryWindow::SendMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection),
-        mBuffer(buffer),
-        mSizeByte(sizeByte)
-{
-#ifdef MPI_PERSISTENT
-    if(mConnection->multipleThreadSupport())
-    {
-        initSend();
-    }
-    else
-    {
-        thread::ScopedLock scopedLock;
-        initSend();
-    }
-#endif // MPI_PERSISTENT
-}
-
-pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
-{
-    if(mConnection->multipleThreadSupport())
-    {
-        freeRequest();
-    }
-    else
-    {
-        thread::ScopedLock scopedLock;
-        freeRequest();
-    }
-}
 
 pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
@@ -79,45 +46,6 @@ pMR::mpi::RecvMemoryWindow::~RecvMemoryWindow()
     {
         thread::ScopedLock scopedLock;
         freeRequest();
-    }
-}
-
-void pMR::mpi::SendMemoryWindow::init() { }
-
-void pMR::mpi::SendMemoryWindow::post(std::uint32_t const sizeByte)
-{
-    if(mConnection->multipleThreadSupport())
-    {
-        send(sizeByte);
-    }
-    else
-    {
-        thread::ScopedLock scopedLock;
-        send(sizeByte);
-    }
-}
-
-void pMR::mpi::SendMemoryWindow::wait()
-{
-    if(thread::isSerialized() || mConnection->multipleThreadSupport())
-    {
-        if(MPI_Wait(&mRequest, MPI_STATUS_IGNORE) != MPI_SUCCESS)
-        {
-            throw std::runtime_error("pMR: Unable to (wait) send data.");
-        }
-    }
-    else
-    {
-        int flag = false;
-        while(!flag)
-        {
-            thread::ScopedLock scopedLock;
-            if(MPI_Test(&mRequest, &flag, MPI_STATUS_IGNORE) != MPI_SUCCESS)
-            {
-                throw std::runtime_error(
-                        "pMR: Unable to (test) send data.");
-            }
-        }
     }
 }
 
@@ -159,43 +87,6 @@ void pMR::mpi::RecvMemoryWindow::wait()
                 throw std::runtime_error(
                         "pMR: Unable to (test) receive data.");
             }
-        }
-    }
-}
-
-#ifdef MPI_PERSISTENT
-void pMR::mpi::SendMemoryWindow::initSend()
-{
-    if(MPI_Send_init(mBuffer, mSizeByte, MPI_BYTE, mConnection->getTargetRank(),
-                mConnection->getSendTag(), mConnection->getCommunicator(),
-                &mRequest) != MPI_SUCCESS)
-    {
-        throw std::runtime_error("pMR: Unable to init send data.");
-    }
-}
-#endif // MPI_PERSISTENT
-
-void pMR::mpi::SendMemoryWindow::send(std::uint32_t const sizeByte)
-{
-#ifdef MPI_PERSISTENT
-    if(MPI_Start(&mRequest) != MPI_SUCCESS)
-#else
-    if(MPI_Isend(mBuffer, sizeByte, MPI_BYTE, mConnection->getTargetRank(),
-                mConnection->getSendTag(), mConnection->getCommunicator(),
-                &mRequest) != MPI_SUCCESS)
-#endif // MPI_PERSISTENT
-    {
-        throw std::runtime_error("pMR: Unable to send data.");
-    }
-}
-
-void pMR::mpi::SendMemoryWindow::freeRequest()
-{
-    if(mRequest != MPI_REQUEST_NULL)
-    {
-        if(MPI_Request_free(&mRequest) != MPI_SUCCESS)
-        {
-            throw std::runtime_error("pMR: Unable to free MPI request.");
         }
     }
 }

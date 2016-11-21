@@ -12,13 +12,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_NULL_MEMORYWINDOW_H
-#define pMR_PROVIDERS_NULL_MEMORYWINDOW_H
+#ifndef pMR_PROVIDERS_VERBS_SENDMEMORYWINDOW_H
+#define pMR_PROVIDERS_VERBS_SENDMEMORYWINDOW_H
 
 #include <memory>
-#include <cstdint>
+#include "memoryregion.hpp"
 
-namespace pMR { namespace null
+namespace pMR { namespace verbs
 {
     class Connection;
 
@@ -35,21 +35,9 @@ namespace pMR { namespace null
             void init();
             void post(std::uint32_t const sizeByte);
             void wait();
-    };
-
-    class RecvMemoryWindow
-    {
-        public:
-            RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
-            RecvMemoryWindow(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow(RecvMemoryWindow&&) = delete;
-            RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow& operator=(RecvMemoryWindow&&) = delete;
-            ~RecvMemoryWindow() = default;
-            void init();
-            void post();
-            void wait();
+        private:
+            std::shared_ptr<Connection> const mConnection;
+            MemoryRegion mMemoryRegion;
     };
 }}
-#endif // pMR_PROVIDERS_NULL_MEMORYWINDOW_H
+#endif // pMR_PROVIDERS_VERBS_SENDMEMORYWINDOW_H

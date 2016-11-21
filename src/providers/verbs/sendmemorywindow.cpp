@@ -12,9 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "memorywindow.hpp"
-#include <stdexcept>
-#include "memoryaddress.hpp"
+#include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
 pMR::verbs::SendMemoryWindow::SendMemoryWindow(
@@ -24,19 +22,6 @@ pMR::verbs::SendMemoryWindow::SendMemoryWindow(
         mMemoryRegion(mConnection->getContext(),
                 mConnection->getProtectionDomain(),
                 buffer, sizeByte, IBV_ACCESS_LOCAL_WRITE) { }
-
-pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection),
-        mMemoryRegion(mConnection->getContext(),
-                mConnection->getProtectionDomain(),
-                buffer, sizeByte,
-#ifdef VERBS_RDMA
-                IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE) { }
-#else
-                IBV_ACCESS_LOCAL_WRITE) { }
-#endif // VERBS_RDMA
 
 void pMR::verbs::SendMemoryWindow::init()
 {
@@ -61,24 +46,4 @@ void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 void pMR::verbs::SendMemoryWindow::wait()
 {
     mConnection->pollActiveCompletionQueue();
-}
-
-void pMR::verbs::RecvMemoryWindow::init()
-{
-#ifdef VERBS_RDMA
-    mConnection->postRecvToPassive();
-    mConnection->setLocalMemoryAddress(mMemoryRegion);
-    mConnection->postSendAddressToPassive();
-#else
-    mConnection->postRecvToPassive(mMemoryRegion);
-    mConnection->postSendToPassive();
-#endif // VERBS_RDMA
-}
-
-void pMR::verbs::RecvMemoryWindow::post() { }
-
-void pMR::verbs::RecvMemoryWindow::wait()
-{
-    mConnection->pollPassiveCompletionQueue();
-    mConnection->pollPassiveCompletionQueue();
 }

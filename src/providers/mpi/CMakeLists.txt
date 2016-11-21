@@ -1,2 +1,4 @@
 add_library(PROVIDER_MPI OBJECT
-    connection.cpp memorywindow.cpp)
+    connection.cpp
+    recvmemorywindow.cpp
+    sendmemorywindow.cpp)

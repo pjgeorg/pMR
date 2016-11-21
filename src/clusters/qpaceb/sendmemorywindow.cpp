@@ -14,9 +14,9 @@
 
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
-#include "../../providers/null/memorywindow.hpp"
-#include "../../providers/self/memorywindow.hpp"
-#include "../../providers/verbs/memorywindow.hpp"
+#include "../../providers/null/sendmemorywindow.hpp"
+#include "../../providers/self/sendmemorywindow.hpp"
+#include "../../providers/verbs/sendmemorywindow.hpp"
 
 pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)

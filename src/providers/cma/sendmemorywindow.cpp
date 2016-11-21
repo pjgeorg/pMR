@@ -12,19 +12,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "memorywindow.hpp"
+#include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
 pMR::cma::SendMemoryWindow::SendMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection)
-{
-    mBuffer.iov_base = buffer;
-    mBuffer.iov_len = {sizeByte};
-}
-
-pMR::cma::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
         void *buffer, std::uint32_t const sizeByte)
     :   mConnection(connection)
@@ -43,16 +34,3 @@ void pMR::cma::SendMemoryWindow::post(std::uint32_t const sizeByte)
 }
 
 void pMR::cma::SendMemoryWindow::wait() { }
-
-void pMR::cma::RecvMemoryWindow::init()
-{
-    mConnection->sendAddress(mBuffer);
-    mConnection->postNotifySend();
-}
-
-void pMR::cma::RecvMemoryWindow::post() { }
-
-void pMR::cma::RecvMemoryWindow::wait()
-{
-    mConnection->pollNotifyRecv();
-}

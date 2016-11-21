@@ -13,9 +13,12 @@
 //  limitations under the License.
 
 #include "provider.hpp"
-#include "../../providers/null/memorywindow.hpp"
-#include "../../providers/self/memorywindow.hpp"
-#include "../../providers/cma/memorywindow.hpp"
+#include "../../providers/null/sendmemorywindow.hpp"
+#include "../../providers/null/recvmemorywindow.hpp"
+#include "../../providers/self/sendmemorywindow.hpp"
+#include "../../providers/self/recvmemorywindow.hpp"
+#include "../../providers/cma/sendmemorywindow.hpp"
+#include "../../providers/cma/recvmemorywindow.hpp"
 
 void pMR::null::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {

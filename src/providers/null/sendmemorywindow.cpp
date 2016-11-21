@@ -12,16 +12,14 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "provider.hpp"
-#include "../../providers/mpi/sendmemorywindow.hpp"
-#include "../../providers/mpi/recvmemorywindow.hpp"
+#include "sendmemorywindow.hpp"
 
-void pMR::mpi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
-{
-    delete p;
-}
+pMR::null::SendMemoryWindow::SendMemoryWindow(
+        std::shared_ptr<Connection> const connection,
+        void *buffer, std::uint32_t const sizeByte) { }
 
-void pMR::mpi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
-{
-    delete p;
-}
+void pMR::null::SendMemoryWindow::init() { }
+
+void pMR::null::SendMemoryWindow::post(std::uint32_t const) { }
+
+void pMR::null::SendMemoryWindow::wait() { }
