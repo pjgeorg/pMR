@@ -19,6 +19,10 @@
 #cmakedefine pMR_PROFILING
 #endif // pMR_PROFILING
 
+#ifndef pMR_WARN_ZERO
+#cmakedefine pMR_WARN_ZERO
+#endif // pMR_WARN_ZERO
+
 #ifndef pMR_PROVIDER_CMA
 #cmakedefine pMR_PROVIDER_CMA
 #endif // pMR_PROVIDER_CMA

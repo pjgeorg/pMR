@@ -8,6 +8,10 @@ if(PROFILING)
     set(pMR_PROFILING PROFILING)
 endif()
 
+if(WARN.ZERO)
+    set(pMR_WARN_ZERO WARN.ZERO)
+endif()
+
 include(arch)
 include(thread)
 include(backend)

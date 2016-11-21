@@ -17,7 +17,9 @@ set(THREAD Serialized CACHE STRING "Threading model to use.")
 set(CAPI OFF CACHE BOOL "Build C API.")
 set(MIC OFF CACHE BOOL "Build for for first generation Intel Xeon Phi.")
 set(PROFILING OFF CACHE BOOL "Enable profiling.")
+
 set(ALIGNMENT 64 CACHE STRING "Set preferred memory alignment.")
+set(WARN.ZERO ON CACHE BOOL "Warn when using zero sized windows.")
 
 set(NULL.WARN ON CACHE BOOL "Warn when using provider null.")
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
