@@ -15,9 +15,29 @@
 #ifndef pMR_CONFIG_H
 #define pMR_CONFIG_H
 
-#ifndef PROFILING
-#cmakedefine PROFILING
-#endif
+#ifndef pMR_PROFILING
+#cmakedefine pMR_PROFILING
+#endif // pMR_PROFILING
+
+#ifndef pMR_PROVIDER_CMA
+#cmakedefine pMR_PROVIDER_CMA
+#endif // pMR_PROVIDER_CMA
+
+#ifndef pMR_PROVIDER_MPI
+#cmakedefine pMR_PROVIDER_MPI
+#endif // pMR_PROVIDER_MPI
+
+#ifndef pMR_PROVIDER_NULL
+#cmakedefine pMR_PROVIDER_NULL
+#endif // pMR_PROVIDER_NULL
+
+#ifndef pMR_PROVIDER_SELF
+#cmakedefine pMR_PROVIDER_SELF
+#endif // pMR_PROVIDER_SELF
+
+#ifndef pMR_PROVIDER_VERBS
+#cmakedefine pMR_PROVIDER_VERBS
+#endif // pMR_PROVIDER_VERBS
 
 namespace pMR
 {

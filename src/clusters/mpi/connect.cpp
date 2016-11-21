@@ -12,26 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_CLUSTERS_MPI_PROVIDER_H
-#define pMR_CLUSTERS_MPI_PROVIDER_H
+#include "connection.hpp"
 
-namespace pMR
+void pMR::Connection::connect(Target const &target)
 {
-    namespace mpi
-    {
-        class Connection;
-        class SendMemoryWindow;
-        class SendMemoryWindowDeleter
-        {
-            public:
-                void operator()(SendMemoryWindow*) const;
-        };
-        class RecvMemoryWindow;
-        class RecvMemoryWindowDeleter
-        {
-            public:
-                void operator()(RecvMemoryWindow*) const;
-        };
-    }
+    connectMPI(target);
 }
-#endif // pMR_PROVIDERS_MPI_PROVIDER_H

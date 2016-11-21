@@ -1,13 +1,4 @@
 add_library(CLUSTER OBJECT
-    ../qpaceb/connection.cpp
-    ../qpaceb/provider.cpp
-    ../qpaceb/recvmemorywindow.cpp
-    ../qpaceb/sendmemorywindow.cpp
+    connect.cpp
     node.cpp
     topology.cpp)
-
-install(FILES
-    ../qpaceb/connection.hpp
-    ../qpaceb/provider.hpp
-    ../qpaceb/recvmemorywindow.hpp
-    ../qpaceb/sendmemorywindow.hpp DESTINATION include/pmr)

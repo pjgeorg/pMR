@@ -12,9 +12,26 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_CLUSTERS_QPACE2_CONNECTION_H
-#define pMR_CLUSTERS_QPACE2_CONNECTION_H
+#include "connection.hpp"
+#include "target.hpp"
+#include "../../providers/verbs/topology.hpp"
 
-#include "../qpaceb/connection.hpp"
+void pMR::Connection::connect(Target const &target)
+{
+    if(target.isNull())
+    {
+        connectNull(target);
+        return;
+    }
 
-#endif // pMR_CLUSTERS_QPACE2_CONNECTION_H
+    if(target.isSelf())
+    {
+        connectSelf(target);
+        return;
+    }
+
+    verbs::Devices devices;
+    auto device = verbs::getIBAdapter(devices);
+
+    connectVerbs(target, device);
+}

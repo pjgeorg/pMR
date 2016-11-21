@@ -12,16 +12,22 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "provider.hpp"
-#include "../../providers/mpi/sendmemorywindow.hpp"
-#include "../../providers/mpi/recvmemorywindow.hpp"
+#include "connection.hpp"
+#include "target.hpp"
 
-void pMR::mpi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::Connection::connect(Target const &target)
 {
-    delete p;
-}
+    if(target.isNull())
+    {
+        connectNull(target);
+        return;
+    }
 
-void pMR::mpi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
-{
-    delete p;
+    if(target.isSelf())
+    {
+        connectSelf(target);
+        return;
+    }
+
+    connectCMA(target);
 }

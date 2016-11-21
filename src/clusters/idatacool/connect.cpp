@@ -13,22 +13,26 @@
 //  limitations under the License.
 
 #include "connection.hpp"
+#include "target.hpp"
 #include "node.hpp"
-#include "../../providers/verbs/connection.hpp"
-#include "../../providers/verbs/topology.hpp"
 #include "../../misc/singleton.hpp"
 #include "../../backends/backend.hpp"
+#include "../../providers/verbs/topology.hpp"
 
-void pMR::Connection::connectVerbs(Target const &target)
+void pMR::Connection::connect(Target const &target)
 {
-    verbs::Devices devices;
-    auto device = verbs::getIBAdapter(devices);
+    if(target.isNull())
+    {
+        connectNull(target);
+        return;
+    }
 
-    mVerbs = std::make_shared<verbs::Connection>(target, device);
-}
+    if(target.isSelf())
+    {
+        connectSelf(target);
+        return;
+    }
 
-pMR::Provider pMR::Connection::detectProvider(Target const &target) const
-{
     auto originNode = Singleton<Node>::Instance();
     decltype(originNode) targetNode;
 
@@ -36,10 +40,13 @@ pMR::Provider pMR::Connection::detectProvider(Target const &target) const
     
     if(originNode.getHostID() == targetNode.getHostID())
     {
-        return Provider::cma;
+        connectCMA(target);
     }
     else
     {
-        return Provider::verbs;
+        verbs::Devices devices;
+        auto device = verbs::getIBAdapter(devices);
+
+        connectVerbs(target, device);
     }
 }

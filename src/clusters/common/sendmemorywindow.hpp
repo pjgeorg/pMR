@@ -12,11 +12,12 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_CLUSTERS_SHM_SENDMEMORYWINDOW_H
-#define pMR_CLUSTERS_SHM_SENDMEMORYWINDOW_H
+#ifndef pMR_SENDMEMORYWINDOW_H
+#define pMR_SENDMEMORYWINDOW_H
 
 #include <cstdint>
 #include <memory>
+#include "config.hpp"
 #include "provider.hpp"
 
 namespace pMR
@@ -43,13 +44,32 @@ namespace pMR
         private:
             void *const mBuffer;
             std::uint32_t mSizeByte;
-            Provider mProvider = Provider::null;
-            std::unique_ptr<null::SendMemoryWindow,
-                null::SendMemoryWindowDeleter> mNull;
-            std::unique_ptr<self::SendMemoryWindow,
-                self::SendMemoryWindowDeleter> mSelf;
+            Provider mProvider;
+
+#ifdef pMR_PROVIDER_CMA
             std::unique_ptr<cma::SendMemoryWindow,
                 cma::SendMemoryWindowDeleter> mCMA;
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+            std::unique_ptr<mpi::SendMemoryWindow,
+                mpi::SendMemoryWindowDeleter> mMPI;
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+            std::unique_ptr<null::SendMemoryWindow,
+                null::SendMemoryWindowDeleter> mNull;
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+            std::unique_ptr<self::SendMemoryWindow,
+                self::SendMemoryWindowDeleter> mSelf;
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
+            std::unique_ptr<verbs::SendMemoryWindow,
+                verbs::SendMemoryWindowDeleter> mVerbs;
+#endif // pMR_PROVIDER_VERBS
     };
 }
-#endif // pMR_CLUSTERS_SHM_SENDMEMORYWINDOW_H
+#endif // pMR_SENDMEMORYWINDOW_H

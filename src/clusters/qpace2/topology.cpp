@@ -12,36 +12,12 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "connection.hpp"
 #include "topology.hpp"
 #include "node.hpp"
-#include "../../providers/verbs/connection.hpp"
-#include "../../providers/verbs/topology.hpp"
-#include "../../misc/singleton.hpp"
-#include "../../backends/backend.hpp"
 
 #ifdef QPACE2_WARN_TOPOLOGY
 #   include "../../misc/print.hpp"
 #endif // QPACE2_WARN TOPOLOGY
-
-void pMR::Connection::connectVerbs(Target const &target)
-{
-    verbs::Devices devices;
-    auto device = verbs::getIBAdapter(devices);
-
-    auto originNode = Singleton<Node>::Instance(device);
-
-    auto sendBuffer = originNode.flatten();
-    decltype(sendBuffer) recvBuffer;
-
-    backend::exchange(target, sendBuffer, recvBuffer); 
-
-    decltype(originNode) targetNode(recvBuffer);
-
-    auto portNumber = detectBestPort(originNode, targetNode);
-
-    mVerbs = std::make_shared<verbs::Connection>(target, device, portNumber);
-}
 
 std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
 {

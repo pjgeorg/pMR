@@ -2,25 +2,28 @@ if(MIC)
     include(mic)
 endif()
 
-set(CMAKE_CXX_FLAGS "-Wall -O3 -std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -std=c++11")
 
 if(PROFILING)
-    add_definitions(-DPROFILING)
+    set(pMR_PROFILING PROFILING)
 endif()
 
 include(arch)
 include(thread)
 include(backend)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include(provider)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
+
+add_subdirectory(clusters/common)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/common)
+
 string(TOLOWER ${CLUSTER} CLUSTER)
 add_subdirectory(clusters/${CLUSTER})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/${CLUSTER})
 
 install(FILES recvwindow.hpp sendwindow.hpp window.hpp DESTINATION include/pmr)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -44,6 +47,7 @@ add_library(pmr STATIC
     $<TARGET_OBJECTS:MISC>
     $<TARGET_OBJECTS:THREAD>
     $<TARGET_OBJECTS:BACKEND>
+    $<TARGET_OBJECTS:CLUSTER_COMMON>
     $<TARGET_OBJECTS:CLUSTER>
     $<TARGET_OBJECTS:ALLREDUCE>
     ${PROVIDERS}

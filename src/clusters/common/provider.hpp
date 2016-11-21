@@ -12,50 +12,33 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_CLUSTERS_SHM_PROVIDER_H
-#define pMR_CLUSTERS_SHM_PROVIDER_H
+#ifndef pMR_PROVIDER_H
+#define pMR_PROVIDER_H
+
+#include "config.hpp"
 
 namespace pMR
 {
     enum class Provider
     {
+#ifdef pMR_PROVIDER_CMA
+        cma,
+#endif // pMR_PROVIDER_CMA
+#ifdef pMR_PROVIDER_MPI
+        mpi,
+#endif // pMR_PROVIDER_MPI
+#ifdef pMR_PROVIDER_NULL
         null,
+#endif // pMR_PROVIDER_NULL
+#ifdef pMR_PROVIDER_SELF
         self,
-        cma
+#endif // pMR_PROVIDER_SELF
+#ifdef pMR_PROVIDER_VERBS
+        verbs,
+#endif // pMR_PROVIDER_VERBS
     };
 
-    namespace null
-    {
-        class Connection;
-        class SendMemoryWindow;
-        class SendMemoryWindowDeleter
-        {
-            public:
-                void operator()(SendMemoryWindow*) const;
-        };
-        class RecvMemoryWindow;
-        class RecvMemoryWindowDeleter
-        {
-            public:
-                void operator()(RecvMemoryWindow*) const;
-        };
-    }
-    namespace self
-    {
-        class Connection;
-        class SendMemoryWindow;
-        class SendMemoryWindowDeleter
-        {
-            public:
-                void operator()(SendMemoryWindow*) const;
-        };
-        class RecvMemoryWindow;
-        class RecvMemoryWindowDeleter
-        {
-            public:
-                void operator()(RecvMemoryWindow*) const;
-        };
-    }
+#ifdef pMR_PROVIDER_CMA
     namespace cma
     {
         class Connection;
@@ -72,5 +55,83 @@ namespace pMR
                 void operator()(RecvMemoryWindow*) const;
         };
     }
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+    namespace mpi
+    {
+        class Connection;
+        class SendMemoryWindow;
+        class SendMemoryWindowDeleter
+        {
+            public:
+                void operator()(SendMemoryWindow*) const;
+        };
+        class RecvMemoryWindow;
+        class RecvMemoryWindowDeleter
+        {
+            public:
+                void operator()(RecvMemoryWindow*) const;
+        };
+    }
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+    namespace null
+    {
+        class Connection;
+        class SendMemoryWindow;
+        class SendMemoryWindowDeleter
+        {
+            public:
+                void operator()(SendMemoryWindow*) const;
+        };
+        class RecvMemoryWindow;
+        class RecvMemoryWindowDeleter
+        {
+            public:
+                void operator()(RecvMemoryWindow*) const;
+        };
+    }
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+    namespace self
+    {
+        class Connection;
+        class SendMemoryWindow;
+        class SendMemoryWindowDeleter
+        {
+            public:
+                void operator()(SendMemoryWindow*) const;
+        };
+        class RecvMemoryWindow;
+        class RecvMemoryWindowDeleter
+        {
+            public:
+                void operator()(RecvMemoryWindow*) const;
+        };
+    }
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
+    namespace verbs
+    {
+        class Device;
+        class Connection;
+        class SendMemoryWindow;
+        class SendMemoryWindowDeleter
+        {
+            public:
+                void operator()(SendMemoryWindow*) const;
+        };
+        class RecvMemoryWindow;
+        class RecvMemoryWindowDeleter
+        {
+            public:
+                void operator()(RecvMemoryWindow*) const;
+        };
+    }
+#endif // pMR_PROVIDER_VERBS
 }
-#endif // pMR_PROVIDERS_SHM_PROVIDER_H
+#endif // pMR_PROVIDER_H

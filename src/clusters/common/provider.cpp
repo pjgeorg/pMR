@@ -13,12 +13,40 @@
 //  limitations under the License.
 
 #include "provider.hpp"
+
+#ifdef pMR_PROVIDER_CMA
+#include "../../providers/cma/sendmemorywindow.hpp"
+#include "../../providers/cma/recvmemorywindow.hpp"
+
+void pMR::cma::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+{
+    delete p;
+}
+
+void pMR::cma::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+{
+    delete p;
+}
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+#include "../../providers/mpi/sendmemorywindow.hpp"
+#include "../../providers/mpi/recvmemorywindow.hpp"
+
+void pMR::mpi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+{
+    delete p;
+}
+
+void pMR::mpi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+{
+    delete p;
+}
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
 #include "../../providers/null/sendmemorywindow.hpp"
 #include "../../providers/null/recvmemorywindow.hpp"
-#include "../../providers/self/sendmemorywindow.hpp"
-#include "../../providers/self/recvmemorywindow.hpp"
-#include "../../providers/verbs/sendmemorywindow.hpp"
-#include "../../providers/verbs/recvmemorywindow.hpp"
 
 void pMR::null::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
@@ -29,6 +57,11 @@ void pMR::null::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+#include "../../providers/self/sendmemorywindow.hpp"
+#include "../../providers/self/recvmemorywindow.hpp"
 
 void pMR::self::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
@@ -39,6 +72,11 @@ void pMR::self::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
+#include "../../providers/verbs/sendmemorywindow.hpp"
+#include "../../providers/verbs/recvmemorywindow.hpp"
 
 void pMR::verbs::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
@@ -49,3 +87,4 @@ void pMR::verbs::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
+#endif // pMR_PROVIDER_VERBS

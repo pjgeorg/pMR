@@ -14,10 +14,26 @@
 
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
-#include "../../providers/null/sendmemorywindow.hpp"
-#include "../../providers/self/sendmemorywindow.hpp"
-#include "../../providers/cma/sendmemorywindow.hpp"
-#include "../../providers/verbs/sendmemorywindow.hpp"
+
+#ifdef pMR_PROVIDER_CMA
+#   include "../../providers/cma/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+#   include "../../providers/mpi/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+#   include "../../providers/null/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+#   include "../../providers/self/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
+#   include "../../providers/verbs/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_VERBS
 
 pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)
@@ -27,20 +43,7 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
 {
     switch(mProvider)
     {
-        case Provider::null:
-        {
-            mNull = std::unique_ptr<null::SendMemoryWindow,
-                    null::SendMemoryWindowDeleter>(new null::SendMemoryWindow(
-                                connection.mNull, buffer, sizeByte));
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf = std::unique_ptr<self::SendMemoryWindow,
-                    self::SendMemoryWindowDeleter>(new self::SendMemoryWindow(
-                                connection.mSelf, buffer, sizeByte));
-            break;
-        }
+#ifdef pMR_PROVIDER_CMA
         case Provider::cma:
         {
             mCMA = std::unique_ptr<cma::SendMemoryWindow,
@@ -48,6 +51,39 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
                                 connection.mCMA, buffer, sizeByte));
             break;
         }
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+        case Provider::mpi:
+        {
+            mMPI = std::unique_ptr<mpi::SendMemoryWindow,
+                    mpi::SendMemoryWindowDeleter>(new mpi::SendMemoryWindow(
+                                connection.mMPI, buffer, sizeByte));
+            break;
+        }
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+        case Provider::null:
+        {
+            mNull = std::unique_ptr<null::SendMemoryWindow,
+                    null::SendMemoryWindowDeleter>(new null::SendMemoryWindow(
+                                connection.mNull, buffer, sizeByte));
+            break;
+        }
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+        case Provider::self:
+        {
+            mSelf = std::unique_ptr<self::SendMemoryWindow,
+                    self::SendMemoryWindowDeleter>(new self::SendMemoryWindow(
+                                connection.mSelf, buffer, sizeByte));
+            break;
+        }
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
         case Provider::verbs:
         {
             mVerbs = std::unique_ptr<verbs::SendMemoryWindow,
@@ -55,6 +91,7 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
                                 connection.mVerbs, buffer, sizeByte));
             break;
         }
+#endif // pMR_PROVIDER_VERBS
     }
 }
 
@@ -64,26 +101,45 @@ void pMR::SendMemoryWindow::init()
 {
     switch(mProvider)
     {
-        case Provider::null:
-        {
-            mNull->init();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->init();
-            break;
-        }
+#ifdef pMR_PROVIDER_CMA
         case Provider::cma:
         {
             mCMA->init();
             break;
         }
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+        case Provider::mpi:
+        {
+            mMPI->init();
+            break;
+        }
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+        case Provider::null:
+        {
+            mNull->init();
+            break;
+        }
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+        case Provider::self:
+        {
+            mSelf->init();
+            break;
+        }
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
         case Provider::verbs:
         {
             mVerbs->init();
             break;
         }
+#endif // pMR_PROVIDER_VERBS
     }
 }
 
@@ -101,26 +157,45 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
 
     switch(mProvider)
     {
-        case Provider::null:
-        {
-            mNull->post(sizeByte);
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->post(sizeByte);
-            break;
-        }
+#ifdef pMR_PROVIDER_CMA
         case Provider::cma:
         {
             mCMA->post(sizeByte);
             break;
         }
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+        case Provider::mpi:
+        {
+            mMPI->post(sizeByte);
+            break;
+        }
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+        case Provider::null:
+        {
+            mNull->post(sizeByte);
+            break;
+        }
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+        case Provider::self:
+        {
+            mSelf->post(sizeByte);
+            break;
+        }
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
         case Provider::verbs:
         {
             mVerbs->post(sizeByte);
             break;
         }
+#endif // pMR_PROVIDER_VERBS
     }
 }
 
@@ -128,26 +203,45 @@ void pMR::SendMemoryWindow::wait()
 {
     switch(mProvider)
     {
-        case Provider::null:
-        {
-            mNull->wait();
-            break;
-        }
-        case Provider::self:
-        {
-            mSelf->wait();
-            break;
-        }
+#ifdef pMR_PROVIDER_CMA
         case Provider::cma:
         {
             mCMA->wait();
             break;
         }
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+        case Provider::mpi:
+        {
+            mMPI->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+        case Provider::null:
+        {
+            mNull->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+        case Provider::self:
+        {
+            mSelf->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
         case Provider::verbs:
         {
             mVerbs->wait();
             break;
         }
+#endif // pMR_PROVIDER_VERBS
     }
 }
 

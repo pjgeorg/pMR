@@ -13,13 +13,40 @@
 //  limitations under the License.
 
 #include "connection.hpp"
-#include "../../providers/verbs/connection.hpp"
+#include "target.hpp"
+#include "node.hpp"
+#include "topology.hpp"
+#include "../../misc/singleton.hpp"
+#include "../../backends/backend.hpp"
 #include "../../providers/verbs/topology.hpp"
 
-void pMR::Connection::connectVerbs(Target const &target)
+void pMR::Connection::connect(Target const &target)
 {
+    if(target.isNull())
+    {
+        connectNull(target);
+        return;
+    }
+
+    if(target.isSelf())
+    {
+        connectSelf(target);
+        return;
+    }
+
     verbs::Devices devices;
     auto device = verbs::getIBAdapter(devices);
 
-    mVerbs = std::make_shared<verbs::Connection>(target, device);
+    auto originNode = Singleton<Node>::Instance(device);
+
+    auto sendBuffer = originNode.flatten();
+    decltype(sendBuffer) recvBuffer;
+
+    backend::exchange(target, sendBuffer, recvBuffer); 
+
+    decltype(originNode) targetNode(recvBuffer);
+
+    auto portNumber = detectBestPort(originNode, targetNode);
+
+    connectVerbs(target, device, portNumber);
 }

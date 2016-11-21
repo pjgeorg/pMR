@@ -25,14 +25,22 @@
 #ifndef pMR_CONNECTION_H
 #define pMR_CONNECTION_H
 
+#include <memory>
+#include "config.hpp"
+#include "provider.hpp"
+
 //! @brief pMR namespace.
 namespace pMR
 {
+    class SendMemoryWindow;
+    class RecvMemoryWindow;
     class Target;
 
     //! @brief Point-to-Point Connection
     class Connection
     {
+        friend SendMemoryWindow;
+        friend RecvMemoryWindow;
         public:
             //! @brief Establish a point-to-point connection with target.
             //! @param target Target
@@ -47,10 +55,39 @@ namespace pMR
             //!     have to be serialized.
             Connection(Target const &target);
             Connection(const Connection&) = delete;
-            Connection(Connection&&) = delete;
+            Connection(Connection&&) = default;
             Connection& operator=(const Connection&) = delete;
-            Connection& operator=(Connection&&) = delete;
+            Connection& operator=(Connection&&) = default;
             ~Connection() = default;
+        private:
+            Provider mProvider;
+            void connect(Target const &target);
+
+#ifdef pMR_PROVIDER_CMA
+            std::shared_ptr<cma::Connection> mCMA;
+            void connectCMA(Target const &target);
+#endif // pMR_PROVIDER_CMA
+
+#ifdef pMR_PROVIDER_MPI
+            std::shared_ptr<mpi::Connection> mMPI;
+            void connectMPI(Target const &target);
+#endif // pMR_PROVIDER_MPI
+
+#ifdef pMR_PROVIDER_NULL
+            std::shared_ptr<null::Connection> mNull;
+            void connectNull(Target const &target);
+#endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_SELF
+            std::shared_ptr<self::Connection> mSelf;
+            void connectSelf(Target const &target);
+#endif // pMR_PROVIDER_SELF
+
+#ifdef pMR_PROVIDER_VERBS
+            std::shared_ptr<verbs::Connection> mVerbs;
+            void connectVerbs(Target const &target, verbs::Device const &device,
+                    std::uint8_t const portNumber = 1);
+#endif // pMR_PROVIDER_VERBS
     };
 }
 #endif // pMR_CONNECTION_H
