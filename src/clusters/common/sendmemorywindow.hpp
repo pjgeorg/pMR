@@ -42,7 +42,7 @@ namespace pMR
             void const* data() const;
             std::uint32_t size() const;
         private:
-            void *const mBuffer;
+            void *mBuffer;
             std::uint32_t mSizeByte;
             Provider mProvider;
 
