@@ -23,11 +23,9 @@
 #include <stdexcept>
 #include <limits>
 #include <cstdint>
-#include <ios>
 #include <sstream>
 #include "config.hpp"
 #include "misc/allocator.hpp"
-#include "misc/print.hpp"
 #include "misc/profiling.hpp"
 
 namespace pMR
@@ -42,7 +40,7 @@ namespace pMR
             Window(T *buffer, std::uint32_t const count);
             explicit Window(std::uint32_t const count);
             Window(const Window&) = delete;
-            Window(Window&&) = default;
+            Window(Window&&);
             Window& operator=(const Window&) = delete;
             Window& operator=(Window&&) = default;
             ~Window() = default;
@@ -112,22 +110,23 @@ namespace pMR
             std::vector<T, AlignedAllocator<T>> mVector;
             T* mBuffer;
             std::uint32_t mCount;
+            void checkBuffer();
+            void checkBufferPointer();
             void checkBufferType();
-            void checkBufferSize(std::uint32_t const count);
+            void checkBufferSize();
             void checkBoundaries(std::uint32_t const offset,
                     std::uint32_t const count);
-#ifdef PROFILING
+#ifdef pMR_PROFILING
             std::uint32_t mSizeByte = 0;
             std::uint64_t mIterations = 0;
             double mTimeInit = 0.0;
             double mTimePost = 0.0;
             double mTimeWait = 0.0;
             double mTimeCopy = 0.0;
-            template<std::size_t N>
-            void resetStats(char const (&type)[N]);
+            bool mPrintStats = true;
             template<std::size_t N>
             void printStats(char const (&type)[N]);
-#endif // PROFILING
+#endif // pMR_PROFILING
     };
 }
 
@@ -135,23 +134,41 @@ template<typename T>
 pMR::Window<T>::Window(T *buffer, std::uint32_t const count)
     :   mBuffer(buffer), mCount(count)
 {
-#ifdef PROFILING
+#ifdef pMR_PROFILING
     mSizeByte = count * sizeof(T);
-#endif // PROFILING
-    checkBufferType();
-    checkBufferSize(mCount);
+#endif // pMR_PROFILING
+    checkBuffer();
 }
 
 template<typename T>
 pMR::Window<T>::Window(std::uint32_t const count)
     :   mVector(count), mBuffer(mVector.data()), mCount(count)
 {
-#ifdef PROFILING
+#ifdef pMR_PROFILING
     mSizeByte = count * sizeof(T);
-#endif // PROFILING
+#endif // pMR_PROFILING
     checkBufferType();
-    checkBufferSize(mCount);
+    checkBufferSize();
 }
+
+template<typename T>
+pMR::Window<T>::Window(Window &&other)
+    :   mVector(std::move(other.mVector)),
+        mBuffer(std::move(other.mBuffer)),
+        mCount(std::move(other.mCount))
+#ifdef pMR_PROFILING
+        ,mSizeByte(std::move(other.mSizeByte)),
+        mIterations(std::move(other.mIterations)),
+        mTimeInit(std::move(other.mTimeInit)),
+        mTimePost(std::move(other.mTimePost)),
+        mTimeWait(std::move(other.mTimeWait)),
+        mTimeCopy(std::move(other.mTimeCopy))
+{
+    other.mPrintStats = false;
+}
+#else
+{ }
+#endif // pMR_PROFILING
 
 template<typename T>
 T& pMR::Window<T>::operator[](int const index)
@@ -210,7 +227,7 @@ T const* pMR::Window<T>::end() const
 template<typename T>
 T const* pMR::Window<T>::cend() const
 {
-    return mVector.end();
+    return mVector.cend();
 }
 
 template<typename T>
@@ -252,6 +269,26 @@ bool pMR::Window<T>::isSame(std::uint32_t const count)
 }
 
 template<typename T>
+void pMR::Window<T>::checkBuffer()
+{
+    checkBufferPointer();
+    checkBufferType();
+    checkBufferSize();
+}
+
+template<typename T>
+void pMR::Window<T>::checkBufferPointer()
+{
+    if(mBuffer == nullptr)
+    {
+        if(mCount != 0)
+        {
+            std::runtime_error("pMR: Buffer is non-zero and nullptr.");
+        }
+    }
+}
+
+template<typename T>
 void pMR::Window<T>::checkBufferType()
 {
     static_assert(std::is_trivial<T>::value,
@@ -259,15 +296,15 @@ void pMR::Window<T>::checkBufferType()
 }
 
 template<typename T>
-void pMR::Window<T>::checkBufferSize(std::uint32_t const count)
+void pMR::Window<T>::checkBufferSize()
 {
-    if(count * sizeof(T) > std::numeric_limits<std::uint32_t>::max())
+    if(mCount * sizeof(T) > std::numeric_limits<std::uint32_t>::max())
     {
         throw std::overflow_error("Message Size");
     }
 
 #ifdef pMR_WARN_ZERO
-    if(count == 0)
+    if(mCount == 0)
     {
         print("pMR: Using zero sized Window.");
     }
@@ -284,31 +321,24 @@ void pMR::Window<T>::checkBoundaries(std::uint32_t const offset,
     }
 }
 
-#ifdef PROFILING
-template<typename T>
-template<std::size_t N>
-void pMR::Window<T>::resetStats(char const (&type)[N])
-{
-    printStats(type);
-    mSizeByte = mCount * sizeof(T);
-    mIterations = 0;
-    mTimeInit = 0.0;
-    mTimePost = 0.0;
-    mTimeWait = 0.0;
-    mTimeCopy = 0.0;
-}
-
+#ifdef pMR_PROFILING
 template<typename T>
 template<std::size_t N>
 void pMR::Window<T>::printStats(char const (&type)[N])
 {
-    if(mIterations)
+    if(mPrintStats)
     {
-        print("pMR:", type, "SizeByte", mSizeByte, "Init", mTimeInit,
-                "Post", mTimePost, "Wait", mTimeWait, "Sum",
-                mTimeInit + mTimePost + mTimeWait,
-                "Copy", mTimeCopy, "Iterations", mIterations);
+        std::ostringstream oss;
+        oss << "pMR: " << type
+            << " SizeByte " << std::setw(8) << mSizeByte
+            << " Init " << std::scientific << mTimeInit
+            << " Post " << std::scientific << mTimePost
+            << " Wait " << std::scientific << mTimeWait
+            << " Sum " << std::scientific << mTimeInit + mTimePost + mTimeWait
+            << " Copy " << mTimeCopy << " Iterations " << mIterations
+            << std::endl;
+        std::cout << oss.str();
     }
 }
-#endif // PROFILING
+#endif // pMR_PROFILING
 #endif // pMR_WINDOW_H

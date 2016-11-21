@@ -150,34 +150,34 @@ pMR::RecvWindow<T>::RecvWindow(Connection const &connection,
 template<typename T>
 pMR::RecvWindow<T>::~RecvWindow()
 {
-#ifdef PROFILING
+#ifdef pMR_PROFILING
     this->printStats("Recv");
-#endif // PROFILING
+#endif // pMR_PROFILING
 }
 
 template<typename T>
 void pMR::RecvWindow<T>::init()
 {
-    PROF_START(this->mTimeInit);
+    pMR_PROF_START(this->mTimeInit);
     mMemoryWindow.init();
-    PROF_STOP(this->mTimeInit);
+    pMR_PROF_STOP(this->mTimeInit);
 }
 
 template<typename T>
 void pMR::RecvWindow<T>::post()
 {
-    PROF_START(this->mTimePost);
+    pMR_PROF_START(this->mTimePost);
     mMemoryWindow.post();
-    PROF_STOP(this->mTimePost);
+    pMR_PROF_STOP(this->mTimePost);
 }
 
 template<typename T>
 void pMR::RecvWindow<T>::wait()
 {
-    PROF_START(this->mTimeWait);
+    pMR_PROF_START(this->mTimeWait);
     mMemoryWindow.wait();
-    PROF_STOP(this->mTimeWait);
-    PROF_COUNT(this->mIterations);
+    pMR_PROF_STOP(this->mTimeWait);
+    pMR_PROF_COUNT(this->mIterations);
 }
 
 template<typename T>
@@ -185,10 +185,10 @@ template<class Iterator>
 void pMR::RecvWindow<T>::extract(Iterator outputIt,
         std::uint32_t const offset, std::uint32_t const count)
 {
-    PROF_START(this->mTimeCopy);
+    pMR_PROF_START(this->mTimeCopy);
     this->checkBoundaries(offset, count);
     std::copy_n(this->mVector.cbegin() + offset, count, outputIt);
-    PROF_STOP(this->mTimeCopy);
+    pMR_PROF_STOP(this->mTimeCopy);
 }
 
 template<typename T>
@@ -204,7 +204,7 @@ void pMR::RecvWindow<T>::extractMT(Iterator outputIt,
         std::uint32_t const offset, std::uint32_t const count,
         int const threadID, int const threadCount)
 {
-    PROF_START_THREAD(this->mTimeCopy);
+    pMR_PROF_START_THREAD(this->mTimeCopy);
     this->checkBoundaries(offset, count);
     static_assert(isRandomAccessIterator<Iterator>(),
             "Iterator is not of random access type");
@@ -218,7 +218,7 @@ void pMR::RecvWindow<T>::extractMT(Iterator outputIt,
 
     std::copy_n(this->mVector.cbegin() + threadStart, threadEnd - threadStart,
             outputIt + threadStart);
-    PROF_STOP_THREAD(this->mTimeCopy);
+    pMR_PROF_STOP_THREAD(this->mTimeCopy);
 }
 
 template<typename T>
