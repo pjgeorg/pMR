@@ -44,6 +44,12 @@ namespace pMR { namespace mpi
             void *const mBuffer;
             std::uint32_t mSizeByte;
             MPI_Request mRequest = MPI_REQUEST_NULL;
+
+#ifdef MPI_PERSISTENT
+            void initSend();
+#endif // MPI_PERSISTENT
+            void send(std::uint32_t const sizeByte);
+            void freeRequest();
     };
 
     class RecvMemoryWindow
@@ -64,6 +70,12 @@ namespace pMR { namespace mpi
             void *const mBuffer;
             std::uint32_t mSizeByte;
             MPI_Request mRequest = MPI_REQUEST_NULL;
+
+#ifdef MPI_PERSISTENT
+            void initRecv();
+#endif // MPI_PERSISTENT
+            void recv();
+            void freeRequest();
     };
 }}
 #endif // pMR_PROVIDERS_MPI_MEMORYWINDOW_H
