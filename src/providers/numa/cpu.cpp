@@ -20,7 +20,6 @@ extern "C"
 #include <sched.h>
 }
 #include "support.hpp"
-#include "../../misc/singleton.hpp"
 
 int pMR::numa::getCPU()
 {
@@ -36,7 +35,7 @@ int pMR::numa::getCPU()
 
 int pMR::numa::getNode(int const cpu)
 {
-    Singleton<Support>::Instance();
+    checkSupport();
 
     int node = numa_node_of_cpu(cpu);
 

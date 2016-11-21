@@ -23,5 +23,7 @@ namespace pMR { namespace numa
             Support();
             ~Support() = default;
     };
+
+    void checkSupport();
 }}
 #endif // pMR_PROVIDERS_NUMA_SUPPORT_H

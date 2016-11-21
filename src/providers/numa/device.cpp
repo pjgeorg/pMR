@@ -18,11 +18,10 @@
 #include <string>
 #include <stdexcept>
 #include "support.hpp"
-#include "../../misc/singleton.hpp"
 
 int pMR::numa::getNode(std::string const devicePath)
 {
-    Singleton<Support>::Instance();
+    checkSupport();
 
     std::ifstream deviceFile(devicePath + "/device/numa_node", std::ios::in);
     if(!deviceFile)

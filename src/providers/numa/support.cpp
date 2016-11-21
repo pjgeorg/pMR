@@ -18,6 +18,7 @@ extern "C"
 {
 #include <numa.h>
 }
+#include "../../misc/singleton.hpp"
 
 pMR::numa::Support::Support()
 {
@@ -25,4 +26,9 @@ pMR::numa::Support::Support()
     {
         throw std::runtime_error("pMR: Support support unavailable.");
     }
+}
+
+void pMR::numa::checkSupport()
+{
+    Singleton<Support>::Instance();
 }
