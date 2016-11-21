@@ -34,5 +34,8 @@ namespace pMR { namespace backend
             bool mMultiple = false;
             bool mSerialized = false;
     };
+
+    bool threadMultiple();
+    bool threadSerialized();
 }}
 #endif // pMR_BACKENDS_MPI_THREADSUPPORT_H

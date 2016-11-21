@@ -15,7 +15,6 @@
 #include "connection.hpp"
 #include "target.hpp"
 #include "../../backends/backend.hpp"
-#include "../../misc/singleton.hpp"
 #include "../../backends/mpi/threadsupport.hpp"
 #include "../../threads/thread.hpp"
 
@@ -24,14 +23,13 @@ pMR::mpi::Connection::Connection(Target const &target)
         mTargetRank(target.getTargetRank()),
         mSendTag(reinterpret_cast<std::uintptr_t>(this))
 {
-    if(Singleton<backend::ThreadSupport>::Instance().multiple())
+    if(backend::threadMultiple())
     {
         mMultipleThreadSupport = true;
     }
     else
     {
-        if(!Singleton<backend::ThreadSupport>::Instance().serialized() &&
-               !thread::isThreaded())
+        if(!backend::threadSerialized() && !thread::isThreaded())
         {
             throw std::runtime_error("pMR: Require at least "
                     "MPI_THREAD_SERIALIZED Thread support");

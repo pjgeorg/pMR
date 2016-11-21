@@ -14,6 +14,7 @@
 
 #include "threadsupport.hpp"
 #include <stdexcept>
+#include "../../misc/singleton.hpp"
 
 pMR::backend::ThreadSupport::ThreadSupport()
 {
@@ -42,4 +43,14 @@ bool pMR::backend::ThreadSupport::multiple() const
 bool pMR::backend::ThreadSupport::serialized() const
 {
     return mSerialized;
+}
+
+bool pMR::backend::threadMultiple()
+{
+    return Singleton<ThreadSupport>::Instance().multiple();
+}
+
+bool pMR::backend::threadSerialized()
+{
+    return Singleton<ThreadSupport>::Instance().serialized();
 }

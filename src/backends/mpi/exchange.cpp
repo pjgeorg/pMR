@@ -20,14 +20,12 @@ extern "C"
 }
 #include "target.hpp"
 #include "threadsupport.hpp"
-#include "../../misc/singleton.hpp"
 #include "../../threads/thread.hpp"
 
 void pMR::backend::exchange(Target const &target,
         void const *sendBuffer, void *recvBuffer, std::uint32_t const sizeByte)
 {
-    if(Singleton<ThreadSupport>::Instance().multiple() ||
-            !thread::isThreaded() || thread::isSerialized())
+    if(threadMultiple() || !thread::isThreaded() || thread::isSerialized())
     {
         if(MPI_Sendrecv(sendBuffer, sizeByte, MPI_BYTE,
                 target.getTargetRank(),
@@ -44,7 +42,7 @@ void pMR::backend::exchange(Target const &target,
     }
     else
     {
-        if(Singleton<ThreadSupport>::Instance().serialized())
+        if(threadSerialized())
         {
             MPI_Request sendRequest;
             MPI_Request recvRequest;
