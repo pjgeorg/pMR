@@ -90,6 +90,36 @@ namespace pMR
             //! @return Iterator to const to the element following the last
             //!     element of the internal buffer.
             T const* cend() const;
+            //! @brief Returns a reverse iterator to the beginning of the
+            //!     internal buffer.
+            //! @return Reverse Iterator to the first element of the internal
+            //!     buffer.
+            T* rbegin();
+            //! @brief Returns a reverse iterator to const to the beginning of
+            //!     the internal buffer.
+            //! @return Reverse Iterator to const to the first element of the internal
+            //!     buffer.
+            T const* rbegin() const;
+            //! @brief Returns a reverse iterator to const to the beginning of
+            //!     the internal buffer.
+            //! @return Reverse Iterator to const to the first element of the
+            //!     internal buffer.
+            T const* crbegin() const;
+            //! @brief Returns a reverse Iterator to the end of the internal
+            //!     buffer.
+            //! @return Reverse Iterator to the element following the last
+            //!     element of the internal buffer.
+            T* rend();
+            //! @brief Returns a reverse Iterator to to const the end of the
+            //!     internal buffer.
+            //! @return Reverse Iterator to const to the element following the
+            //!     last element of the internal buffer.
+            T const* rend() const;
+            //! @brief Returns a reverse Iterator to const to the end of the
+            //!     internal buffer.
+            //! @return Reverse Iterator to const to the element following the
+            //!     last element of the internal buffer.
+            T const* crend() const;
             //! @brief Returns the number of elements in the internal buffer.
             //! @return The number of elements in the internal buffer.
             std::uint32_t size() const;
@@ -228,6 +258,42 @@ template<typename T>
 T const* pMR::Window<T>::cend() const
 {
     return mVector.cend();
+}
+
+template<typename T>
+T* pMR::Window<T>::rbegin()
+{
+    return mVector.rbegin();
+}
+
+template<typename T>
+T const* pMR::Window<T>::rbegin() const
+{
+    return mVector.rbegin();
+}
+
+template<typename T>
+T const* pMR::Window<T>::crbegin() const
+{
+    return mVector.crbegin();
+}
+
+template<typename T>
+T* pMR::Window<T>::rend()
+{
+    return mVector.rend();
+}
+
+template<typename T>
+T const* pMR::Window<T>::rend() const
+{
+    return mVector.rend();
+}
+
+template<typename T>
+T const* pMR::Window<T>::crend() const
+{
+    return mVector.crend();
 }
 
 template<typename T>
