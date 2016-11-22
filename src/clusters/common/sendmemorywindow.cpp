@@ -27,6 +27,10 @@
 #   include "../../providers/null/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+#   include "../../providers/ofi/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
 #   include "../../providers/self/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_SELF
@@ -72,6 +76,16 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
             break;
         }
 #endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI = std::unique_ptr<ofi::SendMemoryWindow,
+                    ofi::SendMemoryWindowDeleter>(new ofi::SendMemoryWindow(
+                                connection.mOFI, buffer, sizeByte));
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
@@ -124,6 +138,14 @@ void pMR::SendMemoryWindow::init()
             break;
         }
 #endif // pMR_PROVIDER_NULL
+        
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI->init();
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
@@ -181,6 +203,14 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
         }
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI->post(sizeByte);
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
         {
@@ -226,6 +256,14 @@ void pMR::SendMemoryWindow::wait()
             break;
         }
 #endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:

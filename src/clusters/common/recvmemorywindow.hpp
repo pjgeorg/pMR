@@ -60,6 +60,11 @@ namespace pMR
                 null::RecvMemoryWindowDeleter> mNull;
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+            std::unique_ptr<ofi::RecvMemoryWindow,
+                ofi::RecvMemoryWindowDeleter> mOFI;
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
             std::unique_ptr<self::RecvMemoryWindow,
                 self::RecvMemoryWindowDeleter> mSelf;

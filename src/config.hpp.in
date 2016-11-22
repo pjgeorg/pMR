@@ -35,6 +35,10 @@
 #cmakedefine pMR_PROVIDER_NULL
 #endif // pMR_PROVIDER_NULL
 
+#ifndef pMR_PROVIDER_OFI
+#cmakedefine pMR_PROVIDER_OFI
+#endif // pMR_PROVIDER_OFI
+
 #ifndef pMR_PROVIDER_SELF
 #cmakedefine pMR_PROVIDER_SELF
 #endif // pMR_PROVIDER_SELF

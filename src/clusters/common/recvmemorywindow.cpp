@@ -27,6 +27,10 @@
 #   include "../../providers/null/recvmemorywindow.hpp"
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+#   include "../../providers/ofi/recvmemorywindow.hpp"
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
 #   include "../../providers/self/recvmemorywindow.hpp"
 #endif // pMR_PROVIDER_SELF
@@ -72,6 +76,16 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
             break;
         }
 #endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI = std::unique_ptr<ofi::RecvMemoryWindow,
+                    ofi::RecvMemoryWindowDeleter>(new ofi::RecvMemoryWindow(
+                                connection.mOFI, buffer, sizeByte));
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
@@ -125,6 +139,14 @@ void pMR::RecvMemoryWindow::init()
         }
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI->init();
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
         {
@@ -171,6 +193,14 @@ void pMR::RecvMemoryWindow::post()
         }
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI->post();
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
         {
@@ -216,6 +246,14 @@ void pMR::RecvMemoryWindow::wait()
             break;
         }
 #endif // pMR_PROVIDER_NULL
+
+#ifdef pMR_PROVIDER_OFI
+        case Provider::ofi:
+        {
+            mOFI->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:

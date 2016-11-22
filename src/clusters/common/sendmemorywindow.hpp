@@ -61,6 +61,11 @@ namespace pMR
                 null::SendMemoryWindowDeleter> mNull;
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+            std::unique_ptr<ofi::SendMemoryWindow,
+                ofi::SendMemoryWindowDeleter> mOFI;
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
             std::unique_ptr<self::SendMemoryWindow,
                 self::SendMemoryWindowDeleter> mSelf;

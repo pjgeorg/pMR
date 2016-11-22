@@ -78,6 +78,11 @@ namespace pMR
             void connectNull(Target const &target);
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+            std::shared_ptr<ofi::Connection> mOFI;
+            void connectOFI(Target const &target, ofi::Info const &info);
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
             std::shared_ptr<self::Connection> mSelf;
             void connectSelf(Target const &target);

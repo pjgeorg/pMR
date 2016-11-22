@@ -46,6 +46,15 @@ void pMR::Connection::connectNull(Target const &target)
 }
 #endif // pMR_PROVIDER_NULL
 
+#ifdef pMR_PROVIDER_OFI
+#include "../../providers/ofi/connection.hpp"
+void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
+{
+    mProvider = Provider::ofi;
+    mOFI = std::make_shared<ofi::Connection>(target, info);
+}
+#endif // pMR_PROVIDER_OFI
+
 #ifdef pMR_PROVIDER_SELF
 #include "../../providers/self/connection.hpp"
 void pMR::Connection::connectSelf(Target const &target)
