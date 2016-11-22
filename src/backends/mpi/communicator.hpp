@@ -16,8 +16,8 @@
 //! @brief Public interface for Communicator.
 //!
 //! @author Peter Georg
-#ifndef pMR_BACKENDS_MPI_COMMUNICATOR_H
-#define pMR_BACKENDS_MPI_COMMUNICATOR_H
+#ifndef pMR_COMMUNICATOR_H
+#define pMR_COMMUNICATOR_H
 
 #include <memory>
 #include <vector>
@@ -106,4 +106,4 @@ namespace pMR
             bool mCartesian = false;
     };
 }
-#endif // pMR_BACKENDS_MPI_COMMUNICATOR_H
+#endif // pMR_COMMUNICATOR_H

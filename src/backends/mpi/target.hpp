@@ -16,8 +16,8 @@
 //! @brief Public interface for Target.
 //!
 //! @author Peter Georg
-#ifndef pMR_BACKENDS_MPI_TARGET_H
-#define pMR_BACKENDS_MPI_TARGET_H
+#ifndef pMR_TARGET_H
+#define pMR_TARGET_H
 
 #include <memory>
 extern "C"
@@ -88,4 +88,4 @@ namespace pMR
             void queryTarget();
     };
 }
-#endif // pMR_BACKENDS_MPI_TARGET_H
+#endif // pMR_TARGET_H
