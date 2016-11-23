@@ -34,6 +34,7 @@ namespace pMR { namespace verbs
             ibv_mtu getMaxMTU() const;
             std::uint16_t getSubnetManagerLID() const;
             std::uint8_t getSubnetManagerServiceLevel() const;
+            std::uint32_t getMaxMessageSize() const;
         private:
             ibv_port_attr mPortAttributes;
     };

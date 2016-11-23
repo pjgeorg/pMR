@@ -31,6 +31,7 @@ namespace pMR { namespace verbs
             ~DeviceAttributes() = default;
             std::uint64_t getNodeGUID() const;
             std::uint8_t getPortCount() const;
+            std::uint64_t getMaxMemoryRegionSize() const;
         private:
             ibv_device_attr mDeviceAttributes;
     };

@@ -48,3 +48,8 @@ std::uint8_t pMR::verbs::PortAttributes::getSubnetManagerServiceLevel() const
 {
     return mPortAttributes.sm_sl;
 }
+
+std::uint32_t pMR::verbs::PortAttributes::getMaxMessageSize() const
+{
+    return mPortAttributes.max_msg_sz;
+}

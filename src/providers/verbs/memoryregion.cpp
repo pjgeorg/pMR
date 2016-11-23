@@ -27,6 +27,12 @@ pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
     access = updateMemoryRegionAccessODP(context, access);
 #endif // VERBS_ODP
 
+    if(size > context.getMaxMemoryRegionSize()
+            or size > context.getMaxMessageSize())
+    {
+        throw std::length_error("pMR: Message size overflow.");
+    }
+
     registerMemoryRegion(protectionDomain, buffer, size, access);
 }
 

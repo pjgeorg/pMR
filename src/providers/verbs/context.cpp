@@ -14,6 +14,8 @@
 
 #include "context.hpp"
 #include <stdexcept>
+#include "deviceattributes.hpp"
+#include "portattributes.hpp"
 #include "../../misc/string.hpp"
 
 pMR::verbs::Context::Context(Device const &device)
@@ -23,6 +25,18 @@ pMR::verbs::Context::Context(Device const &device)
     {
         throw std::runtime_error(toString("pMR: Could not open device",
                     device.getName(), "."));
+    }
+
+    DeviceAttributes deviceAttr(*this);
+
+    mMaxMemoryRegionSize = deviceAttr.getMaxMemoryRegionSize();
+
+    mMaxMessageSize = PortAttributes(*this, 1).getMaxMessageSize();
+
+    for(int port = 2; port <= deviceAttr.getPortCount(); ++port)
+    {
+        mMaxMessageSize = std::min(mMaxMessageSize,
+                PortAttributes(*this, port).getMaxMessageSize());
     }
 }
 
@@ -39,4 +53,14 @@ ibv_context* pMR::verbs::Context::get()
 ibv_context const* pMR::verbs::Context::get() const
 {
     return mContext;
+}
+
+std::uint64_t pMR::verbs::Context::getMaxMemoryRegionSize() const
+{
+    return mMaxMemoryRegionSize;
+}
+
+std::uint32_t pMR::verbs::Context::getMaxMessageSize() const
+{
+    return mMaxMessageSize;
 }

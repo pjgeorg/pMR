@@ -34,8 +34,12 @@ namespace pMR { namespace verbs
             ~Context() noexcept;
             ibv_context* get();
             ibv_context const* get() const;
+            std::uint64_t getMaxMemoryRegionSize() const;
+            std::uint32_t getMaxMessageSize() const;
         private:
             ibv_context *mContext = nullptr;
+            std::uint64_t mMaxMemoryRegionSize = 0;
+            std::uint32_t mMaxMessageSize = 0;
     };
 }}
 #endif // pMR_PROVIDERS_VERBS_CONTEXT_H
