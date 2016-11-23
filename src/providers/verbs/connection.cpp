@@ -53,7 +53,7 @@ pMR::verbs::Connection::Connection(Target const &target,
     mActiveQueuePair.setStateRTR(portNumber, targetPassiveAddress);
     mPassiveQueuePair.setStateRTR(portNumber, targetActiveAddress);
 
-    for(int i=0; i != VerbsInitialPostRecv; ++i)
+    for(int i = 0; i != VerbsInitialPostRecv; ++i)
     {
 #ifdef VERBS_RDMA
         postRecvAddressToActive();
@@ -159,19 +159,6 @@ void pMR::verbs::Connection::pollPassiveCompletionQueue()
 }
 
 void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion)
-{
-    postSendRequest(queuePair, memoryRegion, memoryRegion.getLength());
-}
-
-void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
-{
-    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
-    postSendRequest(queuePair, scatterGatherElement);
-}
-
-void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
         ScatterGatherElement &scatterGatherElement)
 {
     ibv_send_wr workRequest = {};
@@ -194,20 +181,24 @@ void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
     }
 }
 
+void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
+        ScatterGatherElement &scatterGatherElement)
+{
+    ibv_recv_wr workRequest = {};
+
+    workRequest.wr_id = VerbsRecvWRID;
+    workRequest.sg_list = scatterGatherElement.get();
+    workRequest.num_sge = scatterGatherElement.getNumEntries();
+
+    ibv_recv_wr *badRequest;
+
+    if(ibv_post_recv(queuePair.get(), &workRequest, &badRequest))
+    {
+        throw std::runtime_error("pMR: Unable to post Receive Work Request.");
+    }
+}
+
 #ifdef VERBS_RDMA
-void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion)
-{
-    postWriteRequest(queuePair, memoryRegion, memoryRegion.getLength());
-}
-
-void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
-{
-    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
-    postWriteRequest(queuePair, scatterGatherElement);
-}
-
 void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
         ScatterGatherElement &scatterGatherElement)
 {
@@ -233,27 +224,3 @@ void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
     }
 }
 #endif // VERBS_RDMA
-
-void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
-        MemoryRegion const &memoryRegion)
-{
-    ScatterGatherElement scatterGatherElement(memoryRegion);
-    postRecvRequest(queuePair, scatterGatherElement);
-}
-
-void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
-        ScatterGatherElement &scatterGatherElement)
-{
-    ibv_recv_wr workRequest = {};
-
-    workRequest.wr_id = VerbsRecvWRID;
-    workRequest.sg_list = scatterGatherElement.get();
-    workRequest.num_sge = scatterGatherElement.getNumEntries();
-
-    ibv_recv_wr *badRequest;
-
-    if(ibv_post_recv(queuePair.get(), &workRequest, &badRequest))
-    {
-        throw std::runtime_error("pMR: Unable to post Receive Work Request.");
-    }
-}
