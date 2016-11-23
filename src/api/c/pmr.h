@@ -33,6 +33,7 @@ int pMR_IsSameSendWindow(pMR_SendWindow*, void *buffer, uint32_t sizeByte);
 void pMR_InitSend(pMR_SendWindow*);
 void pMR_PostSend(pMR_SendWindow*);
 void pMR_WaitSend(pMR_SendWindow*);
+void pMR_PostSendPartial(pMR_SendWindow*, uint32_t sizeByte);
 
 struct pMR_RecvWindow;
 typedef struct pMR_RecvWindow pMR_RecvWindow;

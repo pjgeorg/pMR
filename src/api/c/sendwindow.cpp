@@ -96,6 +96,20 @@ extern "C"
         }
     }
 
+    void pMR_PostSendPartial(pMR_SendWindow *sendWindow, uint32_t sizeByte)
+    {
+        try
+        {
+            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
+                ->post(sizeByte);
+        }
+        catch(const std::exception &e)
+        {
+            pMR::print(e.what());
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    }
+
     void pMR_WaitSend(pMR_SendWindow *sendWindow)
     {
         try
