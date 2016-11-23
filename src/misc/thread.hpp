@@ -37,7 +37,7 @@ void pMR::splitWorkToThreads(W const start, W const end, T const threadID,
     {
         return;
     }
-    if(!threadCount > 0)
+    if(not (threadCount > 0))
     {
         throw std::logic_error("Thread Count");
     }
