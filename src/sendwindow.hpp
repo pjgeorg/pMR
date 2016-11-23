@@ -70,6 +70,14 @@ namespace pMR
             //! @note Depending on the used provider, this routine might be
             //!     blocking.
             void post();
+            //! @brief Post previously initialized send routine, but only send
+            //!     first sizeByte bytes.
+            //! @warning Send buffer associated with this send window may be
+            //!     accessed read only as soon as send routine has been posted.
+            //! @note Depending on the used provider, this routine might be
+            //!     blocking.
+            //! @param sizeByte First sizeByte Bytes of SendWindow to send.
+            void post(std::uint32_t const sizeByte);
             //! @brief Wait for previously posted send routine to finish.
             //! @note Write access to send buffer is allowed again after wait.
             //! @note Blocking routine.
@@ -166,6 +174,14 @@ void pMR::SendWindow<T>::post()
 {
     pMR_PROF_START(this->mTimePost);
     mMemoryWindow.post();
+    pMR_PROF_STOP(this->mTimePost);
+}
+
+template<typename T>
+void pMR::SendWindow<T>::post(std::uint32_t const sizeByte)
+{
+    pMR_PROF_START(this->mTimePost);
+    mMemoryWindow.post({sizeByte});
     pMR_PROF_STOP(this->mTimePost);
 }
 
