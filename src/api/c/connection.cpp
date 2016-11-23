@@ -26,8 +26,8 @@ extern "C"
         try
         {
             return reinterpret_cast<pMR_Connection*>(new pMR::Connection(
-                        pMR::Target(communicator, targetRank,
-                            uniqueSendID, uniqueRecvID)));
+                        pMR::Target(communicator, {targetRank},
+                            {uniqueSendID}, {uniqueRecvID})));
         }
         catch(const std::exception &e)
         {

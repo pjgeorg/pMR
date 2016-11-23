@@ -27,7 +27,7 @@ extern "C"
             return reinterpret_cast<pMR_SendWindow*>(
                     new pMR::SendWindow<unsigned char>(
                         *reinterpret_cast<pMR::Connection*>(connection),
-                        static_cast<unsigned char*>(buffer), sizeByte));
+                        static_cast<unsigned char*>(buffer), {sizeByte}));
         }
         catch(const std::exception &e)
         {
@@ -58,7 +58,7 @@ extern "C"
         {
             return static_cast<int>(reinterpret_cast
                     <pMR::SendWindow<unsigned char>*>(sendWindow)
-                    ->isSame(static_cast<unsigned char*>(buffer), sizeByte));
+                    ->isSame(static_cast<unsigned char*>(buffer), {sizeByte}));
         }
         catch(const std::exception &e)
         {
@@ -101,7 +101,7 @@ extern "C"
         try
         {
             return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
-                ->post(sizeByte);
+                ->post({sizeByte});
         }
         catch(const std::exception &e)
         {
