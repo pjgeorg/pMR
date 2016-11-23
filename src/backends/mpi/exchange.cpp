@@ -23,17 +23,17 @@ extern "C"
 #include "../../threads/thread.hpp"
 
 void pMR::backend::exchange(Target const &target,
-        void const *sendBuffer, void *recvBuffer, std::uint32_t const sizeByte)
+        void const *sendBuffer, void *recvBuffer, int const sizeByte)
 {
     if(threadMultiple() || !thread::isThreaded() || thread::isSerialized())
     {
-        if(MPI_Sendrecv(sendBuffer, sizeByte, MPI_BYTE,
-                target.getTargetRank(),
-                target.getUniqueSendID(),
-                recvBuffer, sizeByte, MPI_BYTE,
-                target.getTargetRank(),
-                target.getUniqueRecvID(), 
-                target.getMPICommunicator(),
+        if(MPI_Sendrecv(sendBuffer, {sizeByte}, MPI_BYTE,
+                {target.getTargetRank()},
+                {target.getUniqueSendID()},
+                recvBuffer, {sizeByte}, MPI_BYTE,
+                {target.getTargetRank()},
+                {target.getUniqueRecvID()}, 
+                {target.getMPICommunicator()},
                 MPI_STATUS_IGNORE) != MPI_SUCCESS)
         {
             throw std::runtime_error(
@@ -48,27 +48,27 @@ void pMR::backend::exchange(Target const &target,
             MPI_Request recvRequest;
             {
                 thread::ScopedLock scopedLock;
-                if(MPI_Isend(sendBuffer, sizeByte, MPI_BYTE,
-                        target.getTargetRank(),
-                        target.getUniqueSendID(),
-                        target.getMPICommunicator(),
-                        &sendRequest) != MPI_SUCCESS)
+                if(MPI_Irecv(recvBuffer, {sizeByte}, MPI_BYTE,
+                        {target.getTargetRank()},
+                        {target.getUniqueRecvID()},
+                        {target.getMPICommunicator()},
+                        &recvRequest) != MPI_SUCCESS)
                 {
                     throw std::runtime_error(
                             "pMR: Unable to exchange connection data");
                 }
-                if(MPI_Irecv(recvBuffer, sizeByte, MPI_BYTE,
-                        target.getTargetRank(),
-                        target.getUniqueRecvID(),
-                        target.getMPICommunicator(),
-                        &recvRequest) != MPI_SUCCESS)
+                if(MPI_Isend(sendBuffer, {sizeByte}, MPI_BYTE,
+                        {target.getTargetRank()},
+                        {target.getUniqueSendID()},
+                        {target.getMPICommunicator()},
+                        &sendRequest) != MPI_SUCCESS)
                 {
                     throw std::runtime_error(
                             "pMR: Unable to exchange connection data");
                 }
             }
     
-            int flag = false;
+            int flag = {static_cast<int>(false)};
             while(!flag)
             {
                 thread::ScopedLock scopedLock;
@@ -79,7 +79,7 @@ void pMR::backend::exchange(Target const &target,
                             "pMR: Unable to exchange connection data");
                 }
             }
-            flag = false;
+            flag = {static_cast<int>(false)};
             while(!flag)
             {
                 thread::ScopedLock scopedLock;

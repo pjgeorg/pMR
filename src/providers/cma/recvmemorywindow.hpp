@@ -30,7 +30,7 @@ namespace pMR { namespace cma
     {
         public:
             RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, std::size_t const sizeByte);
             RecvMemoryWindow(const RecvMemoryWindow&) = delete;
             RecvMemoryWindow(RecvMemoryWindow&&) = delete;
             RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;

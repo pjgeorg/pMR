@@ -18,7 +18,7 @@ pMR::verbs::mad::Address::Address(std::uint8_t const portNumber)
 {
     mAddress.is_global = 0;
     mAddress.src_path_bits = 0;
-    mAddress.port_num = portNumber;
+    mAddress.port_num = {portNumber};
 }
 
 ibv_ah_attr* pMR::verbs::mad::Address::get()
@@ -33,8 +33,8 @@ ibv_ah_attr const* pMR::verbs::mad::Address::get() const
 
 pMR::verbs::mad::SubnetManager::SubnetManager(PortAttributes &portAttributes,
         std::uint8_t const portNumber)
-    :   Address(portNumber)
+    :   Address({portNumber})
 {
-    mAddress.dlid = portAttributes.getSubnetManagerLID();
-    mAddress.sl = portAttributes.getSubnetManagerServiceLevel();
+    mAddress.dlid = {portAttributes.getSubnetManagerLID()};
+    mAddress.sl = {portAttributes.getSubnetManagerServiceLevel()};
 }

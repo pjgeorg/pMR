@@ -51,9 +51,10 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
     // At least one common switch
     for(std::uint8_t portNumber = 1; portNumber != 3; ++portNumber)
     {
-        if(origin.getSwitchLID(portNumber) == target.getSwitchLID(portNumber))
+        if(origin.getSwitchLID({portNumber}) ==
+                target.getSwitchLID({portNumber}))
         {
-            return portNumber;
+            return {portNumber};
         }
     }
 

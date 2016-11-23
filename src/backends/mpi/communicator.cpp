@@ -19,7 +19,7 @@
 #include "threadsupport.hpp"
 
 pMR::Communicator::Communicator(MPI_Comm const communicator)
-    :   mCommunicator(communicator) 
+    :   mCommunicator{communicator} 
 {
     if(MPI_Comm_size(communicator, &mSize))
     {
@@ -48,11 +48,11 @@ pMR::Communicator::Communicator(MPI_Comm const communicator)
                     "for number of dimensions.");
         }
 
-        mCoordinates.resize(dimensions);
-        mTopology.resize(dimensions);
-        mPeriodic.resize(dimensions);
+        mCoordinates.resize({static_cast<unsigned>(dimensions)});
+        mTopology.resize({static_cast<unsigned>(dimensions)});
+        mPeriodic.resize({static_cast<unsigned>(dimensions)});
 
-        if(MPI_Cart_get(mCommunicator, dimensions, mTopology.data(),
+        if(MPI_Cart_get(mCommunicator, {dimensions}, mTopology.data(),
                     mPeriodic.data(), mCoordinates.data()))
         {
             throw std::runtime_error("pMR: Unable to query cartesian MPI "
@@ -83,15 +83,16 @@ pMR::Communicator::Communicator(MPI_Comm const communicator,
     }
 
     // Calculate size of cartesian communicator
-    if(MPI_Dims_create(mSize, mTopology.size(), mTopology.data()))
+    if(MPI_Dims_create({mSize}, {static_cast<int>(mTopology.size())},
+                mTopology.data()))
     {
         throw std::runtime_error(
                 "pMR: Unable to calculate size of cartesian communicator.");
     }
 
     // Create cartesian communicator
-    if(MPI_Cart_create(communicator, mTopology.size(), mTopology.data(),
-                mPeriodic.data(), 0, &mCommunicator))
+    if(MPI_Cart_create({communicator}, {static_cast<int>(mTopology.size())},
+                mTopology.data(), mPeriodic.data(), 0, &mCommunicator))
     {
         throw std::runtime_error(
                 "pMR: Unable to create cartesian communicator.");
@@ -110,8 +111,8 @@ pMR::Communicator::Communicator(MPI_Comm const communicator,
     }
 
     // Get own coordinates
-    if(MPI_Cart_coords(mCommunicator, mID, mTopology.size(),
-                mCoordinates.data()))
+    if(MPI_Cart_coords(mCommunicator, {mID},
+                {static_cast<int>(mTopology.size())}, mCoordinates.data()))
     {
         throw std::runtime_error("pMR: Unable to determine own coordinates.");
     }
@@ -119,19 +120,19 @@ pMR::Communicator::Communicator(MPI_Comm const communicator,
 
 int pMR::Communicator::dimensions() const
 {
-    return mTopology.size();
+    return {static_cast<int>(mTopology.size())};
 }
 
 int pMR::Communicator::size() const
 {
-    return mSize;
+    return {mSize};
 }
 
 int pMR::Communicator::size(int const dimension) const
 {
     try
     {
-        return mTopology.at(dimension);
+        return {mTopology.at(dimension)};
 
     }
     catch(const std::exception &e)
@@ -144,7 +145,7 @@ bool pMR::Communicator::isPeriodic(int const dimension) const
 {
     try
     {
-        return static_cast<bool>(mPeriodic.at(dimension));
+        return {static_cast<bool>(mPeriodic.at(dimension))};
     }
     catch(const std::exception &e)
     {
@@ -154,14 +155,14 @@ bool pMR::Communicator::isPeriodic(int const dimension) const
 
 int pMR::Communicator::ID() const
 {
-    return mID;
+    return {mID};
 }
 
 int pMR::Communicator::coordinate(int const dimension) const
 {
     try
     {
-        return mCoordinates.at(dimension);
+        return {mCoordinates.at(dimension)};
     }
     catch(const std::exception &e)
     {
@@ -179,14 +180,15 @@ pMR::Target pMR::Communicator::getNeighbor(
 
     int source;
     int target;
-    if(MPI_Cart_shift(mCommunicator, dimension, displacement, &source, &target))
+    if(MPI_Cart_shift(mCommunicator, {dimension}, {displacement},
+                &source, &target))
     {
         throw std::runtime_error("pMR: Unable to shift MPI rank.");
     }
 
     if(target == MPI_PROC_NULL)
     {
-        return Target(mCommunicator, target, 0, 0, true, false);
+        return Target({mCommunicator}, {target}, 0, 0, {true}, {false});
     }
 
     int uniqueSendID = +displacement + (dimension + 1) * 1e3;
@@ -194,24 +196,24 @@ pMR::Target pMR::Communicator::getNeighbor(
 
     if(mID == target)
     {
-        return Target(mCommunicator, target, uniqueSendID, uniqueRecvID,
-                false, true);
+        return Target({mCommunicator}, {target}, {uniqueSendID}, {uniqueRecvID},
+                {false}, {true});
     }
 
-    return Target(mCommunicator, target, uniqueSendID, uniqueRecvID,
-            false, false);
+    return Target({mCommunicator}, {target}, {uniqueSendID}, {uniqueRecvID},
+            {false}, {false});
 }
 
 pMR::Target pMR::Communicator::getTarget(int const ID) const
 {
     if(ID < 0)
     {
-        return Target(mCommunicator, MPI_PROC_NULL, 0, 0, true, false);
+        return Target({mCommunicator}, {MPI_PROC_NULL}, 0, 0, {true}, {false});
     }
 
     if(ID == mID)
     {
-        return Target(mCommunicator, mID, 0, 0, false, true);
+        return Target({mCommunicator}, {mID}, 0, 0, {false}, {true});
     }
 
     if(ID >= mSize)
@@ -219,12 +221,12 @@ pMR::Target pMR::Communicator::getTarget(int const ID) const
         throw std::runtime_error("pMR: Target ID out of range.");
     }
 
-    return Target(mCommunicator, ID, ID, mID, false, false);
+    return Target({mCommunicator}, {ID}, {ID}, {mID}, {false}, {false});
 }
 
 MPI_Comm pMR::Communicator::get() const
 {
-    return mCommunicator;
+    return {mCommunicator};
 }
 
 std::vector<int> pMR::Communicator::topology() const

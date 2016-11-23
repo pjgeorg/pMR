@@ -26,31 +26,31 @@ pMR::backend::ThreadSupport::ThreadSupport()
 
     if(provided == MPI_THREAD_MULTIPLE)
     {
-        mMultiple = true;
+        mMultiple = {true};
     }
 
     if(provided == MPI_THREAD_SERIALIZED)
     {
-        mSerialized = true;
+        mSerialized = {true};
     }
 }
 
 bool pMR::backend::ThreadSupport::multiple() const
 {
-    return mMultiple;
+    return {mMultiple};
 }
 
 bool pMR::backend::ThreadSupport::serialized() const
 {
-    return mSerialized;
+    return {mSerialized};
 }
 
 bool pMR::backend::threadMultiple()
 {
-    return Singleton<ThreadSupport>::Instance().multiple();
+    return {Singleton<ThreadSupport>::Instance().multiple()};
 }
 
 bool pMR::backend::threadSerialized()
 {
-    return Singleton<ThreadSupport>::Instance().serialized();
+    return {Singleton<ThreadSupport>::Instance().serialized()};
 }

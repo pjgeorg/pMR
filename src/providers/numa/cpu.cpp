@@ -23,26 +23,26 @@ extern "C"
 
 int pMR::numa::getCPU()
 {
-    int cpu = sched_getcpu();
+    auto cpu = sched_getcpu();
 
     if(cpu == -1)
     {
         throw std::runtime_error("pMR: Unable to get CPU of current process.");
     }
 
-    return cpu;
+    return {cpu};
 }
 
 int pMR::numa::getNode(int const cpu)
 {
     checkSupport();
 
-    int node = numa_node_of_cpu(cpu);
+    auto node = numa_node_of_cpu({cpu});
 
     if(node == -1)
     {
         throw std::runtime_error("pMR: Unable to get NUMA Node ID of CPU.");
     }
 
-    return node;
+    return {node};
 }

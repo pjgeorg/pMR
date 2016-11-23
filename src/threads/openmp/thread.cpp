@@ -29,10 +29,10 @@ pMR::thread::Mutex pMR::thread::ScopedLock::sMutex;
 
 bool pMR::thread::isThreaded()
 {
-    return true;
+    return {true};
 }
 
 bool pMR::thread::isSerialized()
 {
-    return false;
+    return {false};
 }

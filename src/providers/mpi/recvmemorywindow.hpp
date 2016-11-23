@@ -16,7 +16,6 @@
 #define pMR_PROVIDERS_MPI_RECVMEMORYWINDOW_H
 
 #include <memory>
-#include <cstdint>
 extern "C"
 {
 #include <mpi.h>
@@ -30,7 +29,7 @@ namespace pMR { namespace mpi
     {
         public:
             RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, unsigned const sizeByte);
             RecvMemoryWindow(const RecvMemoryWindow&) = delete;
             RecvMemoryWindow(RecvMemoryWindow&&) = delete;
             RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
@@ -42,7 +41,7 @@ namespace pMR { namespace mpi
         private:
             std::shared_ptr<Connection> const mConnection;
             void *const mBuffer;
-            std::uint32_t mSizeByte;
+            int mSizeByte;
             MPI_Request mRequest = MPI_REQUEST_NULL;
 
 #ifdef MPI_PERSISTENT

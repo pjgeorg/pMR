@@ -135,13 +135,15 @@ template<typename T>
 pMR::SendWindow<T>::SendWindow(Connection const &connection,
         T *const buffer, std::uint32_t const count)
     :   Window<T>(buffer, count),
-        mMemoryWindow(connection, buffer, count * sizeof(T)) { }
+        mMemoryWindow(connection, buffer,
+                {static_cast<std::uint32_t>(count * sizeof(T))}) { }
 
 template<typename T>
 pMR::SendWindow<T>::SendWindow(Connection const &connection,
         std::uint32_t const count)
     :   Window<T>(count),
-        mMemoryWindow(connection, this->mBuffer, count * sizeof(T)) { }
+        mMemoryWindow(connection, this->mBuffer,
+                {static_cast<std::uint32_t>(count * sizeof(T))}) { }
 
 template<typename T>
 pMR::SendWindow<T>::~SendWindow()
@@ -182,7 +184,7 @@ void pMR::SendWindow<T>::insert(Iterator inputIt,
         std::uint32_t const offset, std::uint32_t const count)
 {
     pMR_PROF_START(this->mTimeCopy);
-    this->checkBoundaries(offset, count);
+    this->checkBoundaries({offset}, {count});
     std::copy_n(inputIt, count, this->mVector.begin() + offset);
     pMR_PROF_STOP(this->mTimeCopy);
 }
@@ -191,7 +193,8 @@ template<typename T>
 template<class Iterator>
 void pMR::SendWindow<T>::insert(Iterator inputIt)
 {
-    return insert(inputIt, 0, this->mVector.size());
+    return insert(inputIt, 0,
+            {static_cast<std::uint32_t>(this->mVector.size())});
 }
 
 template<typename T>
@@ -201,7 +204,7 @@ void pMR::SendWindow<T>::insertMT(Iterator inputIt,
         int const threadID, int const threadCount)
 {
     pMR_PROF_START_THREAD(this->mTimeCopy);
-    this->checkBoundaries(offset, count);
+    this->checkBoundaries({offset}, {count});
     static_assert(isRandomAccessIterator<Iterator>(),
             "Iterator is not of random access type");
 
@@ -222,6 +225,7 @@ template<class Iterator>
 void pMR::SendWindow<T>::insertMT(Iterator inputIt,
         int const threadID, int const threadCount)
 {
-    return insertMT(inputIt, 0, this->mVector.size(), threadID, threadCount);
+    return insertMT(inputIt, 0, {this->mVector.size()},
+            {threadID}, {threadCount});
 }
 #endif // pMR_SENDWINDOW_H

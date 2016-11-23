@@ -18,6 +18,8 @@
 #include <array>
 #include <cstdint>
 #include <vector>
+#include <limits>
+#include <stdexcept>
 
 namespace pMR
 {
@@ -29,29 +31,45 @@ namespace pMR
     
         void exchange(Target const &target,
                 void const *sendBuffer, void *recvBuffer,
-                std::uint32_t const sizeByte);
+                int const sizeByte);
     
         template<typename T>
         void exchange(Target const &target, T const &sendBuffer, T &recvBuffer)
         {
+            if(sizeof(sendBuffer) > std::numeric_limits<int>::max())
+            {
+                throw std::length_error("pMR: Connection data size overflow.");
+            }
+
             return exchange(target, static_cast<void const*>(&sendBuffer),
-                    static_cast<void*>(&recvBuffer), sizeof(sendBuffer));
+                    static_cast<void*>(&recvBuffer),
+                    {static_cast<int>(sizeof(sendBuffer))});
         }
 
         template<typename T, std::size_t N>
         void exchange(Target const &target, std::array<T, N> const &sendBuffer,
                 std::array<T, N> &recvBuffer)
         {
-            return exchange(target, sendBuffer.data(),
-                    recvBuffer.data(), sizeof(sendBuffer));
+            if(sizeof(sendBuffer) > std::numeric_limits<int>::max())
+            {
+                throw std::length_error("pMR: Connection data size overflow.");
+            }
+
+            return exchange(target, sendBuffer.data(), recvBuffer.data(),
+                    {static_cast<int>(sizeof(sendBuffer))});
         }
 
         template<typename T>
         void exchange(Target const &target, std::vector<T> const &sendBuffer,
                 std::vector<T> &recvBuffer)
         {
-            return exchange(target, sendBuffer.data(),
-                    recvBuffer.data(), sendBuffer.size() * sizeof(T));
+            if(sendBuffer.size() * sizeof(T) > std::numeric_limits<int>::max())
+            {
+                throw std::length_error("pMR: Connection data size overflow.");
+            }
+
+            return exchange(target, sendBuffer.data(), recvBuffer.data(), 
+                    {static_cast<int>(sendBuffer.size() * sizeof(T))});
         }
     }
 }

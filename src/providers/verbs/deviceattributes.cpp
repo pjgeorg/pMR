@@ -25,15 +25,15 @@ pMR::verbs::DeviceAttributes::DeviceAttributes(Context &context)
 
 std::uint64_t pMR::verbs::DeviceAttributes::getNodeGUID() const
 {
-    return mDeviceAttributes.node_guid;
+    return {mDeviceAttributes.node_guid};
 }
 
 std::uint8_t pMR::verbs::DeviceAttributes::getPortCount() const
 {
-    return mDeviceAttributes.phys_port_cnt;
+    return {mDeviceAttributes.phys_port_cnt};
 }
 
 std::uint64_t pMR::verbs::DeviceAttributes::getMaxMemoryRegionSize() const
 {
-    return mDeviceAttributes.max_mr_size;
+    return {mDeviceAttributes.max_mr_size};
 }

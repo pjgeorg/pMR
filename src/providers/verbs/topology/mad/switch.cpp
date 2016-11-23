@@ -17,7 +17,7 @@
 
 pMR::verbs::mad::SwitchLID::SwitchLID(Context &context,
         std::uint8_t const portNumber)
-    :   MAD(context, portNumber)
+    :   MAD(context, {portNumber})
 {
     auto transactionID = getRandomNumber<std::uint32_t>();
     // SA Formate (15.2.1.1) (0-55)
@@ -100,6 +100,6 @@ int pMR::verbs::mad::SwitchLID::getSwitchLID()
         query();
     }
     while(!validate());
-    return (std::get<VerbsGRHSize+60>(mRecvMAD) |
+    return (std::get<VerbsGRHSize+60>(mRecvMAD) << 8 |
             std::get<VerbsGRHSize+61>(mRecvMAD));
 }

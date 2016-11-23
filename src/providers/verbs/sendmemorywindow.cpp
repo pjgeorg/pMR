@@ -21,7 +21,7 @@ pMR::verbs::SendMemoryWindow::SendMemoryWindow(
     :   mConnection(connection),
         mMemoryRegion(mConnection->getContext(),
                 mConnection->getProtectionDomain(),
-                buffer, sizeByte, IBV_ACCESS_LOCAL_WRITE) { }
+                buffer, {sizeByte}, IBV_ACCESS_LOCAL_WRITE) { }
 
 void pMR::verbs::SendMemoryWindow::init()
 {
@@ -37,9 +37,9 @@ void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
     mConnection->pollActiveCompletionQueue();
 
 #ifdef VERBS_RDMA
-    mConnection->postWriteToActive(mMemoryRegion, sizeByte);
+    mConnection->postWriteToActive(mMemoryRegion, {sizeByte});
 #else
-    mConnection->postSendToActive(mMemoryRegion, sizeByte);
+    mConnection->postSendToActive(mMemoryRegion, {sizeByte});
 #endif // VERBS_RDMA
 }
 

@@ -29,12 +29,12 @@ pMR::verbs::GID::GID(ibv_gid const gID)
 
 void pMR::verbs::GID::setGUID(std::uint64_t const GUID)
 {
-    mGID.global.interface_id = GUID;
+    mGID.global.interface_id = {GUID};
 }
 
 void pMR::verbs::GID::setSubnetPrefix(std::uint64_t const subnetPrefix)
 {
-    mGID.global.subnet_prefix = subnetPrefix;
+    mGID.global.subnet_prefix = {subnetPrefix};
 }
 
 ibv_gid const& pMR::verbs::GID::get() const
@@ -44,10 +44,10 @@ ibv_gid const& pMR::verbs::GID::get() const
 
 std::uint64_t pMR::verbs::GID::getGUID() const
 {
-    return mGID.global.interface_id;
+    return {mGID.global.interface_id};
 }
 
 std::uint64_t pMR::verbs::GID::getSubnetPrefix() const
 {
-    return mGID.global.subnet_prefix;
+    return {mGID.global.subnet_prefix};
 }

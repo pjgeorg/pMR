@@ -50,7 +50,7 @@ std::string pMR::IP::getIPv6(std::string const &interface) const
 
 std::string pMR::IP::getIP(char const *interface, int const family) const
 {
-    struct ifaddrs *ifa = mInterfaces;
+    auto *ifa = mInterfaces;
 
     while(ifa)
     {
@@ -68,7 +68,7 @@ std::string pMR::IP::getIP(char const *interface, int const family) const
 
 std::string pMR::IP::structToString(struct ifaddrs const *ifa) const
 {
-    int const family = ifa->ifa_addr->sa_family;
+    auto const family = ifa->ifa_addr->sa_family;
 
     void *src = nullptr;
     std::vector<char> ip;

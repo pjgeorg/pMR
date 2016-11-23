@@ -29,5 +29,5 @@ int pMR::numa::getNode(std::string const devicePath)
         throw std::runtime_error("pMR: Unable to open device file.");
     }
 
-    return *(std::istream_iterator<int>(deviceFile));
+    return {*(std::istream_iterator<int>(deviceFile))};
 }

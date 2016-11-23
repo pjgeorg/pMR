@@ -18,11 +18,11 @@
 pMR::self::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
         void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection), mBuffer(buffer), mSizeByte(sizeByte) { }
+    :   mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte} { }
 
 void pMR::self::RecvMemoryWindow::init()
 {
-    mConnection->postAddress(mBuffer, mSizeByte);
+    mConnection->postAddress(mBuffer, {mSizeByte});
 }
 
 void pMR::self::RecvMemoryWindow::post() { }

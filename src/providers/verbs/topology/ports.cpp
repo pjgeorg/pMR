@@ -17,16 +17,16 @@
 std::uint8_t pMR::verbs::getPortCount(Device const &device)
 {
     Context context(device);
-    return getPortCount(context);
+    return {getPortCount(context)};
 }
 
 std::uint8_t pMR::verbs::getPortCount(Context &context)
 {
     DeviceAttributes const deviceAttributes(context);
-    return getPortCount(deviceAttributes);
+    return {getPortCount(deviceAttributes)};
 }
 
 std::uint8_t pMR::verbs::getPortCount(DeviceAttributes const &deviceAttributes)
 {
-    return deviceAttributes.getPortCount();
+    return {deviceAttributes.getPortCount()};
 }

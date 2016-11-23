@@ -24,9 +24,6 @@ extern "C"
 
 pMR::verbs::ODP::ODP(Context &context)
 {
-    constexpr std::uint32_t capMask
-        = IBV_ODP_SUPPORT_SEND | IBV_ODP_SUPPORT_RECV;
-
     ibv_device_attr_ex extendedAttr;
 
     if(ibv_query_device_ex(context.get(), NULL, &extendedAttr))
@@ -34,9 +31,9 @@ pMR::verbs::ODP::ODP(Context &context)
         throw std::runtime_error("pMR: Unable to (extended) query device.");
     }
 
-    if(!(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT) ||
-        (extendedAttr.odp_caps.per_transport_caps.rc_odp_caps & capMask)
-        != capMask)
+    if(!(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT) or
+            !(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT_SEND) or
+            !(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT_RECV))
     {
         mHasODP = false;
     }
@@ -48,18 +45,18 @@ pMR::verbs::ODP::ODP(Context &context)
 
 bool pMR::verbs::ODP::isTrue() const
 {
-    return mHasODP;
+    return {mHasODP};
 }
 
 int pMR::verbs::updateMemoryRegionAccessODP(Context &context, int const access)
 {
     if(Singleton<ODP>::Instance(context).isTrue())
     {
-        return access | IBV_ACCESS_ON_DEMAND;
+        return {access | IBV_ACCESS_ON_DEMAND};
     }
     else
     {
-        return access;
+        return {access};
     }
 }
 #endif // VERBS_ODP

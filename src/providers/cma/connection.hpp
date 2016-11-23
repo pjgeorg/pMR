@@ -38,7 +38,7 @@ namespace pMR
                 Connection& operator=(Connection&&) = delete;
                 ~Connection() = default;
                 void sendAddress(iovec &buffer) const;
-                void sendData(iovec buffer, std::uint32_t const sizeByte) const;
+                void sendData(iovec buffer, std::size_t const sizeByte) const;
                 void writeData(iovec localBuffer, iovec remoteBuffer) const;
                 void postNotifySend() const;
                 void pollNotifySend();

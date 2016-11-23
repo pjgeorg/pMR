@@ -27,7 +27,7 @@ pMR::cma::Connection::Connection(Target const &target)
     std::array<std::uint64_t, 7> originAddress, targetAddress;
 
     std::int64_t pid = {getpid()};
-    std::get<0>(originAddress) = *reinterpret_cast<std::uint64_t*>(&pid);
+    std::get<0>(originAddress) = {*reinterpret_cast<std::uint64_t*>(&pid)};
     std::get<1>(originAddress) = 
         {reinterpret_cast<std::uintptr_t>(&mDestination)};
     std::get<2>(originAddress) = {sizeof(mDestination)};
@@ -59,15 +59,15 @@ void pMR::cma::Connection::sendAddress(iovec &buffer) const
 {
     iovec localBuffer;
     localBuffer.iov_base = &buffer;
-    localBuffer.iov_len = sizeof(buffer);
+    localBuffer.iov_len = {sizeof(buffer)};
 
     writeData(localBuffer, mRemoteAddress);
 }
 
-void pMR::cma::Connection::sendData(iovec buffer, std::uint32_t const sizeByte)
+void pMR::cma::Connection::sendData(iovec buffer, std::size_t const sizeByte)
     const
 {
-    buffer.iov_len = sizeByte;
+    buffer.iov_len = {sizeByte};
     checkBufferSize(buffer);
 
     writeData(buffer, mDestination);
@@ -120,7 +120,7 @@ void pMR::cma::Connection::postNotify(iovec const &remoteNotify) const
     std::uint8_t notify = 1;
     iovec localNotify;
     localNotify.iov_base = &notify;
-    localNotify.iov_len = sizeof(notify);
+    localNotify.iov_len = {sizeof(notify)};
 
     writeData(localNotify, remoteNotify);
 }

@@ -43,7 +43,7 @@ namespace pMR
             //! @param self Target is self communication.
             //! @return Return backend-agnostic Target.
             Target(MPI_Comm const communicator, int const targetRank,
-                    unsigned const uniqueSendID, unsigned const uniqueRecvID,
+                    int const uniqueSendID, int const uniqueRecvID,
                     bool const null, bool const self);
             //! @brief Convert MPI Target to backend-agnostic Target.
             //! @param communicator MPI Communicator.
@@ -54,7 +54,7 @@ namespace pMR
             //!     (Recv Tag).
             //! @return Return backend-agnostic Target.
             Target(MPI_Comm const communicator, int const targetRank,
-                    unsigned const uniqueSendID, unsigned const uniqueRecvID);
+                    int const uniqueSendID, int const uniqueRecvID);
             ~Target() = default;
             //! @brief Checks whether the target is null (MPI_PROC_NULL).
             //! @return true if null, false otherwise.
@@ -80,8 +80,8 @@ namespace pMR
         private:
             MPI_Comm const mCommunicator;
             int const mTarget;
-            unsigned const mUniqueSendID;
-            unsigned const mUniqueRecvID;
+            int const mUniqueSendID;
+            int const mUniqueRecvID;
             bool mNull = false;
             bool mSelf = false;
             int queryRank() const;

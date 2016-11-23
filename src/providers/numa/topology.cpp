@@ -17,5 +17,5 @@
 
 int pMR::numa::getNode()
 {
-    return getNode(getCPU());
+    return {getNode({getCPU()})};
 }

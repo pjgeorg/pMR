@@ -26,5 +26,5 @@ std::uint16_t pMR::scif::getNodeID()
     {
         throw std::runtime_error("pMR: Unable to get Node ID.");
     }
-    return iD;
+    return {iD};
 }

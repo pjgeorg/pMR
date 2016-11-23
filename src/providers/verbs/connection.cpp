@@ -23,26 +23,26 @@ pMR::verbs::Connection::Connection(Target const &target,
         mProtectionDomain(mContext),
 #ifdef VERBS_RDMA
         mSendLocalAddress(mContext, mProtectionDomain,
-                mLocalMemoryAddress.rawData(), mLocalMemoryAddress.size(),
+                mLocalMemoryAddress.rawData(), {mLocalMemoryAddress.size()},
                 IBV_ACCESS_LOCAL_WRITE),
         mRecvRemoteAddress(mContext, mProtectionDomain,
-                mRemoteMemoryAddress.rawData(), mRemoteMemoryAddress.size(),
+                mRemoteMemoryAddress.rawData(), {mRemoteMemoryAddress.size()},
                 IBV_ACCESS_LOCAL_WRITE),
 #endif // VERBS_RDMA
-        mActiveCompletionQueue(mContext, VerbsMaxCQEntry),
-        mPassiveCompletionQueue(mContext, VerbsMaxCQEntry),
+        mActiveCompletionQueue(mContext, {VerbsMaxCQEntry}),
+        mPassiveCompletionQueue(mContext, {VerbsMaxCQEntry}),
         mActiveQueuePair(mProtectionDomain, mActiveCompletionQueue,
                 mActiveCompletionQueue),
         mPassiveQueuePair(mProtectionDomain, mPassiveCompletionQueue,
                 mPassiveCompletionQueue)
 {
-    mActiveQueuePair.setStateINIT(portNumber);
-    mPassiveQueuePair.setStateINIT(portNumber);
+    mActiveQueuePair.setStateINIT({portNumber});
+    mPassiveQueuePair.setStateINIT({portNumber});
 
     ConnectionAddress originActiveAddress =
-        ConnectionAddress(mContext, mActiveQueuePair, portNumber);
+        ConnectionAddress(mContext, mActiveQueuePair, {portNumber});
     ConnectionAddress originPassiveAddress =
-        ConnectionAddress(mContext, mPassiveQueuePair, portNumber);
+        ConnectionAddress(mContext, mPassiveQueuePair, {portNumber});
 
     ConnectionAddress targetActiveAddress;
     ConnectionAddress targetPassiveAddress;
@@ -117,7 +117,7 @@ void pMR::verbs::Connection::postRecvToPassive()
 void pMR::verbs::Connection::postWriteToActive(MemoryRegion const &memoryRegion,
         std::uint32_t const sizeByte)
 {
-    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
+    ScatterGatherElement scatterGatherElement(memoryRegion, {sizeByte});
     postWriteRequest(mActiveQueuePair, scatterGatherElement);
 }
 
@@ -143,7 +143,7 @@ void pMR::verbs::Connection::postRecvToPassive(MemoryRegion const &memoryRegion)
 void pMR::verbs::Connection::postSendToActive(MemoryRegion const &memoryRegion,
         std::uint32_t const sizeByte)
 {
-    ScatterGatherElement scatterGatherElement(memoryRegion, sizeByte);
+    ScatterGatherElement scatterGatherElement(memoryRegion, {sizeByte});
     postSendRequest(mActiveQueuePair, scatterGatherElement);
 }
 #endif // VERBS_RDMA
@@ -163,9 +163,9 @@ void pMR::verbs::Connection::postSendRequest(QueuePair &queuePair,
 {
     ibv_send_wr workRequest = {};
 
-    workRequest.wr_id = VerbsSendWRID;
+    workRequest.wr_id = {VerbsSendWRID};
     workRequest.sg_list = scatterGatherElement.get();
-    workRequest.num_sge = scatterGatherElement.getNumEntries();
+    workRequest.num_sge = {scatterGatherElement.getNumEntries()};
     workRequest.opcode = IBV_WR_SEND;
 
     if(scatterGatherElement.getLength() <= VerbsMaxInlineDataSize)
@@ -186,9 +186,9 @@ void pMR::verbs::Connection::postRecvRequest(QueuePair &queuePair,
 {
     ibv_recv_wr workRequest = {};
 
-    workRequest.wr_id = VerbsRecvWRID;
+    workRequest.wr_id = {VerbsRecvWRID};
     workRequest.sg_list = scatterGatherElement.get();
-    workRequest.num_sge = scatterGatherElement.getNumEntries();
+    workRequest.num_sge = {scatterGatherElement.getNumEntries()};
 
     ibv_recv_wr *badRequest;
 
@@ -204,12 +204,12 @@ void pMR::verbs::Connection::postWriteRequest(QueuePair &queuePair,
 {
     ibv_send_wr workRequest = {};
 
-    workRequest.wr_id = VerbsWriteWRID;
+    workRequest.wr_id = {VerbsWriteWRID};
     workRequest.sg_list = scatterGatherElement.get();
-    workRequest.num_sge = scatterGatherElement.getNumEntries();
+    workRequest.num_sge = {scatterGatherElement.getNumEntries()};
     workRequest.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
-    workRequest.wr.rdma.remote_addr = mRemoteMemoryAddress.getAddress();
-    workRequest.wr.rdma.rkey = mRemoteMemoryAddress.getRKey();
+    workRequest.wr.rdma.remote_addr = {mRemoteMemoryAddress.getAddress()};
+    workRequest.wr.rdma.rkey = {mRemoteMemoryAddress.getRKey()};
 
     if(scatterGatherElement.getLength() <= VerbsMaxInlineDataSize)
     {

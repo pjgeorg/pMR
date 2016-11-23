@@ -16,14 +16,14 @@
 #include <stdexcept>
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
-        unsigned const uniqueSendID, unsigned const uniqueRecvID,
+        int const uniqueSendID, int const uniqueRecvID,
         bool const null, bool const self)
-    :   mCommunicator(communicator),
-        mTarget(targetRank),
-        mUniqueSendID(uniqueSendID),
-        mUniqueRecvID(uniqueRecvID),
-        mNull(null),
-        mSelf(self)
+    :   mCommunicator{communicator},
+        mTarget{targetRank},
+        mUniqueSendID{uniqueSendID},
+        mUniqueRecvID{uniqueRecvID},
+        mNull{null},
+        mSelf{self}
 {
     if(mNull && mSelf)
     {
@@ -32,43 +32,43 @@ pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
 }
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
-        unsigned const uniqueSendID, unsigned const uniqueRecvID)
-    :   mCommunicator(communicator),
-        mTarget(targetRank),
-        mUniqueSendID(uniqueSendID),
-        mUniqueRecvID(uniqueRecvID)
+        int const uniqueSendID, int const uniqueRecvID)
+    :   mCommunicator{communicator},
+        mTarget{targetRank},
+        mUniqueSendID{uniqueSendID},
+        mUniqueRecvID{uniqueRecvID}
 {
     queryTarget();
 }
 
 bool pMR::Target::isNull() const
 {
-    return mNull;
+    return {mNull};
 }
 
 bool pMR::Target::isSelf() const
 {
-    return mSelf;
+    return {mSelf};
 }
 
 int pMR::Target::getTargetRank() const
 {
-    return mTarget;
+    return {mTarget};
 }
 
 int pMR::Target::getUniqueSendID() const
 {
-    return mUniqueSendID;
+    return {mUniqueSendID};
 }
 
 int pMR::Target::getUniqueRecvID() const
 {
-    return mUniqueRecvID;
+    return {mUniqueRecvID};
 }
 
 MPI_Comm pMR::Target::getMPICommunicator() const
 {
-    return mCommunicator;
+    return {mCommunicator};
 }
 
 int pMR::Target::queryRank() const
@@ -78,7 +78,7 @@ int pMR::Target::queryRank() const
     {
         throw std::runtime_error("pMR: Unable to determine own MPI rank.");
     }
-    return ownRank;
+    return {ownRank};
 }
 
 void pMR::Target::queryTarget()

@@ -18,7 +18,7 @@
 pMR::verbs::PortAttributes::PortAttributes(Context &context,
         std::uint8_t const portNumber)
 {
-    if(ibv_query_port(context.get(), portNumber, &mPortAttributes))
+    if(ibv_query_port(context.get(), {portNumber}, &mPortAttributes))
     {
         throw std::runtime_error("pMR: Unable to query IB port.");
     }
@@ -26,30 +26,30 @@ pMR::verbs::PortAttributes::PortAttributes(Context &context,
 
 std::uint16_t pMR::verbs::PortAttributes::getLID() const
 {
-    return mPortAttributes.lid;
+    return {mPortAttributes.lid};
 }
 
 ibv_mtu pMR::verbs::PortAttributes::getActiveMTU() const
 {
-    return mPortAttributes.active_mtu;
+    return {mPortAttributes.active_mtu};
 }
 
 ibv_mtu pMR::verbs::PortAttributes::getMaxMTU() const
 {
-    return mPortAttributes.max_mtu;
+    return {mPortAttributes.max_mtu};
 }
 
 std::uint16_t pMR::verbs::PortAttributes::getSubnetManagerLID() const
 {
-    return mPortAttributes.sm_lid;
+    return {mPortAttributes.sm_lid};
 }
 
 std::uint8_t pMR::verbs::PortAttributes::getSubnetManagerServiceLevel() const
 {
-    return mPortAttributes.sm_sl;
+    return {mPortAttributes.sm_sl};
 }
 
 std::uint32_t pMR::verbs::PortAttributes::getMaxMessageSize() const
 {
-    return mPortAttributes.max_msg_sz;
+    return {mPortAttributes.max_msg_sz};
 }

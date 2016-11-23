@@ -42,8 +42,8 @@
 pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         void *buffer, std::uint32_t const sizeByte)
     :   mBuffer(buffer),
-        mSizeByte(sizeByte),
-        mProvider(connection.mProvider)
+        mSizeByte{sizeByte},
+        mProvider{connection.mProvider}
 {
     switch(mProvider)
     {
@@ -52,7 +52,7 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mCMA = std::unique_ptr<cma::RecvMemoryWindow,
                     cma::RecvMemoryWindowDeleter>(new cma::RecvMemoryWindow(
-                                connection.mCMA, buffer, sizeByte));
+                                connection.mCMA, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_CMA
@@ -62,7 +62,7 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mMPI = std::unique_ptr<mpi::RecvMemoryWindow,
                     mpi::RecvMemoryWindowDeleter>(new mpi::RecvMemoryWindow(
-                                connection.mMPI, buffer, sizeByte));
+                                connection.mMPI, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_MPI
@@ -72,7 +72,7 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mNull = std::unique_ptr<null::RecvMemoryWindow,
                     null::RecvMemoryWindowDeleter>(new null::RecvMemoryWindow(
-                                connection.mNull, buffer, sizeByte));
+                                connection.mNull, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_NULL
@@ -82,7 +82,7 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mOFI = std::unique_ptr<ofi::RecvMemoryWindow,
                     ofi::RecvMemoryWindowDeleter>(new ofi::RecvMemoryWindow(
-                                connection.mOFI, buffer, sizeByte));
+                                connection.mOFI, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_OFI
@@ -92,7 +92,7 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mSelf = std::unique_ptr<self::RecvMemoryWindow,
                     self::RecvMemoryWindowDeleter>(new self::RecvMemoryWindow(
-                                connection.mSelf, buffer, sizeByte));
+                                connection.mSelf, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_SELF
@@ -102,7 +102,7 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mVerbs = std::unique_ptr<verbs::RecvMemoryWindow,
                     verbs::RecvMemoryWindowDeleter>(new verbs::RecvMemoryWindow(
-                                connection.mVerbs, buffer, sizeByte));
+                                connection.mVerbs, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_VERBS

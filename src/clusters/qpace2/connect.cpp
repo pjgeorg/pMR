@@ -48,5 +48,5 @@ void pMR::Connection::connect(Target const &target)
 
     auto portNumber = detectBestPort(originNode, targetNode);
 
-    connectVerbs(target, device, portNumber);
+    connectVerbs(target, device, {portNumber});
 }

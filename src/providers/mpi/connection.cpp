@@ -19,9 +19,10 @@
 #include "../../threads/thread.hpp"
 
 pMR::mpi::Connection::Connection(Target const &target) 
-    :   mCommunicator(target.getMPICommunicator()),
-        mTargetRank(target.getTargetRank()),
-        mSendTag(reinterpret_cast<std::uintptr_t>(this))
+    :   mCommunicator{target.getMPICommunicator()},
+        mTargetRank{target.getTargetRank()},
+        mSendTag{
+            static_cast<int>(reinterpret_cast<std::uintptr_t>(this))}
 {
     if(backend::threadMultiple())
     {
@@ -42,25 +43,25 @@ pMR::mpi::Connection::Connection(Target const &target)
 
 MPI_Comm pMR::mpi::Connection::getCommunicator() const
 {
-    return mCommunicator;
+    return {mCommunicator};
 }
 
 int pMR::mpi::Connection::getTargetRank() const
 {
-    return mTargetRank;
+    return {mTargetRank};
 }
 
 int pMR::mpi::Connection::getSendTag() const
 {
-    return mSendTag;
+    return {mSendTag};
 }
 
 int pMR::mpi::Connection::getRecvTag() const
 {
-    return mRecvTag;
+    return {mRecvTag};
 }
 
 bool pMR::mpi::Connection::multipleThreadSupport() const
 {
-    return mMultipleThreadSupport;
+    return {mMultipleThreadSupport};
 }

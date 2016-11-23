@@ -18,14 +18,14 @@
 pMR::self::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
         void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection), mBuffer(buffer), mSizeByte(sizeByte) { }
+    :   mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte} { }
 
 void pMR::self::SendMemoryWindow::init() { }
 
 void pMR::self::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
     mConnection->pollAddress();
-    mConnection->sendData(mBuffer, sizeByte);
+    mConnection->sendData(mBuffer, {sizeByte});
     mConnection->postNotify();
 }
 

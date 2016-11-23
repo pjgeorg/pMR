@@ -60,7 +60,7 @@ ibv_mr const* pMR::verbs::MemoryRegion::get() const
 
 std::uint64_t pMR::verbs::MemoryRegion::getAddress() const
 {
-    return reinterpret_cast<std::uintptr_t>(mMemoryRegion->addr);
+    return {reinterpret_cast<std::uintptr_t>(mMemoryRegion->addr)};
 }
 
 std::uint32_t pMR::verbs::MemoryRegion::getLKey() const
@@ -85,7 +85,7 @@ void pMR::verbs::MemoryRegion::registerMemoryRegion(
     if(size > 0)
     {
         mMemoryRegion =
-            ibv_reg_mr(protectionDomain.get(), buffer, size, access);
+            ibv_reg_mr(protectionDomain.get(), buffer, {size}, {access});
 
         if(!mMemoryRegion)
         {

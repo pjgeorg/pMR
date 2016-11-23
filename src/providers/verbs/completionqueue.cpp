@@ -19,7 +19,7 @@
 
 pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
 {
-    mCompletionQueue = ibv_create_cq(context.get(), size, NULL, NULL, 0);
+    mCompletionQueue = ibv_create_cq(context.get(), {size}, NULL, NULL, 0);
 
     if(!mCompletionQueue)
     {

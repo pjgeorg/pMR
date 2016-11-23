@@ -13,16 +13,24 @@
 //  limitations under the License.
 
 #include "recvmemorywindow.hpp"
+#include <stdexcept>
+#include <limits>
 #include "connection.hpp"
 #include "../../threads/thread.hpp"
 
 pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
+        void *buffer, unsigned const sizeByte)
     :   mConnection(connection),
-        mBuffer(buffer),
-        mSizeByte(sizeByte)
+        mBuffer(buffer)
 {
+    if(sizeByte > std::numeric_limits<int>::max())
+    {
+        throw std::length_error("pMR: Message size oferflow.");
+    }
+
+    mSizeByte = {static_cast<int>(sizeByte)};
+
 #ifdef MPI_PERSISTENT
     if(mConnection->multipleThreadSupport())
     {
@@ -78,7 +86,7 @@ void pMR::mpi::RecvMemoryWindow::wait()
     }
     else
     {
-        int flag = false;
+        int flag = static_cast<int>(false);
         while(!flag)
         {
             thread::ScopedLock scopedLock;
@@ -94,9 +102,9 @@ void pMR::mpi::RecvMemoryWindow::wait()
 #ifdef MPI_PERSISTENT
 void pMR::mpi::RecvMemoryWindow::initRecv()
 {
-    if(MPI_Recv_init(mBuffer, mSizeByte, MPI_BYTE, mConnection->getTargetRank(),
-                mConnection->getRecvTag(), mConnection->getCommunicator(),
-                &mRequest) != MPI_SUCCESS)
+    if(MPI_Recv_init(mBuffer, {mSizeByte}, MPI_BYTE,
+                {mConnection->getTargetRank()}, {mConnection->getRecvTag()},
+                {mConnection->getCommunicator()}, &mRequest) != MPI_SUCCESS)
     {
         throw std::runtime_error("pMR: Unable to init receive data.");
     }
@@ -108,8 +116,8 @@ void pMR::mpi::RecvMemoryWindow::recv()
 #ifdef MPI_PERSISTENT
     if(MPI_Start(&mRequest) != MPI_SUCCESS)
 #else
-    if(MPI_Irecv(mBuffer, mSizeByte, MPI_BYTE, mConnection->getTargetRank(),
-                mConnection->getRecvTag(), mConnection->getCommunicator(),
+    if(MPI_Irecv(mBuffer, {mSizeByte}, MPI_BYTE, {mConnection->getTargetRank()},
+                {mConnection->getRecvTag()}, {mConnection->getCommunicator()},
                 &mRequest) != MPI_SUCCESS)
 #endif // MPI_PERSISTENT
     {

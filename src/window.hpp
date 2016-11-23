@@ -27,6 +27,10 @@
 #include "config.hpp"
 #include "misc/allocator.hpp"
 #include "misc/profiling.hpp"
+#ifdef pMR_WARN_ZERO
+#include "misc/print.hpp"
+#endif // pMR_WARN_ZERO
+
 
 namespace pMR
 {
@@ -97,8 +101,8 @@ namespace pMR
             T* rbegin();
             //! @brief Returns a reverse iterator to const to the beginning of
             //!     the internal buffer.
-            //! @return Reverse Iterator to const to the first element of the internal
-            //!     buffer.
+            //! @return Reverse Iterator to const to the first element of the
+            //!     internal buffer.
             T const* rbegin() const;
             //! @brief Returns a reverse iterator to const to the beginning of
             //!     the internal buffer.
@@ -162,20 +166,20 @@ namespace pMR
 
 template<typename T>
 pMR::Window<T>::Window(T *buffer, std::uint32_t const count)
-    :   mBuffer(buffer), mCount(count)
+    :   mBuffer(buffer), mCount{count}
 {
 #ifdef pMR_PROFILING
-    mSizeByte = count * sizeof(T);
+    mSizeByte = {static_cast<std::uint32_t>(count * sizeof(T))};
 #endif // pMR_PROFILING
     checkBuffer();
 }
 
 template<typename T>
 pMR::Window<T>::Window(std::uint32_t const count)
-    :   mVector(count), mBuffer(mVector.data()), mCount(count)
+    :   mVector(count), mBuffer(mVector.data()), mCount{count}
 {
 #ifdef pMR_PROFILING
-    mSizeByte = count * sizeof(T);
+    mSizeByte = {static_cast<std::uint32_t>(count * sizeof(T))};
 #endif // pMR_PROFILING
     checkBufferType();
     checkBufferSize();
@@ -194,7 +198,7 @@ pMR::Window<T>::Window(Window &&other)
         mTimeWait(std::move(other.mTimeWait)),
         mTimeCopy(std::move(other.mTimeCopy))
 {
-    other.mPrintStats = false;
+    other.mPrintStats = {false};
 }
 #else
 { }
@@ -299,7 +303,7 @@ T const* pMR::Window<T>::crend() const
 template<typename T>
 std::uint32_t pMR::Window<T>::size() const
 {
-    return mVector.size();
+    return {mVector.size()};
 }
 
 template<typename T>
@@ -307,13 +311,13 @@ bool pMR::Window<T>::isSame(T *const buffer, std::uint32_t const count)
 {
     if(mCount != count)
     {
-        return false;
+        return {false};
     }
     if(mBuffer != buffer)
     {
-        return false;
+        return {false};
     }
-    return true;
+    return {true};
 }
 
 template<typename T>
@@ -321,17 +325,17 @@ bool pMR::Window<T>::isSame(std::uint32_t const count)
 {
     if(mCount != count)
     {
-        return false;
+        return {false};
     }
     if(mBuffer != mVector.data())
     {
-        return false;
+        return {false};
     }
     if(mCount != mVector.size())
     {
-        return false;
+        return {false};
     }
-    return true;
+    return {true};
 }
 
 template<typename T>

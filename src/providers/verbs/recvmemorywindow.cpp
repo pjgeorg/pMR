@@ -21,7 +21,7 @@ pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
     :   mConnection(connection),
         mMemoryRegion(mConnection->getContext(),
                 mConnection->getProtectionDomain(),
-                buffer, sizeByte,
+                buffer, {sizeByte},
 #ifdef VERBS_RDMA
                 IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE) { }
 #else

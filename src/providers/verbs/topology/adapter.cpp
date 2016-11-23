@@ -19,7 +19,7 @@ std::vector<pMR::verbs::Device>::size_type pMR::verbs::getAdapter(
         Devices const &devices, std::vector<Device> &deviceList,
         ibv_node_type const nodeType, ibv_transport_type const transportType)
 {
-    for(std::vector<Device>::size_type i = 0; i != devices.size(); ++i)
+    for(decltype(devices.size()) i = 0; i != devices.size(); ++i)
     {
         if(devices[i].getNodeType() == nodeType
                 && devices[i].getTransportType() == transportType)
@@ -31,7 +31,7 @@ std::vector<pMR::verbs::Device>::size_type pMR::verbs::getAdapter(
 }
 
 pMR::verbs::Device pMR::verbs::getIBAdapter(Devices const &devices,
-        int const deviceNumber)
+        unsigned const deviceNumber)
 {
     std::vector<Device> deviceList;
 
@@ -39,5 +39,5 @@ pMR::verbs::Device pMR::verbs::getIBAdapter(Devices const &devices,
     {
         throw std::runtime_error("pMR: No Infiniband adapter found.");
     }
-    return deviceList.at(deviceNumber);
+    return deviceList.at({deviceNumber});
 }

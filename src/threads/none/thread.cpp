@@ -20,10 +20,10 @@ pMR::thread::ScopedLock::~ScopedLock() { }
 
 bool pMR::thread::isThreaded()
 {
-    return false;
+    return {false};
 }
 
 bool pMR::thread::isSerialized()
 {
-    return true;
+    return {true};
 }

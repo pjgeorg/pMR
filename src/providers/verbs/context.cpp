@@ -29,14 +29,14 @@ pMR::verbs::Context::Context(Device const &device)
 
     DeviceAttributes deviceAttr(*this);
 
-    mMaxMemoryRegionSize = deviceAttr.getMaxMemoryRegionSize();
+    mMaxMemoryRegionSize = {deviceAttr.getMaxMemoryRegionSize()};
 
-    mMaxMessageSize = PortAttributes(*this, 1).getMaxMessageSize();
+    mMaxMessageSize = {PortAttributes(*this, 1).getMaxMessageSize()};
 
-    for(int port = 2; port <= deviceAttr.getPortCount(); ++port)
+    for(auto port = deviceAttr.getPortCount(); port > 1; --port)
     {
-        mMaxMessageSize = std::min(mMaxMessageSize,
-                PortAttributes(*this, port).getMaxMessageSize());
+        mMaxMessageSize = {std::min(mMaxMessageSize,
+                PortAttributes(*this, port).getMaxMessageSize())};
     }
 }
 
@@ -57,10 +57,10 @@ ibv_context const* pMR::verbs::Context::get() const
 
 std::uint64_t pMR::verbs::Context::getMaxMemoryRegionSize() const
 {
-    return mMaxMemoryRegionSize;
+    return {mMaxMemoryRegionSize};
 }
 
 std::uint32_t pMR::verbs::Context::getMaxMessageSize() const
 {
-    return mMaxMessageSize;
+    return {mMaxMessageSize};
 }

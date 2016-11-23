@@ -15,9 +15,9 @@
 #include "node.hpp"
 
 pMR::Node::Node()
-    :   mHostID(gethostid()) { }
+    :   mHostID{gethostid()} { }
 
 decltype(gethostid()) pMR::Node::getHostID() const
 {
-    return mHostID;
+    return {mHostID};
 }

@@ -31,7 +31,7 @@ namespace pMR { namespace verbs
             std::uint32_t getRKey() const;
             std::uint64_t* rawData();
             std::uint64_t const* rawData() const;
-            std::size_t size() const;
+            std::uint32_t size() const;
             ~MemoryAddress() = default;
         private:
             std::array<std::uint64_t,2> mData;

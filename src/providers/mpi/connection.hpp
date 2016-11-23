@@ -23,30 +23,30 @@ extern "C"
 namespace pMR
 {
     class Target;
-
-    namespace mpi
-    {
-        class Connection
-        {
-            public:
-                Connection(Target const &target);
-                Connection(const Connection&) = delete;
-                Connection(Connection&&) = delete;
-                Connection& operator=(const Connection&) = delete;
-                Connection& operator=(Connection&&) = delete;
-                ~Connection() = default;
-                MPI_Comm getCommunicator() const;
-                int getTargetRank() const;
-                int getSendTag() const;
-                int getRecvTag() const;
-                bool multipleThreadSupport() const;
-            private:
-                MPI_Comm const mCommunicator = MPI_COMM_NULL;
-                int const mTargetRank = MPI_PROC_NULL;
-                int const mSendTag = -1;
-                int mRecvTag = -1;
-                bool mMultipleThreadSupport = false;
-        };
-    }
 }
+
+namespace pMR { namespace mpi
+{
+    class Connection
+    {
+        public:
+            Connection(Target const &target);
+            Connection(const Connection&) = delete;
+            Connection(Connection&&) = delete;
+            Connection& operator=(const Connection&) = delete;
+            Connection& operator=(Connection&&) = delete;
+            ~Connection() = default;
+            MPI_Comm getCommunicator() const;
+            int getTargetRank() const;
+            int getSendTag() const;
+            int getRecvTag() const;
+            bool multipleThreadSupport() const;
+        private:
+            MPI_Comm const mCommunicator = MPI_COMM_NULL;
+            int const mTargetRank = MPI_PROC_NULL;
+            int const mSendTag = -1;
+            int mRecvTag = -1;
+            bool mMultipleThreadSupport = false;
+    };
+}}
 #endif // pMR_PROVIDERS_MPI_CONNECTION_H

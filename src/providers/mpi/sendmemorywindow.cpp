@@ -13,6 +13,8 @@
 //  limitations under the License.
 
 #include "sendmemorywindow.hpp"
+#include <stdexcept>
+#include <limits>
 #include "connection.hpp"
 #include "../../threads/thread.hpp"
 
@@ -20,9 +22,16 @@ pMR::mpi::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
         void *buffer, std::uint32_t const sizeByte)
     :   mConnection(connection),
-        mBuffer(buffer),
-        mSizeByte(sizeByte)
+        mBuffer(buffer)
 {
+    if(sizeByte > std::numeric_limits<int>::max())
+    {
+        throw std::length_error("pMR: Message size oferflow.");
+    }
+
+    mSizeByte = {static_cast<int>(sizeByte)};
+
+
 #ifdef MPI_PERSISTENT
     if(mConnection->multipleThreadSupport())
     {
@@ -51,16 +60,16 @@ pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
 
 void pMR::mpi::SendMemoryWindow::init() { }
 
-void pMR::mpi::SendMemoryWindow::post(std::uint32_t const sizeByte)
+void pMR::mpi::SendMemoryWindow::post(unsigned const sizeByte)
 {
     if(mConnection->multipleThreadSupport())
     {
-        send(sizeByte);
+        send(static_cast<int>(sizeByte));
     }
     else
     {
         thread::ScopedLock scopedLock;
-        send(sizeByte);
+        send(static_cast<int>(sizeByte));
     }
 }
 
@@ -75,7 +84,7 @@ void pMR::mpi::SendMemoryWindow::wait()
     }
     else
     {
-        int flag = false;
+        int flag = static_cast<int>(false);
         while(!flag)
         {
             thread::ScopedLock scopedLock;
@@ -91,22 +100,22 @@ void pMR::mpi::SendMemoryWindow::wait()
 #ifdef MPI_PERSISTENT
 void pMR::mpi::SendMemoryWindow::initSend()
 {
-    if(MPI_Send_init(mBuffer, mSizeByte, MPI_BYTE, mConnection->getTargetRank(),
-                mConnection->getSendTag(), mConnection->getCommunicator(),
-                &mRequest) != MPI_SUCCESS)
+    if(MPI_Send_init(mBuffer, {mSizeByte}, MPI_BYTE,
+                {mConnection->getTargetRank()}, {mConnection->getSendTag()},
+                {mConnection->getCommunicator()}, &mRequest) != MPI_SUCCESS)
     {
         throw std::runtime_error("pMR: Unable to init send data.");
     }
 }
 #endif // MPI_PERSISTENT
 
-void pMR::mpi::SendMemoryWindow::send(std::uint32_t const sizeByte)
+void pMR::mpi::SendMemoryWindow::send(int const sizeByte)
 {
 #ifdef MPI_PERSISTENT
     if(MPI_Start(&mRequest) != MPI_SUCCESS)
 #else
-    if(MPI_Isend(mBuffer, sizeByte, MPI_BYTE, mConnection->getTargetRank(),
-                mConnection->getSendTag(), mConnection->getCommunicator(),
+    if(MPI_Isend(mBuffer, {sizeByte}, MPI_BYTE, {mConnection->getTargetRank()},
+                {mConnection->getSendTag()}, {mConnection->getCommunicator()},
                 &mRequest) != MPI_SUCCESS)
 #endif // MPI_PERSISTENT
     {

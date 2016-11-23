@@ -16,6 +16,7 @@
 #define pMR_PROVIDERS_VERBS_RECVMEMORYWINDOW_H
 
 #include <memory>
+#include <cstdint>
 #include "memoryregion.hpp"
 
 namespace pMR { namespace verbs

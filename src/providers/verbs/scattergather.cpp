@@ -49,7 +49,7 @@ ibv_sge const* pMR::verbs::ScatterGatherElement::get() const
 
 std::uint32_t pMR::verbs::ScatterGatherElement::getLength() const
 {
-    return mScatterGatherElement.length;
+    return {mScatterGatherElement.length};
 }
 
 int pMR::verbs::ScatterGatherElement::getNumEntries() const

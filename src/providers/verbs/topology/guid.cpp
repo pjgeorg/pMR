@@ -17,16 +17,16 @@
 std::uint64_t pMR::verbs::getNodeGUID(Device const &device)
 {
     Context context(device);
-    return getNodeGUID(context);
+    return {getNodeGUID(context)};
 }
 
 std::uint64_t pMR::verbs::getNodeGUID(Context &context)
 {
     DeviceAttributes const deviceAttributes(context);
-    return getNodeGUID(deviceAttributes);
+    return {getNodeGUID(deviceAttributes)};
 }
 
 std::uint64_t pMR::verbs::getNodeGUID(DeviceAttributes const &deviceAttributes)
 {
-    return deviceAttributes.getNodeGUID();
+    return {deviceAttributes.getNodeGUID()};
 }

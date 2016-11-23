@@ -21,27 +21,26 @@
 
 pMR::verbs::ConnectionAddress::ConnectionAddress(Context &context,
         QueuePair const &queuePair, std::uint8_t const portNumber)
-    :   mQPN(queuePair.getQPN()), mGID(context, portNumber)
+    :   mQPN{queuePair.getQPN()}, mGID{context, portNumber}
 {
-    PortAttributes portAttributes(context, portNumber);
-    mLID = portAttributes.getLID();
+    mLID = {PortAttributes(context, portNumber).getLID()};
 }
 
 pMR::verbs::ConnectionAddress::ConnectionAddress(
         ConnectionAddress const &connectionAddress,
         QueuePair const &queuePair)
-    :   mQPN(queuePair.getQPN()),
-        mGID(connectionAddress.getGID()),
-        mLID(connectionAddress.getLID()) { }
+    :   mQPN{queuePair.getQPN()},
+        mGID{connectionAddress.getGID()},
+        mLID{connectionAddress.getLID()} { }
 
 void pMR::verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
 {
-    mQPN = QPN;
+    mQPN = {QPN};
 }
 
 void pMR::verbs::ConnectionAddress::setLID(std::uint16_t const LID)
 {
-    mLID = LID;
+    mLID = {LID};
 }
 
 void pMR::verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
@@ -52,17 +51,17 @@ void pMR::verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
 void pMR::verbs::ConnectionAddress::setSubnetPrefix(
         std::uint64_t const subnetPrefix)
 {
-    mGID.setSubnetPrefix(subnetPrefix);
+    mGID.setSubnetPrefix({subnetPrefix});
 }
 
 std::uint32_t pMR::verbs::ConnectionAddress::getQPN() const
 {
-    return mQPN;
+    return {mQPN};
 }
 
 std::uint16_t pMR::verbs::ConnectionAddress::getLID() const
 {
-    return mLID;
+    return {mLID};
 }
 
 ibv_gid pMR::verbs::ConnectionAddress::getGID() const
@@ -72,12 +71,12 @@ ibv_gid pMR::verbs::ConnectionAddress::getGID() const
 
 std::uint64_t pMR::verbs::ConnectionAddress::getGUID() const
 {
-    return mGID.getGUID();
+    return {mGID.getGUID()};
 }
 
 std::uint64_t pMR::verbs::ConnectionAddress::getSubnetPrefix() const
 {
-    return mGID.getSubnetPrefix();
+    return {mGID.getSubnetPrefix()};
 }
 
 void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,

@@ -30,14 +30,14 @@ namespace pMR { namespace cma
     {
         public:
             SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, std::size_t const sizeByte);
             SendMemoryWindow(const SendMemoryWindow&) = delete;
             SendMemoryWindow(SendMemoryWindow&&) = delete;
             SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
             SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
             ~SendMemoryWindow() = default;
             void init();
-            void post(std::uint32_t const sizeByte);
+            void post(std::size_t const sizeByte);
             void wait();
         private:
             std::shared_ptr<Connection> const mConnection;

@@ -33,7 +33,7 @@ namespace pMR { namespace verbs
             std::vector<Device> &deviceList, ibv_node_type const nodeType,
             ibv_transport_type const transportType);
 
-    Device getIBAdapter(Devices const&, int const deviceNumber = 0);
+    Device getIBAdapter(Devices const&, unsigned const deviceNumber = 0);
 
     std::uint64_t getNodeGUID(Device const&);
     std::uint64_t getNodeGUID(Context&);
@@ -47,9 +47,9 @@ namespace pMR { namespace verbs
     std::uint16_t getLID(Context&, std::uint8_t const portNumber);
     std::uint16_t getLID(PortAttributes const&);
 
-    std::uint16_t getSubnetPrefix(Device const&, std::uint8_t const portNumber);
-    std::uint16_t getSubnetPrefix(Context&, std::uint8_t const portNumber);
-    std::uint16_t getSubnetPrefix(GID const&);
+    std::uint64_t getSubnetPrefix(Device const&, std::uint8_t const portNumber);
+    std::uint64_t getSubnetPrefix(Context&, std::uint8_t const portNumber);
+    std::uint64_t getSubnetPrefix(GID const&);
 
     std::uint16_t getSwitchLID(Device const&, std::uint8_t const portNumber);
     std::uint16_t getSwitchLID(Context&, std::uint8_t const portNumber);
