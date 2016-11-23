@@ -14,6 +14,7 @@
 
 #include "benchmark.hpp"
 #include <array>
+#include <vector>
 #include <sstream>
 #include <algorithm>
 extern "C"

@@ -17,6 +17,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 #include <algorithm>
 #include <sstream>
 #include "usage.hpp"

@@ -20,6 +20,7 @@
 #define pMR_SENDWINDOW_H
 
 #include <cstdint>
+#include <cmath>
 #include "config.hpp"
 #include "sendmemorywindow.hpp"
 #include "window.hpp"
