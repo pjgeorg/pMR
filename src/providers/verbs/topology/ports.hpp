@@ -12,19 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "switch.hpp"
-#include "mad/switch.hpp"
+#ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_PORTS_H
+#define pMR_PROVIDERS_VERBS_TOPOLOGY_PORTS_H
 
-std::uint16_t pMR::verbs::getSwitchLID(Device const &device,
-        std::uint8_t const portNumber)
-{
-    Context context(device);
-    return getSwitchLID(context, {portNumber});
-}
+#include <cstdint>
+#include "../device.hpp"
+#include "../context.hpp"
+#include "../deviceattributes.hpp"
 
-std::uint16_t pMR::verbs::getSwitchLID(Context &context,
-        std::uint8_t const portNumber)
+namespace pMR { namespace verbs
 {
-    mad::SwitchLID switchLID(context, {portNumber});
-    return switchLID.getSwitchLID();
-}
+    std::uint8_t getPortCount(Device const&);
+    std::uint8_t getPortCount(Context&);
+    std::uint8_t getPortCount(DeviceAttributes const&);
+}}
+#endif // pMR_PROVIDERS_VERBS_TOPOLOGY_PORTS_H

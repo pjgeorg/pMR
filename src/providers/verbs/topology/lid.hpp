@@ -12,10 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "topology.hpp"
-#include "cpu.hpp"
+#ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_LID_H
+#define pMR_PROVIDERS_VERBS_TOPOLOGY_LID_H
 
-int pMR::numa::getNode()
+#include <cstdint>
+#include "../device.hpp"
+#include "../context.hpp"
+#include "../portattributes.hpp"
+
+namespace pMR { namespace verbs
 {
-    return {getNode({getCPU()})};
-}
+    std::uint16_t getLID(Device const&, std::uint8_t const portNumber);
+    std::uint16_t getLID(Context&, std::uint8_t const portNumber);
+    std::uint16_t getLID(PortAttributes const&);
+}}
+#endif // pMR_PROVIDERS_VERBS_TOPOLOGY_LID_H

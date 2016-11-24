@@ -12,19 +12,19 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "switch.hpp"
-#include "mad/switch.hpp"
-
-std::uint16_t pMR::verbs::getSwitchLID(Device const &device,
-        std::uint8_t const portNumber)
+#include "id.hpp"
+#include <stdexcept>
+extern "C"
 {
-    Context context(device);
-    return getSwitchLID(context, {portNumber});
+#include <scif.h>
 }
 
-std::uint16_t pMR::verbs::getSwitchLID(Context &context,
-        std::uint8_t const portNumber)
+std::uint16_t pMR::scif::getNodeID()
 {
-    mad::SwitchLID switchLID(context, {portNumber});
-    return switchLID.getSwitchLID();
+    uint16_t iD;
+    if(!scif_get_nodeIDs(NULL, 0, &iD))
+    {
+        throw std::runtime_error("pMR: Unable to get Node ID.");
+    }
+    return {iD};
 }

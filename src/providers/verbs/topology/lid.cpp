@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../topology.hpp"
+#include "lid.hpp"
 
 std::uint16_t pMR::verbs::getLID(Device const &device,
         std::uint8_t const portNumber)

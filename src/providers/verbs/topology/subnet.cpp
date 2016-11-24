@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../topology.hpp"
+#include "subnet.hpp"
 
 std::uint64_t pMR::verbs::getSubnetPrefix(Device const &device,
         std::uint8_t const portNumber)

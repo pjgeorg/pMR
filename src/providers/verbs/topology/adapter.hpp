@@ -12,19 +12,20 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "switch.hpp"
-#include "mad/switch.hpp"
+#ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_ADAPTER_H
+#define pMR_PROVIDERS_VERBS_TOPOLOGY_ADAPTER_H
 
-std::uint16_t pMR::verbs::getSwitchLID(Device const &device,
-        std::uint8_t const portNumber)
+extern "C"
 {
-    Context context(device);
-    return getSwitchLID(context, {portNumber});
+#include <infiniband/verbs.h>
 }
+#include "../device.hpp"
 
-std::uint16_t pMR::verbs::getSwitchLID(Context &context,
-        std::uint8_t const portNumber)
+namespace pMR { namespace verbs
 {
-    mad::SwitchLID switchLID(context, {portNumber});
-    return switchLID.getSwitchLID();
-}
+    int getAdapter(Devices const&, ibv_node_type const nodeType,
+            ibv_transport_type const transportType, int deviceNumber = 1);
+
+    Device getIBAdapter(Devices const&, int const deviceNumber = 1);
+}}
+#endif // pMR_PROVIDERS_VERBS_TOPOLOGY_ADAPTER_H

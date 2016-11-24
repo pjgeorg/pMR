@@ -12,32 +12,36 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../topology.hpp"
+#include "adapter.hpp"
 #include <stdexcept>
 
-std::vector<pMR::verbs::Device>::size_type pMR::verbs::getAdapter(
-        Devices const &devices, std::vector<Device> &deviceList,
-        ibv_node_type const nodeType, ibv_transport_type const transportType)
+int pMR::verbs::getAdapter(Devices const &devices, ibv_node_type const nodeType,
+        ibv_transport_type const transportType, int deviceNumber)
 {
     for(decltype(devices.size()) i = 0; i != devices.size(); ++i)
     {
         if(devices[i].getNodeType() == nodeType
                 && devices[i].getTransportType() == transportType)
         {
-            deviceList.push_back(devices[i]);
+            if(--deviceNumber == 0)
+            {
+                return i;
+            }
         }
     }
-    return {deviceList.size()};
+
+    return -1;
 }
 
 pMR::verbs::Device pMR::verbs::getIBAdapter(Devices const &devices,
-        unsigned const deviceNumber)
+        int const deviceNumber)
 {
-    std::vector<Device> deviceList;
+    auto device = getAdapter(devices, {IBV_NODE_CA}, {IBV_TRANSPORT_IB});
 
-    if(!getAdapter(devices, deviceList, IBV_NODE_CA, IBV_TRANSPORT_IB))
+    if(device == -1)
     {
         throw std::runtime_error("pMR: No Infiniband adapter found.");
     }
-    return deviceList.at({deviceNumber});
+
+    return devices.at({device});
 }

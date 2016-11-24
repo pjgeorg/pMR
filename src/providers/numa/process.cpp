@@ -12,19 +12,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "switch.hpp"
-#include "mad/switch.hpp"
+#include "process.hpp"
+#include "cpu.hpp"
 
-std::uint16_t pMR::verbs::getSwitchLID(Device const &device,
-        std::uint8_t const portNumber)
+int pMR::numa::getNode()
 {
-    Context context(device);
-    return getSwitchLID(context, {portNumber});
-}
-
-std::uint16_t pMR::verbs::getSwitchLID(Context &context,
-        std::uint8_t const portNumber)
-{
-    mad::SwitchLID switchLID(context, {portNumber});
-    return switchLID.getSwitchLID();
+    return {getNode({getCPU()})};
 }

@@ -12,19 +12,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "switch.hpp"
-#include "mad/switch.hpp"
+#ifndef pMR_PROVIDERS_NUMA_DEVICE_H
+#define pMR_PROVIDERS_NUMA_DEVICE_H
 
-std::uint16_t pMR::verbs::getSwitchLID(Device const &device,
-        std::uint8_t const portNumber)
-{
-    Context context(device);
-    return getSwitchLID(context, {portNumber});
-}
+#include <string>
 
-std::uint16_t pMR::verbs::getSwitchLID(Context &context,
-        std::uint8_t const portNumber)
+namespace pMR { namespace numa
 {
-    mad::SwitchLID switchLID(context, {portNumber});
-    return switchLID.getSwitchLID();
-}
+    int getNode(std::string const devicePath);
+}}
+#endif // pMR_PROVIDERS_NUMA_DEVICE_H

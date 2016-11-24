@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../topology.hpp"
+#include "ports.hpp"
 
 std::uint8_t pMR::verbs::getPortCount(Device const &device)
 {
