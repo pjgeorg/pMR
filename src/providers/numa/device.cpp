@@ -15,7 +15,6 @@
 #include "device.hpp"
 #include <fstream>
 #include <iterator>
-#include <string>
 #include <stdexcept>
 #include "support.hpp"
 
