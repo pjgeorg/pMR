@@ -20,7 +20,7 @@ extern "C"
 #include "pmr.h"
 
     pMR_RecvWindow* pMR_CreateRecvWindow(pMR_Connection *connection,
-            void *buffer, uint32_t sizeByte)
+            void *buffer, pMR::size_type sizeByte)
     {
         try
         {
@@ -52,7 +52,7 @@ extern "C"
     }
 
     int pMR_IsSameRecvWindow(pMR_RecvWindow *recvWindow,
-            void *buffer, uint32_t sizeByte)
+            void *buffer, pMR::size_type sizeByte)
     {
         try
         {

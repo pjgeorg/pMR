@@ -14,13 +14,14 @@
 
 #include "sendwindow.hpp"
 #include "../../misc/print.hpp"
+#include "config.hpp"
 
 extern "C"
 {
 #include "pmr.h"
 
     pMR_SendWindow* pMR_CreateSendWindow(pMR_Connection *connection,
-            void *buffer, uint32_t sizeByte)
+            void *buffer, pMR::size_type sizeByte)
     {
         try
         {
@@ -52,7 +53,7 @@ extern "C"
     }
 
     int pMR_IsSameSendWindow(pMR_SendWindow *sendWindow,
-            void *buffer, uint32_t sizeByte)
+            void *buffer, pMR::size_type sizeByte)
     {
         try
         {
@@ -96,7 +97,7 @@ extern "C"
         }
     }
 
-    void pMR_PostSendPartial(pMR_SendWindow *sendWindow, uint32_t sizeByte)
+    void pMR_PostSendPartial(pMR_SendWindow *sendWindow, pMR::size_type sizeByte)
     {
         try
         {
