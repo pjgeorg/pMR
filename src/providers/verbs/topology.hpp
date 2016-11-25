@@ -29,6 +29,7 @@ extern "C"
 
 namespace pMR { namespace verbs
 {
+    Device getIBAdapter(int const deviceNumber = 1);
     Device getIBAdapter(Devices const&, int const deviceNumber = 1);
 
     std::uint64_t getNodeGUID(Device const&);

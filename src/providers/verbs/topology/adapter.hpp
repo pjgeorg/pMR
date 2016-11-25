@@ -26,6 +26,7 @@ namespace pMR { namespace verbs
     int getAdapter(Devices const&, ibv_node_type const nodeType,
             ibv_transport_type const transportType, int deviceNumber = 1);
 
+    Device getIBAdapter(int const deviceNumber = 1);
     Device getIBAdapter(Devices const&, int const deviceNumber = 1);
 }}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_ADAPTER_H

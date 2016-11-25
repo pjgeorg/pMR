@@ -33,6 +33,11 @@ int pMR::verbs::getAdapter(Devices const &devices, ibv_node_type const nodeType,
     return -1;
 }
 
+pMR::verbs::Device pMR::verbs::getIBAdapter(int const deviceNumber)
+{
+    return getIBAdapter(Devices(), deviceNumber);
+}
+
 pMR::verbs::Device pMR::verbs::getIBAdapter(Devices const &devices,
         int const deviceNumber)
 {

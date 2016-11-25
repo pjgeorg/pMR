@@ -30,8 +30,5 @@ void pMR::Connection::connect(Target const &target)
         return;
     }
 
-    verbs::Devices devices;
-    auto device = verbs::getIBAdapter(devices);
-
-    connectVerbs(target, device);
+    connectVerbs(target, verbs::getIBAdapter());
 }
