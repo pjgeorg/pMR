@@ -26,7 +26,7 @@ pMR::mpi::Connection::Connection(Target const &target)
 {
     if(backend::threadMultiple())
     {
-        mMultipleThreadSupport = true;
+        mMultipleThreadSupport = {true};
     }
     else
     {

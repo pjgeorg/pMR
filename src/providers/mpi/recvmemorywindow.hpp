@@ -29,7 +29,7 @@ namespace pMR { namespace mpi
     {
         public:
             RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, unsigned const sizeByte);
+                    void *buffer, int const sizeByte);
             RecvMemoryWindow(const RecvMemoryWindow&) = delete;
             RecvMemoryWindow(RecvMemoryWindow&&) = delete;
             RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
@@ -41,7 +41,7 @@ namespace pMR { namespace mpi
         private:
             std::shared_ptr<Connection> const mConnection;
             void *const mBuffer;
-            int mSizeByte;
+            int const mSizeByte;
             MPI_Request mRequest = MPI_REQUEST_NULL;
 
 #ifdef MPI_PERSISTENT

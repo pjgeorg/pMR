@@ -20,18 +20,11 @@
 
 pMR::mpi::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
+        void *buffer, int const sizeByte)
     :   mConnection(connection),
-        mBuffer(buffer)
+        mBuffer(buffer),
+        mSizeByte{sizeByte}
 {
-    if(sizeByte > std::numeric_limits<int>::max())
-    {
-        throw std::length_error("pMR: Message size oferflow.");
-    }
-
-    mSizeByte = {static_cast<int>(sizeByte)};
-
-
 #ifdef MPI_PERSISTENT
     if(mConnection->multipleThreadSupport())
     {
@@ -60,16 +53,16 @@ pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
 
 void pMR::mpi::SendMemoryWindow::init() { }
 
-void pMR::mpi::SendMemoryWindow::post(unsigned const sizeByte)
+void pMR::mpi::SendMemoryWindow::post(int const sizeByte)
 {
     if(mConnection->multipleThreadSupport())
     {
-        send(static_cast<int>(sizeByte));
+        send({sizeByte});
     }
     else
     {
         thread::ScopedLock scopedLock;
-        send(static_cast<int>(sizeByte));
+        send({sizeByte});
     }
 }
 

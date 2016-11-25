@@ -29,19 +29,19 @@ namespace pMR { namespace mpi
     {
         public:
             SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, unsigned const sizeByte);
+                    void *buffer, int const sizeByte);
             SendMemoryWindow(const SendMemoryWindow&) = delete;
             SendMemoryWindow(SendMemoryWindow&&) = delete;
             SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
             SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
             ~SendMemoryWindow();
             void init();
-            void post(unsigned sizeByte);
+            void post(int const sizeByte);
             void wait();
         private:
             std::shared_ptr<Connection> const mConnection;
             void *const mBuffer;
-            int mSizeByte;
+            int const mSizeByte;
             MPI_Request mRequest = MPI_REQUEST_NULL;
 
 #ifdef MPI_PERSISTENT

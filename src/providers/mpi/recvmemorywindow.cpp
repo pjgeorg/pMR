@@ -14,23 +14,16 @@
 
 #include "recvmemorywindow.hpp"
 #include <stdexcept>
-#include <limits>
 #include "connection.hpp"
 #include "../../threads/thread.hpp"
 
 pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, unsigned const sizeByte)
+        void *buffer, int const sizeByte)
     :   mConnection(connection),
-        mBuffer(buffer)
+        mBuffer(buffer),
+        mSizeByte{sizeByte}
 {
-    if(sizeByte > std::numeric_limits<int>::max())
-    {
-        throw std::length_error("pMR: Message size oferflow.");
-    }
-
-    mSizeByte = {static_cast<int>(sizeByte)};
-
 #ifdef MPI_PERSISTENT
     if(mConnection->multipleThreadSupport())
     {
