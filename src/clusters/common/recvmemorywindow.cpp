@@ -16,6 +16,7 @@
 #include "connection.hpp"
 
 #ifdef pMR_PROVIDER_CMA
+#   include <cstdint>
 #   include "../../providers/cma/recvmemorywindow.hpp"
 #endif // pMR_PROVIDER_CMA
 
@@ -28,6 +29,7 @@
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
+#   include <cstdint>
 #   include "../../providers/ofi/recvmemorywindow.hpp"
 #endif // pMR_PROVIDER_OFI
 
@@ -36,11 +38,12 @@
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
+#   include <cstdint>
 #   include "../../providers/verbs/recvmemorywindow.hpp"
 #endif // pMR_PROVIDER_VERBS
 
 pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
-        void *buffer, std::uint32_t const sizeByte)
+        void *buffer, size_type const sizeByte)
     :   mBuffer(buffer),
         mSizeByte{sizeByte},
         mProvider{connection.mProvider}
@@ -52,7 +55,8 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mCMA = std::unique_ptr<cma::RecvMemoryWindow,
                     cma::RecvMemoryWindowDeleter>(new cma::RecvMemoryWindow(
-                                connection.mCMA, buffer, {sizeByte}));
+                                connection.mCMA, buffer,
+                                {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_CMA
@@ -62,7 +66,8 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mMPI = std::unique_ptr<mpi::RecvMemoryWindow,
                     mpi::RecvMemoryWindowDeleter>(new mpi::RecvMemoryWindow(
-                                connection.mMPI, buffer, {sizeByte}));
+                                connection.mMPI, buffer,
+                                {static_cast<int>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_MPI
@@ -82,7 +87,8 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mOFI = std::unique_ptr<ofi::RecvMemoryWindow,
                     ofi::RecvMemoryWindowDeleter>(new ofi::RecvMemoryWindow(
-                                connection.mOFI, buffer, {sizeByte}));
+                                connection.mOFI, buffer,
+                                {static_cast<std::size_t>sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_OFI
@@ -92,7 +98,8 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mSelf = std::unique_ptr<self::RecvMemoryWindow,
                     self::RecvMemoryWindowDeleter>(new self::RecvMemoryWindow(
-                                connection.mSelf, buffer, {sizeByte}));
+                                connection.mSelf, buffer,
+                                {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_SELF
@@ -102,7 +109,8 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(Connection const &connection,
         {
             mVerbs = std::unique_ptr<verbs::RecvMemoryWindow,
                     verbs::RecvMemoryWindowDeleter>(new verbs::RecvMemoryWindow(
-                                connection.mVerbs, buffer, {sizeByte}));
+                                connection.mVerbs, buffer,
+                                {static_cast<std::uint32_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_VERBS
@@ -283,7 +291,7 @@ void const* pMR::RecvMemoryWindow::data() const
     return mBuffer;
 }
 
-std::uint32_t pMR::RecvMemoryWindow::size() const
+pMR::size_type pMR::RecvMemoryWindow::size() const
 {
     return mSizeByte;
 }

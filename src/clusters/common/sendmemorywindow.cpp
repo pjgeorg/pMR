@@ -16,6 +16,7 @@
 #include "connection.hpp"
 
 #ifdef pMR_PROVIDER_CMA
+#   include <cstdint>
 #   include "../../providers/cma/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_CMA
 
@@ -28,6 +29,7 @@
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
+#   include <cstdint>
 #   include "../../providers/ofi/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_OFI
 
@@ -36,11 +38,12 @@
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
+#   include <cstdint>
 #   include "../../providers/verbs/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_VERBS
 
 pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
-        void *buffer, std::uint32_t const sizeByte)
+        void *buffer, size_type const sizeByte)
     :   mBuffer(buffer),
         mSizeByte{sizeByte},
         mProvider{connection.mProvider}
@@ -52,7 +55,8 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         {
             mCMA = std::unique_ptr<cma::SendMemoryWindow,
                     cma::SendMemoryWindowDeleter>(new cma::SendMemoryWindow(
-                                connection.mCMA, buffer, {sizeByte}));
+                                connection.mCMA, buffer,
+                                {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_CMA
@@ -62,7 +66,8 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         {
             mMPI = std::unique_ptr<mpi::SendMemoryWindow,
                     mpi::SendMemoryWindowDeleter>(new mpi::SendMemoryWindow(
-                                connection.mMPI, buffer, {sizeByte}));
+                                connection.mMPI, buffer,
+                                {static_cast<int>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_MPI
@@ -82,7 +87,8 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         {
             mOFI = std::unique_ptr<ofi::SendMemoryWindow,
                     ofi::SendMemoryWindowDeleter>(new ofi::SendMemoryWindow(
-                                connection.mOFI, buffer, {sizeByte}));
+                                connection.mOFI, buffer,
+                                {static_cast<std::size_t>sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_OFI
@@ -92,7 +98,8 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         {
             mSelf = std::unique_ptr<self::SendMemoryWindow,
                     self::SendMemoryWindowDeleter>(new self::SendMemoryWindow(
-                                connection.mSelf, buffer, {sizeByte}));
+                                connection.mSelf, buffer,
+                                {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_SELF
@@ -102,7 +109,8 @@ pMR::SendMemoryWindow::SendMemoryWindow(Connection const &connection,
         {
             mVerbs = std::unique_ptr<verbs::SendMemoryWindow,
                     verbs::SendMemoryWindowDeleter>(new verbs::SendMemoryWindow(
-                                connection.mVerbs, buffer, {sizeByte}));
+                                connection.mVerbs, buffer,
+                                {static_cast<std::uint32_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_VERBS
@@ -170,7 +178,7 @@ void pMR::SendMemoryWindow::post()
     post(mSizeByte);
 }
 
-void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
+void pMR::SendMemoryWindow::post(size_type const sizeByte)
 {
     if(sizeByte > mSizeByte)
     {
@@ -182,7 +190,7 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
 #ifdef pMR_PROVIDER_CMA
         case Provider::cma:
         {
-            mCMA->post({sizeByte});
+            mCMA->post({static_cast<std::size_t>(sizeByte)});
             break;
         }
 #endif // pMR_PROVIDER_CMA
@@ -190,7 +198,7 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
 #ifdef pMR_PROVIDER_MPI
         case Provider::mpi:
         {
-            mMPI->post({sizeByte});
+            mMPI->post({static_cast<int>(sizeByte)});
             break;
         }
 #endif // pMR_PROVIDER_MPI
@@ -206,7 +214,7 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
 #ifdef pMR_PROVIDER_OFI
         case Provider::ofi:
         {
-            mOFI->post({sizeByte});
+            mOFI->post({static_cast<std::size_t>(sizeByte)});
             break;
         }
 #endif // pMR_PROVIDER_OFI
@@ -214,7 +222,7 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
 #ifdef pMR_PROVIDER_SELF
         case Provider::self:
         {
-            mSelf->post({sizeByte});
+            mSelf->post({static_cast<std::size_t>(sizeByte)});
             break;
         }
 #endif // pMR_PROVIDER_SELF
@@ -222,7 +230,7 @@ void pMR::SendMemoryWindow::post(std::uint32_t const sizeByte)
 #ifdef pMR_PROVIDER_VERBS
         case Provider::verbs:
         {
-            mVerbs->post({sizeByte});
+            mVerbs->post({static_cast<std::uint32_t>(sizeByte)});
             break;
         }
 #endif // pMR_PROVIDER_VERBS
@@ -293,7 +301,7 @@ void const* pMR::SendMemoryWindow::data() const
     return mBuffer;
 }
 
-std::uint32_t pMR::SendMemoryWindow::size() const
+pMR::size_type pMR::SendMemoryWindow::size() const
 {
     return mSizeByte;
 }

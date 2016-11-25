@@ -15,7 +15,6 @@
 #ifndef pMR_RECVMEMORYWINDOW_H
 #define pMR_RECVMEMORYWINDOW_H
 
-#include <cstdint>
 #include <memory>
 #include "config.hpp"
 #include "provider.hpp"
@@ -28,7 +27,7 @@ namespace pMR
     {
         public:
             RecvMemoryWindow(Connection const&,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, size_type const sizeByte);
             RecvMemoryWindow(const RecvMemoryWindow&) = delete;
             RecvMemoryWindow(RecvMemoryWindow&&) = default;
             RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
@@ -39,10 +38,10 @@ namespace pMR
             void wait();
             void* data();
             void const* data() const;
-            std::uint32_t size() const;
+            size_type size() const;
         private:
             void *mBuffer;
-            std::uint32_t mSizeByte;
+            size_type const mSizeByte;
             Provider mProvider;
 
 #ifdef pMR_PROVIDER_CMA

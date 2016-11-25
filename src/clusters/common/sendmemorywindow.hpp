@@ -15,7 +15,6 @@
 #ifndef pMR_SENDMEMORYWINDOW_H
 #define pMR_SENDMEMORYWINDOW_H
 
-#include <cstdint>
 #include <memory>
 #include "config.hpp"
 #include "provider.hpp"
@@ -28,7 +27,7 @@ namespace pMR
     {
         public:
             SendMemoryWindow(Connection const&,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, size_type const sizeByte);
             SendMemoryWindow(const SendMemoryWindow&) = delete;
             SendMemoryWindow(SendMemoryWindow&&) = default;
             SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
@@ -36,14 +35,14 @@ namespace pMR
             ~SendMemoryWindow();
             void init();
             void post();
-            void post(std::uint32_t const sizeByte);
+            void post(size_type const sizeByte);
             void wait();
             void* data();
             void const* data() const;
-            std::uint32_t size() const;
+            size_type size() const;
         private:
             void *mBuffer;
-            std::uint32_t mSizeByte;
+            size_type const mSizeByte;
             Provider mProvider;
 
 #ifdef pMR_PROVIDER_CMA

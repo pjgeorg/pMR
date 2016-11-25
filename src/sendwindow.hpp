@@ -43,13 +43,13 @@ namespace pMR
             //! @param buffer Pointer to memory region used as send buffer.
             //! @param count Number of elements of type T in send buffer.
             SendWindow(Connection const &connection,
-                    T *buffer, std::uint32_t const count);
+                    T *buffer, size_type const count);
             //! @brief Window for data to send to target.
             //! @details Creates a SendWindow for specified connection. Sends
             //!     count elements T, stored in internal buffer, to target.
             //! @param connection Connection to associate Window with.
             //! @param count Number of elements of type T in send buffer.
-            SendWindow(Connection const &connection, std::uint32_t const count);
+            SendWindow(Connection const &connection, size_type const count);
             SendWindow(const SendWindow&) = delete;
             SendWindow(SendWindow&&) = default;
             SendWindow& operator=(const SendWindow&) = delete;
@@ -78,7 +78,7 @@ namespace pMR
             //! @note Depending on the used provider, this routine might be
             //!     blocking.
             //! @param sizeByte First sizeByte Bytes of SendWindow to send.
-            void post(std::uint32_t const sizeByte);
+            void post(size_type const sizeByte);
             //! @brief Wait for previously posted send routine to finish.
             //! @note Write access to send buffer is allowed again after wait.
             //! @note Blocking routine.
@@ -92,7 +92,7 @@ namespace pMR
             //! @param count Number of elements to copy.
             template<class Iterator>
             void insert(Iterator inputIt,
-                    std::uint32_t const offset, std::uint32_t const count);
+                    size_type const offset, size_type const count);
             //! @brief Copy data to internal buffer.
             //! @details Fills the internal buffer - starting at the beginning -
             //!     with data pointed to by inputIt.
@@ -117,7 +117,7 @@ namespace pMR
             //! @param threadCount Number of threads calling the function.
             template<class Iterator>
             void insertMT(Iterator inputIt,
-                   std::uint32_t const offset, std::uint32_t const count,
+                   size_type const offset, size_type const count,
                    int const threadID, int const threadCount);
             //! @brief Multithreaded copy data to internal buffer.
             //! @details Fills the internal buffer - starting at the beginning -
@@ -142,17 +142,17 @@ namespace pMR
 
 template<typename T>
 pMR::SendWindow<T>::SendWindow(Connection const &connection,
-        T *const buffer, std::uint32_t const count)
+        T *const buffer, size_type const count)
     :   Window<T>(buffer, count),
         mMemoryWindow(connection, buffer,
-                {static_cast<std::uint32_t>(count * sizeof(T))}) { }
+                {static_cast<size_type>(count * sizeof(T))}) { }
 
 template<typename T>
 pMR::SendWindow<T>::SendWindow(Connection const &connection,
-        std::uint32_t const count)
+        size_type const count)
     :   Window<T>(count),
         mMemoryWindow(connection, this->mBuffer,
-                {static_cast<std::uint32_t>(count * sizeof(T))}) { }
+                {static_cast<size_type>(count * sizeof(T))}) { }
 
 template<typename T>
 pMR::SendWindow<T>::~SendWindow()
@@ -179,7 +179,7 @@ void pMR::SendWindow<T>::post()
 }
 
 template<typename T>
-void pMR::SendWindow<T>::post(std::uint32_t const sizeByte)
+void pMR::SendWindow<T>::post(size_type const sizeByte)
 {
     pMR_PROF_START(this->mTimePost);
     mMemoryWindow.post({sizeByte});
@@ -198,7 +198,7 @@ void pMR::SendWindow<T>::wait()
 template<typename T>
 template<class Iterator>
 void pMR::SendWindow<T>::insert(Iterator inputIt,
-        std::uint32_t const offset, std::uint32_t const count)
+        size_type const offset, size_type const count)
 {
     pMR_PROF_START(this->mTimeCopy);
     this->checkBoundaries({offset}, {count});
@@ -211,13 +211,13 @@ template<class Iterator>
 void pMR::SendWindow<T>::insert(Iterator inputIt)
 {
     return insert(inputIt, 0,
-            {static_cast<std::uint32_t>(this->mVector.size())});
+            {static_cast<size_type>(this->mVector.size())});
 }
 
 template<typename T>
 template<class Iterator>
 void pMR::SendWindow<T>::insertMT(Iterator inputIt,
-        std::uint32_t const offset, std::uint32_t const count,
+        size_type const offset, size_type const count,
         int const threadID, int const threadCount)
 {
     pMR_PROF_START_THREAD(this->mTimeCopy);
@@ -225,12 +225,12 @@ void pMR::SendWindow<T>::insertMT(Iterator inputIt,
     static_assert(isRandomAccessIterator<Iterator>(),
             "Iterator is not of random access type");
 
-    std::uint32_t threadStart;
-    std::uint32_t threadEnd;
-    splitWorkToThreads(offset, offset + count, threadID, threadCount,
-            threadStart, threadEnd,
-            getLeastCommonMultiple(static_cast<std::uint32_t>(alignment),
-                static_cast<std::uint32_t>(sizeof(T))));
+    size_type threadStart;
+    size_type threadEnd;
+    splitWorkToThreads(offset, static_cast<size_type>(offset + count),
+            threadID, threadCount, threadStart, threadEnd,
+            getLeastCommonMultiple(static_cast<size_type>(alignment),
+                static_cast<size_type>(sizeof(T))));
 
     std::copy_n(inputIt + threadStart, threadEnd - threadStart,
             this->mVector.begin() + threadStart);

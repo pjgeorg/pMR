@@ -43,14 +43,14 @@ namespace pMR
             //! @param buffer Pointer to memory region used as receive buffer.
             //! @param count Number of elements of type T in receive buffer.
             RecvWindow(Connection const &connection,
-                    T *buffer, std::uint32_t const count);
+                    T *buffer, size_type const count);
             //! @brief Window to store data received from target.
             //! @details Creates a RecvWindow for specified connection. Uses an
             //!     internal buffer - which can fit count elements of type T -
             //!     to store data received from target.
             //! @param connection Connection to associate Window with.
             //! @param count Number of elements of type T in receive buffer.
-            RecvWindow(Connection const &connection, std::uint32_t const count);
+            RecvWindow(Connection const &connection, size_type const count);
             RecvWindow(const RecvWindow&) = delete;
             RecvWindow(RecvWindow&&) = default;
             RecvWindow& operator=(const RecvWindow&) = delete;
@@ -86,7 +86,7 @@ namespace pMR
             //! @param count Number of elements to copy.
             template<class Iterator>
             void extract(Iterator outputIt,
-                    std::uint32_t const offset, std::uint32_t const count);
+                    size_type const offset, size_type const count);
             //! @brief Copy data from internal buffer.
             //! @details Copies all elements - starting at the beginning - of
             //!     the internal buffer to destination specified by outputIt.
@@ -111,7 +111,7 @@ namespace pMR
             //! @param threadCount Number of threads calling the function.
             template<class Iterator>
             void extractMT(Iterator outputIt,
-                   std::uint32_t const offset, std::uint32_t const count,
+                   size_type const offset, size_type const count,
                    int const threadID, int const threadCount);
             //! @brief Multithreaded copy data from internal buffer.
             //! @details Copies all elements - starting at the beginning - of
@@ -137,17 +137,17 @@ namespace pMR
 
 template<typename T>
 pMR::RecvWindow<T>::RecvWindow(Connection const &connection,
-        T *const buffer, std::uint32_t const count)
+        T *const buffer, size_type const count)
     :   Window<T>(buffer, count),
         mMemoryWindow(connection, buffer,
-                {static_cast<std::uint32_t>(count * sizeof(T))}) { }
+                {static_cast<size_type>(count * sizeof(T))}) { }
 
 template<typename T>
 pMR::RecvWindow<T>::RecvWindow(Connection const &connection,
-        std::uint32_t const count)
+        size_type const count)
     :   Window<T>(count),
         mMemoryWindow(connection, this->mBuffer,
-                {static_cast<std::uint32_t>(count * sizeof(T))}) { }
+                {static_cast<size_type>(count * sizeof(T))}) { }
 
 template<typename T>
 pMR::RecvWindow<T>::~RecvWindow()
@@ -185,7 +185,7 @@ void pMR::RecvWindow<T>::wait()
 template<typename T>
 template<class Iterator>
 void pMR::RecvWindow<T>::extract(Iterator outputIt,
-        std::uint32_t const offset, std::uint32_t const count)
+        size_type const offset, size_type const count)
 {
     pMR_PROF_START(this->mTimeCopy);
     this->checkBoundaries({offset}, {count});
@@ -198,13 +198,13 @@ template<class Iterator>
 void pMR::RecvWindow<T>::extract(Iterator outputIt)
 {
     return extract(outputIt, 0,
-            {static_cast<std::uint32_t>(this->mVector.size())});
+            {static_cast<size_type>(this->mVector.size())});
 }
 
 template<typename T>
 template<class Iterator>
 void pMR::RecvWindow<T>::extractMT(Iterator outputIt,
-        std::uint32_t const offset, std::uint32_t const count,
+        size_type const offset, size_type const count,
         int const threadID, int const threadCount)
 {
     pMR_PROF_START_THREAD(this->mTimeCopy);
@@ -212,12 +212,12 @@ void pMR::RecvWindow<T>::extractMT(Iterator outputIt,
     static_assert(isRandomAccessIterator<Iterator>(),
             "Iterator is not of random access type");
 
-    std::uint32_t threadStart;
-    std::uint32_t threadEnd;
-    splitWorkToThreads(offset, offset + count, threadID, threadCount,
-            threadStart, threadEnd,
-            getLeastCommonMultiple(static_cast<std::uint32_t>(alignment),
-                static_cast<std::uint32_t>(sizeof(T))));
+    size_type threadStart;
+    size_type threadEnd;
+    splitWorkToThreads(offset, static_cast<size_type>(offset + count),
+            threadID, threadCount, threadStart, threadEnd,
+            getLeastCommonMultiple(static_cast<size_type>(alignment),
+                static_cast<size_type>(sizeof(T))));
 
     std::copy_n(this->mVector.cbegin() + threadStart, threadEnd - threadStart,
             outputIt + threadStart);

@@ -49,6 +49,7 @@
 
 namespace pMR
 {
+    using size_type = int;
     constexpr unsigned int alignment = @ALIGNMENT@;
 }
 #endif // pMR_CONFIG_H

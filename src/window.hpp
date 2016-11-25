@@ -41,8 +41,8 @@ namespace pMR
     class Window
     {
         public:
-            Window(T *buffer, std::uint32_t const count);
-            explicit Window(std::uint32_t const count);
+            Window(T *buffer, size_type const count);
+            explicit Window(size_type const count);
             Window(const Window&) = delete;
             Window(Window&&);
             Window& operator=(const Window&) = delete;
@@ -126,32 +126,31 @@ namespace pMR
             T const* crend() const;
             //! @brief Returns the number of elements in the internal buffer.
             //! @return The number of elements in the internal buffer.
-            std::uint32_t size() const;
+            size_type size() const;
             //! @brief Compare current Window with specified input data.
             //! @details Checks whether the current Window is the same as a
             //!     Window with the specified buffer and count.
             //! @param buffer Pointer to contigious send/receive buffer.
             //! @param count Number of elements of type T in buffer.
             //! @return true if the Window is the same, false otherwise.
-            bool isSame(T *const buffer, std::uint32_t const count);
+            bool isSame(T *const buffer, size_type const count);
             //! @brief Compare current Window with specified input data.
             //! @details Checks whether the current Window is suitable for the
             //!     specified count using internal buffering.
             //! @param count Number of elements of type T in buffer.
             //! @return true if the Window is suitable, false otherwise.
-            bool isSame(std::uint32_t const count);
+            bool isSame(size_type const count);
         protected:
             std::vector<T, AlignedAllocator<T>> mVector;
             T* mBuffer;
-            std::uint32_t mCount;
+            size_type const mCount;
             void checkBuffer();
             void checkBufferPointer();
             void checkBufferType();
             void checkBufferSize();
-            void checkBoundaries(std::uint32_t const offset,
-                    std::uint32_t const count);
+            void checkBoundaries(size_type const offset, size_type const count);
 #ifdef pMR_PROFILING
-            std::uint32_t mSizeByte = 0;
+            std::size_type mSizeByte = 0;
             std::uint64_t mIterations = 0;
             double mTimeInit = 0.0;
             double mTimePost = 0.0;
@@ -165,21 +164,21 @@ namespace pMR
 }
 
 template<typename T>
-pMR::Window<T>::Window(T *buffer, std::uint32_t const count)
+pMR::Window<T>::Window(T *buffer, size_type const count)
     :   mBuffer(buffer), mCount{count}
 {
 #ifdef pMR_PROFILING
-    mSizeByte = {static_cast<std::uint32_t>(count * sizeof(T))};
+    mSizeByte = {static_cast<size_type>(count * sizeof(T))};
 #endif // pMR_PROFILING
     checkBuffer();
 }
 
 template<typename T>
-pMR::Window<T>::Window(std::uint32_t const count)
+pMR::Window<T>::Window(size_type const count)
     :   mVector(count), mBuffer(mVector.data()), mCount{count}
 {
 #ifdef pMR_PROFILING
-    mSizeByte = {static_cast<std::uint32_t>(count * sizeof(T))};
+    mSizeByte = {static_cast<size_type>(count * sizeof(T))};
 #endif // pMR_PROFILING
     checkBufferType();
     checkBufferSize();
@@ -301,13 +300,13 @@ T const* pMR::Window<T>::crend() const
 }
 
 template<typename T>
-std::uint32_t pMR::Window<T>::size() const
+pMR::size_type pMR::Window<T>::size() const
 {
     return {mVector.size()};
 }
 
 template<typename T>
-bool pMR::Window<T>::isSame(T *const buffer, std::uint32_t const count)
+bool pMR::Window<T>::isSame(T *const buffer, size_type const count)
 {
     if(mCount != count)
     {
@@ -321,7 +320,7 @@ bool pMR::Window<T>::isSame(T *const buffer, std::uint32_t const count)
 }
 
 template<typename T>
-bool pMR::Window<T>::isSame(std::uint32_t const count)
+bool pMR::Window<T>::isSame(size_type const count)
 {
     if(mCount != count)
     {
@@ -368,9 +367,9 @@ void pMR::Window<T>::checkBufferType()
 template<typename T>
 void pMR::Window<T>::checkBufferSize()
 {
-    if(mCount * sizeof(T) > std::numeric_limits<std::uint32_t>::max())
+    if(mCount * sizeof(T) > std::numeric_limits<size_type>::max())
     {
-        throw std::overflow_error("Message Size");
+        throw std::overflow_error("pMR: Message size");
     }
 
 #ifdef pMR_WARN_ZERO
@@ -382,8 +381,8 @@ void pMR::Window<T>::checkBufferSize()
 }
 
 template<typename T>
-void pMR::Window<T>::checkBoundaries(std::uint32_t const offset,
-        std::uint32_t const count)
+void pMR::Window<T>::checkBoundaries(size_type const offset,
+        size_type const count)
 {
     if(offset + count > mVector.size())
     {
