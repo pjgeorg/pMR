@@ -16,7 +16,7 @@
 
 pMR::null::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte) { }
+        void *buffer, size_type const sizeByte) { }
 
 void pMR::null::RecvMemoryWindow::init() { }
 

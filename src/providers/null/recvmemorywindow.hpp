@@ -16,7 +16,7 @@
 #define pMR_PROVIDERS_NULL_RECVMEMORYWINDOW_H
 
 #include <memory>
-#include <cstdint>
+#include "config.hpp"
 
 namespace pMR { namespace null
 {
@@ -26,7 +26,7 @@ namespace pMR { namespace null
     {
         public:
             RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, size_type const sizeByte);
             RecvMemoryWindow(const RecvMemoryWindow&) = delete;
             RecvMemoryWindow(RecvMemoryWindow&&) = delete;
             RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;

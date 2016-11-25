@@ -16,10 +16,10 @@
 
 pMR::null::SendMemoryWindow::SendMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte) { }
+        void *buffer, size_type const sizeByte) { }
 
 void pMR::null::SendMemoryWindow::init() { }
 
-void pMR::null::SendMemoryWindow::post(std::uint32_t const) { }
+void pMR::null::SendMemoryWindow::post(size_type const) { }
 
 void pMR::null::SendMemoryWindow::wait() { }

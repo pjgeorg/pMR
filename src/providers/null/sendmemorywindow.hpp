@@ -16,7 +16,7 @@
 #define pMR_PROVIDERS_NULL_SENDMEMORYWINDOW_H
 
 #include <memory>
-#include <cstdint>
+#include "config.hpp"
 
 namespace pMR { namespace null
 {
@@ -26,14 +26,14 @@ namespace pMR { namespace null
     {
         public:
             SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, size_type const sizeByte);
             SendMemoryWindow(const SendMemoryWindow&) = delete;
             SendMemoryWindow(SendMemoryWindow&&) = delete;
             SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
             SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
             ~SendMemoryWindow() = default;
             void init();
-            void post(std::uint32_t const sizeByte);
+            void post(size_type const sizeByte);
             void wait();
     };
 }}
