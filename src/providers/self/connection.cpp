@@ -41,11 +41,11 @@ pMR::self::Connection::Connection(Target const &target)
     mRemoteBuffer =
         reinterpret_cast<void**>(std::get<0>(targetAddress));
     mRemoteSizeByte =
-        {reinterpret_cast<std::uint32_t*>(std::get<1>(targetAddress))};
+        {reinterpret_cast<std::size_t*>(std::get<1>(targetAddress))};
 }
 
 void pMR::self::Connection::postAddress(void *const buffer,
-        std::uint32_t const sizeByte)
+        std::size_t const sizeByte)
 {
     if(sizeByte == 0)
     {
@@ -68,7 +68,7 @@ void pMR::self::Connection::pollAddress() const
 }
 
 void pMR::self::Connection::sendData(void *const buffer,
-        std::uint32_t const sizeByte)
+        std::size_t const sizeByte)
 {
     checkBufferSizeByte({sizeByte});
     std::memcpy(mDestinationBuffer, buffer, {sizeByte});
@@ -88,8 +88,7 @@ void pMR::self::Connection::pollNotify() const
     }
 }
 
-void pMR::self::Connection::checkBufferSizeByte(std::uint32_t const sizeByte)
-    const
+void pMR::self::Connection::checkBufferSizeByte(std::size_t const sizeByte) const
 {
     if(mDestinationSizeByte < sizeByte)
     {

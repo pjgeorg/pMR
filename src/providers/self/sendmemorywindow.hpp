@@ -16,7 +16,7 @@
 #define pMR_PROVIDERS_SELF_SENDMEMORYWINDOW_H
 
 #include <memory>
-#include <cstdint>
+#include "config.hpp"
 
 namespace pMR { namespace self
 {
@@ -26,19 +26,19 @@ namespace pMR { namespace self
     {
         public:
             SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
+                    void *buffer, std::size_t const sizeByte);
             SendMemoryWindow(const SendMemoryWindow&) = delete;
             SendMemoryWindow(SendMemoryWindow&&) = delete;
             SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
             SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
             ~SendMemoryWindow() = default;
             void init();
-            void post(std::uint32_t const sizeByte);
+            void post(std::size_t const sizeByte);
             void wait();
         private:
             std::shared_ptr<Connection> const mConnection;
             void *mBuffer = nullptr;
-            std::uint32_t const mSizeByte;
+            std::size_t const mSizeByte;
     };
 }}
 #endif // pMR_PROVIDERS_SELF_SENDMEMORYWINDOW_H

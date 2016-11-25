@@ -17,7 +17,7 @@
 
 pMR::self::RecvMemoryWindow::RecvMemoryWindow(
         std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
+        void *buffer, std::size_t const sizeByte)
     :   mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte} { }
 
 void pMR::self::RecvMemoryWindow::init()
