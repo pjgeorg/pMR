@@ -191,8 +191,8 @@ pMR::Target pMR::Communicator::getNeighbor(
         return Target({mCommunicator}, {target}, 0, 0, {true}, {false});
     }
 
-    int uniqueSendID = +displacement + (dimension + 1) * 1e3;
-    int uniqueRecvID = -displacement + (dimension + 1) * 1e3;
+    auto uniqueSendID = +displacement + (dimension + 1) * 1000;
+    auto uniqueRecvID = -displacement + (dimension + 1) * 1000;
 
     if(mID == target)
     {
