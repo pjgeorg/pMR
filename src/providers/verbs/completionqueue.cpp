@@ -91,10 +91,10 @@ bool pMR::verbs::CompletionQueue::poll(int retry)
 
     if(numCompletion)
     {
-        return true;
+        return {true};
     }
     else
     {
-        return false;
+        return {false};
     }
 }

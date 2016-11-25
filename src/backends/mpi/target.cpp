@@ -85,11 +85,11 @@ void pMR::Target::queryTarget()
 {
     if(mTarget == MPI_PROC_NULL)
     {
-        mNull = true;
+        mNull = {true};
     }
 
     if(queryRank() == mTarget)
     {
-        mSelf = true;
+        mSelf = {true};
     }
 }
