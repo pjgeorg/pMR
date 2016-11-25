@@ -367,6 +367,14 @@ void pMR::Window<T>::checkBufferType()
 template<typename T>
 void pMR::Window<T>::checkBufferSize()
 {
+    if(std::numeric_limits<size_type>::is_signed)
+    {
+        if(mCount < 0)
+        {
+            throw std::logic_error("pMR: Negative message size.");
+        }
+    }
+
     if(mCount * sizeof(T) > std::numeric_limits<size_type>::max())
     {
         throw std::overflow_error("pMR: Message size");
