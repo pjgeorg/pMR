@@ -40,19 +40,20 @@ pMR::cma::Connection::Connection(Target const &target)
 
     backend::exchange(target, originAddress, targetAddress);
 
-    mRemotePID = *reinterpret_cast<std::int64_t*>(&std::get<0>(targetAddress));
+    mRemotePID = {static_cast<int>(*reinterpret_cast<std::int64_t*>
+            (&std::get<0>(targetAddress)))};
     mRemoteAddress.iov_base =
         reinterpret_cast<void*>(std::get<1>(targetAddress));
     mRemoteAddress.iov_len =
-        static_cast<std::size_t>(std::get<2>(targetAddress));
+        {static_cast<std::size_t>(std::get<2>(targetAddress))};
     mRemoteNotifySend.iov_base = 
         reinterpret_cast<void*>(std::get<3>(targetAddress));
     mRemoteNotifySend.iov_len =
-        static_cast<std::size_t>(std::get<4>(targetAddress));
+        {static_cast<std::size_t>(std::get<4>(targetAddress))};
     mRemoteNotifyRecv.iov_base = 
         reinterpret_cast<void*>(std::get<5>(targetAddress));
     mRemoteNotifyRecv.iov_len =
-        static_cast<std::size_t>(std::get<6>(targetAddress));
+        {static_cast<std::size_t>(std::get<6>(targetAddress))};
 }
 
 void pMR::cma::Connection::sendAddress(iovec &buffer) const
