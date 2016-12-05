@@ -14,6 +14,10 @@
 
 #include "threadsupport.hpp"
 #include <stdexcept>
+extern "C"
+{
+#include <mpi.h>
+}
 #include "../../misc/singleton.hpp"
 
 pMR::backend::ThreadSupport::ThreadSupport()

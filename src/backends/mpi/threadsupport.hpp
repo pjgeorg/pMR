@@ -15,12 +15,6 @@
 #ifndef pMR_BACKENDS_MPI_THREADSUPPORT_H
 #define pMR_BACKENDS_MPI_THREADSUPPORT_H
 
-#include <string>
-extern "C"
-{
-#include <mpi.h>
-}
-
 namespace pMR { namespace backend
 {
     class ThreadSupport
