@@ -38,7 +38,7 @@ namespace pMR { namespace self
         private:
             std::shared_ptr<Connection> const mConnection;
             void *mBuffer = nullptr;
-            std::size_t const mSizeByte;
+            std::size_t const mSizeByte = 0;
     };
 }}
 #endif // pMR_PROVIDERS_SELF_SENDMEMORYWINDOW_H
