@@ -12,18 +12,17 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_NUMA_SUPPORT_H
-#define pMR_PROVIDERS_NUMA_SUPPORT_H
-
-namespace pMR { namespace numa
+#include <stdexcept>
+#include "numa.hpp"
+extern "C"
 {
-    class Support
-    {
-        public:
-            Support();
-            ~Support() = default;
-    };
+#include <numa.h>
+}
 
-    void checkSupport();
-}}
-#endif // pMR_PROVIDERS_NUMA_SUPPORT_H
+void pMR::numa::checkAvailable()
+{
+    if(numa_available() == -1)
+    {
+        throw std::runtime_error("pMR: NUMA unavailable.");
+    }
+}

@@ -16,11 +16,11 @@
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
-#include "support.hpp"
+#include "numa.hpp"
 
 int pMR::numa::getNode(std::string const devicePath)
 {
-    checkSupport();
+    checkAvailable();
 
     std::ifstream deviceFile(devicePath + "/device/numa_node", std::ios::in);
     if(!deviceFile)

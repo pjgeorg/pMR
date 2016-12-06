@@ -12,23 +12,11 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "support.hpp"
-#include <stdexcept>
-extern "C"
-{
-#include <numa.h>
-}
-#include "../../misc/singleton.hpp"
+#ifndef pMR_PROVIDERS_NUMA_NUMA_H
+#define pMR_PROVIDERS_NUMA_NUMA_H
 
-pMR::numa::Support::Support()
+namespace pMR { namespace numa
 {
-    if(numa_available() == -1)
-    {
-        throw std::runtime_error("pMR: Support support unavailable.");
-    }
-}
-
-void pMR::numa::checkSupport()
-{
-    Singleton<Support>::Instance();
-}
+    void checkAvailable();
+}}
+#endif // pMR_PROVIDERS_NUMA_NUMA_H

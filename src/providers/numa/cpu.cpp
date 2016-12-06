@@ -19,7 +19,7 @@ extern "C"
 #include <numa.h>
 #include <sched.h>
 }
-#include "support.hpp"
+#include "numa.hpp"
 
 int pMR::numa::getCPU()
 {
@@ -35,7 +35,7 @@ int pMR::numa::getCPU()
 
 int pMR::numa::getNode(int const cpu)
 {
-    checkSupport();
+    checkAvailable();
 
     auto node = numa_node_of_cpu({cpu});
 
