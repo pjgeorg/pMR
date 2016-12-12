@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "id.hpp"
+#include "nodeid.hpp"
 #include <stdexcept>
 extern "C"
 {

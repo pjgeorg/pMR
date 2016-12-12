@@ -1,1 +1,1 @@
-add_library(PROVIDER_SCIF OBJECT id.cpp)
+add_library(PROVIDER_SCIF OBJECT nodeid.cpp)
