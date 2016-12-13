@@ -16,6 +16,7 @@
 #define pMR_MISC_THREAD_H
 
 #include <algorithm>
+#include <cmath>
 #include <stdexcept>
 
 namespace pMR
