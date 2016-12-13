@@ -48,14 +48,14 @@ namespace pMR
         class SendMemoryWindow;
         class SendMemoryWindowDeleter
         {
-            public:
-                void operator()(SendMemoryWindow*) const;
+        public:
+            void operator()(SendMemoryWindow *) const;
         };
         class RecvMemoryWindow;
         class RecvMemoryWindowDeleter
         {
-            public:
-                void operator()(RecvMemoryWindow*) const;
+        public:
+            void operator()(RecvMemoryWindow *) const;
         };
     }
 #endif // pMR_PROVIDER_CMA
@@ -67,14 +67,14 @@ namespace pMR
         class SendMemoryWindow;
         class SendMemoryWindowDeleter
         {
-            public:
-                void operator()(SendMemoryWindow*) const;
+        public:
+            void operator()(SendMemoryWindow *) const;
         };
         class RecvMemoryWindow;
         class RecvMemoryWindowDeleter
         {
-            public:
-                void operator()(RecvMemoryWindow*) const;
+        public:
+            void operator()(RecvMemoryWindow *) const;
         };
     }
 #endif // pMR_PROVIDER_MPI
@@ -86,14 +86,14 @@ namespace pMR
         class SendMemoryWindow;
         class SendMemoryWindowDeleter
         {
-            public:
-                void operator()(SendMemoryWindow*) const;
+        public:
+            void operator()(SendMemoryWindow *) const;
         };
         class RecvMemoryWindow;
         class RecvMemoryWindowDeleter
         {
-            public:
-                void operator()(RecvMemoryWindow*) const;
+        public:
+            void operator()(RecvMemoryWindow *) const;
         };
     }
 #endif // pMR_PROVIDER_NULL
@@ -106,14 +106,14 @@ namespace pMR
         class SendMemoryWindow;
         class SendMemoryWindowDeleter
         {
-            public:
-                void operator()(SendMemoryWindow*) const;
+        public:
+            void operator()(SendMemoryWindow *) const;
         };
         class RecvMemoryWindow;
         class RecvMemoryWindowDeleter
         {
-            public:
-                void operator()(RecvMemoryWindow*) const;
+        public:
+            void operator()(RecvMemoryWindow *) const;
         };
     }
 #endif // pMR_PROVIDER_OFI
@@ -125,14 +125,14 @@ namespace pMR
         class SendMemoryWindow;
         class SendMemoryWindowDeleter
         {
-            public:
-                void operator()(SendMemoryWindow*) const;
+        public:
+            void operator()(SendMemoryWindow *) const;
         };
         class RecvMemoryWindow;
         class RecvMemoryWindowDeleter
         {
-            public:
-                void operator()(RecvMemoryWindow*) const;
+        public:
+            void operator()(RecvMemoryWindow *) const;
         };
     }
 #endif // pMR_PROVIDER_SELF
@@ -145,14 +145,14 @@ namespace pMR
         class SendMemoryWindow;
         class SendMemoryWindowDeleter
         {
-            public:
-                void operator()(SendMemoryWindow*) const;
+        public:
+            void operator()(SendMemoryWindow *) const;
         };
         class RecvMemoryWindow;
         class RecvMemoryWindowDeleter
         {
-            public:
-                void operator()(RecvMemoryWindow*) const;
+        public:
+            void operator()(RecvMemoryWindow *) const;
         };
     }
 #endif // pMR_PROVIDER_VERBS

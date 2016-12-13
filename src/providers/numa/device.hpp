@@ -17,8 +17,11 @@
 
 #include <string>
 
-namespace pMR { namespace numa
+namespace pMR
 {
-    int getNode(std::string const devicePath);
-}}
+    namespace numa
+    {
+        int getNode(std::string const devicePath);
+    }
+}
 #endif // pMR_PROVIDERS_NUMA_DEVICE_H

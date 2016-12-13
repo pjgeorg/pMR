@@ -15,30 +15,34 @@
 #ifndef pMR_PROVIDERS_VERBS_RECVMEMORYWINDOW_H
 #define pMR_PROVIDERS_VERBS_RECVMEMORYWINDOW_H
 
-#include <memory>
 #include <cstdint>
+#include <memory>
 #include "memoryregion.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class Connection;
-
-    class RecvMemoryWindow
+    namespace verbs
     {
+        class Connection;
+
+        class RecvMemoryWindow
+        {
         public:
-            RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::uint32_t const sizeByte);
-            RecvMemoryWindow(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow(RecvMemoryWindow&&) = delete;
-            RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow& operator=(RecvMemoryWindow&&) = delete;
+            RecvMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                std::uint32_t const sizeByte);
+            RecvMemoryWindow(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow(RecvMemoryWindow &&) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow &&) = delete;
             ~RecvMemoryWindow() = default;
             void init();
             void post();
             void wait();
+
         private:
             std::shared_ptr<Connection> const mConnection;
             MemoryRegion mMemoryRegion;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_RECVMEMORYWINDOW_H

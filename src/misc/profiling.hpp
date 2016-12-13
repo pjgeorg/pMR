@@ -16,18 +16,18 @@
 #define pMR_MISC_PROFILING_H
 
 #ifdef pMR_PROFILING
-    #include "time.hpp"
-    #define pMR_PROF_START(x) x -= pMR::getTimeInSeconds()
-    #define pMR_PROF_STOP(x) x += pMR::getTimeInSeconds()
-    #define pMR_PROF_START_THREAD(x) (threadID) ? : x -= pMR::getTimeInSeconds()
-    #define pMR_PROF_STOP_THREAD(x) (threadID) ? : x += pMR::getTimeInSeconds()
-    #define pMR_PROF_COUNT(x) ++x
+#include "time.hpp"
+#define pMR_PROF_START(x) x -= pMR::getTimeInSeconds()
+#define pMR_PROF_STOP(x) x += pMR::getTimeInSeconds()
+#define pMR_PROF_START_THREAD(x) (threadID) ?: x -= pMR::getTimeInSeconds()
+#define pMR_PROF_STOP_THREAD(x) (threadID) ?: x += pMR::getTimeInSeconds()
+#define pMR_PROF_COUNT(x) ++x
 #else
-    #define pMR_PROF_START(x)
-    #define pMR_PROF_STOP(x)
-    #define pMR_PROF_START_THREAD(x)
-    #define pMR_PROF_STOP_THREAD(x)
-    #define pMR_PROF_COUNT(x)
+#define pMR_PROF_START(x)
+#define pMR_PROF_STOP(x)
+#define pMR_PROF_START_THREAD(x)
+#define pMR_PROF_STOP_THREAD(x)
+#define pMR_PROF_COUNT(x)
 #endif // pMR_PROFILING
 
 #endif // pMR_MISC_PROFILING_H

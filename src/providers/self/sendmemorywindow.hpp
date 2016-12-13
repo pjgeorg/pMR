@@ -18,27 +18,31 @@
 #include <memory>
 #include "config.hpp"
 
-namespace pMR { namespace self
+namespace pMR
 {
-    class Connection;
-
-    class SendMemoryWindow
+    namespace self
     {
+        class Connection;
+
+        class SendMemoryWindow
+        {
         public:
-            SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::size_t const sizeByte);
-            SendMemoryWindow(const SendMemoryWindow&) = delete;
-            SendMemoryWindow(SendMemoryWindow&&) = delete;
-            SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
-            SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
+            SendMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                std::size_t const sizeByte);
+            SendMemoryWindow(SendMemoryWindow const &) = delete;
+            SendMemoryWindow(SendMemoryWindow &&) = delete;
+            SendMemoryWindow &operator=(SendMemoryWindow const &) = delete;
+            SendMemoryWindow &operator=(SendMemoryWindow &&) = delete;
             ~SendMemoryWindow() = default;
             void init();
             void post(std::size_t const sizeByte);
             void wait();
+
         private:
             std::shared_ptr<Connection> const mConnection;
             void *mBuffer = nullptr;
             std::size_t const mSizeByte = 0;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_SELF_SENDMEMORYWINDOW_H

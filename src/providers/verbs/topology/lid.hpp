@@ -16,14 +16,17 @@
 #define pMR_PROVIDERS_VERBS_TOPOLOGY_LID_H
 
 #include <cstdint>
-#include "../device.hpp"
 #include "../context.hpp"
+#include "../device.hpp"
 #include "../portattributes.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    std::uint16_t getLID(Device const&, std::uint8_t const portNumber);
-    std::uint16_t getLID(Context&, std::uint8_t const portNumber);
-    std::uint16_t getLID(PortAttributes const&);
-}}
+    namespace verbs
+    {
+        std::uint16_t getLID(Device const &, std::uint8_t const portNumber);
+        std::uint16_t getLID(Context &, std::uint8_t const portNumber);
+        std::uint16_t getLID(PortAttributes const &);
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_LID_H

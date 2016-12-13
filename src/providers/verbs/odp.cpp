@@ -14,13 +14,12 @@
 
 #ifdef VERBS_ODP
 
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
+#include "../../misc/singleton.hpp"
 #include "context.hpp"
 #include "odp.hpp"
-#include "../../misc/singleton.hpp"
 
 pMR::verbs::ODP::ODP(Context &context)
 {
@@ -31,15 +30,15 @@ pMR::verbs::ODP::ODP(Context &context)
         throw std::runtime_error("pMR: Unable to (extended) query device.");
     }
 
-    if(!(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT) or
-            !(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT_SEND) or
-            !(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT_RECV))
+    if(!(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT) ||
+        !(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT_SEND) ||
+        !(extendedAttr.odp_caps.general_caps & IBV_ODP_SUPPORT_RECV))
     {
-        mHasODP = false;
+        mHasODP = {false};
     }
     else
     {
-        mHasODP = true;
+        mHasODP = {true};
     }
 }
 

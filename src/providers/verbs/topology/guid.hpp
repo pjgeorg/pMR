@@ -15,14 +15,17 @@
 #ifndef pMR_PROVIDERS_VERBS_TOPOLOGY_GUID_H
 #define pMR_PROVIDERS_VERBS_TOPOLOGY_GUID_H
 
-#include "../device.hpp"
 #include "../context.hpp"
+#include "../device.hpp"
 #include "../deviceattributes.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    std::uint64_t getNodeGUID(Device const&);
-    std::uint64_t getNodeGUID(Context&);
-    std::uint64_t getNodeGUID(DeviceAttributes const&);
-}}
+    namespace verbs
+    {
+        std::uint64_t getNodeGUID(Device const &);
+        std::uint64_t getNodeGUID(Context &);
+        std::uint64_t getNodeGUID(DeviceAttributes const &);
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_GUID_H

@@ -13,12 +13,12 @@
 //  limitations under the License.
 
 #include "xdump.hpp"
-#include <sstream>
 #include <iomanip>
+#include <sstream>
 
-std::string pMR::xdump(void const *data, std::uint64_t sizeByte)
+std::string pMR::xdump(void const *data, std::size_t sizeByte)
 {
-    char const *const start = static_cast<char const*>(data);
+    char const *const start = static_cast<char const *>(data);
     char const *const end = start + sizeByte;
     const char *line = start;
 
@@ -38,7 +38,7 @@ std::string pMR::xdump(void const *data, std::uint64_t sizeByte)
             dump << std::setw(2);
             dump << std::setfill('0');
             dump << std::hex << std::uppercase
-                << static_cast<int>(static_cast<unsigned char>(*c)) << ' ';
+                 << static_cast<int>(static_cast<unsigned char>(*c)) << ' ';
         }
 
         dump << std::string((16 - length) * 3, ' ');

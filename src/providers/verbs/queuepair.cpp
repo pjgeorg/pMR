@@ -17,8 +17,7 @@
 #include "verbs.hpp"
 
 pMR::verbs::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
-        CompletionQueue &sendCompletionQueue,
-        CompletionQueue &recvCompletionQueue)
+    CompletionQueue &sendCompletionQueue, CompletionQueue &recvCompletionQueue)
 {
     ibv_qp_init_attr initialAttributes = {};
     initialAttributes.send_cq = sendCompletionQueue.get();
@@ -44,12 +43,12 @@ pMR::verbs::QueuePair::~QueuePair()
     ibv_destroy_qp(mQueuePair);
 }
 
-ibv_qp* pMR::verbs::QueuePair::get()
+ibv_qp *pMR::verbs::QueuePair::get()
 {
     return mQueuePair;
 }
 
-ibv_qp const* pMR::verbs::QueuePair::get() const
+ibv_qp const *pMR::verbs::QueuePair::get() const
 {
     return mQueuePair;
 }
@@ -68,17 +67,15 @@ void pMR::verbs::QueuePair::setStateINIT(std::uint8_t const portNumber)
     attr.port_num = portNumber;
 
     if(ibv_modify_qp(this->get(), &attr,
-                IBV_QP_STATE |
-                IBV_QP_ACCESS_FLAGS |
-                IBV_QP_PKEY_INDEX |
-                IBV_QP_PORT ))
+           IBV_QP_STATE | IBV_QP_ACCESS_FLAGS | IBV_QP_PKEY_INDEX |
+               IBV_QP_PORT))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to INIT.");
     }
 }
 
-void pMR::verbs::QueuePair::setStateRTR(std::uint8_t const portNumber,
-        ConnectionAddress const& targetAddress)
+void pMR::verbs::QueuePair::setStateRTR(
+    std::uint8_t const portNumber, ConnectionAddress const &targetAddress)
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTR;
@@ -98,13 +95,8 @@ void pMR::verbs::QueuePair::setStateRTR(std::uint8_t const portNumber,
     attr.ah_attr.grh.hop_limit = {VerbsHopLimit};
 
     if(ibv_modify_qp(this->get(), &attr,
-                IBV_QP_STATE |
-                IBV_QP_PATH_MTU |
-                IBV_QP_RQ_PSN |
-                IBV_QP_DEST_QPN |
-                IBV_QP_MAX_DEST_RD_ATOMIC |
-                IBV_QP_MIN_RNR_TIMER |
-                IBV_QP_AV ))
+           IBV_QP_STATE | IBV_QP_PATH_MTU | IBV_QP_RQ_PSN | IBV_QP_DEST_QPN |
+               IBV_QP_MAX_DEST_RD_ATOMIC | IBV_QP_MIN_RNR_TIMER | IBV_QP_AV))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to RTR.");
     }
@@ -121,12 +113,8 @@ void pMR::verbs::QueuePair::setStateRTS()
     attr.rnr_retry = {VerbsRNRRetry};
 
     if(ibv_modify_qp(this->get(), &attr,
-                IBV_QP_STATE |
-                IBV_QP_SQ_PSN |
-                IBV_QP_MAX_QP_RD_ATOMIC |
-                IBV_QP_TIMEOUT |
-                IBV_QP_RETRY_CNT |
-                IBV_QP_RNR_RETRY ))
+           IBV_QP_STATE | IBV_QP_SQ_PSN | IBV_QP_MAX_QP_RD_ATOMIC |
+               IBV_QP_TIMEOUT | IBV_QP_RETRY_CNT | IBV_QP_RNR_RETRY))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to RTS.");
     }

@@ -21,6 +21,7 @@ pMR::Connection::Connection(Target const &target)
 
 #ifdef pMR_PROVIDER_CMA
 #include "../../providers/cma/connection.hpp"
+
 void pMR::Connection::connectCMA(Target const &target)
 {
     mProvider = Provider::cma;
@@ -30,6 +31,7 @@ void pMR::Connection::connectCMA(Target const &target)
 
 #ifdef pMR_PROVIDER_MPI
 #include "../../providers/mpi/connection.hpp"
+
 void pMR::Connection::connectMPI(Target const &target)
 {
     mProvider = Provider::mpi;
@@ -39,6 +41,7 @@ void pMR::Connection::connectMPI(Target const &target)
 
 #ifdef pMR_PROVIDER_NULL
 #include "../../providers/null/connection.hpp"
+
 void pMR::Connection::connectNull(Target const &target)
 {
     mProvider = Provider::null;
@@ -48,6 +51,7 @@ void pMR::Connection::connectNull(Target const &target)
 
 #ifdef pMR_PROVIDER_OFI
 #include "../../providers/ofi/connection.hpp"
+
 void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
 {
     mProvider = Provider::ofi;
@@ -57,6 +61,7 @@ void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
 
 #ifdef pMR_PROVIDER_SELF
 #include "../../providers/self/connection.hpp"
+
 void pMR::Connection::connectSelf(Target const &target)
 {
     mProvider = Provider::self;
@@ -66,8 +71,9 @@ void pMR::Connection::connectSelf(Target const &target)
 
 #ifdef pMR_PROVIDER_VERBS
 #include "../../providers/verbs/connection.hpp"
+
 void pMR::Connection::connectVerbs(Target const &target,
-        verbs::Device const &device, std::uint8_t const portNumber)
+    verbs::Device const &device, std::uint8_t const portNumber)
 {
     mProvider = Provider::verbs;
     mVerbs = std::make_shared<verbs::Connection>(target, device, portNumber);

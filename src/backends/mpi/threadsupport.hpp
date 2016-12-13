@@ -15,21 +15,25 @@
 #ifndef pMR_BACKENDS_MPI_THREADSUPPORT_H
 #define pMR_BACKENDS_MPI_THREADSUPPORT_H
 
-namespace pMR { namespace backend
+namespace pMR
 {
-    class ThreadSupport
+    namespace backend
     {
+        class ThreadSupport
+        {
         public:
             ThreadSupport();
             ~ThreadSupport() = default;
             bool multiple() const;
             bool serialized() const;
+
         private:
             bool mMultiple = false;
             bool mSerialized = false;
-    };
+        };
 
-    bool threadMultiple();
-    bool threadSerialized();
-}}
+        bool threadMultiple();
+        bool threadSerialized();
+    }
+}
 #endif // pMR_BACKENDS_MPI_THREADSUPPORT_H

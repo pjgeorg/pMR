@@ -15,23 +15,24 @@
 #include "connectionaddress.hpp"
 #include <array>
 #include <stdexcept>
+#include "../../backends/backend.hpp"
 #include "portattributes.hpp"
 #include "verbs.hpp"
-#include "../../backends/backend.hpp"
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(Context &context,
-        QueuePair const &queuePair, std::uint8_t const portNumber)
-    :   mQPN{queuePair.getQPN()}, mGID{context, portNumber}
+pMR::verbs::ConnectionAddress::ConnectionAddress(
+    Context &context, QueuePair const &queuePair, std::uint8_t const portNumber)
+    : mQPN{queuePair.getQPN()}, mGID{context, portNumber}
 {
     mLID = {PortAttributes(context, portNumber).getLID()};
 }
 
 pMR::verbs::ConnectionAddress::ConnectionAddress(
-        ConnectionAddress const &connectionAddress,
-        QueuePair const &queuePair)
-    :   mQPN{queuePair.getQPN()},
-        mGID{connectionAddress.getGID()},
-        mLID{connectionAddress.getLID()} { }
+    ConnectionAddress const &connectionAddress, QueuePair const &queuePair)
+    : mQPN{queuePair.getQPN()}
+    , mGID{connectionAddress.getGID()}
+    , mLID{connectionAddress.getLID()}
+{
+}
 
 void pMR::verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
 {
@@ -49,7 +50,7 @@ void pMR::verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
 }
 
 void pMR::verbs::ConnectionAddress::setSubnetPrefix(
-        std::uint64_t const subnetPrefix)
+    std::uint64_t const subnetPrefix)
 {
     mGID.setSubnetPrefix({subnetPrefix});
 }
@@ -80,16 +81,14 @@ std::uint64_t pMR::verbs::ConnectionAddress::getSubnetPrefix() const
 }
 
 void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,
-        ConnectionAddress const &originActiveAddress,
-        ConnectionAddress const &originPassiveAddress,
-        ConnectionAddress &targetActiveAddress,
-        ConnectionAddress &targetPassiveAddress)
+    ConnectionAddress const &originActiveAddress,
+    ConnectionAddress const &originPassiveAddress,
+    ConnectionAddress &targetActiveAddress,
+    ConnectionAddress &targetPassiveAddress)
 {
     std::array<std::uint64_t, 5> sendBuffer = {
-        originActiveAddress.getQPN(),
-        originActiveAddress.getLID(),
-        originActiveAddress.getSubnetPrefix(),
-        originActiveAddress.getGUID(),
+        originActiveAddress.getQPN(), originActiveAddress.getLID(),
+        originActiveAddress.getSubnetPrefix(), originActiveAddress.getGUID(),
         originPassiveAddress.getQPN(),
     };
     decltype(sendBuffer) recvBuffer;

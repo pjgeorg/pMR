@@ -16,26 +16,29 @@
 #define pMR_THREADS_OPENMP_MUTEX_H
 
 #include "../thread.hpp"
-extern "C"
-{
+extern "C" {
 #include <omp.h>
 }
 
-namespace pMR { namespace thread
+namespace pMR
 {
-    class Mutex
+    namespace thread
     {
+        class Mutex
+        {
         public:
             Mutex();
-            Mutex(const Mutex&) = delete;
-            Mutex(Mutex&&) = delete;
-            Mutex& operator=(const Mutex&) = delete;
-            Mutex& operator=(Mutex&&) = delete;
+            Mutex(Mutex const &) = delete;
+            Mutex(Mutex &&) = delete;
+            Mutex &operator=(Mutex const &) = delete;
+            Mutex &operator=(Mutex &&) = delete;
             ~Mutex();
             void lock();
             void unlock();
+
         private:
             omp_lock_t mLock;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_THREADS_OPENMP_MUTEX_H

@@ -14,17 +14,17 @@
 
 #include "context.hpp"
 #include <stdexcept>
+#include "../../misc/string.hpp"
 #include "deviceattributes.hpp"
 #include "portattributes.hpp"
-#include "../../misc/string.hpp"
 
 pMR::verbs::Context::Context(Device const &device)
 {
-    mContext = ibv_open_device(const_cast<ibv_device*>(device.get()));
+    mContext = ibv_open_device(const_cast<ibv_device *>(device.get()));
     if(!mContext)
     {
-        throw std::runtime_error(toString("pMR: Could not open device",
-                    device.getName(), "."));
+        throw std::runtime_error(
+            toString("pMR: Could not open device", device.getName(), "."));
     }
 
     DeviceAttributes deviceAttr(*this);
@@ -35,8 +35,8 @@ pMR::verbs::Context::Context(Device const &device)
 
     for(auto port = deviceAttr.getPortCount(); port > 1; --port)
     {
-        mMaxMessageSize = {std::min(mMaxMessageSize,
-                PortAttributes(*this, port).getMaxMessageSize())};
+        mMaxMessageSize = {std::min(
+            mMaxMessageSize, PortAttributes(*this, port).getMaxMessageSize())};
     }
 }
 
@@ -45,12 +45,12 @@ pMR::verbs::Context::~Context()
     ibv_close_device(mContext);
 }
 
-ibv_context* pMR::verbs::Context::get()
+ibv_context *pMR::verbs::Context::get()
 {
     return mContext;
 }
 
-ibv_context const* pMR::verbs::Context::get() const
+ibv_context const *pMR::verbs::Context::get() const
 {
     return mContext;
 }

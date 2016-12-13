@@ -15,8 +15,11 @@
 #ifndef pMR_PROVIDERS_NUMA_NUMA_H
 #define pMR_PROVIDERS_NUMA_NUMA_H
 
-namespace pMR { namespace numa
+namespace pMR
 {
-    void checkAvailable();
-}}
+    namespace numa
+    {
+        void checkAvailable();
+    }
+}
 #endif // pMR_PROVIDERS_NUMA_NUMA_H

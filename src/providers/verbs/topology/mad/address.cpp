@@ -21,19 +21,19 @@ pMR::verbs::mad::Address::Address(std::uint8_t const portNumber)
     mAddress.port_num = {portNumber};
 }
 
-ibv_ah_attr* pMR::verbs::mad::Address::get()
+ibv_ah_attr *pMR::verbs::mad::Address::get()
 {
     return &mAddress;
 }
 
-ibv_ah_attr const* pMR::verbs::mad::Address::get() const
+ibv_ah_attr const *pMR::verbs::mad::Address::get() const
 {
     return &mAddress;
 }
 
-pMR::verbs::mad::SubnetManager::SubnetManager(PortAttributes &portAttributes,
-        std::uint8_t const portNumber)
-    :   Address({portNumber})
+pMR::verbs::mad::SubnetManager::SubnetManager(
+    PortAttributes &portAttributes, std::uint8_t const portNumber)
+    : Address({portNumber})
 {
     mAddress.dlid = {portAttributes.getSubnetManagerLID()};
     mAddress.sl = {portAttributes.getSubnetManagerServiceLevel()};

@@ -13,8 +13,8 @@
 //  limitations under the License.
 
 #include "node.hpp"
-#include "../../providers/verbs/topology.hpp"
 #include "../../providers/scif/topology.hpp"
+#include "../../providers/verbs/topology.hpp"
 
 pMR::Node::Node(pMR::verbs::Device const &device)
 {
@@ -48,8 +48,7 @@ std::uint64_t pMR::Node::getNodeGUID() const
     return {mNodeGUID};
 }
 
-std::uint16_t pMR::Node::getSwitchLID(std::uint8_t const portNumber)
-    const
+std::uint16_t pMR::Node::getSwitchLID(std::uint8_t const portNumber) const
 {
     return {mSwitchLID.at(portNumber - 1)};
 }

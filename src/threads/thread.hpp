@@ -17,23 +17,27 @@
 
 #include <memory>
 
-namespace pMR { namespace thread
+namespace pMR
 {
-    class Mutex;
-    class ScopedLock
+    namespace thread
     {
+        class Mutex;
+        class ScopedLock
+        {
         public:
             ScopedLock();
-            ScopedLock(const ScopedLock&) = delete;
-            ScopedLock(ScopedLock&&) = delete;
-            ScopedLock& operator=(const ScopedLock&) = delete;
-            ScopedLock& operator=(ScopedLock&&) = delete;
+            ScopedLock(ScopedLock const &) = delete;
+            ScopedLock(ScopedLock &&) = delete;
+            ScopedLock &operator=(ScopedLock const &) = delete;
+            ScopedLock &operator=(ScopedLock &&) = delete;
             ~ScopedLock();
+
         private:
             static Mutex sMutex;
-    };
+        };
 
-    bool isThreaded();
-    bool isSerialized();
-}}
+        bool isThreaded();
+        bool isSerialized();
+    }
+}
 #endif // pMR_THREADS_THREAD_H

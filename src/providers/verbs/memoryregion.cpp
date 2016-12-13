@@ -16,19 +16,19 @@
 #include <stdexcept>
 
 #ifdef VERBS_ODP
-#   include "odp.hpp"
+#include "odp.hpp"
 #endif // VERBS_ODP
 
 pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
-        ProtectionDomain &protectionDomain,
-        void* buffer, std::uint32_t size, int access)
+    ProtectionDomain &protectionDomain, void *buffer, std::uint32_t size,
+    int access)
 {
 #ifdef VERBS_ODP
     access = updateMemoryRegionAccessODP(context, access);
 #endif // VERBS_ODP
 
-    if(size > context.getMaxMemoryRegionSize()
-            or size > context.getMaxMessageSize())
+    if(size > context.getMaxMemoryRegionSize() ||
+        size > context.getMaxMessageSize())
     {
         throw std::length_error("pMR: Message size overflow.");
     }
@@ -48,12 +48,12 @@ pMR::verbs::MemoryRegion::~MemoryRegion()
     }
 }
 
-ibv_mr* pMR::verbs::MemoryRegion::get()
+ibv_mr *pMR::verbs::MemoryRegion::get()
 {
     return mMemoryRegion;
 }
 
-ibv_mr const* pMR::verbs::MemoryRegion::get() const
+ibv_mr const *pMR::verbs::MemoryRegion::get() const
 {
     return mMemoryRegion;
 }
@@ -79,8 +79,8 @@ std::uint32_t pMR::verbs::MemoryRegion::getLength() const
 }
 
 void pMR::verbs::MemoryRegion::registerMemoryRegion(
-        ProtectionDomain &protectionDomain, void* buffer,
-        std::uint32_t const size, int const access)
+    ProtectionDomain &protectionDomain, void *buffer, std::uint32_t const size,
+    int const access)
 {
     if(size > 0)
     {

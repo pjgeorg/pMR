@@ -14,11 +14,11 @@
 
 #include "connection.hpp"
 #include "target.hpp"
+#include "../../backends/backend.hpp"
+#include "../../misc/singleton.hpp"
+#include "../../providers/verbs/topology.hpp"
 #include "node.hpp"
 #include "topology.hpp"
-#include "../../misc/singleton.hpp"
-#include "../../backends/backend.hpp"
-#include "../../providers/verbs/topology.hpp"
 
 void pMR::Connection::connect(Target const &target)
 {
@@ -41,7 +41,7 @@ void pMR::Connection::connect(Target const &target)
     auto sendBuffer = originNode.flatten();
     decltype(sendBuffer) recvBuffer;
 
-    backend::exchange(target, sendBuffer, recvBuffer); 
+    backend::exchange(target, sendBuffer, recvBuffer);
 
     decltype(originNode) targetNode(recvBuffer);
 

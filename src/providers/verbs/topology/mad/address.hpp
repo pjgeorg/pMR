@@ -16,30 +16,36 @@
 #define pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESS_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "../../portattributes.hpp"
 
-namespace pMR { namespace verbs { namespace mad
+namespace pMR
 {
-    class Address
+    namespace verbs
     {
-        public:
-            Address(std::uint8_t const portNumber);
-            ~Address() = default;
-            ibv_ah_attr* get();
-            ibv_ah_attr const* get() const;
-        protected:
-            ibv_ah_attr mAddress = {};
-    };
+        namespace mad
+        {
+            class Address
+            {
+            public:
+                Address(std::uint8_t const portNumber);
+                ~Address() = default;
+                ibv_ah_attr *get();
+                ibv_ah_attr const *get() const;
 
-    class SubnetManager : public Address
-    {
-        public:
-            SubnetManager(PortAttributes&, std::uint8_t const portNumber);
-            ~SubnetManager() = default;
-    };
-}}}
+            protected:
+                ibv_ah_attr mAddress = {};
+            };
+
+            class SubnetManager : public Address
+            {
+            public:
+                SubnetManager(PortAttributes &, std::uint8_t const portNumber);
+                ~SubnetManager() = default;
+            };
+        }
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESS_H

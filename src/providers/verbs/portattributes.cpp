@@ -15,8 +15,8 @@
 #include "portattributes.hpp"
 #include <stdexcept>
 
-pMR::verbs::PortAttributes::PortAttributes(Context &context,
-        std::uint8_t const portNumber)
+pMR::verbs::PortAttributes::PortAttributes(
+    Context &context, std::uint8_t const portNumber)
 {
     if(ibv_query_port(context.get(), {portNumber}, &mPortAttributes))
     {

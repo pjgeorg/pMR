@@ -15,45 +15,44 @@
 #include "connection.hpp"
 #include <array>
 #include <stdexcept>
-extern "C"
-{
+extern "C" {
 #include <unistd.h>
 }
-#include "../../backends/backend.hpp"
 #include "../../arch/processor.hpp"
+#include "../../backends/backend.hpp"
 
 pMR::cma::Connection::Connection(Target const &target)
 {
     std::array<std::uint64_t, 7> originAddress, targetAddress;
 
     std::int64_t pid = {getpid()};
-    std::get<0>(originAddress) = {*reinterpret_cast<std::uint64_t*>(&pid)};
-    std::get<1>(originAddress) = 
-        {reinterpret_cast<std::uintptr_t>(&mDestination)};
+    std::get<0>(originAddress) = {*reinterpret_cast<std::uint64_t *>(&pid)};
+    std::get<1>(originAddress) = {
+        reinterpret_cast<std::uintptr_t>(&mDestination)};
     std::get<2>(originAddress) = {sizeof(mDestination)};
-    std::get<3>(originAddress)
-        = {reinterpret_cast<std::uintptr_t>(mNotifySend)};
+    std::get<3>(originAddress) = {
+        reinterpret_cast<std::uintptr_t>(mNotifySend)};
     std::get<4>(originAddress) = {sizeof(mNotifySend[0])};
-    std::get<5>(originAddress)
-        = {reinterpret_cast<std::uintptr_t>(mNotifyRecv)};
+    std::get<5>(originAddress) = {
+        reinterpret_cast<std::uintptr_t>(mNotifyRecv)};
     std::get<6>(originAddress) = {sizeof(mNotifyRecv[0])};
 
     backend::exchange(target, originAddress, targetAddress);
 
-    mRemotePID = {static_cast<int>(*reinterpret_cast<std::int64_t*>
-            (&std::get<0>(targetAddress)))};
+    mRemotePID = {static_cast<int>(
+        *reinterpret_cast<std::int64_t *>(&std::get<0>(targetAddress)))};
     mRemoteAddress.iov_base =
-        reinterpret_cast<void*>(std::get<1>(targetAddress));
-    mRemoteAddress.iov_len =
-        {static_cast<std::size_t>(std::get<2>(targetAddress))};
-    mRemoteNotifySend.iov_base = 
-        reinterpret_cast<void*>(std::get<3>(targetAddress));
-    mRemoteNotifySend.iov_len =
-        {static_cast<std::size_t>(std::get<4>(targetAddress))};
-    mRemoteNotifyRecv.iov_base = 
-        reinterpret_cast<void*>(std::get<5>(targetAddress));
-    mRemoteNotifyRecv.iov_len =
-        {static_cast<std::size_t>(std::get<6>(targetAddress))};
+        reinterpret_cast<void *>(std::get<1>(targetAddress));
+    mRemoteAddress.iov_len = {
+        static_cast<std::size_t>(std::get<2>(targetAddress))};
+    mRemoteNotifySend.iov_base =
+        reinterpret_cast<void *>(std::get<3>(targetAddress));
+    mRemoteNotifySend.iov_len = {
+        static_cast<std::size_t>(std::get<4>(targetAddress))};
+    mRemoteNotifyRecv.iov_base =
+        reinterpret_cast<void *>(std::get<5>(targetAddress));
+    mRemoteNotifyRecv.iov_len = {
+        static_cast<std::size_t>(std::get<6>(targetAddress))};
 }
 
 void pMR::cma::Connection::sendAddress(iovec &buffer) const
@@ -65,8 +64,8 @@ void pMR::cma::Connection::sendAddress(iovec &buffer) const
     writeData(localBuffer, mRemoteAddress);
 }
 
-void pMR::cma::Connection::sendData(iovec buffer, std::size_t const sizeByte)
-    const
+void pMR::cma::Connection::sendData(
+    iovec buffer, std::size_t const sizeByte) const
 {
     buffer.iov_len = {sizeByte};
     checkBufferSize(buffer);
@@ -74,24 +73,24 @@ void pMR::cma::Connection::sendData(iovec buffer, std::size_t const sizeByte)
     writeData(buffer, mDestination);
 }
 
-void pMR::cma::Connection::writeData(iovec localBuffer, iovec remoteBuffer)
-    const
+void pMR::cma::Connection::writeData(
+    iovec localBuffer, iovec remoteBuffer) const
 {
     while(localBuffer.iov_len > 0)
     {
-        auto ret = process_vm_writev(mRemotePID, &localBuffer, 1,
-                &remoteBuffer, 1, 0);
+        auto ret =
+            process_vm_writev(mRemotePID, &localBuffer, 1, &remoteBuffer, 1, 0);
 
         if(ret < 0)
         {
             throw std::runtime_error("pMR: CMA failed to write data.");
         }
 
-        localBuffer.iov_base =
-            static_cast<void*>(static_cast<char*>(localBuffer.iov_base) + ret);
+        localBuffer.iov_base = static_cast<void *>(
+            static_cast<char *>(localBuffer.iov_base) + ret);
         localBuffer.iov_len -= ret;
-        remoteBuffer.iov_base =
-            static_cast<void*>(static_cast<char*>(remoteBuffer.iov_base) + ret);
+        remoteBuffer.iov_base = static_cast<void *>(
+            static_cast<char *>(remoteBuffer.iov_base) + ret);
         remoteBuffer.iov_len -= ret;
     }
 }

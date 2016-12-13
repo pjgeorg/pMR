@@ -16,8 +16,7 @@
 #define pMR_MISC_IP_H
 
 #include <string>
-extern "C"
-{
+extern "C" {
 #include <ifaddrs.h>
 }
 
@@ -25,19 +24,20 @@ namespace pMR
 {
     class IP
     {
-        public:
-            IP();
-            IP(const IP&) = delete;
-            IP(IP&&) = delete;
-            IP& operator=(const IP&) = delete;
-            IP& operator=(IP&&) = delete;
-            ~IP();
-            std::string getIPv4(std::string const &interface) const;
-            std::string getIPv6(std::string const &interface) const;
-        private:
-            struct ifaddrs *mInterfaces = nullptr;
-            std::string getIP(char const *interface, int const family) const;
-            std::string structToString(struct ifaddrs const *ifa) const;
+    public:
+        IP();
+        IP(IP const &) = delete;
+        IP(IP &&) = delete;
+        IP &operator=(IP const &) = delete;
+        IP &operator=(IP &&) = delete;
+        ~IP();
+        std::string getIPv4(std::string const &interface) const;
+        std::string getIPv6(std::string const &interface) const;
+
+    private:
+        struct ifaddrs *mInterfaces = nullptr;
+        std::string getIP(char const *interface, int const family) const;
+        std::string structToString(struct ifaddrs const *ifa) const;
     };
 }
 #endif // pMR_MISC_IP_H

@@ -12,10 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include <stdexcept>
 #include "numa.hpp"
-extern "C"
-{
+#include <stdexcept>
+extern "C" {
 #include <numa.h>
 }
 

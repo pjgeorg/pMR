@@ -14,8 +14,7 @@
 
 #include "nodeid.hpp"
 #include <stdexcept>
-extern "C"
-{
+extern "C" {
 #include <scif.h>
 }
 

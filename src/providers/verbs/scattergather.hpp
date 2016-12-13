@@ -16,29 +16,32 @@
 #define pMR_PROVIDERS_VERBS_SCATTERGATHER_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "memoryregion.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class ScatterGatherElement
+    namespace verbs
     {
+        class ScatterGatherElement
+        {
         public:
             ScatterGatherElement() = default;
-            ScatterGatherElement(MemoryRegion const&);
-            ScatterGatherElement(MemoryRegion const&,
-                    std::uint32_t const sizeByte);
+            ScatterGatherElement(MemoryRegion const &);
+            ScatterGatherElement(
+                MemoryRegion const &, std::uint32_t const sizeByte);
             ScatterGatherElement(void *address, std::uint32_t const sizeByte);
             ~ScatterGatherElement() = default;
-            ibv_sge* get();
-            ibv_sge const* get() const;
+            ibv_sge *get();
+            ibv_sge const *get() const;
             std::uint32_t getLength() const;
             int getNumEntries() const;
+
         private:
             ibv_sge mScatterGatherElement = {};
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_SCATTERGATHER_H

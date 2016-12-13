@@ -16,28 +16,30 @@
 #define pMR_PROVIDERS_MPI_RECVMEMORYWINDOW_H
 
 #include <memory>
-extern "C"
-{
+extern "C" {
 #include <mpi.h>
 }
 
-namespace pMR { namespace mpi
+namespace pMR
 {
-    class Connection;
-
-    class RecvMemoryWindow
+    namespace mpi
     {
+        class Connection;
+
+        class RecvMemoryWindow
+        {
         public:
-            RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, int const sizeByte);
-            RecvMemoryWindow(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow(RecvMemoryWindow&&) = delete;
-            RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow& operator=(RecvMemoryWindow&&) = delete;
+            RecvMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                int const sizeByte);
+            RecvMemoryWindow(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow(RecvMemoryWindow &&) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow &&) = delete;
             ~RecvMemoryWindow();
             void init();
             void post();
             void wait();
+
         private:
             std::shared_ptr<Connection> const mConnection;
             void *const mBuffer;
@@ -49,6 +51,7 @@ namespace pMR { namespace mpi
 #endif // MPI_PERSISTENT
             void recv();
             void freeRequest();
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_MPI_RECVMEMORYWINDOW_H

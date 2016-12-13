@@ -14,8 +14,8 @@
 
 #include "completionqueue.hpp"
 #include <stdexcept>
-#include "../../misc/string.hpp"
 #include "../../arch/processor.hpp"
+#include "../../misc/string.hpp"
 
 pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
 {
@@ -32,12 +32,12 @@ pMR::verbs::CompletionQueue::~CompletionQueue()
     ibv_destroy_cq(mCompletionQueue);
 }
 
-ibv_cq* pMR::verbs::CompletionQueue::get()
+ibv_cq *pMR::verbs::CompletionQueue::get()
 {
     return mCompletionQueue;
 }
 
-ibv_cq const* pMR::verbs::CompletionQueue::get() const
+ibv_cq const *pMR::verbs::CompletionQueue::get() const
 {
     return mCompletionQueue;
 }
@@ -50,8 +50,7 @@ void pMR::verbs::CompletionQueue::poll()
     {
         numCompletion = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
         CPURelax();
-    }
-    while(numCompletion == 0);
+    } while(numCompletion == 0);
 
     if(numCompletion < 0)
     {
@@ -61,8 +60,8 @@ void pMR::verbs::CompletionQueue::poll()
     if(workCompletion.status != IBV_WC_SUCCESS)
     {
         throw std::runtime_error(toString("pMR: Work Request ID",
-                    workCompletion.wr_id, "failed with status:",
-                    ibv_wc_status_str(workCompletion.status)));
+            workCompletion.wr_id, "failed with status:",
+            ibv_wc_status_str(workCompletion.status)));
     }
 }
 
@@ -74,8 +73,7 @@ bool pMR::verbs::CompletionQueue::poll(int retry)
     {
         numCompletion = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
         CPURelax();
-    }
-    while(numCompletion == 0 && --retry);
+    } while(numCompletion == 0 && --retry);
 
     if(numCompletion < 0)
     {
@@ -85,8 +83,8 @@ bool pMR::verbs::CompletionQueue::poll(int retry)
     if(workCompletion.status != IBV_WC_SUCCESS)
     {
         throw std::runtime_error(toString("pMR: Work Request ID",
-                    workCompletion.wr_id, "failed with status:",
-                    ibv_wc_status_str(workCompletion.status)));
+            workCompletion.wr_id, "failed with status:",
+            ibv_wc_status_str(workCompletion.status)));
     }
 
     if(numCompletion)

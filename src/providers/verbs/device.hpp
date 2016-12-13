@@ -15,57 +15,60 @@
 #ifndef pMR_PROVIDERS_VERBS_DEVICE_H
 #define pMR_PROVIDERS_VERBS_DEVICE_H
 
+#include <cstdint>
 #include <memory>
 #include <string>
-#include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class DeviceList
+    namespace verbs
     {
+        class DeviceList
+        {
         public:
             DeviceList();
-            DeviceList(const DeviceList&) = delete;
-            DeviceList(DeviceList&&) = delete;
-            DeviceList& operator=(const DeviceList&) = delete;
-            DeviceList& operator=(DeviceList&&) = delete;
+            DeviceList(DeviceList const &) = delete;
+            DeviceList(DeviceList &&) = delete;
+            DeviceList &operator=(DeviceList const &) = delete;
+            DeviceList &operator=(DeviceList &&) = delete;
             ~DeviceList();
-            ibv_device* operator[](int const);
-            ibv_device const* operator[](int const) const;
-            ibv_device** begin();
-            ibv_device* const* begin() const;
-            ibv_device* const* cbegin() const;
-            ibv_device** end();
-            ibv_device* const* end() const;
-            ibv_device* const* cend() const;
+            ibv_device *operator[](int const);
+            ibv_device const *operator[](int const) const;
+            ibv_device **begin();
+            ibv_device *const *begin() const;
+            ibv_device *const *cbegin() const;
+            ibv_device **end();
+            ibv_device *const *end() const;
+            ibv_device *const *cend() const;
             int size() const;
+
         private:
             int mDevices = 0;
             ibv_device **mDeviceList;
-    };
+        };
 
-    class Device
-    {
+        class Device
+        {
         public:
             Device(std::shared_ptr<DeviceList>, int const device);
             ~Device() = default;
-            ibv_device* get(); 
-            ibv_device const* get() const;
+            ibv_device *get();
+            ibv_device const *get() const;
             std::string getName() const;
             std::string getPath() const;
             ibv_node_type getNodeType() const;
-            ibv_transport_type getTransportType() const; 
+            ibv_transport_type getTransportType() const;
+
         private:
             int mDevice;
             std::shared_ptr<DeviceList> mDevices;
-    };
+        };
 
-    class Devices
-    {
+        class Devices
+        {
         public:
             Devices();
             ~Devices() = default;
@@ -74,9 +77,11 @@ namespace pMR { namespace verbs
             Device at(int const);
             Device at(int const) const;
             int size() const;
+
         private:
             std::shared_ptr<DeviceList> const mDevices;
             void checkBoundaries(int const) const;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_DEVICE_H

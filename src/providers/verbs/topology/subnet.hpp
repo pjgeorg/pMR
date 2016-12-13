@@ -16,14 +16,18 @@
 #define pMR_PROVIDERS_VERBS_TOPOLOGY_SUBNET_H
 
 #include <cstdint>
-#include "../device.hpp"
 #include "../context.hpp"
+#include "../device.hpp"
 #include "../gid.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    std::uint64_t getSubnetPrefix(Device const&, std::uint8_t const portNumber);
-    std::uint64_t getSubnetPrefix(Context&, std::uint8_t const portNumber);
-    std::uint64_t getSubnetPrefix(GID const&);
-}}
+    namespace verbs
+    {
+        std::uint64_t getSubnetPrefix(
+            Device const &, std::uint8_t const portNumber);
+        std::uint64_t getSubnetPrefix(Context &, std::uint8_t const portNumber);
+        std::uint64_t getSubnetPrefix(GID const &);
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_SUBNET_H

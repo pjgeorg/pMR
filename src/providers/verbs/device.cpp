@@ -25,43 +25,42 @@ pMR::verbs::DeviceList::~DeviceList()
     ibv_free_device_list(mDeviceList);
 }
 
-ibv_device* pMR::verbs::DeviceList::operator[](int const index)
+ibv_device *pMR::verbs::DeviceList::operator[](int const index)
 {
     return mDeviceList[index];
 }
 
-ibv_device const* pMR::verbs::DeviceList::operator[](int const index)
-    const
+ibv_device const *pMR::verbs::DeviceList::operator[](int const index) const
 {
     return mDeviceList[index];
 }
 
-ibv_device** pMR::verbs::DeviceList::begin()
+ibv_device **pMR::verbs::DeviceList::begin()
 {
     return &mDeviceList[0];
 }
 
-ibv_device* const* pMR::verbs::DeviceList::begin() const
+ibv_device *const *pMR::verbs::DeviceList::begin() const
 {
     return &mDeviceList[0];
 }
 
-ibv_device* const* pMR::verbs::DeviceList::cbegin() const
+ibv_device *const *pMR::verbs::DeviceList::cbegin() const
 {
     return &mDeviceList[0];
 }
 
-ibv_device** pMR::verbs::DeviceList::end()
+ibv_device **pMR::verbs::DeviceList::end()
 {
     return &mDeviceList[mDevices];
 }
 
-ibv_device* const* pMR::verbs::DeviceList::end() const
+ibv_device *const *pMR::verbs::DeviceList::end() const
 {
     return &mDeviceList[mDevices];
 }
 
-ibv_device* const* pMR::verbs::DeviceList::cend() const
+ibv_device *const *pMR::verbs::DeviceList::cend() const
 {
     return &mDeviceList[mDevices];
 }
@@ -71,17 +70,18 @@ int pMR::verbs::DeviceList::size() const
     return {mDevices};
 }
 
-pMR::verbs::Device::Device(std::shared_ptr<DeviceList> deviceList,
-        int const device)
-    :   mDevice{device},
-        mDevices(deviceList) { }
+pMR::verbs::Device::Device(
+    std::shared_ptr<DeviceList> deviceList, int const device)
+    : mDevice{device}, mDevices(deviceList)
+{
+}
 
-ibv_device* pMR::verbs::Device::get()
+ibv_device *pMR::verbs::Device::get()
 {
     return mDevices->operator[](mDevice);
 }
 
-ibv_device const* pMR::verbs::Device::get() const
+ibv_device const *pMR::verbs::Device::get() const
 {
     return mDevices->operator[](mDevice);
 }
@@ -106,16 +106,16 @@ ibv_transport_type pMR::verbs::Device::getTransportType() const
     return {mDevices->operator[](mDevice)->transport_type};
 }
 
-pMR::verbs::Devices::Devices()
-    :   mDevices(std::make_shared<DeviceList>()) { }
+pMR::verbs::Devices::Devices() : mDevices(std::make_shared<DeviceList>())
+{
+}
 
 pMR::verbs::Device pMR::verbs::Devices::operator[](int const index)
 {
     return Device(mDevices, index);
 }
 
-pMR::verbs::Device pMR::verbs::Devices::operator[](int const index)
-    const
+pMR::verbs::Device pMR::verbs::Devices::operator[](int const index) const
 {
     return Device(mDevices, index);
 }

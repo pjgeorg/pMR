@@ -16,15 +16,17 @@
 #include "connection.hpp"
 
 pMR::cma::SendMemoryWindow::SendMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::size_t const sizeByte)
-    :   mConnection(connection)
+    std::shared_ptr<Connection> const connection, void *buffer,
+    std::size_t const sizeByte)
+    : mConnection(connection)
 {
     mBuffer.iov_base = buffer;
     mBuffer.iov_len = {sizeByte};
 }
 
-void pMR::cma::SendMemoryWindow::init() { }
+void pMR::cma::SendMemoryWindow::init()
+{
+}
 
 void pMR::cma::SendMemoryWindow::post(std::size_t const sizeByte)
 {
@@ -33,4 +35,6 @@ void pMR::cma::SendMemoryWindow::post(std::size_t const sizeByte)
     mConnection->postNotifyRecv();
 }
 
-void pMR::cma::SendMemoryWindow::wait() { }
+void pMR::cma::SendMemoryWindow::wait()
+{
+}

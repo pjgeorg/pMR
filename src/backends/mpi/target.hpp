@@ -20,8 +20,7 @@
 #define pMR_TARGET_H
 
 #include <memory>
-extern "C"
-{
+extern "C" {
 #include <mpi.h>
 }
 
@@ -30,62 +29,63 @@ namespace pMR
     //! @brief Backend-agnostic Target.
     class Target
     {
-        public:
-            //! @brief Convert MPI Target to backend-agnostic Target.
-            //! @warning Only one of the paramteter null and self can be true.
-            //! @param communicator MPI Communicator.
-            //! @param targetRank Target MPI rank.
-            //! @param uniqueSendID Unique ID to distiguish MPI messages
-            //!     (Send Tag).
-            //! @param uniqueRecvID Unique ID to distinguish MPI messages
-            //!     (Recv Tag).
-            //! @param null Target is no communication (MPI_PROC_NULL).
-            //! @param self Target is self communication.
-            //! @return Return backend-agnostic Target.
-            Target(MPI_Comm const communicator, int const targetRank,
-                    int const uniqueSendID, int const uniqueRecvID,
-                    bool const null, bool const self);
-            //! @brief Convert MPI Target to backend-agnostic Target.
-            //! @param communicator MPI Communicator.
-            //! @param targetRank Target MPI rank.
-            //! @param uniqueSendID Unique ID to distiguish MPI messages
-            //!     (Send Tag).
-            //! @param uniqueRecvID Unique ID to distinguish MPI messages
-            //!     (Recv Tag).
-            //! @return Return backend-agnostic Target.
-            Target(MPI_Comm const communicator, int const targetRank,
-                    int const uniqueSendID, int const uniqueRecvID);
-            ~Target() = default;
-            //! @brief Checks whether the target is null (MPI_PROC_NULL).
-            //! @return true if null, false otherwise.
-            bool isNull() const;
-            //! @brief Checks whether the target is the same process.
-            //! @details Connections to the same process may or may not require
-            //!     a second connection attempt by the same process. Using only
-            //!     the backend-agnostic communicator the bahavior is naturally.
-            //!     A connection to a Target retrieved calling getNeighbor with
-            //!     a displacement not equal to zero, but still being the same
-            //!     process, assume there is a second connection attempt. For
-            //!     all other cases, getNeighbor with displacement of zero or
-            //!     getTarget of own ID, there is no other connection attempt
-            //!     required.
-            //!     In terms of MPI: The second is a SendRecv call with both
-            //!     same source and destination rank, and send and receive tag.
-            //! @return true if self, false otherwise.
-            bool isSelf() const;
-            int getTargetRank() const;
-            int getUniqueSendID() const;
-            int getUniqueRecvID() const;
-            MPI_Comm getMPICommunicator() const;
-        private:
-            MPI_Comm const mCommunicator;
-            int const mTarget;
-            int const mUniqueSendID;
-            int const mUniqueRecvID;
-            bool mNull = false;
-            bool mSelf = false;
-            int queryRank() const;
-            void queryTarget();
+    public:
+        //! @brief Convert MPI Target to backend-agnostic Target.
+        //! @warning Only one of the paramteter null and self can be true.
+        //! @param communicator MPI Communicator.
+        //! @param targetRank Target MPI rank.
+        //! @param uniqueSendID Unique ID to distiguish MPI messages
+        //!     (Send Tag).
+        //! @param uniqueRecvID Unique ID to distinguish MPI messages
+        //!     (Recv Tag).
+        //! @param null Target is no communication (MPI_PROC_NULL).
+        //! @param self Target is self communication.
+        //! @return Return backend-agnostic Target.
+        Target(MPI_Comm const communicator, int const targetRank,
+            int const uniqueSendID, int const uniqueRecvID, bool const null,
+            bool const self);
+        //! @brief Convert MPI Target to backend-agnostic Target.
+        //! @param communicator MPI Communicator.
+        //! @param targetRank Target MPI rank.
+        //! @param uniqueSendID Unique ID to distiguish MPI messages
+        //!     (Send Tag).
+        //! @param uniqueRecvID Unique ID to distinguish MPI messages
+        //!     (Recv Tag).
+        //! @return Return backend-agnostic Target.
+        Target(MPI_Comm const communicator, int const targetRank,
+            int const uniqueSendID, int const uniqueRecvID);
+        ~Target() = default;
+        //! @brief Checks whether the target is null (MPI_PROC_NULL).
+        //! @return true if null, false otherwise.
+        bool isNull() const;
+        //! @brief Checks whether the target is the same process.
+        //! @details Connections to the same process may or may not require
+        //!     a second connection attempt by the same process. Using only
+        //!     the backend-agnostic communicator the bahavior is naturally.
+        //!     A connection to a Target retrieved calling getNeighbor with
+        //!     a displacement not equal to zero, but still being the same
+        //!     process, assume there is a second connection attempt. For
+        //!     all other cases, getNeighbor with displacement of zero or
+        //!     getTarget of own ID, there is no other connection attempt
+        //!     required.
+        //!     In terms of MPI: The second is a SendRecv call with both
+        //!     same source and destination rank, and send and receive tag.
+        //! @return true if self, false otherwise.
+        bool isSelf() const;
+        int getTargetRank() const;
+        int getUniqueSendID() const;
+        int getUniqueRecvID() const;
+        MPI_Comm getMPICommunicator() const;
+
+    private:
+        MPI_Comm const mCommunicator;
+        int const mTarget;
+        int const mUniqueSendID;
+        int const mUniqueRecvID;
+        bool mNull = false;
+        bool mSelf = false;
+        int queryRank() const;
+        void queryTarget();
     };
 }
 #endif // pMR_TARGET_H

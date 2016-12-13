@@ -12,41 +12,40 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "target.hpp"
 #include "connection.hpp"
+#include "target.hpp"
 #include "../../misc/print.hpp"
 
-extern "C"
-{
+extern "C" {
 #include "pmr.h"
 
-    pMR_Connection* pMR_CreateConnection(MPI_Comm communicator, int targetRank,
-            int uniqueSendID, int uniqueRecvID)
+pMR_Connection *pMR_CreateConnection(
+    MPI_Comm communicator, int targetRank, int uniqueSendID, int uniqueRecvID)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR_Connection*>(new pMR::Connection(
-                        pMR::Target(communicator, {targetRank},
-                            {uniqueSendID}, {uniqueRecvID})));
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-            return nullptr;
-        }
+        return reinterpret_cast<pMR_Connection *>(
+            new pMR::Connection(pMR::Target(
+                communicator, {targetRank}, {uniqueSendID}, {uniqueRecvID})));
     }
-    
-    void pMR_DestroyConnection(pMR_Connection *connection)
+    catch(std::exception const &e)
     {
-        try
-        {
-            delete reinterpret_cast<pMR::Connection*>(connection);
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+        return nullptr;
     }
+}
+
+void pMR_DestroyConnection(pMR_Connection *connection)
+{
+    try
+    {
+        delete reinterpret_cast<pMR::Connection *>(connection);
+    }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 }

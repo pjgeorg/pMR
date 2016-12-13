@@ -14,8 +14,7 @@
 
 #include "cpu.hpp"
 #include <stdexcept>
-extern "C"
-{
+extern "C" {
 #include <numa.h>
 #include <sched.h>
 }

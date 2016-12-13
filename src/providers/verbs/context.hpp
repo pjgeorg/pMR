@@ -15,31 +15,34 @@
 #ifndef pMR_PROVIDERS_VERBS_CONTEXT_H
 #define pMR_PROVIDERS_VERBS_CONTEXT_H
 
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "device.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class Context
+    namespace verbs
     {
+        class Context
+        {
         public:
-            Context(Device const&);
-            Context(const Context&) = delete;
-            Context(Context&&) = delete;
-            Context& operator=(const Context&) = delete;
-            Context& operator=(Context&&) = delete;
+            Context(Device const &);
+            Context(Context const &) = delete;
+            Context(Context &&) = delete;
+            Context &operator=(Context const &) = delete;
+            Context &operator=(Context &&) = delete;
             ~Context() noexcept;
-            ibv_context* get();
-            ibv_context const* get() const;
+            ibv_context *get();
+            ibv_context const *get() const;
             std::uint64_t getMaxMemoryRegionSize() const;
             std::uint32_t getMaxMessageSize() const;
+
         private:
             ibv_context *mContext = nullptr;
             std::uint64_t mMaxMemoryRegionSize = 0;
             std::uint32_t mMaxMessageSize = 0;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_CONTEXT_H

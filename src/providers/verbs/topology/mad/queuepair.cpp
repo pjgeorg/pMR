@@ -14,12 +14,11 @@
 
 #include "queuepair.hpp"
 #include <stdexcept>
-#include "../../verbs.hpp"
 #include "../../queuepair.hpp"
+#include "../../verbs.hpp"
 
 pMR::verbs::mad::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
-        CompletionQueue &sendCompletionQueue,
-        CompletionQueue &recvCompletionQueue)
+    CompletionQueue &sendCompletionQueue, CompletionQueue &recvCompletionQueue)
 {
     ibv_qp_init_attr initialAttributes = {};
     initialAttributes.send_cq = sendCompletionQueue.get();
@@ -45,12 +44,12 @@ pMR::verbs::mad::QueuePair::~QueuePair()
     ibv_destroy_qp(mQueuePair);
 }
 
-ibv_qp* pMR::verbs::mad::QueuePair::get()
+ibv_qp *pMR::verbs::mad::QueuePair::get()
 {
     return mQueuePair;
 }
 
-ibv_qp const* pMR::verbs::mad::QueuePair::get() const
+ibv_qp const *pMR::verbs::mad::QueuePair::get() const
 {
     return mQueuePair;
 }
@@ -64,10 +63,7 @@ void pMR::verbs::mad::QueuePair::setStateINIT(std::uint8_t const portNumber)
     attr.qkey = {VerbsDefaultQP1QKey};
 
     if(ibv_modify_qp(get(), &attr,
-                IBV_QP_STATE |
-                IBV_QP_PKEY_INDEX |
-                IBV_QP_PORT |
-                IBV_QP_QKEY))
+           IBV_QP_STATE | IBV_QP_PKEY_INDEX | IBV_QP_PORT | IBV_QP_QKEY))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to INIT.");
     }

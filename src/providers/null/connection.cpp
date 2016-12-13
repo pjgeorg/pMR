@@ -15,7 +15,7 @@
 #include "connection.hpp"
 
 #ifdef NULL_WARN
-#   include "../../misc/print.hpp"
+#include "../../misc/print.hpp"
 #endif // NULL_WARN
 
 pMR::null::Connection::Connection(Target const &target)

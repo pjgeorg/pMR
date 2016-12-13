@@ -16,20 +16,24 @@
 #define pMR_PROVIDERS_VERBS_ODP_H
 
 #ifdef VERBS_ODP
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class ODP
+    namespace verbs
     {
+        class ODP
+        {
         public:
-            ODP(Context&);
+            ODP(Context &);
             ~ODP() = default;
             bool isTrue() const;
+
         private:
             bool mHasODP = false;
-    };
+        };
 
-    int updateMemoryRegionAccessODP(Context &context, int const access);
-}}
+        int updateMemoryRegionAccessODP(Context &context, int const access);
+    }
+}
 #endif // VERBS_ODP
 
 #endif // pMR_PROVIDERS_VERBS_ODP_H

@@ -17,34 +17,34 @@
 #include "config.hpp"
 
 static_assert(std::numeric_limits<pMR::size_type>::is_integer,
-        "size_type must be of integer type.");
+    "size_type must be of integer type.");
 
 #ifdef pMR_PROVIDER_CMA
-static_assert(std::numeric_limits<pMR::size_type>::max()
-        <= std::numeric_limits<std::size_t>::max(),
-        "CMA max message size lower than desired pMR max message size.");
+static_assert(std::numeric_limits<pMR::size_type>::max() <=
+        std::numeric_limits<std::size_t>::max(),
+    "CMA max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-static_assert(std::numeric_limits<pMR::size_type>::max()
-        <= std::numeric_limits<int>::max(),
-        "MPI max message size lower than desired pMR max message size.");
+static_assert(std::numeric_limits<pMR::size_type>::max() <=
+        std::numeric_limits<int>::max(),
+    "MPI max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_OFI
-static_assert(std::numeric_limits<pMR::size_type>::max()
-        <= std::numeric_limits<std::size_t>::max(),
-        "OFI max message size lower than desired pMR max message size.");
+static_assert(std::numeric_limits<pMR::size_type>::max() <=
+        std::numeric_limits<std::size_t>::max(),
+    "OFI max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
-static_assert(std::numeric_limits<pMR::size_type>::max()
-        <= std::numeric_limits<std::size_t>::max(),
-        "self max message size lower than desired pMR max message size.");
+static_assert(std::numeric_limits<pMR::size_type>::max() <=
+        std::numeric_limits<std::size_t>::max(),
+    "self max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-static_assert(std::numeric_limits<pMR::size_type>::max()
-        <= std::numeric_limits<std::uint32_t>::max(),
-        "verbs max message size lower than desired pMR max message size.");
+static_assert(std::numeric_limits<pMR::size_type>::max() <=
+        std::numeric_limits<std::uint32_t>::max(),
+    "verbs max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_VERBS

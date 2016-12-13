@@ -14,10 +14,10 @@
 
 #include "connection.hpp"
 #include "target.hpp"
-#include "node.hpp"
-#include "../../misc/singleton.hpp"
 #include "../../backends/backend.hpp"
+#include "../../misc/singleton.hpp"
 #include "../../providers/verbs/topology.hpp"
+#include "node.hpp"
 
 void pMR::Connection::connect(Target const &target)
 {
@@ -37,7 +37,7 @@ void pMR::Connection::connect(Target const &target)
     decltype(originNode) targetNode;
 
     backend::exchange(target, originNode, targetNode);
-    
+
     if(originNode.getHostID() == targetNode.getHostID())
     {
         connectCMA(target);

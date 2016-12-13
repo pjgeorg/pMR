@@ -25,25 +25,26 @@ namespace pMR
     {
         class Connection
         {
-            public:
-                Connection(Target const &target);
-                Connection(const Connection&) = delete;
-                Connection(Connection&&) = delete;
-                Connection& operator=(const Connection&) = delete;
-                Connection& operator=(Connection&&) = delete;
-                ~Connection() = default;
-                void postAddress(void *const buffer, std::size_t const sizeByte);
-                void pollAddress() const;
-                void sendData(void *const buffer, std::size_t const sizeByte);
-                void postNotify();
-                void pollNotify() const;
-            private:
-                void **mRemoteBuffer = nullptr;
-                std::size_t *mRemoteSizeByte = nullptr;
-                void *mDestinationBuffer = nullptr;
-                std::size_t mDestinationSizeByte = 0;
+        public:
+            Connection(Target const &target);
+            Connection(Connection const &) = delete;
+            Connection(Connection &&) = delete;
+            Connection &operator=(Connection const &) = delete;
+            Connection &operator=(Connection &&) = delete;
+            ~Connection() = default;
+            void postAddress(void *const buffer, std::size_t const sizeByte);
+            void pollAddress() const;
+            void sendData(void *const buffer, std::size_t const sizeByte);
+            void postNotify();
+            void pollNotify() const;
 
-                void checkBufferSizeByte(std::size_t const sizeByte) const;
+        private:
+            void **mRemoteBuffer = nullptr;
+            std::size_t *mRemoteSizeByte = nullptr;
+            void *mDestinationBuffer = nullptr;
+            std::size_t mDestinationSizeByte = 0;
+
+            void checkBufferSizeByte(std::size_t const sizeByte) const;
         };
     }
 }

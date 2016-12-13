@@ -15,21 +15,21 @@
 #ifndef pMR_MISC_THREAD_H
 #define pMR_MISC_THREAD_H
 
-#include <stdexcept>
 #include <algorithm>
+#include <stdexcept>
 
 namespace pMR
 {
-// ?!?!    void splitThreadsIntoGangs();
+    // ?!?!    void splitThreadsIntoGangs();
     template<typename T, typename W>
     void splitWorkToThreads(W const start, W const end, T const threadID,
-            T const threadCount, W& threadStart, W& threadEnd,
-            W const granularity = 1);
+        T const threadCount, W &threadStart, W &threadEnd,
+        W const granularity = 1);
 }
 
 template<typename T, typename W>
 void pMR::splitWorkToThreads(W const start, W const end, T const threadID,
-        T const threadCount, W& threadStart, W& threadEnd, W const granularity)
+    T const threadCount, W &threadStart, W &threadEnd, W const granularity)
 {
     threadStart = start;
     threadEnd = end;
@@ -37,7 +37,7 @@ void pMR::splitWorkToThreads(W const start, W const end, T const threadID,
     {
         return;
     }
-    if(not (threadCount > 0))
+    if(!(threadCount > 0))
     {
         throw std::logic_error("Thread Count");
     }
@@ -46,9 +46,10 @@ void pMR::splitWorkToThreads(W const start, W const end, T const threadID,
         throw std::out_of_range("Thread ID");
     }
 
-    W perThread = static_cast<W>(std::ceil(
-                (static_cast<double>(end - start) / granularity)
-                / threadCount) * granularity); 
+    W perThread = static_cast<W>(
+        std::ceil(
+            (static_cast<double>(end - start) / granularity) / threadCount) *
+        granularity);
 
     threadStart += threadID * perThread;
     threadEnd = threadStart;

@@ -18,11 +18,9 @@
 #include "../../threads/thread.hpp"
 
 pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, int const sizeByte)
-    :   mConnection(connection),
-        mBuffer(buffer),
-        mSizeByte{sizeByte}
+    std::shared_ptr<Connection> const connection, void *buffer,
+    int const sizeByte)
+    : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
 {
 #ifdef MPI_PERSISTENT
     if(mConnection->multipleThreadSupport())
@@ -65,7 +63,9 @@ void pMR::mpi::RecvMemoryWindow::init()
     thread::ScopedLock scopedLock;
 }
 
-void pMR::mpi::RecvMemoryWindow::post() { }
+void pMR::mpi::RecvMemoryWindow::post()
+{
+}
 
 void pMR::mpi::RecvMemoryWindow::wait()
 {
@@ -73,8 +73,7 @@ void pMR::mpi::RecvMemoryWindow::wait()
     {
         if(MPI_Wait(&mRequest, MPI_STATUS_IGNORE) != MPI_SUCCESS)
         {
-            throw std::runtime_error(
-                    "pMR: Unable to (wait) receive data.");
+            throw std::runtime_error("pMR: Unable to (wait) receive data.");
         }
     }
     else
@@ -85,8 +84,7 @@ void pMR::mpi::RecvMemoryWindow::wait()
             thread::ScopedLock scopedLock;
             if(MPI_Test(&mRequest, &flag, MPI_STATUS_IGNORE) != MPI_SUCCESS)
             {
-                throw std::runtime_error(
-                        "pMR: Unable to (test) receive data.");
+                throw std::runtime_error("pMR: Unable to (test) receive data.");
             }
         }
     }
@@ -96,8 +94,8 @@ void pMR::mpi::RecvMemoryWindow::wait()
 void pMR::mpi::RecvMemoryWindow::initRecv()
 {
     if(MPI_Recv_init(mBuffer, {mSizeByte}, MPI_BYTE,
-                {mConnection->getTargetRank()}, {mConnection->getRecvTag()},
-                {mConnection->getCommunicator()}, &mRequest) != MPI_SUCCESS)
+           {mConnection->getTargetRank()}, {mConnection->getRecvTag()},
+           {mConnection->getCommunicator()}, &mRequest) != MPI_SUCCESS)
     {
         throw std::runtime_error("pMR: Unable to init receive data.");
     }
@@ -110,8 +108,8 @@ void pMR::mpi::RecvMemoryWindow::recv()
     if(MPI_Start(&mRequest) != MPI_SUCCESS)
 #else
     if(MPI_Irecv(mBuffer, {mSizeByte}, MPI_BYTE, {mConnection->getTargetRank()},
-                {mConnection->getRecvTag()}, {mConnection->getCommunicator()},
-                &mRequest) != MPI_SUCCESS)
+           {mConnection->getRecvTag()}, {mConnection->getCommunicator()},
+           &mRequest) != MPI_SUCCESS)
 #endif // MPI_PERSISTENT
     {
         throw std::runtime_error("pMR: Unable to receive data.");

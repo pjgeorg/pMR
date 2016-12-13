@@ -13,115 +13,113 @@
 //  limitations under the License.
 
 #include "sendwindow.hpp"
-#include "../../misc/print.hpp"
 #include "config.hpp"
+#include "../../misc/print.hpp"
 
-extern "C"
-{
+extern "C" {
 #include "pmr.h"
 
-    pMR_SendWindow* pMR_CreateSendWindow(pMR_Connection *connection,
-            void *buffer, pMR::size_type sizeByte)
+pMR_SendWindow *pMR_CreateSendWindow(
+    pMR_Connection *connection, void *buffer, pMR::size_type sizeByte)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR_SendWindow*>(
-                    new pMR::SendWindow<unsigned char>(
-                        *reinterpret_cast<pMR::Connection*>(connection),
-                        static_cast<unsigned char*>(buffer), {sizeByte}));
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-            return nullptr;
-        }
+        return reinterpret_cast<pMR_SendWindow *>(
+            new pMR::SendWindow<unsigned char>(
+                *reinterpret_cast<pMR::Connection *>(connection),
+                static_cast<unsigned char *>(buffer), {sizeByte}));
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+        return nullptr;
+    }
+}
 
-    void pMR_DestroySendWindow(pMR_SendWindow *sendWindow)
+void pMR_DestroySendWindow(pMR_SendWindow *sendWindow)
+{
+    try
     {
-        try
-        {
-            delete
-                reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow);
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        delete reinterpret_cast<pMR::SendWindow<unsigned char> *>(sendWindow);
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    int pMR_IsSameSendWindow(pMR_SendWindow *sendWindow,
-            void *buffer, pMR::size_type sizeByte)
+int pMR_IsSameSendWindow(
+    pMR_SendWindow *sendWindow, void *buffer, pMR::size_type sizeByte)
+{
+    try
     {
-        try
-        {
-            return static_cast<int>(reinterpret_cast
-                    <pMR::SendWindow<unsigned char>*>(sendWindow)
-                    ->isSame(static_cast<unsigned char*>(buffer), {sizeByte}));
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-            return 0;
-        }
+        return static_cast<int>(
+            reinterpret_cast<pMR::SendWindow<unsigned char> *>(sendWindow)
+                ->isSame(static_cast<unsigned char *>(buffer), {sizeByte}));
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+        return 0;
+    }
+}
 
-    void pMR_InitSend(pMR_SendWindow *sendWindow)
+void pMR_InitSend(pMR_SendWindow *sendWindow)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
-                ->init();
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::SendWindow<unsigned char> *>(sendWindow)
+            ->init();
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    void pMR_PostSend(pMR_SendWindow *sendWindow)
+void pMR_PostSend(pMR_SendWindow *sendWindow)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
-                ->post();
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::SendWindow<unsigned char> *>(sendWindow)
+            ->post();
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    void pMR_PostSendPartial(pMR_SendWindow *sendWindow, pMR::size_type sizeByte)
+void pMR_PostSendPartial(pMR_SendWindow *sendWindow, pMR::size_type sizeByte)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
-                ->post({sizeByte});
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::SendWindow<unsigned char> *>(sendWindow)
+            ->post({sizeByte});
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    void pMR_WaitSend(pMR_SendWindow *sendWindow)
+void pMR_WaitSend(pMR_SendWindow *sendWindow)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::SendWindow<unsigned char>*>(sendWindow)
-                ->wait();
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::SendWindow<unsigned char> *>(sendWindow)
+            ->wait();
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 }

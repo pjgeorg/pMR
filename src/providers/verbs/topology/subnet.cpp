@@ -14,15 +14,15 @@
 
 #include "subnet.hpp"
 
-std::uint64_t pMR::verbs::getSubnetPrefix(Device const &device,
-        std::uint8_t const portNumber)
+std::uint64_t pMR::verbs::getSubnetPrefix(
+    Device const &device, std::uint8_t const portNumber)
 {
     Context context(device);
     return {getSubnetPrefix(context, {portNumber})};
 }
 
-std::uint64_t pMR::verbs::getSubnetPrefix(Context &context,
-        std::uint8_t const portNumber)
+std::uint64_t pMR::verbs::getSubnetPrefix(
+    Context &context, std::uint8_t const portNumber)
 {
     GID const gID(context, {portNumber});
     return {getSubnetPrefix(gID)};

@@ -16,14 +16,14 @@
 #include <stdexcept>
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
-        int const uniqueSendID, int const uniqueRecvID,
-        bool const null, bool const self)
-    :   mCommunicator{communicator},
-        mTarget{targetRank},
-        mUniqueSendID{uniqueSendID},
-        mUniqueRecvID{uniqueRecvID},
-        mNull{null},
-        mSelf{self}
+    int const uniqueSendID, int const uniqueRecvID, bool const null,
+    bool const self)
+    : mCommunicator{communicator}
+    , mTarget{targetRank}
+    , mUniqueSendID{uniqueSendID}
+    , mUniqueRecvID{uniqueRecvID}
+    , mNull{null}
+    , mSelf{self}
 {
     if(mNull && mSelf)
     {
@@ -32,11 +32,11 @@ pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
 }
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
-        int const uniqueSendID, int const uniqueRecvID)
-    :   mCommunicator{communicator},
-        mTarget{targetRank},
-        mUniqueSendID{uniqueSendID},
-        mUniqueRecvID{uniqueRecvID}
+    int const uniqueSendID, int const uniqueRecvID)
+    : mCommunicator{communicator}
+    , mTarget{targetRank}
+    , mUniqueSendID{uniqueSendID}
+    , mUniqueRecvID{uniqueRecvID}
 {
     queryTarget();
 }

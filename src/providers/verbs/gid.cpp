@@ -24,8 +24,9 @@ pMR::verbs::GID::GID(Context &context, std::uint8_t const portNumber)
     }
 }
 
-pMR::verbs::GID::GID(ibv_gid const gID)
-    :   mGID(gID) { }
+pMR::verbs::GID::GID(ibv_gid const gID) : mGID(gID)
+{
+}
 
 void pMR::verbs::GID::setGUID(std::uint64_t const GUID)
 {
@@ -37,7 +38,7 @@ void pMR::verbs::GID::setSubnetPrefix(std::uint64_t const subnetPrefix)
     mGID.global.subnet_prefix = {subnetPrefix};
 }
 
-ibv_gid const& pMR::verbs::GID::get() const
+ibv_gid const &pMR::verbs::GID::get() const
 {
     return mGID;
 }

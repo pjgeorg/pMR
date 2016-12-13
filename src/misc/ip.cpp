@@ -13,11 +13,10 @@
 //  limitations under the License.
 
 #include "ip.hpp"
-#include <vector>
-#include <stdexcept>
 #include <cstring>
-extern "C"
-{
+#include <stdexcept>
+#include <vector>
+extern "C" {
 #include <arpa/inet.h>
 }
 
@@ -26,7 +25,7 @@ pMR::IP::IP()
     if(getifaddrs(&mInterfaces) == -1)
     {
         throw std::runtime_error(
-                "pMR: Unable to get network interfaces description.");
+            "pMR: Unable to get network interfaces description.");
     }
 }
 
@@ -78,16 +77,16 @@ std::string pMR::IP::structToString(struct ifaddrs const *ifa) const
         case AF_INET:
         {
             struct sockaddr_in *in = nullptr;
-            in = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr);
-            src = static_cast<void*>(&in->sin_addr);
+            in = reinterpret_cast<struct sockaddr_in *>(ifa->ifa_addr);
+            src = static_cast<void *>(&in->sin_addr);
             ip.resize(INET_ADDRSTRLEN);
             break;
         }
         case AF_INET6:
         {
             struct sockaddr_in6 *in6 = nullptr;
-            in6 = reinterpret_cast<struct sockaddr_in6*>(ifa->ifa_addr);
-            src = static_cast<void*>(&in6->sin6_addr);
+            in6 = reinterpret_cast<struct sockaddr_in6 *>(ifa->ifa_addr);
+            src = static_cast<void *>(&in6->sin6_addr);
             ip.resize(INET6_ADDRSTRLEN);
             break;
         }
@@ -100,7 +99,7 @@ std::string pMR::IP::structToString(struct ifaddrs const *ifa) const
     if(inet_ntop(family, src, ip.data(), ip.size()) == NULL)
     {
         throw std::runtime_error(
-                "pMR: Unable to convert network address structure to string.");
+            "pMR: Unable to convert network address structure to string.");
     }
 
     return ip.data();

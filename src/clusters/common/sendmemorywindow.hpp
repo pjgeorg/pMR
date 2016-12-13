@@ -25,54 +25,55 @@ namespace pMR
 
     class SendMemoryWindow
     {
-        public:
-            SendMemoryWindow(Connection const&,
-                    void *buffer, size_type const sizeByte);
-            SendMemoryWindow(const SendMemoryWindow&) = delete;
-            SendMemoryWindow(SendMemoryWindow&&) = default;
-            SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
-            SendMemoryWindow& operator=(SendMemoryWindow&&) = default;
-            ~SendMemoryWindow();
-            void init();
-            void post();
-            void post(size_type const sizeByte);
-            void wait();
-            void* data();
-            void const* data() const;
-            size_type size() const;
-        private:
-            void *mBuffer;
-            size_type const mSizeByte;
-            Provider mProvider;
+    public:
+        SendMemoryWindow(
+            Connection const &, void *buffer, size_type const sizeByte);
+        SendMemoryWindow(SendMemoryWindow const &) = delete;
+        SendMemoryWindow(SendMemoryWindow &&) = default;
+        SendMemoryWindow &operator=(SendMemoryWindow const &) = delete;
+        SendMemoryWindow &operator=(SendMemoryWindow &&) = default;
+        ~SendMemoryWindow();
+        void init();
+        void post();
+        void post(size_type const sizeByte);
+        void wait();
+        void *data();
+        void const *data() const;
+        size_type size() const;
+
+    private:
+        void *mBuffer;
+        size_type const mSizeByte;
+        Provider mProvider;
 
 #ifdef pMR_PROVIDER_CMA
-            std::unique_ptr<cma::SendMemoryWindow,
-                cma::SendMemoryWindowDeleter> mCMA;
+        std::unique_ptr<cma::SendMemoryWindow, cma::SendMemoryWindowDeleter>
+            mCMA;
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-            std::unique_ptr<mpi::SendMemoryWindow,
-                mpi::SendMemoryWindowDeleter> mMPI;
+        std::unique_ptr<mpi::SendMemoryWindow, mpi::SendMemoryWindowDeleter>
+            mMPI;
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-            std::unique_ptr<null::SendMemoryWindow,
-                null::SendMemoryWindowDeleter> mNull;
+        std::unique_ptr<null::SendMemoryWindow, null::SendMemoryWindowDeleter>
+            mNull;
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-            std::unique_ptr<ofi::SendMemoryWindow,
-                ofi::SendMemoryWindowDeleter> mOFI;
+        std::unique_ptr<ofi::SendMemoryWindow, ofi::SendMemoryWindowDeleter>
+            mOFI;
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
-            std::unique_ptr<self::SendMemoryWindow,
-                self::SendMemoryWindowDeleter> mSelf;
+        std::unique_ptr<self::SendMemoryWindow, self::SendMemoryWindowDeleter>
+            mSelf;
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-            std::unique_ptr<verbs::SendMemoryWindow,
-                verbs::SendMemoryWindowDeleter> mVerbs;
+        std::unique_ptr<verbs::SendMemoryWindow, verbs::SendMemoryWindowDeleter>
+            mVerbs;
 #endif // pMR_PROVIDER_VERBS
     };
 }

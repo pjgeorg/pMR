@@ -25,53 +25,54 @@ namespace pMR
 
     class RecvMemoryWindow
     {
-        public:
-            RecvMemoryWindow(Connection const&,
-                    void *buffer, size_type const sizeByte);
-            RecvMemoryWindow(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow(RecvMemoryWindow&&) = default;
-            RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow& operator=(RecvMemoryWindow&&) = default;
-            ~RecvMemoryWindow();
-            void init();
-            void post();
-            void wait();
-            void* data();
-            void const* data() const;
-            size_type size() const;
-        private:
-            void *mBuffer;
-            size_type const mSizeByte;
-            Provider mProvider;
+    public:
+        RecvMemoryWindow(
+            Connection const &, void *buffer, size_type const sizeByte);
+        RecvMemoryWindow(RecvMemoryWindow const &) = delete;
+        RecvMemoryWindow(RecvMemoryWindow &&) = default;
+        RecvMemoryWindow &operator=(RecvMemoryWindow const &) = delete;
+        RecvMemoryWindow &operator=(RecvMemoryWindow &&) = default;
+        ~RecvMemoryWindow();
+        void init();
+        void post();
+        void wait();
+        void *data();
+        void const *data() const;
+        size_type size() const;
+
+    private:
+        void *mBuffer;
+        size_type const mSizeByte;
+        Provider mProvider;
 
 #ifdef pMR_PROVIDER_CMA
-            std::unique_ptr<cma::RecvMemoryWindow,
-                cma::RecvMemoryWindowDeleter> mCMA;
+        std::unique_ptr<cma::RecvMemoryWindow, cma::RecvMemoryWindowDeleter>
+            mCMA;
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-            std::unique_ptr<mpi::RecvMemoryWindow,
-                mpi::RecvMemoryWindowDeleter> mMPI;
+        std::unique_ptr<mpi::RecvMemoryWindow, mpi::RecvMemoryWindowDeleter>
+            mMPI;
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-            std::unique_ptr<null::RecvMemoryWindow,
-                null::RecvMemoryWindowDeleter> mNull;
+        std::unique_ptr<null::RecvMemoryWindow, null::RecvMemoryWindowDeleter>
+            mNull;
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-            std::unique_ptr<ofi::RecvMemoryWindow,
-                ofi::RecvMemoryWindowDeleter> mOFI;
+        std::unique_ptr<ofi::RecvMemoryWindow, ofi::RecvMemoryWindowDeleter>
+            mOFI;
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_SELF
-            std::unique_ptr<self::RecvMemoryWindow,
-                self::RecvMemoryWindowDeleter> mSelf;
+        std::unique_ptr<self::RecvMemoryWindow, self::RecvMemoryWindowDeleter>
+            mSelf;
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-            std::unique_ptr<verbs::RecvMemoryWindow,
-                verbs::RecvMemoryWindowDeleter> mVerbs;
+        std::unique_ptr<verbs::RecvMemoryWindow, verbs::RecvMemoryWindowDeleter>
+            mVerbs;
 #endif // pMR_PROVIDER_VERBS
     };
 }

@@ -16,9 +16,9 @@
 #include "connection.hpp"
 
 pMR::cma::RecvMemoryWindow::RecvMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::size_t const sizeByte)
-    :   mConnection(connection)
+    std::shared_ptr<Connection> const connection, void *buffer,
+    std::size_t const sizeByte)
+    : mConnection(connection)
 {
     mBuffer.iov_base = buffer;
     mBuffer.iov_len = {sizeByte};
@@ -30,7 +30,9 @@ void pMR::cma::RecvMemoryWindow::init()
     mConnection->postNotifySend();
 }
 
-void pMR::cma::RecvMemoryWindow::post() { }
+void pMR::cma::RecvMemoryWindow::post()
+{
+}
 
 void pMR::cma::RecvMemoryWindow::wait()
 {

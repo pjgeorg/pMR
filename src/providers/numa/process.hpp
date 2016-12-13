@@ -15,8 +15,11 @@
 #ifndef pMR_PROVIDERS_NUMA_PROCESS_H
 #define pMR_PROVIDERS_NUMA_PROCESS_H
 
-namespace pMR { namespace numa
+namespace pMR
 {
-    int getNode();
-}}
+    namespace numa
+    {
+        int getNode();
+    }
+}
 #endif // pMR_PROVIDERS_NUMA_PROCESS_H

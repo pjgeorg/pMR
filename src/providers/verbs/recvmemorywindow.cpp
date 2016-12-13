@@ -16,17 +16,18 @@
 #include "connection.hpp"
 
 pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection),
-        mMemoryRegion(mConnection->getContext(),
-                mConnection->getProtectionDomain(),
-                buffer, {sizeByte},
+    std::shared_ptr<Connection> const connection, void *buffer,
+    std::uint32_t const sizeByte)
+    : mConnection(connection)
+    , mMemoryRegion(mConnection->getContext(),
+          mConnection->getProtectionDomain(), buffer, {sizeByte},
 #ifdef VERBS_RDMA
-                IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE) { }
+          IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE)
 #else
-                IBV_ACCESS_LOCAL_WRITE) { }
+          IBV_ACCESS_LOCAL_WRITE)
 #endif // VERBS_RDMA
+{
+}
 
 void pMR::verbs::RecvMemoryWindow::init()
 {
@@ -40,7 +41,9 @@ void pMR::verbs::RecvMemoryWindow::init()
 #endif // VERBS_RDMA
 }
 
-void pMR::verbs::RecvMemoryWindow::post() { }
+void pMR::verbs::RecvMemoryWindow::post()
+{
+}
 
 void pMR::verbs::RecvMemoryWindow::wait()
 {

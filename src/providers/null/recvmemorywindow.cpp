@@ -15,11 +15,19 @@
 #include "recvmemorywindow.hpp"
 
 pMR::null::RecvMemoryWindow::RecvMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, size_type const sizeByte) { }
+    std::shared_ptr<Connection> const connection, void *buffer,
+    size_type const sizeByte)
+{
+}
 
-void pMR::null::RecvMemoryWindow::init() { }
+void pMR::null::RecvMemoryWindow::init()
+{
+}
 
-void pMR::null::RecvMemoryWindow::post() { }
+void pMR::null::RecvMemoryWindow::post()
+{
+}
 
-void pMR::null::RecvMemoryWindow::wait() { }
+void pMR::null::RecvMemoryWindow::wait()
+{
+}

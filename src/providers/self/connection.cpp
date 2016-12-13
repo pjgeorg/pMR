@@ -16,11 +16,11 @@
 #include <array>
 #include <cstring>
 #include <stdexcept>
-#include "../../backends/backend.hpp"
 #include "../../arch/processor.hpp"
+#include "../../backends/backend.hpp"
 
 #ifdef SELF_WARN
-#   include "../../misc/print.hpp"
+#include "../../misc/print.hpp"
 #endif // SELF_WARN
 
 pMR::self::Connection::Connection(Target const &target)
@@ -31,25 +31,24 @@ pMR::self::Connection::Connection(Target const &target)
 
     std::array<std::uintptr_t, 2> originAddress, targetAddress;
 
-    std::get<0>(originAddress) =
-        {reinterpret_cast<std::uintptr_t>(&mDestinationBuffer)};
-    std::get<1>(originAddress) =
-        {reinterpret_cast<std::uintptr_t>(&mDestinationSizeByte)};
+    std::get<0>(originAddress) = {
+        reinterpret_cast<std::uintptr_t>(&mDestinationBuffer)};
+    std::get<1>(originAddress) = {
+        reinterpret_cast<std::uintptr_t>(&mDestinationSizeByte)};
 
     backend::exchange(target, originAddress, targetAddress);
 
-    mRemoteBuffer =
-        reinterpret_cast<void**>(std::get<0>(targetAddress));
-    mRemoteSizeByte =
-        {reinterpret_cast<std::size_t*>(std::get<1>(targetAddress))};
+    mRemoteBuffer = reinterpret_cast<void **>(std::get<0>(targetAddress));
+    mRemoteSizeByte = {
+        reinterpret_cast<std::size_t *>(std::get<1>(targetAddress))};
 }
 
-void pMR::self::Connection::postAddress(void *const buffer,
-        std::size_t const sizeByte)
+void pMR::self::Connection::postAddress(
+    void *const buffer, std::size_t const sizeByte)
 {
     if(sizeByte == 0)
     {
-        //Buffer might be nullptr, require any valid value != nullptr
+        // Buffer might be nullptr, require any valid value != nullptr
         *mRemoteBuffer = mRemoteSizeByte;
     }
     else
@@ -67,8 +66,8 @@ void pMR::self::Connection::pollAddress() const
     }
 }
 
-void pMR::self::Connection::sendData(void *const buffer,
-        std::size_t const sizeByte)
+void pMR::self::Connection::sendData(
+    void *const buffer, std::size_t const sizeByte)
 {
     checkBufferSizeByte({sizeByte});
     std::memcpy(mDestinationBuffer, buffer, {sizeByte});
@@ -88,7 +87,8 @@ void pMR::self::Connection::pollNotify() const
     }
 }
 
-void pMR::self::Connection::checkBufferSizeByte(std::size_t const sizeByte) const
+void pMR::self::Connection::checkBufferSizeByte(
+    std::size_t const sizeByte) const
 {
     if(mDestinationSizeByte < sizeByte)
     {

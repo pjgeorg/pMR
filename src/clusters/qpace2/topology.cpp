@@ -16,7 +16,7 @@
 #include "node.hpp"
 
 #ifdef QPACE2_WARN_TOPOLOGY
-#   include "../../misc/print.hpp"
+#include "../../misc/print.hpp"
 #endif // QPACE2_WARN TOPOLOGY
 
 std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
@@ -24,6 +24,7 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
     // Origin and Target on same brick
     if(origin.getNodeGUID() == target.getNodeGUID())
     {
+        // Choose port depending on origin and target SCIF ID to balance load
         if(origin.getSCIFNodeID() + target.getSCIFNodeID() != 5)
         {
             return 1;
@@ -34,10 +35,11 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
         }
     }
 
-    // Origin and Target in same hyperblock
+    // Origin and Target in same block <-> Two common switches
     if(origin.getSwitchLID(1) == target.getSwitchLID(1) &&
-            origin.getSwitchLID(2) == target.getSwitchLID(2))
+        origin.getSwitchLID(2) == target.getSwitchLID(2))
     {
+        // Choose port depending on origin and target SCIF ID to balance load
         if(origin.getSCIFNodeID() + target.getSCIFNodeID() < 6)
         {
             return 1;
@@ -52,17 +54,17 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
     for(std::uint8_t portNumber = 1; portNumber != 3; ++portNumber)
     {
         if(origin.getSwitchLID({portNumber}) ==
-                target.getSwitchLID({portNumber}))
+            target.getSwitchLID({portNumber}))
         {
             return {portNumber};
         }
     }
 
-    // No common switch
 #ifdef QPACE2_WARN_TOPOLOGY
     print("pMR: Using bad path. Check topology.");
 #endif // QPACE2_WARN TOPOLOGY
 
+    // No common switch
     if(origin.getSCIFNodeID() + target.getSCIFNodeID() < 6)
     {
         return 1;

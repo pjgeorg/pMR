@@ -14,25 +14,23 @@
 
 #include "mad.hpp"
 #include <stdexcept>
-#include "address.hpp"
-#include "addresshandle.hpp"
 #include "../../connection.hpp"
 #include "../../scattergather.hpp"
 #include "../../verbs.hpp"
+#include "address.hpp"
+#include "addresshandle.hpp"
 
-pMR::verbs::mad::MAD::MAD(Context &context,
-        std::uint8_t const portNumber)
-    :   mPortNumber{portNumber},
-        mPortAttributes(context, {mPortNumber}),
-        mProtectionDomain(context),
-        mSendCompletionQueue(context, {VerbsMaxSend}),
-        mRecvCompletionQueue(context, {VerbsMaxRecv}),
-        mQueuePair(mProtectionDomain, mSendCompletionQueue,
-                mRecvCompletionQueue),
-        mRecvMemoryRegion(context, mProtectionDomain,
-                static_cast<void*>(mRecvMAD.data()),
-                {static_cast<std::uint32_t>(sizeof(mRecvMAD))},
-                IBV_ACCESS_LOCAL_WRITE)
+pMR::verbs::mad::MAD::MAD(Context &context, std::uint8_t const portNumber)
+    : mPortNumber{portNumber}
+    , mPortAttributes(context, {mPortNumber})
+    , mProtectionDomain(context)
+    , mSendCompletionQueue(context, {VerbsMaxSend})
+    , mRecvCompletionQueue(context, {VerbsMaxRecv})
+    , mQueuePair(mProtectionDomain, mSendCompletionQueue, mRecvCompletionQueue)
+    , mRecvMemoryRegion(context, mProtectionDomain,
+          static_cast<void *>(mRecvMAD.data()),
+          {static_cast<std::uint32_t>(sizeof(mRecvMAD))},
+          IBV_ACCESS_LOCAL_WRITE)
 {
     mQueuePair.setStateINIT(mPortNumber);
     mQueuePair.setStateRTR();
@@ -58,8 +56,8 @@ void pMR::verbs::mad::MAD::postRecvRequest()
 
 void pMR::verbs::mad::MAD::postSendRequest()
 {
-    ScatterGatherElement scatterGatherElement(mSendMAD.data(),
-            sizeof(mSendMAD));
+    ScatterGatherElement scatterGatherElement(
+        mSendMAD.data(), sizeof(mSendMAD));
 
     SubnetManager subnetManager(mPortAttributes, {mPortNumber});
     AddressHandle addressHandle(mProtectionDomain, subnetManager);
@@ -89,6 +87,5 @@ void pMR::verbs::mad::MAD::query()
     {
         postSendRequest();
         mSendCompletionQueue.poll();
-    }
-    while(!mRecvCompletionQueue.poll({VerbsMADPollCQRetry}));
+    } while(!mRecvCompletionQueue.poll({VerbsMADPollCQRetry}));
 }

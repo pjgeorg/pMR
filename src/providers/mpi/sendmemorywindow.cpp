@@ -13,17 +13,15 @@
 //  limitations under the License.
 
 #include "sendmemorywindow.hpp"
-#include <stdexcept>
 #include <limits>
+#include <stdexcept>
 #include "connection.hpp"
 #include "../../threads/thread.hpp"
 
 pMR::mpi::SendMemoryWindow::SendMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, int const sizeByte)
-    :   mConnection(connection),
-        mBuffer(buffer),
-        mSizeByte{sizeByte}
+    std::shared_ptr<Connection> const connection, void *buffer,
+    int const sizeByte)
+    : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
 {
 #ifdef MPI_PERSISTENT
     if(mConnection->multipleThreadSupport())
@@ -51,7 +49,9 @@ pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
     }
 }
 
-void pMR::mpi::SendMemoryWindow::init() { }
+void pMR::mpi::SendMemoryWindow::init()
+{
+}
 
 void pMR::mpi::SendMemoryWindow::post(int const sizeByte)
 {
@@ -83,8 +83,7 @@ void pMR::mpi::SendMemoryWindow::wait()
             thread::ScopedLock scopedLock;
             if(MPI_Test(&mRequest, &flag, MPI_STATUS_IGNORE) != MPI_SUCCESS)
             {
-                throw std::runtime_error(
-                        "pMR: Unable to (test) send data.");
+                throw std::runtime_error("pMR: Unable to (test) send data.");
             }
         }
     }
@@ -94,8 +93,8 @@ void pMR::mpi::SendMemoryWindow::wait()
 void pMR::mpi::SendMemoryWindow::initSend()
 {
     if(MPI_Send_init(mBuffer, {mSizeByte}, MPI_BYTE,
-                {mConnection->getTargetRank()}, {mConnection->getSendTag()},
-                {mConnection->getCommunicator()}, &mRequest) != MPI_SUCCESS)
+           {mConnection->getTargetRank()}, {mConnection->getSendTag()},
+           {mConnection->getCommunicator()}, &mRequest) != MPI_SUCCESS)
     {
         throw std::runtime_error("pMR: Unable to init send data.");
     }
@@ -108,8 +107,8 @@ void pMR::mpi::SendMemoryWindow::send(int const sizeByte)
     if(MPI_Start(&mRequest) != MPI_SUCCESS)
 #else
     if(MPI_Isend(mBuffer, {sizeByte}, MPI_BYTE, {mConnection->getTargetRank()},
-                {mConnection->getSendTag()}, {mConnection->getCommunicator()},
-                &mRequest) != MPI_SUCCESS)
+           {mConnection->getSendTag()}, {mConnection->getCommunicator()},
+           &mRequest) != MPI_SUCCESS)
 #endif // MPI_PERSISTENT
     {
         throw std::runtime_error("pMR: Unable to send data.");

@@ -30,12 +30,12 @@ pMR::verbs::ProtectionDomain::~ProtectionDomain()
     ibv_dealloc_pd(mProtectionDomain);
 }
 
-ibv_pd* pMR::verbs::ProtectionDomain::get()
+ibv_pd *pMR::verbs::ProtectionDomain::get()
 {
     return mProtectionDomain;
 }
 
-ibv_pd const* pMR::verbs::ProtectionDomain::get() const
+ibv_pd const *pMR::verbs::ProtectionDomain::get() const
 {
     return mProtectionDomain;
 }

@@ -15,33 +15,36 @@
 #ifndef pMR_PROVIDERS_CMA_RECVMEMORYWINDOW_H
 #define pMR_PROVIDERS_CMA_RECVMEMORYWINDOW_H
 
-#include <memory>
 #include <cstdint>
-extern "C"
-{
+#include <memory>
+extern "C" {
 #include <sys/uio.h>
 }
 
-namespace pMR { namespace cma
+namespace pMR
 {
-    class Connection;
-
-    class RecvMemoryWindow
+    namespace cma
     {
+        class Connection;
+
+        class RecvMemoryWindow
+        {
         public:
-            RecvMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, std::size_t const sizeByte);
-            RecvMemoryWindow(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow(RecvMemoryWindow&&) = delete;
-            RecvMemoryWindow& operator=(const RecvMemoryWindow&) = delete;
-            RecvMemoryWindow& operator=(RecvMemoryWindow&&) = delete;
+            RecvMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                std::size_t const sizeByte);
+            RecvMemoryWindow(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow(RecvMemoryWindow &&) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow &&) = delete;
             ~RecvMemoryWindow() = default;
             void init();
             void post();
             void wait();
+
         private:
             std::shared_ptr<Connection> const mConnection;
             iovec mBuffer;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_CMA_RECVMEMORYWINDOW_H

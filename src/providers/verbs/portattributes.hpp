@@ -16,18 +16,19 @@
 #define pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "context.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class PortAttributes
+    namespace verbs
     {
+        class PortAttributes
+        {
         public:
-            PortAttributes(Context&, std::uint8_t const portNumber);
+            PortAttributes(Context &, std::uint8_t const portNumber);
             ~PortAttributes() = default;
             std::uint16_t getLID() const;
             ibv_mtu getActiveMTU() const;
@@ -35,8 +36,10 @@ namespace pMR { namespace verbs
             std::uint16_t getSubnetManagerLID() const;
             std::uint8_t getSubnetManagerServiceLevel() const;
             std::uint32_t getMaxMessageSize() const;
+
         private:
             ibv_port_attr mPortAttributes;
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_PORTATTRIBUTES_H

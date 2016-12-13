@@ -16,11 +16,15 @@
 #include "connection.hpp"
 
 pMR::self::SendMemoryWindow::SendMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::size_t const sizeByte)
-    :   mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte} { }
+    std::shared_ptr<Connection> const connection, void *buffer,
+    std::size_t const sizeByte)
+    : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
+{
+}
 
-void pMR::self::SendMemoryWindow::init() { }
+void pMR::self::SendMemoryWindow::init()
+{
+}
 
 void pMR::self::SendMemoryWindow::post(std::size_t const sizeByte)
 {
@@ -29,4 +33,6 @@ void pMR::self::SendMemoryWindow::post(std::size_t const sizeByte)
     mConnection->postNotify();
 }
 
-void pMR::self::SendMemoryWindow::wait() { }
+void pMR::self::SendMemoryWindow::wait()
+{
+}

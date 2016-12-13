@@ -17,19 +17,25 @@
 
 #include "mad.hpp"
 
-namespace pMR { namespace verbs { namespace mad
+namespace pMR
 {
-    class SwitchLID : public MAD
+    namespace verbs
     {
-        public:
-            SwitchLID(Context&, std::uint8_t const portNumber);
-            SwitchLID(const SwitchLID&) = delete;
-            SwitchLID(SwitchLID&&) = delete;
-            SwitchLID& operator=(const SwitchLID&) = delete;
-            SwitchLID& operator=(SwitchLID&&) = delete;
-            ~SwitchLID() = default;
-            bool validate();
-            int getSwitchLID();
-    };
-}}}
+        namespace mad
+        {
+            class SwitchLID : public MAD
+            {
+            public:
+                SwitchLID(Context &, std::uint8_t const portNumber);
+                SwitchLID(SwitchLID const &) = delete;
+                SwitchLID(SwitchLID &&) = delete;
+                SwitchLID &operator=(SwitchLID const &) = delete;
+                SwitchLID &operator=(SwitchLID &&) = delete;
+                ~SwitchLID() = default;
+                bool validate();
+                int getSwitchLID();
+            };
+        }
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_SWITCH_H

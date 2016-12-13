@@ -19,18 +19,17 @@
 #ifndef pMR_WINDOW_H
 #define pMR_WINDOW_H
 
-#include <vector>
-#include <stdexcept>
-#include <limits>
 #include <cstdint>
+#include <limits>
 #include <sstream>
+#include <stdexcept>
+#include <vector>
 #include "config.hpp"
 #include "misc/allocator.hpp"
 #include "misc/profiling.hpp"
 #ifdef pMR_WARN_ZERO
 #include "misc/print.hpp"
 #endif // pMR_WARN_ZERO
-
 
 namespace pMR
 {
@@ -40,132 +39,133 @@ namespace pMR
     template<typename T>
     class Window
     {
-        public:
-            Window(T *buffer, size_type const count);
-            explicit Window(size_type const count);
-            Window(const Window&) = delete;
-            Window(Window&&);
-            Window& operator=(const Window&) = delete;
-            Window& operator=(Window&&) = default;
-            ~Window() = default;
-            //! @brief Direct access specified element of the internal buffer.
-            //! @param index Position of element in internal buffer.
-            //! @return Reference to element at position index.
-            T& operator[](int const index);
-            //! @brief Direct access specified element of the internal buffer.
-            //! @param index Position of element in internal buffer.
-            //! @return Reference to const to element at position index.
-            T const& operator[](int const index) const;
-            //! @brief Direct access specified element of the internal buffer
-            //!     with bounds checking.
-            //! @param index Position of element in internal buffer.
-            //! @return Reference to element at position index.
-            T& at(int const index);
-            //! @brief Direct access specified element of the internal buffer
-            //!     with bounds checking.
-            //! @param index Position of element in internal buffer.
-            //! @return Reference to const to element at position index.
-            T const& at(int const index) const;
-            //! @brief Returns an iterator to the beginning of the internal
-            //!     buffer.
-            //! @return Iterator to the first element of the internal buffer.
-            T* begin();
-            //! @brief Returns an iterator to const to the beginning of the
-            //!     internal buffer.
-            //! @return Iterator to const to the first element of the internal
-            //!     buffer.
-            T const* begin() const;
-            //! @brief Returns an iterator to const to the beginning of the
-            //!     internal buffer.
-            //! @return Iterator to const to the first element of the internal
-            //!     buffer.
-            T const* cbegin() const;
-            //! @brief Returns an Iterator to the end of the internal buffer.
-            //! @return Iterator to the element following the last element of
-            //!     the internal buffer.
-            T* end();
-            //! @brief Returns an Iterator to to const the end of the internal
-            //!     buffer.
-            //! @return Iterator to const to the element following the last
-            //!     element of the internal buffer.
-            T const* end() const;
-            //! @brief Returns an Iterator to const to the end of the internal
-            //!     buffer.
-            //! @return Iterator to const to the element following the last
-            //!     element of the internal buffer.
-            T const* cend() const;
-            //! @brief Returns a reverse iterator to the beginning of the
-            //!     internal buffer.
-            //! @return Reverse Iterator to the first element of the internal
-            //!     buffer.
-            T* rbegin();
-            //! @brief Returns a reverse iterator to const to the beginning of
-            //!     the internal buffer.
-            //! @return Reverse Iterator to const to the first element of the
-            //!     internal buffer.
-            T const* rbegin() const;
-            //! @brief Returns a reverse iterator to const to the beginning of
-            //!     the internal buffer.
-            //! @return Reverse Iterator to const to the first element of the
-            //!     internal buffer.
-            T const* crbegin() const;
-            //! @brief Returns a reverse Iterator to the end of the internal
-            //!     buffer.
-            //! @return Reverse Iterator to the element following the last
-            //!     element of the internal buffer.
-            T* rend();
-            //! @brief Returns a reverse Iterator to to const the end of the
-            //!     internal buffer.
-            //! @return Reverse Iterator to const to the element following the
-            //!     last element of the internal buffer.
-            T const* rend() const;
-            //! @brief Returns a reverse Iterator to const to the end of the
-            //!     internal buffer.
-            //! @return Reverse Iterator to const to the element following the
-            //!     last element of the internal buffer.
-            T const* crend() const;
-            //! @brief Returns the number of elements in the internal buffer.
-            //! @return The number of elements in the internal buffer.
-            size_type size() const;
-            //! @brief Compare current Window with specified input data.
-            //! @details Checks whether the current Window is the same as a
-            //!     Window with the specified buffer and count.
-            //! @param buffer Pointer to contigious send/receive buffer.
-            //! @param count Number of elements of type T in buffer.
-            //! @return true if the Window is the same, false otherwise.
-            bool isSame(T *const buffer, size_type const count);
-            //! @brief Compare current Window with specified input data.
-            //! @details Checks whether the current Window is suitable for the
-            //!     specified count using internal buffering.
-            //! @param count Number of elements of type T in buffer.
-            //! @return true if the Window is suitable, false otherwise.
-            bool isSame(size_type const count);
-        protected:
-            std::vector<T, AlignedAllocator<T>> mVector;
-            T* mBuffer;
-            size_type const mCount;
-            void checkBuffer();
-            void checkBufferPointer();
-            void checkBufferType();
-            void checkBufferSize();
-            void checkBoundaries(size_type const offset, size_type const count);
+    public:
+        Window(T *buffer, size_type const count);
+        explicit Window(size_type const count);
+        Window(Window const &) = delete;
+        Window(Window &&);
+        Window &operator=(Window const &) = delete;
+        Window &operator=(Window &&) = default;
+        ~Window() = default;
+        //! @brief Direct access specified element of the internal buffer.
+        //! @param index Position of element in internal buffer.
+        //! @return Reference to element at position index.
+        T &operator[](int const index);
+        //! @brief Direct access specified element of the internal buffer.
+        //! @param index Position of element in internal buffer.
+        //! @return Reference to const to element at position index.
+        T const &operator[](int const index) const;
+        //! @brief Direct access specified element of the internal buffer
+        //!     with bounds checking.
+        //! @param index Position of element in internal buffer.
+        //! @return Reference to element at position index.
+        T &at(int const index);
+        //! @brief Direct access specified element of the internal buffer
+        //!     with bounds checking.
+        //! @param index Position of element in internal buffer.
+        //! @return Reference to const to element at position index.
+        T const &at(int const index) const;
+        //! @brief Returns an iterator to the beginning of the internal
+        //!     buffer.
+        //! @return Iterator to the first element of the internal buffer.
+        T *begin();
+        //! @brief Returns an iterator to const to the beginning of the
+        //!     internal buffer.
+        //! @return Iterator to const to the first element of the internal
+        //!     buffer.
+        T const *begin() const;
+        //! @brief Returns an iterator to const to the beginning of the
+        //!     internal buffer.
+        //! @return Iterator to const to the first element of the internal
+        //!     buffer.
+        T const *cbegin() const;
+        //! @brief Returns an Iterator to the end of the internal buffer.
+        //! @return Iterator to the element following the last element of
+        //!     the internal buffer.
+        T *end();
+        //! @brief Returns an Iterator to to const the end of the internal
+        //!     buffer.
+        //! @return Iterator to const to the element following the last
+        //!     element of the internal buffer.
+        T const *end() const;
+        //! @brief Returns an Iterator to const to the end of the internal
+        //!     buffer.
+        //! @return Iterator to const to the element following the last
+        //!     element of the internal buffer.
+        T const *cend() const;
+        //! @brief Returns a reverse iterator to the beginning of the
+        //!     internal buffer.
+        //! @return Reverse Iterator to the first element of the internal
+        //!     buffer.
+        T *rbegin();
+        //! @brief Returns a reverse iterator to const to the beginning of
+        //!     the internal buffer.
+        //! @return Reverse Iterator to const to the first element of the
+        //!     internal buffer.
+        T const *rbegin() const;
+        //! @brief Returns a reverse iterator to const to the beginning of
+        //!     the internal buffer.
+        //! @return Reverse Iterator to const to the first element of the
+        //!     internal buffer.
+        T const *crbegin() const;
+        //! @brief Returns a reverse Iterator to the end of the internal
+        //!     buffer.
+        //! @return Reverse Iterator to the element following the last
+        //!     element of the internal buffer.
+        T *rend();
+        //! @brief Returns a reverse Iterator to to const the end of the
+        //!     internal buffer.
+        //! @return Reverse Iterator to const to the element following the
+        //!     last element of the internal buffer.
+        T const *rend() const;
+        //! @brief Returns a reverse Iterator to const to the end of the
+        //!     internal buffer.
+        //! @return Reverse Iterator to const to the element following the
+        //!     last element of the internal buffer.
+        T const *crend() const;
+        //! @brief Returns the number of elements in the internal buffer.
+        //! @return The number of elements in the internal buffer.
+        size_type size() const;
+        //! @brief Compare current Window with specified input data.
+        //! @details Checks whether the current Window is the same as a
+        //!     Window with the specified buffer and count.
+        //! @param buffer Pointer to contigious send/receive buffer.
+        //! @param count Number of elements of type T in buffer.
+        //! @return true if the Window is the same, false otherwise.
+        bool isSame(T *const buffer, size_type const count);
+        //! @brief Compare current Window with specified input data.
+        //! @details Checks whether the current Window is suitable for the
+        //!     specified count using internal buffering.
+        //! @param count Number of elements of type T in buffer.
+        //! @return true if the Window is suitable, false otherwise.
+        bool isSame(size_type const count);
+
+    protected:
+        std::vector<T, AlignedAllocator<T>> mVector;
+        T *mBuffer;
+        size_type const mCount;
+        void checkBuffer();
+        void checkBufferPointer();
+        void checkBufferType();
+        void checkBufferSize();
+        void checkBoundaries(size_type const offset, size_type const count);
 #ifdef pMR_PROFILING
-            std::size_type mSizeByte = 0;
-            std::uint64_t mIterations = 0;
-            double mTimeInit = 0.0;
-            double mTimePost = 0.0;
-            double mTimeWait = 0.0;
-            double mTimeCopy = 0.0;
-            bool mPrintStats = true;
-            template<std::size_t N>
-            void printStats(char const (&type)[N]);
+        std::size_type mSizeByte = 0;
+        std::uint64_t mIterations = 0;
+        double mTimeInit = 0.0;
+        double mTimePost = 0.0;
+        double mTimeWait = 0.0;
+        double mTimeCopy = 0.0;
+        bool mPrintStats = true;
+        template<std::size_t N>
+        void printStats(char const (&type)[N]);
 #endif // pMR_PROFILING
     };
 }
 
 template<typename T>
 pMR::Window<T>::Window(T *buffer, size_type const count)
-    :   mBuffer(buffer), mCount{count}
+    : mBuffer(buffer), mCount{count}
 {
 #ifdef pMR_PROFILING
     mSizeByte = {static_cast<size_type>(count * sizeof(T))};
@@ -175,7 +175,7 @@ pMR::Window<T>::Window(T *buffer, size_type const count)
 
 template<typename T>
 pMR::Window<T>::Window(size_type const count)
-    :   mVector(count), mBuffer(mVector.data()), mCount{count}
+    : mVector(count), mBuffer(mVector.data()), mCount{count}
 {
 #ifdef pMR_PROFILING
     mSizeByte = {static_cast<size_type>(count * sizeof(T))};
@@ -186,115 +186,116 @@ pMR::Window<T>::Window(size_type const count)
 
 template<typename T>
 pMR::Window<T>::Window(Window &&other)
-    :   mVector(std::move(other.mVector)),
-        mBuffer(std::move(other.mBuffer)),
-        mCount(std::move(other.mCount))
+    : mVector(std::move(other.mVector))
+    , mBuffer(std::move(other.mBuffer))
+    , mCount(std::move(other.mCount))
 #ifdef pMR_PROFILING
-        ,mSizeByte(std::move(other.mSizeByte)),
-        mIterations(std::move(other.mIterations)),
-        mTimeInit(std::move(other.mTimeInit)),
-        mTimePost(std::move(other.mTimePost)),
-        mTimeWait(std::move(other.mTimeWait)),
-        mTimeCopy(std::move(other.mTimeCopy))
+    , mSizeByte(std::move(other.mSizeByte))
+    , mIterations(std::move(other.mIterations))
+    , mTimeInit(std::move(other.mTimeInit))
+    , mTimePost(std::move(other.mTimePost))
+    , mTimeWait(std::move(other.mTimeWait))
+    , mTimeCopy(std::move(other.mTimeCopy))
 {
     other.mPrintStats = {false};
 }
 #else
-{ }
+{
+}
 #endif // pMR_PROFILING
 
 template<typename T>
-T& pMR::Window<T>::operator[](int const index)
+T &pMR::Window<T>::operator[](int const index)
 {
     return mVector[index];
 }
 
 template<typename T>
-T const& pMR::Window<T>::operator[](int const index) const
+T const &pMR::Window<T>::operator[](int const index) const
 {
     return mVector[index];
 }
 
 template<typename T>
-T& pMR::Window<T>::at(int const index)
+T &pMR::Window<T>::at(int const index)
 {
     return mVector.at(index);
 }
 
 template<typename T>
-T const& pMR::Window<T>::at(int const index) const
+T const &pMR::Window<T>::at(int const index) const
 {
     return mVector.at(index);
 }
 
 template<typename T>
-T* pMR::Window<T>::begin()
+T *pMR::Window<T>::begin()
 {
     return mVector.begin();
 }
 
 template<typename T>
-T const* pMR::Window<T>::begin() const
+T const *pMR::Window<T>::begin() const
 {
     return mVector.begin();
 }
 
 template<typename T>
-T const* pMR::Window<T>::cbegin() const
+T const *pMR::Window<T>::cbegin() const
 {
     return mVector.cbegin();
 }
 
 template<typename T>
-T* pMR::Window<T>::end()
+T *pMR::Window<T>::end()
 {
     return mVector.end();
 }
 
 template<typename T>
-T const* pMR::Window<T>::end() const
+T const *pMR::Window<T>::end() const
 {
     return mVector.end();
 }
 
 template<typename T>
-T const* pMR::Window<T>::cend() const
+T const *pMR::Window<T>::cend() const
 {
     return mVector.cend();
 }
 
 template<typename T>
-T* pMR::Window<T>::rbegin()
+T *pMR::Window<T>::rbegin()
 {
     return mVector.rbegin();
 }
 
 template<typename T>
-T const* pMR::Window<T>::rbegin() const
+T const *pMR::Window<T>::rbegin() const
 {
     return mVector.rbegin();
 }
 
 template<typename T>
-T const* pMR::Window<T>::crbegin() const
+T const *pMR::Window<T>::crbegin() const
 {
     return mVector.crbegin();
 }
 
 template<typename T>
-T* pMR::Window<T>::rend()
+T *pMR::Window<T>::rend()
 {
     return mVector.rend();
 }
 
 template<typename T>
-T const* pMR::Window<T>::rend() const
+T const *pMR::Window<T>::rend() const
 {
     return mVector.rend();
 }
 
 template<typename T>
-T const* pMR::Window<T>::crend() const
+T const *pMR::Window<T>::crend() const
 {
     return mVector.crend();
 }
@@ -360,8 +361,8 @@ void pMR::Window<T>::checkBufferPointer()
 template<typename T>
 void pMR::Window<T>::checkBufferType()
 {
-    static_assert(std::is_trivial<T>::value,
-            "Window template type is not trivial.");
+    static_assert(
+        std::is_trivial<T>::value, "Window template type is not trivial.");
 }
 
 template<typename T>
@@ -389,8 +390,8 @@ void pMR::Window<T>::checkBufferSize()
 }
 
 template<typename T>
-void pMR::Window<T>::checkBoundaries(size_type const offset,
-        size_type const count)
+void pMR::Window<T>::checkBoundaries(
+    size_type const offset, size_type const count)
 {
     if(offset + count > mVector.size())
     {
@@ -406,14 +407,12 @@ void pMR::Window<T>::printStats(char const (&type)[N])
     if(mPrintStats)
     {
         std::ostringstream oss;
-        oss << "pMR: " << type
-            << " SizeByte " << std::setw(8) << mSizeByte
-            << " Init " << std::scientific << mTimeInit
-            << " Post " << std::scientific << mTimePost
-            << " Wait " << std::scientific << mTimeWait
-            << " Sum " << std::scientific << mTimeInit + mTimePost + mTimeWait
-            << " Copy " << mTimeCopy << " Iterations " << mIterations
-            << std::endl;
+        oss << "pMR: " << type << " SizeByte " << std::setw(8) << mSizeByte
+            << " Init " << std::scientific << mTimeInit << " Post "
+            << std::scientific << mTimePost << " Wait " << std::scientific
+            << mTimeWait << " Sum " << std::scientific
+            << mTimeInit + mTimePost + mTimeWait << " Copy " << mTimeCopy
+            << " Iterations " << mIterations << std::endl;
         std::cout << oss.str();
     }
 }

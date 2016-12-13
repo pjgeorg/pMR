@@ -16,54 +16,56 @@
 #define pMR_PROVIDERS_VERBS_CONNECTION_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
-#include "context.hpp"
-#include "protectiondomain.hpp"
-#include "completionqueue.hpp"
-#include "queuepair.hpp"
+#include "config.hpp"
 #include "connectionaddress.hpp"
+#include "completionqueue.hpp"
+#include "context.hpp"
 #include "memoryaddress.hpp"
 #include "memoryregion.hpp"
+#include "protectiondomain.hpp"
+#include "queuepair.hpp"
 #include "scattergather.hpp"
-#include "config.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class Connection
+    namespace verbs
     {
+        class Connection
+        {
         public:
-            Connection(Target const &target,
-                    Device const &device, std::uint8_t const portNumber = 1);
-            Connection(const Connection&) = delete;
-            Connection(Connection&&) = delete;
-            Connection& operator=(const Connection&) = delete;
-            Connection& operator=(Connection&&) = delete;
+            Connection(Target const &target, Device const &device,
+                std::uint8_t const portNumber = 1);
+            Connection(Connection const &) = delete;
+            Connection(Connection &&) = delete;
+            Connection &operator=(Connection const &) = delete;
+            Connection &operator=(Connection &&) = delete;
             ~Connection() = default;
-            Context& getContext();
-            Context const& getContext() const;
-            ProtectionDomain& getProtectionDomain();
-            ProtectionDomain const& getProtectionDomain() const;
+            Context &getContext();
+            Context const &getContext() const;
+            ProtectionDomain &getProtectionDomain();
+            ProtectionDomain const &getProtectionDomain() const;
 
 #ifdef VERBS_RDMA
-            void setLocalMemoryAddress(MemoryRegion const&);
+            void setLocalMemoryAddress(MemoryRegion const &);
             void postRecvAddressToActive();
             void postSendAddressToPassive();
             void postRecvToPassive();
-            void postWriteToActive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
+            void postWriteToActive(
+                MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
 #else
             void postRecvToActive();
             void postSendToPassive();
             void postRecvToPassive(MemoryRegion const &memoryRegion);
-            void postSendToActive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
+            void postSendToActive(
+                MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
 #endif // VERBS_RDMA
 
             void pollActiveCompletionQueue();
             void pollPassiveCompletionQueue();
+
         private:
             Context mContext;
             ProtectionDomain mProtectionDomain;
@@ -79,13 +81,14 @@ namespace pMR { namespace verbs
             QueuePair mPassiveQueuePair;
 
             void postSendRequest(QueuePair &queuePair,
-                    ScatterGatherElement &scatterGatherElement);
+                ScatterGatherElement &scatterGatherElement);
             void postRecvRequest(QueuePair &queuePair,
-                    ScatterGatherElement &scatterGatherElement);
+                ScatterGatherElement &scatterGatherElement);
 #ifdef VERBS_RDMA
             void postWriteRequest(QueuePair &queuePair,
-                    ScatterGatherElement &scatterGatherElement);
+                ScatterGatherElement &scatterGatherElement);
 #endif // VERBS_RDMA
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_CONNECTION_H

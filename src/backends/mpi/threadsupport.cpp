@@ -14,8 +14,7 @@
 
 #include "threadsupport.hpp"
 #include <stdexcept>
-extern "C"
-{
+extern "C" {
 #include <mpi.h>
 }
 #include "../../misc/singleton.hpp"

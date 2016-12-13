@@ -16,14 +16,17 @@
 #define pMR_PROVIDERS_VERBS_TOPOLOGY_PORTS_H
 
 #include <cstdint>
-#include "../device.hpp"
 #include "../context.hpp"
+#include "../device.hpp"
 #include "../deviceattributes.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    std::uint8_t getPortCount(Device const&);
-    std::uint8_t getPortCount(Context&);
-    std::uint8_t getPortCount(DeviceAttributes const&);
-}}
+    namespace verbs
+    {
+        std::uint8_t getPortCount(Device const &);
+        std::uint8_t getPortCount(Context &);
+        std::uint8_t getPortCount(DeviceAttributes const &);
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_PORTS_H

@@ -27,7 +27,7 @@ void pMR::verbs::MemoryAddress::set(MemoryRegion const &memoryRegion)
 
 std::uint64_t pMR::verbs::MemoryAddress::getAddress() const
 {
-    return {*reinterpret_cast<std::uint64_t const*>(mData.data())};
+    return {*reinterpret_cast<std::uint64_t const *>(mData.data())};
 }
 
 std::uint32_t pMR::verbs::MemoryAddress::getRKey() const
@@ -35,12 +35,12 @@ std::uint32_t pMR::verbs::MemoryAddress::getRKey() const
     return {static_cast<std::uint32_t>(std::get<1>(mData))};
 }
 
-std::uint64_t* pMR::verbs::MemoryAddress::rawData()
+std::uint64_t *pMR::verbs::MemoryAddress::rawData()
 {
     return mData.data();
 }
 
-std::uint64_t const* pMR::verbs::MemoryAddress::rawData() const
+std::uint64_t const *pMR::verbs::MemoryAddress::rawData() const
 {
     return mData.data();
 }

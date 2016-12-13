@@ -15,31 +15,34 @@
 #ifndef pMR_MISC_STRING_H
 #define pMR_MISC_STRING_H
 
-#include <string>
-#include <sstream>
-#include <iomanip>
-#include <vector>
 #include <array>
+#include <iomanip>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace pMR
 {
-    template<typename T, typename ...Types>
-    std::string toString(T const &arg, Types const &...args);
+    template<typename T, typename... Types>
+    std::string toString(T const &arg, Types const &... args);
 
-    template<std::size_t N, typename ...Types>
-    std::string toString(char const (&arg)[N], Types const &...args);
+    template<std::size_t N, typename... Types>
+    std::string toString(char const (&arg)[N], Types const &... args);
 
-    template<typename T, std::size_t N, typename ...Types>
-    std::string toString(std::array<T, N> const &arg, Types const &...args);
+    template<typename T, std::size_t N, typename... Types>
+    std::string toString(std::array<T, N> const &arg, Types const &... args);
 
-    template<typename T, typename ...Types>
-    std::string toString(std::vector<T> const &arg, Types const &...args);
+    template<typename T, typename... Types>
+    std::string toString(std::vector<T> const &arg, Types const &... args);
+
+    template<typename... Types>
+    std::string toString(std::string const &arg, Types const &... args);
 
     std::string toString();
 }
 
-template<typename T, typename ...Types>
-std::string pMR::toString(T const &arg, Types const &...args)
+template<typename T, typename... Types>
+std::string pMR::toString(T const &arg, Types const &... args)
 {
     std::string str;
     std::ostringstream oss;
@@ -50,8 +53,8 @@ std::string pMR::toString(T const &arg, Types const &...args)
     return str;
 }
 
-template<std::size_t N, typename ...Types>
-std::string pMR::toString(char const (&arg)[N], Types const &...args)
+template<std::size_t N, typename... Types>
+std::string pMR::toString(char const (&arg)[N], Types const &... args)
 {
     std::string str;
     str += arg;
@@ -60,8 +63,8 @@ std::string pMR::toString(char const (&arg)[N], Types const &...args)
     return str;
 }
 
-template<typename T, std::size_t N, typename ...Types>
-std::string pMR::toString(std::array<T, N> const &arg, Types const &...args)
+template<typename T, std::size_t N, typename... Types>
+std::string pMR::toString(std::array<T, N> const &arg, Types const &... args)
 {
     std::string str;
     for(auto element : arg)
@@ -72,14 +75,24 @@ std::string pMR::toString(std::array<T, N> const &arg, Types const &...args)
     return str;
 }
 
-template<typename T, typename ...Types>
-std::string pMR::toString(std::vector<T> const &arg, Types const &...args)
+template<typename T, typename... Types>
+std::string pMR::toString(std::vector<T> const &arg, Types const &... args)
 {
     std::string str;
     for(auto element : arg)
     {
         str += toString(element);
     }
+    str += toString(args...);
+    return str;
+}
+
+template<typename... Types>
+std::string pMR::toString(std::string const &arg, Types const &... args)
+{
+    std::string str;
+    str += arg;
+    str += " ";
     str += toString(args...);
     return str;
 }

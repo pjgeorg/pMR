@@ -18,11 +18,10 @@
 #include "../../backends/mpi/threadsupport.hpp"
 #include "../../threads/thread.hpp"
 
-pMR::mpi::Connection::Connection(Target const &target) 
-    :   mCommunicator{target.getMPICommunicator()},
-        mTargetRank{target.getTargetRank()},
-        mSendTag{
-            static_cast<int>(reinterpret_cast<std::uintptr_t>(this))}
+pMR::mpi::Connection::Connection(Target const &target)
+    : mCommunicator{target.getMPICommunicator()}
+    , mTargetRank{target.getTargetRank()}
+    , mSendTag{static_cast<int>(reinterpret_cast<std::uintptr_t>(this))}
 {
     if(backend::threadMultiple())
     {
@@ -32,8 +31,8 @@ pMR::mpi::Connection::Connection(Target const &target)
     {
         if(!backend::threadSerialized() && !thread::isThreaded())
         {
-            throw std::runtime_error("pMR: Require at least "
-                    "MPI_THREAD_SERIALIZED Thread support");
+            throw std::runtime_error(
+                "pMR: Require at least MPI_THREAD_SERIALIZED Thread support");
         }
     }
 

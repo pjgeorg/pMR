@@ -16,12 +16,14 @@
 #include "connection.hpp"
 
 pMR::verbs::SendMemoryWindow::SendMemoryWindow(
-        std::shared_ptr<Connection> const connection,
-        void *buffer, std::uint32_t const sizeByte)
-    :   mConnection(connection),
-        mMemoryRegion(mConnection->getContext(),
-                mConnection->getProtectionDomain(),
-                buffer, {sizeByte}, IBV_ACCESS_LOCAL_WRITE) { }
+    std::shared_ptr<Connection> const connection, void *buffer,
+    std::uint32_t const sizeByte)
+    : mConnection(connection)
+    , mMemoryRegion(mConnection->getContext(),
+          mConnection->getProtectionDomain(), buffer, {sizeByte},
+          IBV_ACCESS_LOCAL_WRITE)
+{
+}
 
 void pMR::verbs::SendMemoryWindow::init()
 {

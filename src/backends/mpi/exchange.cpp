@@ -12,32 +12,28 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../backend.hpp"
 #include <stdexcept>
-extern "C"
-{
+extern "C" {
 #include <mpi.h>
 }
 #include "target.hpp"
-#include "threadsupport.hpp"
 #include "../../threads/thread.hpp"
+#include "../backend.hpp"
+#include "threadsupport.hpp"
 
-void pMR::backend::exchange(Target const &target,
-        void const *sendBuffer, void *recvBuffer, int const sizeByte)
+void pMR::backend::exchange(Target const &target, void const *sendBuffer,
+    void *recvBuffer, int const sizeByte)
 {
     if(threadMultiple() || !thread::isThreaded() || thread::isSerialized())
     {
         if(MPI_Sendrecv(sendBuffer, {sizeByte}, MPI_BYTE,
-                {target.getTargetRank()},
-                {target.getUniqueSendID()},
-                recvBuffer, {sizeByte}, MPI_BYTE,
-                {target.getTargetRank()},
-                {target.getUniqueRecvID()}, 
-                {target.getMPICommunicator()},
-                MPI_STATUS_IGNORE) != MPI_SUCCESS)
+               {target.getTargetRank()}, {target.getUniqueSendID()}, recvBuffer,
+               {sizeByte}, MPI_BYTE, {target.getTargetRank()},
+               {target.getUniqueRecvID()}, {target.getMPICommunicator()},
+               MPI_STATUS_IGNORE) != MPI_SUCCESS)
         {
             throw std::runtime_error(
-                    "pMR: Unable to exchange connection data.");
+                "pMR: Unable to exchange connection data.");
         }
     }
     else
@@ -49,52 +45,50 @@ void pMR::backend::exchange(Target const &target,
             {
                 thread::ScopedLock scopedLock;
                 if(MPI_Irecv(recvBuffer, {sizeByte}, MPI_BYTE,
-                        {target.getTargetRank()},
-                        {target.getUniqueRecvID()},
-                        {target.getMPICommunicator()},
-                        &recvRequest) != MPI_SUCCESS)
+                       {target.getTargetRank()}, {target.getUniqueRecvID()},
+                       {target.getMPICommunicator()},
+                       &recvRequest) != MPI_SUCCESS)
                 {
                     throw std::runtime_error(
-                            "pMR: Unable to exchange connection data");
+                        "pMR: Unable to exchange connection data");
                 }
                 if(MPI_Isend(sendBuffer, {sizeByte}, MPI_BYTE,
-                        {target.getTargetRank()},
-                        {target.getUniqueSendID()},
-                        {target.getMPICommunicator()},
-                        &sendRequest) != MPI_SUCCESS)
+                       {target.getTargetRank()}, {target.getUniqueSendID()},
+                       {target.getMPICommunicator()},
+                       &sendRequest) != MPI_SUCCESS)
                 {
                     throw std::runtime_error(
-                            "pMR: Unable to exchange connection data");
+                        "pMR: Unable to exchange connection data");
                 }
             }
-    
+
             int flag = {static_cast<int>(false)};
             while(!flag)
             {
                 thread::ScopedLock scopedLock;
-                if(MPI_Test(&sendRequest, &flag, MPI_STATUS_IGNORE)
-                        != MPI_SUCCESS)
+                if(MPI_Test(&sendRequest, &flag, MPI_STATUS_IGNORE) !=
+                    MPI_SUCCESS)
                 {
                     throw std::runtime_error(
-                            "pMR: Unable to exchange connection data");
+                        "pMR: Unable to exchange connection data");
                 }
             }
             flag = {static_cast<int>(false)};
             while(!flag)
             {
                 thread::ScopedLock scopedLock;
-                if(MPI_Test(&recvRequest, &flag, MPI_STATUS_IGNORE)
-                        != MPI_SUCCESS)
+                if(MPI_Test(&recvRequest, &flag, MPI_STATUS_IGNORE) !=
+                    MPI_SUCCESS)
                 {
                     throw std::runtime_error(
-                            "pMR: Unable to exchange connection data");
+                        "pMR: Unable to exchange connection data");
                 }
             }
         }
         else
         {
-            throw std::runtime_error("pMR: Require at least "
-                    "MPI_THREAD_SERIALIZED Thread support");
+            throw std::runtime_error(
+                "pMR: Require at least MPI_THREAD_SERIALIZED Thread support");
         }
     }
 }

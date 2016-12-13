@@ -15,98 +15,96 @@
 #include "recvwindow.hpp"
 #include "../../misc/print.hpp"
 
-extern "C"
-{
+extern "C" {
 #include "pmr.h"
 
-    pMR_RecvWindow* pMR_CreateRecvWindow(pMR_Connection *connection,
-            void *buffer, pMR::size_type sizeByte)
+pMR_RecvWindow *pMR_CreateRecvWindow(
+    pMR_Connection *connection, void *buffer, pMR::size_type sizeByte)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR_RecvWindow*>(
-                    new pMR::RecvWindow<unsigned char>(
-                        *reinterpret_cast<pMR::Connection*>(connection),
-                        static_cast<unsigned char*>(buffer), {sizeByte}));
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-            return nullptr;
-        }
+        return reinterpret_cast<pMR_RecvWindow *>(
+            new pMR::RecvWindow<unsigned char>(
+                *reinterpret_cast<pMR::Connection *>(connection),
+                static_cast<unsigned char *>(buffer), {sizeByte}));
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+        return nullptr;
+    }
+}
 
-    void pMR_DestroyRecvWindow(pMR_RecvWindow *recvWindow)
+void pMR_DestroyRecvWindow(pMR_RecvWindow *recvWindow)
+{
+    try
     {
-        try
-        {
-            delete
-                reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow);
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        delete reinterpret_cast<pMR::RecvWindow<unsigned char> *>(recvWindow);
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    int pMR_IsSameRecvWindow(pMR_RecvWindow *recvWindow,
-            void *buffer, pMR::size_type sizeByte)
+int pMR_IsSameRecvWindow(
+    pMR_RecvWindow *recvWindow, void *buffer, pMR::size_type sizeByte)
+{
+    try
     {
-        try
-        {
-            return static_cast<int>(reinterpret_cast
-                    <pMR::RecvWindow<unsigned char>*>(recvWindow)
-                    ->isSame(static_cast<unsigned char*>(buffer), {sizeByte}));
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-            return 0;
-        }
+        return static_cast<int>(
+            reinterpret_cast<pMR::RecvWindow<unsigned char> *>(recvWindow)
+                ->isSame(static_cast<unsigned char *>(buffer), {sizeByte}));
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+        return 0;
+    }
+}
 
-    void pMR_InitRecv(pMR_RecvWindow *recvWindow)
+void pMR_InitRecv(pMR_RecvWindow *recvWindow)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow)
-                ->init();
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::RecvWindow<unsigned char> *>(recvWindow)
+            ->init();
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    void pMR_PostRecv(pMR_RecvWindow *recvWindow)
+void pMR_PostRecv(pMR_RecvWindow *recvWindow)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow)
-                ->post();
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::RecvWindow<unsigned char> *>(recvWindow)
+            ->post();
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 
-    void pMR_WaitRecv(pMR_RecvWindow *recvWindow)
+void pMR_WaitRecv(pMR_RecvWindow *recvWindow)
+{
+    try
     {
-        try
-        {
-            return reinterpret_cast<pMR::RecvWindow<unsigned char>*>(recvWindow)
-                ->wait();
-        }
-        catch(const std::exception &e)
-        {
-            pMR::print(e.what());
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
+        return reinterpret_cast<pMR::RecvWindow<unsigned char> *>(recvWindow)
+            ->wait();
     }
+    catch(std::exception const &e)
+    {
+        pMR::print(e.what());
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
 }

@@ -16,29 +16,31 @@
 #define pMR_PROVIDERS_VERBS_CONNECTIONADDRESS_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "context.hpp"
-#include "queuepair.hpp"
 #include "gid.hpp"
+#include "queuepair.hpp"
 
 namespace pMR
 {
     class Target;
 }
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class QueuePair;
-    class ConnectionAddress
+    namespace verbs
     {
+        class QueuePair;
+
+        class ConnectionAddress
+        {
         public:
             ConnectionAddress() = default;
-            ConnectionAddress(Context&, QueuePair const&,
-                    std::uint8_t const portNumber);
-            ConnectionAddress(ConnectionAddress const&, QueuePair const&);
+            ConnectionAddress(
+                Context &, QueuePair const &, std::uint8_t const portNumber);
+            ConnectionAddress(ConnectionAddress const &, QueuePair const &);
             void setQPN(std::uint32_t const);
             void setLID(std::uint16_t const);
             void setGUID(std::uint64_t const);
@@ -48,16 +50,18 @@ namespace pMR { namespace verbs
             ibv_gid getGID() const;
             std::uint64_t getGUID() const;
             std::uint64_t getSubnetPrefix() const;
+
         private:
             std::uint32_t mQPN;
             GID mGID;
             std::uint16_t mLID;
-    };
+        };
 
-    void exchangeConnectionAddress(Target const &target,
+        void exchangeConnectionAddress(Target const &target,
             ConnectionAddress const &originActiveAddress,
             ConnectionAddress const &originPassiveAddress,
             ConnectionAddress &targetActiveAddress,
             ConnectionAddress &targetPassiveAddress);
-}}
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_CONNECTIONADDRESS_H

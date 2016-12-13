@@ -16,28 +16,34 @@
 #define pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESSHANDLE_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "../../protectiondomain.hpp"
 #include "address.hpp"
 
-namespace pMR { namespace verbs { namespace mad
+namespace pMR
 {
-    class AddressHandle
+    namespace verbs
     {
-        public:
-            AddressHandle(ProtectionDomain&, Address&);
-            AddressHandle(const AddressHandle&) = delete;
-            AddressHandle(AddressHandle&&) = delete;
-            AddressHandle& operator=(const AddressHandle&) = delete;
-            AddressHandle& operator=(AddressHandle&&) = delete;
-            ~AddressHandle();
-            ibv_ah* get();
-            ibv_ah const* get() const;
-        private:
-            ibv_ah *mAddressHandle = nullptr;
-    };
-}}}
+        namespace mad
+        {
+            class AddressHandle
+            {
+            public:
+                AddressHandle(ProtectionDomain &, Address &);
+                AddressHandle(AddressHandle const &) = delete;
+                AddressHandle(AddressHandle &&) = delete;
+                AddressHandle &operator=(AddressHandle const &) = delete;
+                AddressHandle &operator=(AddressHandle &&) = delete;
+                ~AddressHandle();
+                ibv_ah *get();
+                ibv_ah const *get() const;
+
+            private:
+                ibv_ah *mAddressHandle = nullptr;
+            };
+        }
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_TOPOLOGY_MAD_ADDRESSHANDLE_H

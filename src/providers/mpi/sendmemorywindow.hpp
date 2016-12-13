@@ -16,28 +16,30 @@
 #define pMR_PROVIDERS_MPI_SENDMEMORYWINDOW_H
 
 #include <memory>
-extern "C"
-{
+extern "C" {
 #include <mpi.h>
 }
 
-namespace pMR { namespace mpi
+namespace pMR
 {
-    class Connection;
-
-    class SendMemoryWindow
+    namespace mpi
     {
+        class Connection;
+
+        class SendMemoryWindow
+        {
         public:
-            SendMemoryWindow(std::shared_ptr<Connection> const,
-                    void *buffer, int const sizeByte);
-            SendMemoryWindow(const SendMemoryWindow&) = delete;
-            SendMemoryWindow(SendMemoryWindow&&) = delete;
-            SendMemoryWindow& operator=(const SendMemoryWindow&) = delete;
-            SendMemoryWindow& operator=(SendMemoryWindow&&) = delete;
+            SendMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                int const sizeByte);
+            SendMemoryWindow(SendMemoryWindow const &) = delete;
+            SendMemoryWindow(SendMemoryWindow &&) = delete;
+            SendMemoryWindow &operator=(SendMemoryWindow const &) = delete;
+            SendMemoryWindow &operator=(SendMemoryWindow &&) = delete;
             ~SendMemoryWindow();
             void init();
             void post(int const sizeByte);
             void wait();
+
         private:
             std::shared_ptr<Connection> const mConnection;
             void *const mBuffer;
@@ -49,6 +51,7 @@ namespace pMR { namespace mpi
 #endif // MPI_PERSISTENT
             void send(int const sizeByte);
             void freeRequest();
-    };
-}}
+        };
+    }
+}
 #endif // pMR_PROVIDERS_MPI_SENDMEMORYWINDOW_H
