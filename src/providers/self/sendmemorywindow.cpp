@@ -18,7 +18,7 @@
 pMR::self::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
-    : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
+    : mConnection(connection), mBuffer(buffer)
 {
 }
 

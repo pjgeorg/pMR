@@ -41,7 +41,6 @@ namespace pMR
         private:
             std::shared_ptr<Connection> const mConnection;
             void *mBuffer = nullptr;
-            std::size_t const mSizeByte = 0;
         };
     }
 }
