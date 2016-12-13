@@ -32,7 +32,7 @@ namespace pMR
             ProtectionDomain(ProtectionDomain &&) = delete;
             ProtectionDomain &operator=(ProtectionDomain const &) = delete;
             ProtectionDomain &operator=(ProtectionDomain &&) = delete;
-            ~ProtectionDomain() noexcept;
+            ~ProtectionDomain();
             ibv_pd *get();
             ibv_pd const *get() const;
 

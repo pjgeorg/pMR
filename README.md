@@ -50,7 +50,7 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 - <b>OpenMP</b>: Support for OpenMP multi-threaded applications.
 
 ### Optional configurations ###
-- <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KNC). Requires Intel Compiler and Intel MPSS 3.6 (or newer).
+- <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KNC). Requires Intel Compiler and Intel MPSS 3.7 (or newer).
 - <b>-DCAPI=ON</b>: Include optional C API.
 - <b>-DPROFILING=ON</b>: Enable profiling capability. 
 

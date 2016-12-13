@@ -5,6 +5,18 @@ if("$ENV{MPSS_SYSROOTS}" STREQUAL "")
     ERROR("MPSS not found!")
 endif()
 
+if($ENV{MPSS_VERSION} MATCHES "[0-9]+\\.[0-9]+\\.[0-9]+")
+    set(MPSS_VERSION $ENV{MPSS_VERSION})
+else()
+    set(MPSS_VERSION $ENV{MPSS_VERSION}.0)
+endif()
+
+string(REPLACE "." "" MPSS_VERSION ${MPSS_VERSION})
+
+if(${MPSS_VERSION} LESS 370)
+    ERROR("MPSS too old! Require at least Intel MPSS 3.7")
+endif()
+
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR k1om)
 set(CMAKE_SYSTEM_VERSION 1)

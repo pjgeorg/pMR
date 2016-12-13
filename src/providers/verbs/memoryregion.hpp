@@ -34,7 +34,7 @@ namespace pMR
             MemoryRegion(MemoryRegion &&) = delete;
             MemoryRegion &operator=(MemoryRegion const &) = delete;
             MemoryRegion &operator=(MemoryRegion &&) = delete;
-            ~MemoryRegion() noexcept;
+            ~MemoryRegion();
             ibv_mr *get();
             ibv_mr const *get() const;
             std::uint64_t getAddress() const;

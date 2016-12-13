@@ -32,7 +32,7 @@ namespace pMR
             Context(Context &&) = delete;
             Context &operator=(Context const &) = delete;
             Context &operator=(Context &&) = delete;
-            ~Context() noexcept;
+            ~Context();
             ibv_context *get();
             ibv_context const *get() const;
             std::uint64_t getMaxMemoryRegionSize() const;

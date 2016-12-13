@@ -33,7 +33,7 @@ namespace pMR
             CompletionQueue(CompletionQueue &&) = delete;
             CompletionQueue &operator=(CompletionQueue const &) = delete;
             CompletionQueue &operator=(CompletionQueue &&) = delete;
-            ~CompletionQueue() noexcept;
+            ~CompletionQueue();
             ibv_cq *get();
             ibv_cq const *get() const;
             void poll();

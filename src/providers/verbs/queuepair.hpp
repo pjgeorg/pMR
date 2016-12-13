@@ -37,7 +37,7 @@ namespace pMR
             QueuePair(QueuePair &&) = delete;
             QueuePair &operator=(QueuePair const &) = delete;
             QueuePair &operator=(QueuePair &&) = delete;
-            ~QueuePair() noexcept;
+            ~QueuePair();
             ibv_qp *get();
             ibv_qp const *get() const;
             std::uint32_t getQPN() const;
