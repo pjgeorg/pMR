@@ -362,7 +362,7 @@ template<typename T>
 void pMR::Window<T>::checkBufferType()
 {
     static_assert(
-        std::is_trivial<T>::value, "Window template type is not trivial.");
+        std::is_trivial<T>::value, "pMR: Window template type is not trivial.");
 }
 
 template<typename T>
@@ -393,9 +393,21 @@ template<typename T>
 void pMR::Window<T>::checkBoundaries(
     size_type const offset, size_type const count)
 {
-    if(offset + count > mVector.size())
+    if(std::numeric_limits<size_type>::max() >
+        std::numeric_limits<decltype(mVector.size())>::max())
     {
-        throw std::out_of_range("Window buffer");
+        if(offset + count > static_cast<size_type>(mVector.size()))
+        {
+            throw std::out_of_range("pMR: Window buffer");
+        }
+    }
+    else
+    {
+        if(static_cast<decltype(mVector.size())>(offset + count) >
+            mVector.size())
+        {
+            throw std::out_of_range("pMR: Window buffer");
+        }
     }
 }
 
