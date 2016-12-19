@@ -19,6 +19,7 @@
 extern "C" {
 #include <rdma/fi_domain.h>
 }
+#include "counter.hpp"
 #include "domain.hpp"
 
 namespace pMR
@@ -44,6 +45,7 @@ namespace pMR
             std::uint64_t getAddress() const;
             void *getBuffer();
             void *getBuffer() const;
+            void bind(Counter &counter);
 
         private:
             void *mBuffer = nullptr;

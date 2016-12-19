@@ -1,5 +1,6 @@
 list(APPEND OFI_COMMON
     common/completionqueue.cpp
+    common/counter.cpp
     common/domain.cpp
     common/fabric.cpp
     common/hints.cpp

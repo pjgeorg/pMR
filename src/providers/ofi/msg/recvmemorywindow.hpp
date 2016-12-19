@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <memory>
+#include "../common/counter.hpp"
 #include "../common/memoryregion.hpp"
 
 namespace pMR
@@ -42,6 +43,9 @@ namespace pMR
         private:
             std::shared_ptr<Connection> const mConnection;
             MemoryRegion mMemoryRegion;
+#ifdef OFI_RMA_EVENT
+            Counter mCounter;
+#endif // OFI_RMA_EVENT
         };
     }
 }

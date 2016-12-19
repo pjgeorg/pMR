@@ -25,8 +25,16 @@ pMR::ofi::RecvMemoryWindow::RecvMemoryWindow(
 #else
           FI_RECV)
 #endif // OFI_RMA
+
+#ifdef OFI_RMA_EVENT
+    , mCounter(connection->getDomain())
+#endif // OFI_RMA_EVENT
 {
     mConnection->checkMessageSize({sizeByte});
+
+#ifdef OFI_RMA_EVENT
+    mMemoryRegion.bind(mCounter);
+#endif // OFI_RMA_EVENT
 }
 
 void pMR::ofi::RecvMemoryWindow::init()
@@ -50,5 +58,10 @@ void pMR::ofi::RecvMemoryWindow::post()
 void pMR::ofi::RecvMemoryWindow::wait()
 {
     mConnection->pollPassiveCompletionQueue();
+
+#ifdef OFI_RMA_EVENT
+    mCounter.poll();
+#else
     mConnection->pollPassiveCompletionQueue();
+#endif // OFI_RMA_EVENT
 }

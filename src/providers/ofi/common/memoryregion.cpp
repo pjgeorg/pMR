@@ -144,3 +144,11 @@ void *pMR::ofi::MemoryRegion::getBuffer() const
 {
     return mBuffer;
 }
+
+void pMR::ofi::MemoryRegion::bind(Counter &counter)
+{
+    if(fi_mr_bind(mMemoryRegion, &counter.get()->fid, FI_REMOTE_WRITE))
+    {
+        throw std::runtime_error("pMR: Unable to bind counter to MR.");
+    }
+}

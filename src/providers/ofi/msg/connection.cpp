@@ -195,7 +195,10 @@ void pMR::ofi::Connection::postWriteRequest(
     Endpoint *endpoint, RMAMessage &message)
 {
     if(fi_writemsg(endpoint->get(), message.get(),
-           FI_REMOTE_CQ_DATA | checkInjectSize({message.getLength()})))
+#ifndef OFI_RMA_EVENT
+           FI_REMOTE_CQ_DATA |
+#endif // OFI_RMA_EVENT
+               checkInjectSize({message.getLength()})))
     {
         throw std::runtime_error("pMR: Unable to post write request.");
     }

@@ -31,7 +31,7 @@ pMR::ofi::Hints::Hints()
 
 #ifdef OFI_RMA_TARGET_RX
     info->mode |= FI_RX_CQ_DATA;
-#endif // OFI_RMA_CONSUME
+#endif // OFI_RMA_TARGET_RX
 
     info->caps |= FI_MSG | FI_SEND | FI_RECV;
 #ifdef OFI_EP_RDM
@@ -41,6 +41,10 @@ pMR::ofi::Hints::Hints()
 #ifdef OFI_RMA
     info->caps |= FI_RMA | FI_WRITE | FI_REMOTE_WRITE;
 #endif // OFI_RMA
+
+#ifdef OFI_RMA_EVENT
+    info->caps |= FI_RMA_EVENT;
+#endif // OFI_RMA_EVENT
 
 #ifdef OFI_EP_MSG
     info->domain_attr->threading = FI_THREAD_ENDPOINT;
