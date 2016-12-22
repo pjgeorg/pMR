@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_COMMON_RMAMESSAGE_H
-#define pMR_PROVIDERS_OFI_COMMON_RMAMESSAGE_H
+#ifndef pMR_PROVIDERS_OFI_COMMON_RMA_H
+#define pMR_PROVIDERS_OFI_COMMON_RMA_H
 
 #include <cstdint>
 extern "C" {
@@ -26,15 +26,15 @@ namespace pMR
 {
     namespace ofi
     {
-        class RMAMessage
+        class RMA
         {
         public:
-            RMAMessage(MemoryRegion &, MemoryAddress const &remoteMemoryAddress,
+            RMA(MemoryRegion &, MemoryAddress const &remoteMemoryAddress,
                 fi_context *context, fi_addr_t address = 0);
-            RMAMessage(MemoryRegion &, std::size_t const sizeByte,
+            RMA(MemoryRegion &, std::size_t const sizeByte,
                 MemoryAddress const &remoteMemoryAddress, fi_context *context,
                 fi_addr_t address = 0);
-            ~RMAMessage() = default;
+            ~RMA() = default;
             fi_msg_rma *get();
             fi_msg_rma const *get() const;
             std::size_t getLength() const;
@@ -42,8 +42,20 @@ namespace pMR
         private:
             struct iovec mIOV = {};
             struct fi_rma_iov mRMAIOV = {};
-            fi_msg_rma mRMAMessage = {};
+            fi_msg_rma mRMA = {};
         };
+
+        template<typename T>
+        void postWriteRequest(T *endpoint, RMA &, std::uint64_t flags = 0);
     }
 }
-#endif // pMR_PROVIDERS_OFI_COMMON_RMAMESSAGE_H
+
+template<typename T>
+void pMR::ofi::postWriteRequest(T *endpoint, RMA &rma, std::uint64_t flags)
+{
+    if(fi_writemsg(endpoint->get(), rma.get(), flags))
+    {
+        throw std::runtime_error("pMR: Unable to post write request.");
+    }
+}
+#endif // pMR_PROVIDERS_OFI_COMMON_RMA_H

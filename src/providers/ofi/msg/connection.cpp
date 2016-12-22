@@ -14,15 +14,11 @@
 
 #include "connection.hpp"
 #include <stdexcept>
-extern "C" {
-#include <rdma/fi_endpoint.h>
-#include <rdma/fi_rma.h>
-}
 #include "../../backends/backend.hpp"
 #include "../common/message.hpp"
-#include "../common/rmamessage.hpp"
+#include "../common/passiveendpoint.hpp"
+#include "../common/rma.hpp"
 #include "../ofi.hpp"
-#include "passiveendpoint.hpp"
 
 pMR::ofi::Connection::Connection(Target const &target, Info info)
     : mFabric(info)
@@ -33,10 +29,6 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
     , mRecvRemoteAddress(mDomain, mRemoteMemoryAddress.rawData(),
           {mRemoteMemoryAddress.size()}, FI_RECV)
 #endif // OFI_RMA
-    , mActiveCompletionQueue(mDomain, {info.getContextSize()})
-    , mPassiveCompletionQueue(mDomain, {info.getContextSize()})
-    , mMaxSize{info.maxSize()}
-    , mInjectSize{info.injectSize()}
 {
     EventQueue eventQueue(mFabric);
 
@@ -46,13 +38,11 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 
     std::vector<std::uint8_t> localAddress = passiveEndpoint.getAddress();
     std::vector<std::uint8_t> remoteAddress(localAddress.size());
-    pMR::backend::exchange(target, localAddress, remoteAddress);
+    backend::exchange(target, localAddress, remoteAddress);
 
     info.setDestinationAddress(remoteAddress);
 
-    mActiveEndpoint = new Endpoint(mDomain, info);
-    mActiveEndpoint->bind(mActiveCompletionQueue, FI_TRANSMIT | FI_RECV);
-    mActiveEndpoint->bind(eventQueue);
+    mActiveEndpoint = new SoftEndpoint(mDomain, info, eventQueue);
     mActiveEndpoint->enable();
 
 #ifdef OFI_RMA
@@ -63,9 +53,7 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 
     mActiveEndpoint->connect(remoteAddress);
     auto connReq = eventQueue.pollConnectionRequest();
-    mPassiveEndpoint = new Endpoint(mDomain, connReq);
-    mPassiveEndpoint->bind(mPassiveCompletionQueue, FI_TRANSMIT | FI_RECV);
-    mPassiveEndpoint->bind(eventQueue);
+    mPassiveEndpoint = new SoftEndpoint(mDomain, connReq, eventQueue);
     mPassiveEndpoint->accept();
 
     eventQueue.pollConnected();
@@ -84,10 +72,7 @@ pMR::ofi::Domain const &pMR::ofi::Connection::getDomain() const
 
 void pMR::ofi::Connection::checkMessageSize(std::size_t size) const
 {
-    if(size > mMaxSize)
-    {
-        throw std::length_error("pMR: Message size overflow.");
-    }
+    return mDomain.checkMessageSize({size});
 }
 
 #ifdef OFI_RMA
@@ -106,7 +91,8 @@ void pMR::ofi::Connection::postRecvAddressToActive()
 void pMR::ofi::Connection::postSendAddressToPassive()
 {
     Message message(mSendLocalAddress, mPassiveEndpoint->getSendContext());
-    postSendRequest(mPassiveEndpoint, message);
+    postSendRequest(mPassiveEndpoint, message,
+        mDomain.checkInjectSize({message.getLength()}));
 }
 
 void pMR::ofi::Connection::postRecvToPassive()
@@ -118,9 +104,13 @@ void pMR::ofi::Connection::postRecvToPassive()
 void pMR::ofi::Connection::postWriteToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
-    RMAMessage message(memoryRegion, {sizeByte}, mRemoteMemoryAddress,
+    RMA message(memoryRegion, {sizeByte}, mRemoteMemoryAddress,
         mActiveEndpoint->getSendContext());
-    postWriteRequest(mActiveEndpoint, message);
+    postWriteRequest(mActiveEndpoint, message,
+#ifndef OFI_RMA_EVENT
+        FI_REMOTE_CQ_DATA |
+#endif // OFI_RMA_EVENT
+            mDomain.checkInjectSize({sizeByte}));
 }
 
 #else
@@ -133,7 +123,8 @@ void pMR::ofi::Connection::postRecvToActive()
 void pMR::ofi::Connection::postSendToPassive()
 {
     Message message(mPassiveEndpoint->getSendContext());
-    postSendRequest(mPassiveEndpoint, message);
+    postSendRequest(mPassiveEndpoint, message,
+        mDomain.checkInjectSize({message.getLength()}));
 }
 
 void pMR::ofi::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
@@ -147,60 +138,27 @@ void pMR::ofi::Connection::postSendToActive(
 {
     Message message(
         memoryRegion, {sizeByte}, mActiveEndpoint->getSendContext());
-    postSendRequest(mActiveEndpoint, message);
+    postSendRequest(mActiveEndpoint, message,
+        mDomain.checkInjectSize({message.getLength()}));
 }
 #endif // OFI_RMA
 
-void pMR::ofi::Connection::pollActiveCompletionQueue()
+void pMR::ofi::Connection::pollActiveSend()
 {
-    mActiveCompletionQueue.poll();
+    return mActiveEndpoint->pollSend();
 }
 
-void pMR::ofi::Connection::pollPassiveCompletionQueue()
+void pMR::ofi::Connection::pollActiveRecv()
 {
-    mPassiveCompletionQueue.poll();
+    return mActiveEndpoint->pollRecv();
 }
 
-std::uint64_t pMR::ofi::Connection::checkInjectSize(std::size_t size) const
+void pMR::ofi::Connection::pollPassiveSend()
 {
-    if(size <= mInjectSize)
-    {
-        return FI_INJECT;
-    }
-    else
-    {
-        return 0;
-    }
+    return mPassiveEndpoint->pollSend();
 }
 
-void pMR::ofi::Connection::postSendRequest(Endpoint *endpoint, Message &message)
+void pMR::ofi::Connection::pollPassiveRecv()
 {
-    if(fi_sendmsg(endpoint->get(), message.get(),
-           checkInjectSize({message.getLength()})))
-    {
-        throw std::runtime_error("pMR: Unable to post send request.");
-    }
+    return mPassiveEndpoint->pollRecv();
 }
-
-void pMR::ofi::Connection::postRecvRequest(Endpoint *endpoint, Message &message)
-{
-    if(fi_recvmsg(endpoint->get(), message.get(), 0))
-    {
-        throw std::runtime_error("pMR: Unable to post receive request.");
-    }
-}
-
-#ifdef OFI_RMA
-void pMR::ofi::Connection::postWriteRequest(
-    Endpoint *endpoint, RMAMessage &message)
-{
-    if(fi_writemsg(endpoint->get(), message.get(),
-#ifndef OFI_RMA_EVENT
-           FI_REMOTE_CQ_DATA |
-#endif // OFI_RMA_EVENT
-               checkInjectSize({message.getLength()})))
-    {
-        throw std::runtime_error("pMR: Unable to post write request.");
-    }
-}
-#endif // OFI_RMA

@@ -57,11 +57,11 @@ void pMR::ofi::RecvMemoryWindow::post()
 
 void pMR::ofi::RecvMemoryWindow::wait()
 {
-    mConnection->pollPassiveCompletionQueue();
+    mConnection->pollPassiveSend();
 
 #ifdef OFI_RMA_EVENT
     mCounter.poll();
 #else
-    mConnection->pollPassiveCompletionQueue();
+    mConnection->pollPassiveRecv();
 #endif // OFI_RMA_EVENT
 }

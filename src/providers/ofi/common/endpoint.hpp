@@ -12,18 +12,19 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_MSG_ENDPOINT_H
-#define pMR_PROVIDERS_OFI_MSG_ENDPOINT_H
+#ifndef pMR_PROVIDERS_OFI_COMMON_ENDPOINT_H
+#define pMR_PROVIDERS_OFI_COMMON_ENDPOINT_H
 
 #include <cstdint>
 #include <vector>
 extern "C" {
 #include <rdma/fabric.h>
 }
-#include "../common/completionqueue.hpp"
-#include "../common/domain.hpp"
-#include "../common/info.hpp"
+#include "addressvector.hpp"
+#include "completionqueue.hpp"
+#include "domain.hpp"
 #include "eventqueue.hpp"
+#include "info.hpp"
 
 namespace pMR
 {
@@ -40,6 +41,7 @@ namespace pMR
             ~Endpoint();
             fid_ep *get();
             fid_ep const *get() const;
+            void bind(AddressVector &av);
             void bind(CompletionQueue &queue, std::uint64_t flags);
             void bind(EventQueue &queue);
             void enable();
@@ -48,15 +50,11 @@ namespace pMR
             std::vector<std::uint8_t> getAddress() const;
             std::vector<std::uint8_t> getPeerAddress() const;
             void setAddress(std::vector<std::uint8_t> address);
-            fi_context *getSendContext();
-            fi_context *getRecvContext();
 
         private:
             fid_ep *mEndpoint = nullptr;
             fi_context mContext = {};
-            fi_context mSendContext = {};
-            fi_context mRecvContext = {};
         };
     }
 }
-#endif // pMR_PROVIDERS_OFI_MSG_ENDPOINT_H
+#endif // pMR_PROVIDERS_OFI_COMMON_ENDPOINT_H

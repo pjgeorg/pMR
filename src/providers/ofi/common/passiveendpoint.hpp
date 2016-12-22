@@ -12,16 +12,16 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_MSG_PASSIVEENDPOINT_H
-#define pMR_PROVIDERS_OFI_MSG_PASSIVEENDPOINT_H
+#ifndef pMR_PROVIDERS_OFI_COMMON_PASSIVEENDPOINT_H
+#define pMR_PROVIDERS_OFI_COMMON_PASSIVEENDPOINT_H
 
 #include <cstdint>
 #include <vector>
 extern "C" {
 #include <rdma/fabric.h>
 }
-#include "../common/fabric.hpp"
-#include "../common/info.hpp"
+#include "fabric.hpp"
+#include "info.hpp"
 #include "eventqueue.hpp"
 
 namespace pMR
@@ -49,4 +49,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_OFI_MSG_PASSIVEENDPOINT_H
+#endif // pMR_PROVIDERS_OFI_COMMON_PASSIVEENDPOINT_H

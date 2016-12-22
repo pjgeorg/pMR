@@ -16,22 +16,16 @@
 #define pMR_PROVIDERS_OFI_MSG_CONNECTION_H
 
 #include "config.hpp"
-#include "../common/completionqueue.hpp"
 #include "../common/domain.hpp"
 #include "../common/fabric.hpp"
 #include "../common/memoryaddress.hpp"
 #include "../common/memoryregion.hpp"
-#include "../common/message.hpp"
-#include "../common/rmamessage.hpp"
-#include "endpoint.hpp"
+#include "softendpoint.hpp"
 
 namespace pMR
 {
     class Target;
-}
 
-namespace pMR
-{
     namespace ofi
     {
         class Connection
@@ -43,6 +37,7 @@ namespace pMR
             Connection &operator=(Connection const &) = delete;
             Connection &operator=(Connection &&) = delete;
             ~Connection() = default;
+
             Domain &getDomain();
             Domain const &getDomain() const;
             void checkMessageSize(std::size_t const size) const;
@@ -62,30 +57,21 @@ namespace pMR
                 MemoryRegion &memoryRegion, std::size_t const sizeByte);
 #endif // OFI_RMA
 
-            void pollActiveCompletionQueue();
-            void pollPassiveCompletionQueue();
+            void pollActiveSend();
+            void pollActiveRecv();
+            void pollPassiveSend();
+            void pollPassiveRecv();
 
         private:
             Fabric mFabric;
             Domain mDomain;
+            SoftEndpoint *mActiveEndpoint = nullptr;
+            SoftEndpoint *mPassiveEndpoint = nullptr;
 #ifdef OFI_RMA
             alignas(alignment) MemoryAddress mLocalMemoryAddress;
             alignas(alignment) MemoryAddress mRemoteMemoryAddress;
             MemoryRegion mSendLocalAddress;
             MemoryRegion mRecvRemoteAddress;
-#endif // OFI_RMA
-            CompletionQueue mActiveCompletionQueue;
-            CompletionQueue mPassiveCompletionQueue;
-            Endpoint *mActiveEndpoint;
-            Endpoint *mPassiveEndpoint;
-            std::size_t mMaxSize = 0;
-            std::size_t mInjectSize = 0;
-            std::uint64_t checkInjectSize(std::size_t size) const;
-
-            void postSendRequest(Endpoint *endpoint, Message &message);
-            void postRecvRequest(Endpoint *endpoint, Message &message);
-#ifdef OFI_RMA
-            void postWriteRequest(Endpoint *endpoint, RMAMessage &message);
 #endif // OFI_RMA
         };
     }

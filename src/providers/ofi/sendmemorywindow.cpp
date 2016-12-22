@@ -31,16 +31,17 @@ pMR::ofi::SendMemoryWindow::SendMemoryWindow(
 
 void pMR::ofi::SendMemoryWindow::init()
 {
+}
+
+void pMR::ofi::SendMemoryWindow::post(std::size_t const sizeByte)
+{
+    mConnection->pollActiveRecv();
+
 #ifdef OFI_RMA
     mConnection->postRecvAddressToActive();
 #else
     mConnection->postRecvToActive();
 #endif // OFI_RMA
-}
-
-void pMR::ofi::SendMemoryWindow::post(std::size_t const sizeByte)
-{
-    mConnection->pollActiveCompletionQueue();
 
 #ifdef OFI_RMA
     mConnection->postWriteToActive(mMemoryRegion, {sizeByte});
@@ -51,5 +52,5 @@ void pMR::ofi::SendMemoryWindow::post(std::size_t const sizeByte)
 
 void pMR::ofi::SendMemoryWindow::wait()
 {
-    mConnection->pollActiveCompletionQueue();
+    mConnection->pollActiveSend();
 }

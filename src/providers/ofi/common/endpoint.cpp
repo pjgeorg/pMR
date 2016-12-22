@@ -46,6 +46,14 @@ fid_ep const *pMR::ofi::Endpoint::get() const
     return mEndpoint;
 }
 
+void pMR::ofi::Endpoint::bind(AddressVector &av)
+{
+    if(fi_ep_bind(mEndpoint, &av.get()->fid, 0))
+    {
+        throw std::runtime_error("pMR: Unable to bind AV to endpoint.");
+    }
+}
+
 void pMR::ofi::Endpoint::bind(CompletionQueue &queue, std::uint64_t flags)
 {
     if(fi_ep_bind(mEndpoint, &queue.get()->fid, {flags}))
@@ -132,14 +140,4 @@ void pMR::ofi::Endpoint::setAddress(std::vector<std::uint8_t> address)
     {
         throw std::runtime_error("pMR: Unable to set address.");
     }
-}
-
-fi_context *pMR::ofi::Endpoint::getSendContext()
-{
-    return &mSendContext;
-}
-
-fi_context *pMR::ofi::Endpoint::getRecvContext()
-{
-    return &mRecvContext;
 }

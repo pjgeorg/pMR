@@ -51,20 +51,15 @@ fid_cq const *pMR::ofi::CompletionQueue::get() const
     return mCompletionQueue;
 }
 
-void pMR::ofi::CompletionQueue::poll(int count)
+std::uintptr_t pMR::ofi::CompletionQueue::poll()
 {
     fi_cq_entry entry;
 
-    while(count > 0)
+    if(fi_cq_sread(mCompletionQueue, &entry, 1, NULL, -1) != 1)
     {
-        if(fi_cq_sread(mCompletionQueue, &entry, 1, NULL, -1) != 1)
-        {
-            throw std::runtime_error(
-                "pMR: Unable to retrieve Completion queue event.");
-        }
-        else
-        {
-            --count;
-        }
+        throw std::runtime_error(
+            "pMR: Unable to retrieve Completion queue event.");
     }
+
+    return {reinterpret_cast<std::uintptr_t>(entry.op_context)};
 }

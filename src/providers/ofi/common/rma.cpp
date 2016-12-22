@@ -12,19 +12,19 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "rmamessage.hpp"
+#include "rma.hpp"
 
-pMR::ofi::RMAMessage::RMAMessage(MemoryRegion &memoryRegion,
+pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion,
     MemoryAddress const &remoteMemoryAddress, fi_context *context,
     fi_addr_t address)
-    : RMAMessage(memoryRegion, memoryRegion.getLength(), remoteMemoryAddress,
-          context, address)
+    : RMA(memoryRegion, memoryRegion.getLength(), remoteMemoryAddress, context,
+          address)
 {
 }
 
-pMR::ofi::RMAMessage::RMAMessage(MemoryRegion &memoryRegion,
-    std::size_t const sizeByte, MemoryAddress const &remoteMemoryAddress,
-    fi_context *context, fi_addr_t address)
+pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
+    MemoryAddress const &remoteMemoryAddress, fi_context *context,
+    fi_addr_t address)
 {
     mIOV.iov_base = memoryRegion.getBuffer();
     mIOV.iov_len = {sizeByte};
@@ -37,26 +37,26 @@ pMR::ofi::RMAMessage::RMAMessage(MemoryRegion &memoryRegion,
     mRMAIOV.addr = {remoteMemoryAddress.getAddress()};
 #endif // OFI_MR_SCALABLE
 
-    mRMAMessage.msg_iov = &mIOV;
-    mRMAMessage.desc = {memoryRegion.getDescriptor()};
-    mRMAMessage.iov_count = 1;
-    mRMAMessage.rma_iov = &mRMAIOV;
-    mRMAMessage.rma_iov_count = 1;
-    mRMAMessage.addr = address;
-    mRMAMessage.context = context;
+    mRMA.msg_iov = &mIOV;
+    mRMA.desc = {memoryRegion.getDescriptor()};
+    mRMA.iov_count = 1;
+    mRMA.rma_iov = &mRMAIOV;
+    mRMA.rma_iov_count = 1;
+    mRMA.addr = address;
+    mRMA.context = context;
 }
 
-fi_msg_rma *pMR::ofi::RMAMessage::get()
+fi_msg_rma *pMR::ofi::RMA::get()
 {
-    return &mRMAMessage;
+    return &mRMA;
 }
 
-fi_msg_rma const *pMR::ofi::RMAMessage::get() const
+fi_msg_rma const *pMR::ofi::RMA::get() const
 {
-    return &mRMAMessage;
+    return &mRMA;
 }
 
-std::size_t pMR::ofi::RMAMessage::getLength() const
+std::size_t pMR::ofi::RMA::getLength() const
 {
     return {mIOV.iov_len};
 }

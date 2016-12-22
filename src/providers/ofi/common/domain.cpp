@@ -19,6 +19,7 @@ extern "C" {
 }
 
 pMR::ofi::Domain::Domain(Fabric &fabric, Info &info)
+    : mMaxSize{info.maxSize()}, mInjectSize{info.injectSize()}
 {
     if(fi_domain(fabric.get(), info.get(), &mDomain, &mContext))
     {
@@ -42,4 +43,24 @@ fid_domain *pMR::ofi::Domain::get()
 fid_domain const *pMR::ofi::Domain::get() const
 {
     return mDomain;
+}
+
+void pMR::ofi::Domain::checkMessageSize(std::size_t size) const
+{
+    if(size > mMaxSize)
+    {
+        throw std::length_error("pMR: Message size overflow.");
+    }
+}
+
+std::uint64_t pMR::ofi::Domain::checkInjectSize(std::size_t size) const
+{
+    if(size <= mInjectSize)
+    {
+        return FI_INJECT;
+    }
+    else
+    {
+        return 0;
+    }
 }

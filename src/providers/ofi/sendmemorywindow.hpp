@@ -15,12 +15,34 @@
 #ifndef pMR_PROVIDERS_OFI_SENDMEMORYWINDOW_H
 #define pMR_PROVIDERS_OFI_SENDMEMORYWINDOW_H
 
-#ifdef OFI_EP_MSG
-#include "msg/sendmemorywindow.hpp"
-#elif defined OFI_EP_RDM
-#include "rdm/sendmemorywindow.hpp"
-#else
-#error "Unknown endpoint."
-#endif // OFI_EP
+#include <cstdint>
+#include <memory>
+#include "common/memoryregion.hpp"
 
+namespace pMR
+{
+    namespace ofi
+    {
+        class Connection;
+
+        class SendMemoryWindow
+        {
+        public:
+            SendMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                std::size_t const sizeByte);
+            SendMemoryWindow(SendMemoryWindow const &) = delete;
+            SendMemoryWindow(SendMemoryWindow &&) = delete;
+            SendMemoryWindow &operator=(SendMemoryWindow const &) = delete;
+            SendMemoryWindow &operator=(SendMemoryWindow &&) = delete;
+            ~SendMemoryWindow() = default;
+            void init();
+            void post(std::size_t const sizeByte);
+            void wait();
+
+        private:
+            std::shared_ptr<Connection> const mConnection;
+            MemoryRegion mMemoryRegion;
+        };
+    }
+}
 #endif // pMR_PROVIDERS_OFI_SENDMEMORYWINDOW_H

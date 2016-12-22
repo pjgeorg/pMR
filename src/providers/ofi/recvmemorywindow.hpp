@@ -15,12 +15,38 @@
 #ifndef pMR_PROVIDERS_OFI_RECVMEMORYWINDOW_H
 #define pMR_PROVIDERS_OFI_RECVMEMORYWINDOW_H
 
-#ifdef OFI_EP_MSG
-#include "msg/recvmemorywindow.hpp"
-#elif defined OFI_EP_RDM
-#include "rdm/recvmemorywindow.hpp"
-#else
-#error "Unknown endpoint."
-#endif // OFI_EP
+#include <cstdint>
+#include <memory>
+#include "common/counter.hpp"
+#include "common/memoryregion.hpp"
 
+namespace pMR
+{
+    namespace ofi
+    {
+        class Connection;
+
+        class RecvMemoryWindow
+        {
+        public:
+            RecvMemoryWindow(std::shared_ptr<Connection> const, void *buffer,
+                std::size_t const sizeByte);
+            RecvMemoryWindow(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow(RecvMemoryWindow &&) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow const &) = delete;
+            RecvMemoryWindow &operator=(RecvMemoryWindow &&) = delete;
+            ~RecvMemoryWindow() = default;
+            void init();
+            void post();
+            void wait();
+
+        private:
+            std::shared_ptr<Connection> const mConnection;
+            MemoryRegion mMemoryRegion;
+#ifdef OFI_RMA_EVENT
+            Counter mCounter;
+#endif // OFI_RMA_EVENT
+        };
+    }
+}
 #endif // pMR_PROVIDERS_OFI_RECVMEMORYWINDOW_H

@@ -33,9 +33,12 @@ pMR::ofi::Hints::Hints()
     info->mode |= FI_RX_CQ_DATA;
 #endif // OFI_RMA_TARGET_RX
 
-    info->caps |= FI_MSG | FI_SEND | FI_RECV;
+    info->caps |= FI_SEND | FI_RECV;
+#ifdef OFI_EP_MSG
+    info->caps |= FI_MSG;
+#endif // OFI_EP_MSG
 #ifdef OFI_EP_RDM
-    info->caps |= FI_DIRECTED_RECV;
+    info->caps |= FI_TAGGED | FI_DIRECTED_RECV;
 #endif // OFI_EP_RDM
 
 #ifdef OFI_RMA

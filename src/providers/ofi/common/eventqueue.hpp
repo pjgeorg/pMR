@@ -12,15 +12,15 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_MSG_EVENTQUEUE_H
-#define pMR_PROVIDERS_OFI_MSG_EVENTQUEUE_H
+#ifndef pMR_PROVIDERS_OFI_COMMON_EVENTQUEUE_H
+#define pMR_PROVIDERS_OFI_COMMON_EVENTQUEUE_H
 
 extern "C" {
 #include <rdma/fabric.h>
 #include <rdma/fi_eq.h>
 }
-#include "../common/fabric.hpp"
-#include "../common/info.hpp"
+#include "fabric.hpp"
+#include "info.hpp"
 
 namespace pMR
 {
@@ -47,4 +47,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_OFI_MSG_EVENTQUEUE_H
+#endif // pMR_PROVIDERS_OFI_COMMON_EVENTQUEUE_H

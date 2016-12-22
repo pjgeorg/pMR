@@ -12,13 +12,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_COMMON_MESSAGE_H
-#define pMR_PROVIDERS_OFI_COMMON_MESSAGE_H
+#ifndef pMR_PROVIDERS_OFI_COMMON_TAGGED_H
+#define pMR_PROVIDERS_OFI_COMMON_TAGGED_H
 
 #include <cstdint>
 #include <stdexcept>
 extern "C" {
-#include <rdma/fi_endpoint.h>
+#include <rdma/fi_tagged.h>
 }
 #include "memoryregion.hpp"
 
@@ -26,48 +26,48 @@ namespace pMR
 {
     namespace ofi
     {
-        class Message
+        class Tagged
         {
         public:
-            explicit Message(fi_context *context, fi_addr_t address = 0);
-            Message(MemoryRegion &, fi_context *context, fi_addr_t address = 0);
-            Message(MemoryRegion &, std::size_t const sizeByte,
-                fi_context *context, fi_addr_t address = 0);
-            ~Message() = default;
-            fi_msg *get();
-            fi_msg const *get() const;
+            explicit Tagged(
+                fi_context *context, std::uint64_t tag, fi_addr_t address = 0);
+            Tagged(MemoryRegion &, fi_context *context, std::uint64_t tag,
+                fi_addr_t address = 0);
+            Tagged(MemoryRegion &, std::size_t const sizeByte,
+                fi_context *context, std::uint64_t tag, fi_addr_t address = 0);
+            ~Tagged() = default;
+            fi_msg_tagged *get();
+            fi_msg_tagged const *get() const;
             std::size_t getLength() const;
 
         private:
             struct iovec mIOV = {};
-            fi_msg mMessage = {};
+            fi_msg_tagged mTagged = {};
         };
 
         template<typename T>
-        void postSendRequest(T *endpoint, Message &, std::uint64_t flags = 0);
+        void postSendRequest(T *endpoint, Tagged &, std::uint64_t flags = 0);
 
         template<typename T>
-        void postRecvRequest(T *endpoint, Message &, std::uint64_t flags = 0);
+        void postRecvRequest(T *endpoint, Tagged &, std::uint64_t flags = 0);
     }
 }
 
 template<typename T>
-void pMR::ofi::postSendRequest(
-    T *endpoint, Message &message, std::uint64_t flags)
+void pMR::ofi::postSendRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
 {
-    if(fi_sendmsg(endpoint->get(), message.get(), flags))
+    if(fi_tsendmsg(endpoint->get(), tagged.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post send request.");
     }
 }
 
 template<typename T>
-void pMR::ofi::postRecvRequest(
-    T *endpoint, Message &message, std::uint64_t flags)
+void pMR::ofi::postRecvRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
 {
-    if(fi_recvmsg(endpoint->get(), message.get(), flags))
+    if(fi_trecvmsg(endpoint->get(), tagged.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post receive request.");
     }
 }
-#endif // pMR_PROVIDERS_OFI_COMMON_MESSAGE_H
+#endif // pMR_PROVIDERS_OFI_COMMON_TAGGED_H

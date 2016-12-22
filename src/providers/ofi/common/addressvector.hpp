@@ -12,10 +12,11 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_COMMON_COMPLETIONQUEUE_H
-#define pMR_PROVIDERS_OFI_COMMON_COMPLETIONQUEUE_H
+#ifndef pMR_PROVIDERS_OFI_COMMON_ADDRESSVECTOR_H
+#define pMR_PROVIDERS_OFI_COMMON_ADDRESSVECTOR_H
 
 #include <cstdint>
+#include <vector>
 extern "C" {
 #include <rdma/fabric.h>
 }
@@ -25,23 +26,25 @@ namespace pMR
 {
     namespace ofi
     {
-        class CompletionQueue
+        class AddressVector
         {
         public:
-            CompletionQueue(Domain &domain, std::size_t size);
-            CompletionQueue(CompletionQueue const &) = delete;
-            CompletionQueue(CompletionQueue &&) = delete;
-            CompletionQueue &operator=(CompletionQueue const &) = delete;
-            CompletionQueue &operator=(CompletionQueue &&) = delete;
-            ~CompletionQueue();
-            fid_cq *get();
-            fid_cq const *get() const;
-            std::uintptr_t poll();
+            AddressVector(Domain &domain);
+            AddressVector(AddressVector const &) = delete;
+            AddressVector(AddressVector &&) = delete;
+            AddressVector &operator=(AddressVector const &) = delete;
+            AddressVector &operator=(AddressVector &&) = delete;
+            ~AddressVector();
+            fid_av *get();
+            fid_av const *get() const;
+            fi_addr_t add(std::vector<std::uint8_t> const &addr);
+            std::string addressString(
+                std::vector<std::uint8_t> const &addr) const;
 
         private:
-            fid_cq *mCompletionQueue = nullptr;
+            fid_av *mAddressVector = nullptr;
             fi_context mContext = {};
         };
     }
 }
-#endif // pMR_PROVIDERS_OFI_COMMON_COMPLETIONQUEUE_H
+#endif // pMR_PROVIDERS_OFI_COMMON_ADDRESSVECTOR_H
