@@ -20,9 +20,9 @@
 extern "C" {
 #include <rdma/fabric.h>
 }
+#include "eventqueue.hpp"
 #include "fabric.hpp"
 #include "info.hpp"
-#include "eventqueue.hpp"
 
 namespace pMR
 {

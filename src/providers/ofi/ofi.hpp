@@ -24,6 +24,8 @@ namespace pMR
         constexpr int OFIVersionMajor = 1;
         constexpr int OFIVersionMinor = 3;
         constexpr std::size_t OFIEventQueueSize = 2;
+        constexpr std::size_t OFIAVCount = 16;
+        constexpr std::size_t OFIReserveSizeCompletion = 128;
     }
 }
 #endif // pMR_PROVIDERS_OFI_OFI_H

@@ -21,6 +21,11 @@ list(APPEND OFI_MSG
     msg/connection.cpp
     msg/softendpoint.cpp)
 
+list(APPEND OFI_RDM
+    rdm/connection.cpp
+    rdm/globalendpoint.cpp
+    rdm/softendpoint.cpp)
+
 if(OFI.EP STREQUAL "MSG")
     add_library(PROVIDER_OFI OBJECT ${OFI_COMMON} ${OFI_MSG})
 elseif(OFI.EP STREQUAL "RDM")
