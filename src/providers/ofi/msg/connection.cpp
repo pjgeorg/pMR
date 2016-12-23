@@ -42,7 +42,8 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 
     info.setDestinationAddress(remoteAddress);
 
-    mActiveEndpoint = new SoftEndpoint(mDomain, info, eventQueue);
+    mActiveEndpoint = std::unique_ptr<SoftEndpoint>(
+        new SoftEndpoint(mDomain, info, eventQueue));
     mActiveEndpoint->enable();
 
 #ifdef OFI_RMA
@@ -53,7 +54,9 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 
     mActiveEndpoint->connect(remoteAddress);
     auto connReq = eventQueue.pollConnectionRequest();
-    mPassiveEndpoint = new SoftEndpoint(mDomain, connReq, eventQueue);
+
+    mPassiveEndpoint = std::unique_ptr<SoftEndpoint>(
+        new SoftEndpoint(mDomain, connReq, eventQueue));
     mPassiveEndpoint->accept();
 
     eventQueue.pollConnected();

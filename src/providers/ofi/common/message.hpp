@@ -44,18 +44,18 @@ namespace pMR
         };
 
         template<typename T>
-        void postSendRequest(T *endpoint, Message &, std::uint64_t flags = 0);
+        void postSendRequest(T &pEndpoint, Message &, std::uint64_t flags = 0);
 
         template<typename T>
-        void postRecvRequest(T *endpoint, Message &, std::uint64_t flags = 0);
+        void postRecvRequest(T &pEndpoint, Message &, std::uint64_t flags = 0);
     }
 }
 
 template<typename T>
 void pMR::ofi::postSendRequest(
-    T *endpoint, Message &message, std::uint64_t flags)
+    T &pEndpoint, Message &message, std::uint64_t flags)
 {
-    if(fi_sendmsg(endpoint->get(), message.get(), flags))
+    if(fi_sendmsg(pEndpoint->get(), message.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post send request.");
     }
@@ -63,9 +63,9 @@ void pMR::ofi::postSendRequest(
 
 template<typename T>
 void pMR::ofi::postRecvRequest(
-    T *endpoint, Message &message, std::uint64_t flags)
+    T &pEndpoint, Message &message, std::uint64_t flags)
 {
-    if(fi_recvmsg(endpoint->get(), message.get(), flags))
+    if(fi_recvmsg(pEndpoint->get(), message.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post receive request.");
     }

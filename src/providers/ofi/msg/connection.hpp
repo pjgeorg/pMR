@@ -15,6 +15,8 @@
 #ifndef pMR_PROVIDERS_OFI_MSG_CONNECTION_H
 #define pMR_PROVIDERS_OFI_MSG_CONNECTION_H
 
+#include <cstdint>
+#include <memory>
 #include "config.hpp"
 #include "../common/domain.hpp"
 #include "../common/fabric.hpp"
@@ -65,8 +67,8 @@ namespace pMR
         private:
             Fabric mFabric;
             Domain mDomain;
-            SoftEndpoint *mActiveEndpoint = nullptr;
-            SoftEndpoint *mPassiveEndpoint = nullptr;
+            std::unique_ptr<SoftEndpoint> mActiveEndpoint;
+            std::unique_ptr<SoftEndpoint> mPassiveEndpoint;
 #ifdef OFI_RMA
             alignas(alignment) MemoryAddress mLocalMemoryAddress;
             alignas(alignment) MemoryAddress mRemoteMemoryAddress;
