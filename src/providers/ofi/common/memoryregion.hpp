@@ -29,8 +29,8 @@ namespace pMR
         class MemoryRegion
         {
         public:
-            MemoryRegion(Domain &domain, void *buffer, std::size_t length,
-                std::uint64_t access);
+            MemoryRegion(Domain &domain, void *const buffer, std::size_t length,
+                std::uint64_t const access);
             MemoryRegion(MemoryRegion const &) = delete;
             MemoryRegion(MemoryRegion &&) = delete;
             MemoryRegion &operator=(MemoryRegion const &) = delete;

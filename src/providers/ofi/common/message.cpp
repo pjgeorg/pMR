@@ -35,12 +35,19 @@ pMR::ofi::Message::Message(
 pMR::ofi::Message::Message(MemoryRegion &memoryRegion,
     std::size_t const sizeByte, fi_context *context, fi_addr_t address)
 {
-    mIOV.iov_base = memoryRegion.getBuffer();
-    mIOV.iov_len = {sizeByte};
+    if(sizeByte == 0)
+    {
+        mMessage.iov_count = 0;
+    }
+    else
+    {
+        mMessage.iov_count = 1;
+        mIOV.iov_base = memoryRegion.getBuffer();
+        mIOV.iov_len = {sizeByte};
+    }
 
     mMessage.msg_iov = &mIOV;
     mMessage.desc = memoryRegion.getDescriptor();
-    mMessage.iov_count = 1;
     mMessage.addr = address;
     mMessage.context = context;
 }

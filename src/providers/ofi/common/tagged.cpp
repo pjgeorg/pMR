@@ -38,12 +38,19 @@ pMR::ofi::Tagged::Tagged(MemoryRegion &memoryRegion, fi_context *context,
 pMR::ofi::Tagged::Tagged(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     fi_context *context, std::uint64_t tag, fi_addr_t address)
 {
-    mIOV.iov_base = memoryRegion.getBuffer();
-    mIOV.iov_len = {sizeByte};
+    if(sizeByte == 0)
+    {
+        mTagged.iov_count = 0;
+    }
+    else
+    {
+        mTagged.iov_count = 1;
+        mIOV.iov_base = memoryRegion.getBuffer();
+        mIOV.iov_len = {sizeByte};
+    }
 
     mTagged.msg_iov = &mIOV;
     mTagged.desc = memoryRegion.getDescriptor();
-    mTagged.iov_count = 1;
     mTagged.addr = address;
     mTagged.tag = tag;
     mTagged.ignore = 0;

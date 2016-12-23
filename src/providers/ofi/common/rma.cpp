@@ -26,11 +26,34 @@ pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     MemoryAddress const &remoteMemoryAddress, fi_context *context,
     fi_addr_t address)
 {
-    mIOV.iov_base = memoryRegion.getBuffer();
-    mIOV.iov_len = {sizeByte};
+    if(sizeByte == 0)
+    {
+        mRMA.iov_count = 0;
+    }
+    else
+    {
+        mRMA.iov_count = 1;
+        mIOV.iov_base = memoryRegion.getBuffer();
+        mIOV.iov_len = {sizeByte};
+    }
 
-    mRMAIOV.len = {remoteMemoryAddress.getLength()};
-    mRMAIOV.key = {remoteMemoryAddress.getKey()};
+    if(remoteMemoryAddress.getLength() == 0)
+    {
+#ifdef OFI_RMA_EVENT_NONZERO
+        mRMA.rma_iov_count = 1;
+        mRMAIOV.len = 1;
+        mRMAIOV.key = {remoteMemoryAddress.getKey()};
+#else
+        mRMA.rma_iov_count = 0;
+#endif // OFI_RMA_EVENT
+    }
+    else
+    {
+        mRMA.rma_iov_count = 1;
+        mRMAIOV.len = {remoteMemoryAddress.getLength()};
+        mRMAIOV.key = {remoteMemoryAddress.getKey()};
+    }
+
 #ifdef OFI_MR_SCALABLE
     mRMAIOV.addr = 0;
 #else
@@ -39,9 +62,7 @@ pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
 
     mRMA.msg_iov = &mIOV;
     mRMA.desc = {memoryRegion.getDescriptor()};
-    mRMA.iov_count = 1;
     mRMA.rma_iov = &mRMAIOV;
-    mRMA.rma_iov_count = 1;
     mRMA.addr = address;
     mRMA.context = context;
 }

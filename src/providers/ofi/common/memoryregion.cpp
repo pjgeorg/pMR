@@ -21,81 +21,80 @@ extern "C" {
 }
 #include "../../../misc/print.hpp"
 
-pMR::ofi::MemoryRegion::MemoryRegion(
-    Domain &domain, void *buffer, std::size_t length, std::uint64_t access)
+pMR::ofi::MemoryRegion::MemoryRegion(Domain &domain, void *const buffer,
+    std::size_t length, std::uint64_t const access)
     : mBuffer(buffer), mLength{length}
 {
-    if(mLength != 0)
+    if(length == 0)
     {
-        int returnValue;
-#ifdef OFI_MR_SCALABLE
-        static std::uint64_t requestKey = 0;
-        do
-        {
-            returnValue = fi_mr_reg(domain.get(), mBuffer, {mLength}, {access},
-                0, {requestKey}, 0, &mMemoryRegion, &mContext);
-
-            ++requestKey;
-        } while(returnValue == -FI_ENOKEY);
+#ifdef OFI_RMA_EVENT_NONZERO
+        mBuffer = &mBuffer;
+        length = 1;
 #else
-        returnValue = fi_mr_reg(domain.get(), mBuffer, {mLength}, {access}, 0,
-            0, 0, &mMemoryRegion, &mContext);
+        if(mBuffer == nullptr)
+        {
+            mBuffer = &mBuffer;
+        }
+#endif // OFI_RMA_EVENT
+    }
+
+    int returnValue;
+#ifdef OFI_MR_SCALABLE
+    static std::uint64_t requestKey = 0;
+    do
+    {
+        returnValue = fi_mr_reg(domain.get(), mBuffer, {length}, {access}, 0,
+            {requestKey}, 0, &mMemoryRegion, &mContext);
+
+        ++requestKey;
+    } while(returnValue == -FI_ENOKEY);
+#else
+    returnValue = fi_mr_reg(domain.get(), mBuffer, {length}, {access}, 0, 0, 0,
+        &mMemoryRegion, &mContext);
 #endif // OFI_MR_SCALABLE
 
-        if(returnValue)
+    if(returnValue)
+    {
+        switch(returnValue)
         {
-            switch(returnValue)
+            case -FI_ENOKEY:
             {
-                case -FI_ENOKEY:
-                {
-                    throw std::runtime_error(
-                        "pMR: Unable to register memory region. "
-                        "Request key already in use.");
-                }
-                case -FI_EKEYREJECTED:
-                {
-                    throw std::runtime_error(
-                        "pMR: Unable to register memory region. "
-                        "Request key is not available.");
-                }
-                case -FI_EBADFLAGS:
-                {
-                    throw std::runtime_error(
-                        "pMR: Unable to register memory region. "
-                        "Specified flags unsupported.");
-                }
-                default:
-                {
-                    throw std::runtime_error(
-                        "pMR: Unable to register memory region.");
-                }
+                throw std::runtime_error(
+                    "pMR: Unable to register memory region. "
+                    "Request key already in use.");
+            }
+            case -FI_EKEYREJECTED:
+            {
+                throw std::runtime_error(
+                    "pMR: Unable to register memory region. "
+                    "Request key is not available.");
+            }
+            case -FI_EBADFLAGS:
+            {
+                throw std::runtime_error(
+                    "pMR: Unable to register memory region. "
+                    "Specified flags unsupported.");
+            }
+            default:
+            {
+                throw std::runtime_error(
+                    "pMR: Unable to register memory region.");
             }
         }
+    }
 
-        mDescriptor = fi_mr_desc(mMemoryRegion);
-    }
-    else
-    {
-        mMemoryRegion = new fid_mr;
-    }
+    mDescriptor = fi_mr_desc(mMemoryRegion);
 }
 
 pMR::ofi::MemoryRegion::~MemoryRegion()
 {
     if(mMemoryRegion)
     {
-        if(getLength() != 0)
+        if(fi_close(&mMemoryRegion->fid) == -FI_EBUSY)
         {
-            if(fi_close(&mMemoryRegion->fid) == -FI_EBUSY)
-            {
-                print(
-                    "pMR: Probably unable to unregister busy memory region. "
-                    "Continue anyway.");
-            }
-        }
-        else
-        {
-            delete mMemoryRegion;
+            print(
+                "pMR: Probably unable to unregister busy memory region. "
+                "Continue anyway.");
         }
     }
 }
