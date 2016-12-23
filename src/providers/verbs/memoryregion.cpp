@@ -38,14 +38,7 @@ pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
 
 pMR::verbs::MemoryRegion::~MemoryRegion()
 {
-    if(getLength() > 0)
-    {
-        ibv_dereg_mr(mMemoryRegion);
-    }
-    else
-    {
-        delete mMemoryRegion;
-    }
+    ibv_dereg_mr(mMemoryRegion);
 }
 
 ibv_mr *pMR::verbs::MemoryRegion::get()
@@ -82,22 +75,15 @@ void pMR::verbs::MemoryRegion::registerMemoryRegion(
     ProtectionDomain &protectionDomain, void *buffer, std::uint32_t const size,
     int const access)
 {
-    if(size > 0)
+    if(size == 0 && buffer == nullptr)
     {
-        mMemoryRegion =
-            ibv_reg_mr(protectionDomain.get(), buffer, {size}, {access});
-
-        if(!mMemoryRegion)
-        {
-            throw std::runtime_error("pMR: Could not register Memory Region.");
-        }
+        buffer = &mMemoryRegion;
     }
-    else
+    mMemoryRegion =
+        ibv_reg_mr(protectionDomain.get(), buffer, {size}, {access});
+
+    if(!mMemoryRegion)
     {
-        mMemoryRegion = new ibv_mr;
-        mMemoryRegion->addr = buffer;
-        mMemoryRegion->lkey = 0;
-        mMemoryRegion->rkey = 0;
-        mMemoryRegion->length = 0;
+        throw std::runtime_error("pMR: Could not register Memory Region.");
     }
 }
