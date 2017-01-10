@@ -45,9 +45,11 @@ namespace pMR
             std::vector<std::uint8_t> getAddress() const;
             fi_addr_t addPeer(std::vector<std::uint8_t> const &addr);
 
-            void bind(std::uintptr_t const &context);
-            void poll(std::uintptr_t const &context);
-            void unbind(std::uintptr_t const &context);
+            void bind(std::uintptr_t const send, std::uintptr_t const recv);
+            void unbind(std::uintptr_t const send, std::uintptr_t const recv);
+
+            void pollSend(std::uintptr_t const context);
+            void pollRecv(std::uintptr_t const context);
 
             void checkMessageSize(std::size_t const size) const;
             std::uint64_t checkInjectSize(std::size_t size) const;
@@ -57,8 +59,10 @@ namespace pMR
             Domain mDomain;
             Endpoint mEndpoint;
             AddressVector mAddressVector;
-            CompletionQueue mCompletionQueue;
-            std::unordered_map<std::uintptr_t, int> mCompletions;
+            CompletionQueueContext mSendCompletionQueue;
+            CompletionQueueContext mRecvCompletionQueue;
+            std::unordered_map<std::uintptr_t, int> mSendCompletions;
+            std::unordered_map<std::uintptr_t, int> mRecvCompletions;
             std::size_t mMaxSize = 0;
             std::size_t mInjectSize = 0;
         };

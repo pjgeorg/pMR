@@ -21,15 +21,18 @@ pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
     , mDomain(mFabric, info)
     , mEndpoint(mDomain, info)
     , mAddressVector(mDomain)
-    , mCompletionQueue(mDomain, {info.getContextSize()})
+    , mSendCompletionQueue(mDomain, {info.getContextSize()})
+    , mRecvCompletionQueue(mDomain, {info.getContextSize()})
     , mMaxSize{info.maxSize()}
     , mInjectSize{info.injectSize()}
 {
     mEndpoint.bind(mAddressVector);
-    mEndpoint.bind(mCompletionQueue, FI_TRANSMIT | FI_RECV);
+    mEndpoint.bind(mSendCompletionQueue, FI_TRANSMIT);
+    mEndpoint.bind(mRecvCompletionQueue, FI_RECV);
     mEndpoint.enable();
 
-    mCompletions.reserve(OFIReserveSizeCompletion);
+    mSendCompletions.reserve(OFIReserveSizeCompletion);
+    mRecvCompletions.reserve(OFIReserveSizeCompletion);
 }
 
 fid_ep *pMR::ofi::GlobalEndpoint::get()
@@ -63,9 +66,16 @@ fi_addr_t pMR::ofi::GlobalEndpoint::addPeer(
     return {mAddressVector.add(addr)};
 }
 
-void pMR::ofi::GlobalEndpoint::bind(std::uintptr_t const &context)
+void pMR::ofi::GlobalEndpoint::bind(
+    std::uintptr_t const send, std::uintptr_t const recv)
 {
-    auto insert = mCompletions.insert(std::make_pair(context, 0));
+    auto insert = mSendCompletions.insert(std::make_pair(send, 0));
+
+    if(insert.second == false)
+    {
+        throw std::runtime_error("pMR: Unable to bind context.");
+    }
+    insert = mRecvCompletions.insert(std::make_pair(recv, 0));
 
     if(insert.second == false)
     {
@@ -73,11 +83,11 @@ void pMR::ofi::GlobalEndpoint::bind(std::uintptr_t const &context)
     }
 }
 
-void pMR::ofi::GlobalEndpoint::poll(std::uintptr_t const &context)
+void pMR::ofi::GlobalEndpoint::pollSend(std::uintptr_t const context)
 {
     // First check if already retrieved completion event
-    auto search = mCompletions.find(context);
-    if(search == mCompletions.end())
+    auto search = mSendCompletions.find(context);
+    if(search == mSendCompletions.end())
     {
         throw std::logic_error("pMR: Polling unknown context.");
     }
@@ -91,7 +101,7 @@ void pMR::ofi::GlobalEndpoint::poll(std::uintptr_t const &context)
     // Retrieve events from CQ
     while(true)
     {
-        auto rContext = mCompletionQueue.poll();
+        auto rContext = mSendCompletionQueue.poll();
 
         if(rContext == context)
         {
@@ -100,7 +110,7 @@ void pMR::ofi::GlobalEndpoint::poll(std::uintptr_t const &context)
 
         try
         {
-            ++mCompletions.at(rContext);
+            ++mSendCompletions.at(rContext);
         }
         catch(std::exception const &e)
         {
@@ -109,15 +119,58 @@ void pMR::ofi::GlobalEndpoint::poll(std::uintptr_t const &context)
     }
 }
 
-void pMR::ofi::GlobalEndpoint::unbind(std::uintptr_t const &context)
+void pMR::ofi::GlobalEndpoint::pollRecv(std::uintptr_t const context)
 {
-    auto search = mCompletions.find(context);
-    if(search == mCompletions.end())
+    // First check if already retrieved completion event
+    auto search = mRecvCompletions.find(context);
+    if(search == mRecvCompletions.end())
+    {
+        throw std::logic_error("pMR: Polling unknown context.");
+    }
+
+    if(search->second > 0)
+    {
+        --search->second;
+        return;
+    }
+
+    // Retrieve events from CQ
+    while(true)
+    {
+        auto rContext = mRecvCompletionQueue.poll();
+
+        if(rContext == context)
+        {
+            return;
+        }
+
+        try
+        {
+            ++mRecvCompletions.at(rContext);
+        }
+        catch(std::exception const &e)
+        {
+            throw std::runtime_error("pMR: Retrieved unknown Context.");
+        }
+    }
+}
+
+void pMR::ofi::GlobalEndpoint::unbind(
+    std::uintptr_t const send, std::uintptr_t const recv)
+{
+    auto search = mSendCompletions.find(send);
+    if(search == mSendCompletions.end())
     {
         throw std::runtime_error("pMR: Unable to unbind context.");
     }
+    mSendCompletions.erase(search);
 
-    mCompletions.erase(search);
+    search = mRecvCompletions.find(recv);
+    if(search == mRecvCompletions.end())
+    {
+        throw std::runtime_error("pMR: Unable to unbind context.");
+    }
+    mRecvCompletions.erase(search);
 }
 
 void pMR::ofi::GlobalEndpoint::checkMessageSize(std::size_t const size) const

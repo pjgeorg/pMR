@@ -19,14 +19,14 @@ pMR::ofi::SoftEndpoint::SoftEndpoint(GlobalEndpoint *endpoint)
 {
     mSendTag = {reinterpret_cast<std::uintptr_t>(&mSendTag)};
 
-    mEndpoint->bind({reinterpret_cast<std::uintptr_t>(&mSendContext)});
-    mEndpoint->bind({reinterpret_cast<std::uintptr_t>(&mRecvContext)});
+    mEndpoint->bind({reinterpret_cast<std::uintptr_t>(&mSendContext)},
+        {reinterpret_cast<std::uintptr_t>(&mRecvContext)});
 }
 
 pMR::ofi::SoftEndpoint::~SoftEndpoint()
 {
-    mEndpoint->unbind({reinterpret_cast<std::uintptr_t>(&mSendContext)});
-    mEndpoint->unbind({reinterpret_cast<std::uintptr_t>(&mRecvContext)});
+    mEndpoint->unbind({reinterpret_cast<std::uintptr_t>(&mSendContext)},
+        {reinterpret_cast<std::uintptr_t>(&mRecvContext)});
 }
 
 std::uint64_t pMR::ofi::SoftEndpoint::getSendTag() const
@@ -56,10 +56,10 @@ fi_context *pMR::ofi::SoftEndpoint::getRecvContext()
 
 void pMR::ofi::SoftEndpoint::pollSend()
 {
-    mEndpoint->poll({reinterpret_cast<std::uintptr_t>(&mSendContext)});
+    mEndpoint->pollSend({reinterpret_cast<std::uintptr_t>(&mSendContext)});
 }
 
 void pMR::ofi::SoftEndpoint::pollRecv()
 {
-    mEndpoint->poll({reinterpret_cast<std::uintptr_t>(&mRecvContext)});
+    mEndpoint->pollRecv({reinterpret_cast<std::uintptr_t>(&mRecvContext)});
 }

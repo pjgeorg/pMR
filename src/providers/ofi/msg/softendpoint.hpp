@@ -54,7 +54,7 @@ namespace pMR
 
         private:
             Endpoint mEndpoint;
-            CompletionQueue mCompletionQueue;
+            CompletionQueueContext mCompletionQueue;
             fi_context mSendContext = {};
             fi_context mRecvContext = {};
         };

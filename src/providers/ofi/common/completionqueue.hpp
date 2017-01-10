@@ -18,6 +18,7 @@
 #include <cstdint>
 extern "C" {
 #include <rdma/fabric.h>
+#include <rdma/fi_domain.h>
 }
 #include "domain.hpp"
 
@@ -28,7 +29,6 @@ namespace pMR
         class CompletionQueue
         {
         public:
-            CompletionQueue(Domain &domain, std::size_t size);
             CompletionQueue(CompletionQueue const &) = delete;
             CompletionQueue(CompletionQueue &&) = delete;
             CompletionQueue &operator=(CompletionQueue const &) = delete;
@@ -36,11 +36,42 @@ namespace pMR
             ~CompletionQueue();
             fid_cq *get();
             fid_cq const *get() const;
-            std::uintptr_t poll();
 
-        private:
+        protected:
+            CompletionQueue() = default;
             fid_cq *mCompletionQueue = nullptr;
             fi_context mContext = {};
+
+            void open(Domain &domain, std::size_t const size,
+                fi_cq_format const format);
+            void poll(void *entry);
+        };
+
+        class CompletionQueueContext : public CompletionQueue
+        {
+        public:
+            CompletionQueueContext(Domain &domain, std::size_t size);
+            CompletionQueueContext(CompletionQueueContext const &) = delete;
+            CompletionQueueContext(CompletionQueueContext &&) = delete;
+            CompletionQueueContext &operator=(
+                CompletionQueueContext const &) = delete;
+            CompletionQueueContext &operator=(
+                CompletionQueueContext &&) = delete;
+            ~CompletionQueueContext() = default;
+            std::uintptr_t poll();
+        };
+
+        class CompletionQueueData : public CompletionQueue
+        {
+        public:
+            CompletionQueueData(Domain &domain, std::size_t size);
+            CompletionQueueData(CompletionQueueData const &) = delete;
+            CompletionQueueData(CompletionQueueData &&) = delete;
+            CompletionQueueData &operator=(
+                CompletionQueueData const &) = delete;
+            CompletionQueueData &operator=(CompletionQueueData &&) = delete;
+            ~CompletionQueueData() = default;
+            std::pair<std::uintptr_t, std::uint64_t> poll();
         };
     }
 }
