@@ -14,9 +14,9 @@
 
 #include "connection.hpp"
 #include "target.hpp"
+#include "thread.hpp"
 #include "../../backends/backend.hpp"
 #include "../../backends/mpi/threadsupport.hpp"
-#include "../../threads/thread.hpp"
 
 pMR::mpi::Connection::Connection(Target const &target)
     : mCommunicator{target.getMPICommunicator()}

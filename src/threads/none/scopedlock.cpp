@@ -12,22 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../thread.hpp"
+#include "scopedlock.hpp"
 
-pMR::thread::ScopedLock::ScopedLock()
+pMR::thread::ScopedLock::ScopedLock(Mutex &mutex)
 {
-}
-
-pMR::thread::ScopedLock::~ScopedLock()
-{
-}
-
-bool pMR::thread::isThreaded()
-{
-    return {false};
-}
-
-bool pMR::thread::isSerialized()
-{
-    return {true};
 }

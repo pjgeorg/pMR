@@ -12,32 +12,28 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_THREADS_OPENMP_MUTEX_H
-#define pMR_THREADS_OPENMP_MUTEX_H
+#ifndef pMR_THREADS_OPENMP_THREAD_H
+#define pMR_THREADS_OPENMP_THREAD_H
 
-extern "C" {
-#include <omp.h>
-}
+#include "mutex.hpp"
+#include "scopedlock.hpp"
 
 namespace pMR
 {
     namespace thread
     {
-        class Mutex
-        {
-        public:
-            Mutex();
-            Mutex(Mutex const &) = delete;
-            Mutex(Mutex &&) = delete;
-            Mutex &operator=(Mutex const &) = delete;
-            Mutex &operator=(Mutex &&) = delete;
-            ~Mutex();
-            void lock();
-            void unlock();
-
-        private:
-            omp_lock_t mLock;
-        };
+        constexpr bool isThreaded();
+        constexpr bool isSerialized();
     }
 }
-#endif // pMR_THREADS_OPENMP_MUTEX_H
+
+constexpr bool pMR::thread::isThreaded()
+{
+    return {true};
+}
+
+constexpr bool pMR::thread::isSerialized()
+{
+    return {false};
+}
+#endif // pMR_THREADS_OPENMP_THREAD_H

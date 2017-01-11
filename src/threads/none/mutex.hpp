@@ -12,12 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_THREADS_OPENMP_MUTEX_H
-#define pMR_THREADS_OPENMP_MUTEX_H
-
-extern "C" {
-#include <omp.h>
-}
+#ifndef pMR_THREADS_NONE_MUTEX_H
+#define pMR_THREADS_NONE_MUTEX_H
 
 namespace pMR
 {
@@ -26,18 +22,15 @@ namespace pMR
         class Mutex
         {
         public:
-            Mutex();
+            Mutex() = default;
             Mutex(Mutex const &) = delete;
             Mutex(Mutex &&) = delete;
             Mutex &operator=(Mutex const &) = delete;
             Mutex &operator=(Mutex &&) = delete;
-            ~Mutex();
+            ~Mutex() = default;
             void lock();
             void unlock();
-
-        private:
-            omp_lock_t mLock;
         };
     }
 }
-#endif // pMR_THREADS_OPENMP_MUTEX_H
+#endif // pMR_THREADS_NONE_MUTEX_H

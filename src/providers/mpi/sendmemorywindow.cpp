@@ -16,7 +16,7 @@
 #include <limits>
 #include <stdexcept>
 #include "connection.hpp"
-#include "../../threads/thread.hpp"
+#include "thread.hpp"
 
 pMR::mpi::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,

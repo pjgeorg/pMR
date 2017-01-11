@@ -17,7 +17,7 @@ extern "C" {
 #include <mpi.h>
 }
 #include "target.hpp"
-#include "../../threads/thread.hpp"
+#include "thread.hpp"
 #include "../backend.hpp"
 #include "threadsupport.hpp"
 

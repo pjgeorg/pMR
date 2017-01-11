@@ -12,22 +12,26 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../thread.hpp"
+#ifndef pMR_THREADS_NONE_SCOPEDLOCK_H
+#define pMR_THREADS_NONE_SCOPEDLOCK_H
 
-pMR::thread::ScopedLock::ScopedLock()
-{
-}
+#include "mutex.hpp"
 
-pMR::thread::ScopedLock::~ScopedLock()
+namespace pMR
 {
+    namespace thread
+    {
+        class ScopedLock
+        {
+        public:
+            ScopedLock() = default;
+            ScopedLock(Mutex &mutex);
+            ScopedLock(ScopedLock const &) = delete;
+            ScopedLock(ScopedLock &&) = delete;
+            ScopedLock &operator=(ScopedLock const &) = delete;
+            ScopedLock &operator=(ScopedLock &&) = delete;
+            ~ScopedLock() = default;
+        };
+    }
 }
-
-bool pMR::thread::isThreaded()
-{
-    return {true};
-}
-
-bool pMR::thread::isSerialized()
-{
-    return {true};
-}
+#endif // pMR_THREADS_NONE_SCOPEDLOCK_H

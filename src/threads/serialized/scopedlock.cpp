@@ -12,32 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_THREADS_OPENMP_MUTEX_H
-#define pMR_THREADS_OPENMP_MUTEX_H
+#include "scopedlock.hpp"
 
-extern "C" {
-#include <omp.h>
-}
-
-namespace pMR
+pMR::thread::ScopedLock::ScopedLock(Mutex &mutex)
 {
-    namespace thread
-    {
-        class Mutex
-        {
-        public:
-            Mutex();
-            Mutex(Mutex const &) = delete;
-            Mutex(Mutex &&) = delete;
-            Mutex &operator=(Mutex const &) = delete;
-            Mutex &operator=(Mutex &&) = delete;
-            ~Mutex();
-            void lock();
-            void unlock();
-
-        private:
-            omp_lock_t mLock;
-        };
-    }
 }
-#endif // pMR_THREADS_OPENMP_MUTEX_H

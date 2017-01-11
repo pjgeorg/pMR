@@ -1,1 +1,3 @@
-add_library(THREAD OBJECT thread.cpp)
+add_library(THREAD OBJECT 
+    mutex.cpp
+    scopedlock.cpp)

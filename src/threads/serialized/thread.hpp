@@ -12,27 +12,28 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../thread.hpp"
+#ifndef pMR_THREADS_SERIALIZED_THREAD_H
+#define pMR_THREADS_SERIALIZED_THREAD_H
+
 #include "mutex.hpp"
+#include "scopedlock.hpp"
 
-pMR::thread::ScopedLock::ScopedLock()
+namespace pMR
 {
-    sMutex.lock();
+    namespace thread
+    {
+        constexpr bool isThreaded();
+        constexpr bool isSerialized();
+    }
 }
 
-pMR::thread::ScopedLock::~ScopedLock()
-{
-    sMutex.unlock();
-}
-
-pMR::thread::Mutex pMR::thread::ScopedLock::sMutex;
-
-bool pMR::thread::isThreaded()
+constexpr bool pMR::thread::isThreaded()
 {
     return {true};
 }
 
-bool pMR::thread::isSerialized()
+constexpr bool pMR::thread::isSerialized()
 {
-    return {false};
+    return {true};
 }
+#endif // pMR_THREADS_SERIALIZED_THREAD_H

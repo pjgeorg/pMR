@@ -48,7 +48,7 @@ IncludeCategories:
     Priority: 2
   - Regex: '^<'
     Priority: 1
-  - Regex: '(communicator|config|connection|target|sendmemorywindow|recvmemorywindow)'
+  - Regex: '^"(communicator.hpp|config.hpp|connection.hpp|recvmemorywindow.hpp|sendmemorywindow.hpp|target.hpp|thread.hpp)"'
     Priority: 3
   - Regex: '/'
     Priority: 4
