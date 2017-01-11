@@ -67,110 +67,27 @@ fi_addr_t pMR::ofi::GlobalEndpoint::addPeer(
 }
 
 void pMR::ofi::GlobalEndpoint::bind(
-    std::uintptr_t const send, std::uintptr_t const recv)
+    std::uint64_t const sendID, std::uint64_t const recvID)
 {
-    auto insert = mSendCompletions.insert(std::make_pair(send, 0));
-
-    if(insert.second == false)
-    {
-        throw std::runtime_error("pMR: Unable to bind context.");
-    }
-    insert = mRecvCompletions.insert(std::make_pair(recv, 0));
-
-    if(insert.second == false)
-    {
-        throw std::runtime_error("pMR: Unable to bind context.");
-    }
-}
-
-void pMR::ofi::GlobalEndpoint::pollSend(std::uintptr_t const context)
-{
-    // First check if already retrieved completion event
-    auto search = mSendCompletions.find(context);
-    if(search == mSendCompletions.end())
-    {
-        throw std::logic_error("pMR: Polling unknown context.");
-    }
-
-    if(search->second > 0)
-    {
-        --search->second;
-        return;
-    }
-
-    // Retrieve events from CQ
-    while(true)
-    {
-        auto rContext = mSendCompletionQueue.poll();
-
-        if(rContext == context)
-        {
-            return;
-        }
-
-        try
-        {
-            ++mSendCompletions.at(rContext);
-        }
-        catch(std::exception const &e)
-        {
-            throw std::runtime_error("pMR: Retrieved unknown Context.");
-        }
-    }
-}
-
-void pMR::ofi::GlobalEndpoint::pollRecv(std::uintptr_t const context)
-{
-    // First check if already retrieved completion event
-    auto search = mRecvCompletions.find(context);
-    if(search == mRecvCompletions.end())
-    {
-        throw std::logic_error("pMR: Polling unknown context.");
-    }
-
-    if(search->second > 0)
-    {
-        --search->second;
-        return;
-    }
-
-    // Retrieve events from CQ
-    while(true)
-    {
-        auto rContext = mRecvCompletionQueue.poll();
-
-        if(rContext == context)
-        {
-            return;
-        }
-
-        try
-        {
-            ++mRecvCompletions.at(rContext);
-        }
-        catch(std::exception const &e)
-        {
-            throw std::runtime_error("pMR: Retrieved unknown Context.");
-        }
-    }
+    bind(mSendCompletions, sendID);
+    bind(mRecvCompletions, recvID);
 }
 
 void pMR::ofi::GlobalEndpoint::unbind(
-    std::uintptr_t const send, std::uintptr_t const recv)
+    std::uint64_t const sendID, std::uint64_t const recvID)
 {
-    auto search = mSendCompletions.find(send);
-    if(search == mSendCompletions.end())
-    {
-        throw std::runtime_error("pMR: Unable to unbind context.");
-    }
-    mSendCompletions.erase(search);
+    unbind(mSendCompletions, sendID);
+    unbind(mRecvCompletions, recvID);
+}
 
-    search = mRecvCompletions.find(recv);
-    if(search == mRecvCompletions.end())
-    {
-        throw std::runtime_error("pMR: Unable to unbind context.");
-    }
-    mRecvCompletions.erase(search);
+void pMR::ofi::GlobalEndpoint::pollSend(std::uint64_t const iD)
+{
+    poll(mSendCompletionQueue, mSendCompletions, iD);
+}
+
+void pMR::ofi::GlobalEndpoint::pollRecv(std::uint64_t const iD)
+{
+    poll(mRecvCompletionQueue, mRecvCompletions, iD);
 }
 
 void pMR::ofi::GlobalEndpoint::checkMessageSize(std::size_t const size) const
@@ -181,4 +98,106 @@ void pMR::ofi::GlobalEndpoint::checkMessageSize(std::size_t const size) const
 std::uint64_t pMR::ofi::GlobalEndpoint::checkInjectSize(std::size_t size) const
 {
     return mDomain.checkInjectSize(size);
+}
+
+void pMR::ofi::GlobalEndpoint::bind(
+    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+{
+    auto insert = map.insert(std::make_pair(iD, 0));
+
+    if(insert.second == false)
+    {
+        throw std::runtime_error("pMR: Unable to bind context.");
+    }
+}
+
+void pMR::ofi::GlobalEndpoint::unbind(
+    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+{
+    auto search = map.find(iD);
+
+    if(search == map.end())
+    {
+        throw std::runtime_error("pMR: Unable to unbind context.");
+    }
+
+    map.erase(search);
+}
+
+bool pMR::ofi::GlobalEndpoint::checkCompletions(
+    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+{
+    auto search = map.find(iD);
+    if(search == map.end())
+    {
+        throw std::logic_error("pMR: Polling unknown context.");
+    }
+
+    if(search->second > 0)
+    {
+        --search->second;
+        return {true};
+    }
+    else
+    {
+        return {false};
+    }
+}
+
+void pMR::ofi::GlobalEndpoint::retrieveCompletions(
+    CompletionQueueContext &queue, std::unordered_map<std::uint64_t, int> &map,
+    std::uint64_t const iD)
+{
+    while(true)
+    {
+        decltype(iD) rContext = {queue.poll()};
+
+        if(rContext == iD)
+        {
+            return;
+        }
+
+        try
+        {
+            ++map.at({rContext});
+        }
+        catch(std::exception const &e)
+        {
+            throw std::runtime_error("pMR: Retrieved unknown Context.");
+        }
+    }
+}
+
+void pMR::ofi::GlobalEndpoint::retrieveCompletions(CompletionQueueData &queue,
+    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+{
+    while(true)
+    {
+        // Get entry from Queue
+        auto entry = queue.poll();
+
+        // Set retrieved ID to second -> CQ data
+        auto rID = decltype(iD){entry.second};
+
+        // Replace rID by context if CQ data is zero, which is the default
+        // Only CQ data unequal to zero is of any interest/distinguishable
+        if(rID == 0)
+        {
+            rID = {entry.first};
+        }
+
+        if(rID == iD)
+        {
+            return;
+        }
+
+        try
+        {
+            ++map.at({rID});
+        }
+        catch(std::exception const &e)
+        {
+            throw std::runtime_error("pMR: Retrieved unknown Context/Data.");
+        }
+    }
 }

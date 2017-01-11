@@ -18,6 +18,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
+#include "thread.hpp"
 #include "../common/addressvector.hpp"
 #include "../common/domain.hpp"
 #include "../common/endpoint.hpp"
@@ -45,11 +46,11 @@ namespace pMR
             std::vector<std::uint8_t> getAddress() const;
             fi_addr_t addPeer(std::vector<std::uint8_t> const &addr);
 
-            void bind(std::uintptr_t const send, std::uintptr_t const recv);
-            void unbind(std::uintptr_t const send, std::uintptr_t const recv);
+            void bind(std::uint64_t const sendID, std::uint64_t const recvID);
+            void unbind(std::uint64_t const sendID, std::uint64_t const recvID);
 
-            void pollSend(std::uintptr_t const context);
-            void pollRecv(std::uintptr_t const context);
+            void pollSend(std::uint64_t const iD);
+            void pollRecv(std::uint64_t const iD);
 
             void checkMessageSize(std::size_t const size) const;
             std::uint64_t checkInjectSize(std::size_t size) const;
@@ -59,13 +60,46 @@ namespace pMR
             Domain mDomain;
             Endpoint mEndpoint;
             AddressVector mAddressVector;
+
             CompletionQueueContext mSendCompletionQueue;
             CompletionQueueContext mRecvCompletionQueue;
-            std::unordered_map<std::uintptr_t, int> mSendCompletions;
-            std::unordered_map<std::uintptr_t, int> mRecvCompletions;
+
+            std::unordered_map<std::uint64_t, int> mSendCompletions;
+            std::unordered_map<std::uint64_t, int> mRecvCompletions;
+
             std::size_t mMaxSize = 0;
             std::size_t mInjectSize = 0;
+
+            void bind(std::unordered_map<std::uint64_t, int> &map,
+                std::uint64_t const iD);
+            void unbind(std::unordered_map<std::uint64_t, int> &map,
+                std::uint64_t const iD);
+
+            bool checkCompletions(std::unordered_map<std::uint64_t, int> &map,
+                std::uint64_t const iD);
+            void retrieveCompletions(CompletionQueueContext &queue,
+                std::unordered_map<std::uint64_t, int> &map,
+                std::uint64_t const iD);
+            void retrieveCompletions(CompletionQueueData &queue,
+                std::unordered_map<std::uint64_t, int> &map,
+                std::uint64_t const iD);
+
+            template<typename T>
+            void poll(T &queue, std::unordered_map<std::uint64_t, int> &map,
+                std::uint64_t const iD);
         };
     }
+}
+
+template<typename T>
+void pMR::ofi::GlobalEndpoint::poll(T &queue,
+    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+{
+    if(checkCompletions(map, iD))
+    {
+        return;
+    }
+
+    retrieveCompletions(queue, map, iD);
 }
 #endif // pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
