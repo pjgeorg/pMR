@@ -63,9 +63,13 @@ namespace pMR
 
             CompletionQueueContext mSendCompletionQueue;
             CompletionQueueContext mRecvCompletionQueue;
+            thread::Mutex mSendCompletionQueueMutex;
+            thread::Mutex mRecvCompletionQueueMutex;
 
             std::unordered_map<std::uint64_t, int> mSendCompletions;
             std::unordered_map<std::uint64_t, int> mRecvCompletions;
+            thread::Mutex mSendCompletionsMutex;
+            thread::Mutex mRecvCompletionsMutex;
 
             std::size_t mMaxSize = 0;
             std::size_t mInjectSize = 0;
@@ -85,21 +89,39 @@ namespace pMR
                 std::uint64_t const iD);
 
             template<typename T>
-            void poll(T &queue, std::unordered_map<std::uint64_t, int> &map,
-                std::uint64_t const iD);
+            void poll(T &queue, thread::Mutex &mutexQueue,
+                std::unordered_map<std::uint64_t, int> &map,
+                thread::Mutex &mutexMap, std::uint64_t const iD);
         };
     }
 }
 
 template<typename T>
-void pMR::ofi::GlobalEndpoint::poll(T &queue,
-    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+void pMR::ofi::GlobalEndpoint::poll(T &queue, thread::Mutex &mutexQueue,
+    std::unordered_map<std::uint64_t, int> &map, thread::Mutex &mutexMap,
+    std::uint64_t const iD)
 {
-    if(checkCompletions(map, iD))
     {
-        return;
+        // Check whether completion already retrieved.
+        thread::ScopedLock scopedLock(mutexMap);
+        if(checkCompletions(map, iD))
+        {
+            return;
+        }
     }
+    {
+        thread::ScopedLock scopedLock(mutexQueue);
+        // For non serialized threading re-check retrieved completions.
+        if(!thread::isSerialized())
+        {
+            thread::ScopedLock scopedLock(mutexMap);
+            if(checkCompletions(map, iD))
+            {
+                return;
+            }
+        }
 
-    retrieveCompletions(queue, map, iD);
+        retrieveCompletions(queue, map, iD);
+    }
 }
 #endif // pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
