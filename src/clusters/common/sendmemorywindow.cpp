@@ -82,9 +82,8 @@ pMR::SendMemoryWindow::SendMemoryWindow(
         case Provider::ofi:
         {
             mOFI = std::unique_ptr<ofi::SendMemoryWindow,
-                    ofi::SendMemoryWindowDeleter>(new ofi::SendMemoryWindow(
-                                connection.mOFI, buffer,
-                                {static_cast<std::size_t>(sizeByte)}));
+                ofi::SendMemoryWindowDeleter>(new ofi::SendMemoryWindow(
+                connection.mOFI, buffer, {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_OFI

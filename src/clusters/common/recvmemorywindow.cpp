@@ -82,9 +82,8 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(
         case Provider::ofi:
         {
             mOFI = std::unique_ptr<ofi::RecvMemoryWindow,
-                    ofi::RecvMemoryWindowDeleter>(new ofi::RecvMemoryWindow(
-                                connection.mOFI, buffer,
-                                {static_cast<std::size_t>(sizeByte)}));
+                ofi::RecvMemoryWindowDeleter>(new ofi::RecvMemoryWindow(
+                connection.mOFI, buffer, {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_OFI
