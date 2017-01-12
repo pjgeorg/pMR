@@ -109,7 +109,7 @@ void pMR::ofi::GlobalEndpoint::bind(
 
     if(insert.second == false)
     {
-        throw std::runtime_error("pMR: Unable to bind context.");
+        throw std::runtime_error("pMR: Unable to bind ID.");
     }
 }
 
@@ -120,7 +120,7 @@ void pMR::ofi::GlobalEndpoint::unbind(
 
     if(search == map.end())
     {
-        throw std::runtime_error("pMR: Unable to unbind context.");
+        throw std::runtime_error("pMR: Unable to unbind ID.");
     }
 
     map.erase(search);
@@ -132,7 +132,7 @@ bool pMR::ofi::GlobalEndpoint::checkCompletions(
     auto search = map.find(iD);
     if(search == map.end())
     {
-        throw std::logic_error("pMR: Polling unknown context.");
+        throw std::logic_error("pMR: Polling unknown ID.");
     }
 
     if(search->second > 0)

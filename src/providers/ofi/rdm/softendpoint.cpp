@@ -17,8 +17,6 @@
 pMR::ofi::SoftEndpoint::SoftEndpoint(GlobalEndpoint *endpoint)
     : mEndpoint(endpoint)
 {
-    mSendTag = {reinterpret_cast<std::uintptr_t>(&mSendTag)};
-
     mEndpoint->bind({reinterpret_cast<std::uintptr_t>(&mSendContext)},
         {reinterpret_cast<std::uintptr_t>(&mRecvContext)});
 }
@@ -29,19 +27,29 @@ pMR::ofi::SoftEndpoint::~SoftEndpoint()
         {reinterpret_cast<std::uintptr_t>(&mRecvContext)});
 }
 
-std::uint64_t pMR::ofi::SoftEndpoint::getSendTag() const
+std::uint64_t pMR::ofi::SoftEndpoint::getID() const
 {
-    return {mSendTag};
+    return {reinterpret_cast<std::uintptr_t>(&mRecvContext)};
 }
 
-void pMR::ofi::SoftEndpoint::setRecvTag(std::uint64_t const recvTag)
+void pMR::ofi::SoftEndpoint::setRemoteID(std::uint64_t remoteID)
 {
-    mRecvTag = {recvTag};
+    mRemoteID = {remoteID};
+}
+
+std::uint64_t pMR::ofi::SoftEndpoint::getRemoteID() const
+{
+    return {mRemoteID};
+}
+
+std::uint64_t pMR::ofi::SoftEndpoint::getSendTag() const
+{
+    return {getRemoteID()};
 }
 
 std::uint64_t pMR::ofi::SoftEndpoint::getRecvTag() const
 {
-    return {mRecvTag};
+    return {getID()};
 }
 
 fi_context *pMR::ofi::SoftEndpoint::getSendContext()

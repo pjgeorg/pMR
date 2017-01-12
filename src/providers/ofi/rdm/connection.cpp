@@ -31,20 +31,20 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 #endif // OFI_RMA
 {
     auto localAddress = mEndpoint->getAddress();
-    auto activeSendTag = mActiveEndpoint.getSendTag();
-    auto passiveSendTag = mPassiveEndpoint.getSendTag();
+    auto activeID = mActiveEndpoint.getID();
+    auto passiveID = mPassiveEndpoint.getID();
 
     auto peerAddress = localAddress;
-    auto activeRecvTag = activeSendTag;
-    auto passiveRecvTag = passiveSendTag;
+    auto activeRemoteID = activeID;
+    auto passiveRemoteID = passiveID;
 
     backend::exchange(target, localAddress, peerAddress);
-    backend::exchange(target, activeSendTag, passiveRecvTag);
-    backend::exchange(target, passiveSendTag, activeRecvTag);
+    backend::exchange(target, activeID, passiveRemoteID);
+    backend::exchange(target, passiveID, activeRemoteID);
 
     mPeerAddress = {mEndpoint->addPeer(peerAddress)};
-    mActiveEndpoint.setRecvTag(activeRecvTag);
-    mPassiveEndpoint.setRecvTag(passiveRecvTag);
+    mActiveEndpoint.setRemoteID(activeRemoteID);
+    mPassiveEndpoint.setRemoteID(passiveRemoteID);
 
 #ifdef OFI_RMA
     postRecvAddressToActive();

@@ -62,7 +62,11 @@ namespace pMR
             AddressVector mAddressVector;
 
             CompletionQueueContext mSendCompletionQueue;
+#if defined OFI_RMA && !defined OFI_RMA_EVENT
+            CompletionQueueData mRecvCompletionQueue;
+#else
             CompletionQueueContext mRecvCompletionQueue;
+#endif // OFI_RMA && !OFI_RMA_EVENT
             thread::Mutex mSendCompletionQueueMutex;
             thread::Mutex mRecvCompletionQueueMutex;
 

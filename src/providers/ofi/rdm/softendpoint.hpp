@@ -36,8 +36,10 @@ namespace pMR
             SoftEndpoint &operator=(SoftEndpoint &&) = delete;
             ~SoftEndpoint();
 
+            std::uint64_t getID() const;
+            void setRemoteID(std::uint64_t const remoteID);
+            std::uint64_t getRemoteID() const;
             std::uint64_t getSendTag() const;
-            void setRecvTag(std::uint64_t const recvTag);
             std::uint64_t getRecvTag() const;
 
             fi_context *getSendContext();
@@ -48,8 +50,7 @@ namespace pMR
 
         private:
             GlobalEndpoint *mEndpoint = nullptr;
-            std::uint64_t mSendTag = 0;
-            std::uint64_t mRecvTag = 0;
+            std::uint64_t mRemoteID = 0;
             fi_context mSendContext = {};
             fi_context mRecvContext = {};
         };
