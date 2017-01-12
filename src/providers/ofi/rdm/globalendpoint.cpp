@@ -175,15 +175,14 @@ void pMR::ofi::GlobalEndpoint::retrieveCompletions(CompletionQueueData &queue,
 {
     while(true)
     {
-        // Get entry from Queue
         auto entry = queue.poll();
+        auto rID = decltype(iD){};
 
-        // Set retrieved ID to second -> CQ data
-        auto rID = decltype(iD){entry.second};
-
-        // Replace rID by context if CQ data is zero, which is the default
-        // Only CQ data unequal to zero is of any interest/distinguishable
-        if(rID == 0)
+        if(entry.second != 0)
+        {
+            rID = {entry.second};
+        }
+        else
         {
             rID = {entry.first};
         }
