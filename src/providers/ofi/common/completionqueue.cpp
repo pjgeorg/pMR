@@ -85,6 +85,11 @@ std::pair<std::uintptr_t, std::uint64_t> pMR::ofi::CompletionQueueData::poll()
 
     CompletionQueue::poll(&entry);
 
+    if(!(entry.flags & FI_REMOTE_CQ_DATA))
+    {
+        entry.data = 0;
+    }
+
     return std::make_pair(
         reinterpret_cast<std::uintptr_t>(entry.op_context), entry.data);
 }
