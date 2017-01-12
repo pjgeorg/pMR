@@ -45,7 +45,7 @@ namespace pMR
             void checkMessageSize(std::size_t const size) const;
 
 #ifdef OFI_RMA
-            void setLocalMemoryAddress(MemoryRegion const &);
+            void setLocalTargetMemoryAddress(MemoryRegion const &);
             void postRecvAddressToActive();
             void postSendAddressToPassive();
             void postRecvToPassive();

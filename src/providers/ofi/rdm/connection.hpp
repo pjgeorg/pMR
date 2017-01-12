@@ -18,6 +18,8 @@
 #include "config.hpp"
 #include "../common/memoryaddress.hpp"
 #include "../common/memoryregion.hpp"
+#include "../common/rma.hpp"
+#include "../common/tagged.hpp"
 #include "softendpoint.hpp"
 
 namespace pMR
@@ -40,25 +42,29 @@ namespace pMR
             Domain const &getDomain() const;
             void checkMessageSize(std::size_t const size) const;
 
-#ifdef OFI_RMA
-            void setLocalMemoryAddress(MemoryRegion const &);
-            void postRecvAddressToActive();
-            void postSendAddressToPassive();
-            void postRecvToPassive();
-            void postWriteToActive(
-                MemoryRegion &memoryRegion, std::size_t const sizeByte);
-#else
-            void postRecvToActive();
-            void postSendToPassive();
-            void postRecvToPassive(MemoryRegion &memoryRegion);
             void postSendToActive(
                 MemoryRegion &memoryRegion, std::size_t const sizeByte);
-#endif // OFI_RMA
+            void postSendToPassive();
+            void postRecvToPassive(MemoryRegion &memoryRegion);
+            void postRecvToActive();
+            void postRecvToPassive();
 
             void pollActiveSend();
             void pollActiveRecv();
             void pollPassiveSend();
             void pollPassiveRecv();
+
+#ifdef OFI_RMA
+            void setLocalTargetMemoryAddress(MemoryRegion const &);
+#ifdef OFI_RMA_CONTROL
+            void postWriteAddressToPassive();
+#else
+            void postSendAddressToPassive();
+            void postRecvAddressToActive();
+#endif // OFI_RMA_CONTROL
+            void postWriteToActive(
+                MemoryRegion &memoryRegion, std::size_t const sizeByte);
+#endif // OFI_RMA
 
         private:
             GlobalEndpoint *mEndpoint = nullptr;
@@ -66,11 +72,33 @@ namespace pMR
             SoftEndpoint mActiveEndpoint;
             SoftEndpoint mPassiveEndpoint;
 #ifdef OFI_RMA
-            alignas(alignment) MemoryAddress mLocalMemoryAddress;
-            alignas(alignment) MemoryAddress mRemoteMemoryAddress;
-            MemoryRegion mSendLocalAddress;
-            MemoryRegion mRecvRemoteAddress;
+            alignas(alignment) MemoryAddress mLocalTargetMemoryAddress;
+            alignas(alignment) MemoryAddress mRemoteTargetMemoryAddress;
+            MemoryRegion mLocalTargetMemoryRegion;
+            MemoryRegion mRemoteTargetMemoryRegion;
+#ifdef OFI_RMA_CONTROL
+            MemoryAddress mRemoteMemoryAddress;
+#ifdef OFI_RMA_EVENT
+            Counter mCounter;
+#endif // OFI_RMA_EVENT
+#endif // OFI_RMA_CONTROL
 #endif // OFI_RMA
+
+            void postSend(SoftEndpoint &endpoint, MemoryRegion &memoryRegion);
+            void postSend(SoftEndpoint &endpoint, MemoryRegion &memoryRegion,
+                std::size_t const sizeByte);
+            void postSend(SoftEndpoint &endpoint);
+            void postSend(Tagged &message);
+
+            void postRecv(SoftEndpoint &endpoint, MemoryRegion &memoryRegion);
+            void postRecv(SoftEndpoint &endpoint);
+            void postRecv(Tagged &message);
+
+            void postWrite(SoftEndpoint &endpoint, MemoryRegion &memoryRegion,
+                MemoryAddress &target);
+            void postWrite(SoftEndpoint &endpoint, MemoryRegion &memoryRegion,
+                MemoryAddress &target, std::size_t const sizeByte);
+            void postWrite(RMA &message);
         };
     }
 }

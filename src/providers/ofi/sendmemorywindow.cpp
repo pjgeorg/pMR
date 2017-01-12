@@ -37,11 +37,13 @@ void pMR::ofi::SendMemoryWindow::post(std::size_t const sizeByte)
 {
     mConnection->pollActiveRecv();
 
-#ifdef OFI_RMA
+#if defined OFI_RMA && !defined OFI_RMA_CONTROL
     mConnection->postRecvAddressToActive();
-#else
+#endif // OFI_RMA && !OFI_RMA_CONTROL
+
+#if !defined OFI_RMA || defined OFI_RMA_TARGET_RX
     mConnection->postRecvToActive();
-#endif // OFI_RMA
+#endif // !OFI_RMA || OFI_RMA_TARGET_RX
 
 #ifdef OFI_RMA
     mConnection->postWriteToActive(mMemoryRegion, {sizeByte});

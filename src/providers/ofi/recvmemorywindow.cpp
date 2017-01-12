@@ -43,8 +43,12 @@ void pMR::ofi::RecvMemoryWindow::init()
 #ifdef OFI_RMA_TARGET_RX
     mConnection->postRecvToPassive();
 #endif // OFI_RMA_TARGET_RX
-    mConnection->setLocalMemoryAddress(mMemoryRegion);
+    mConnection->setLocalTargetMemoryAddress(mMemoryRegion);
+#ifdef OFI_RMA_CONTROL
+    mConnection->postWriteAddressToPassive();
+#else
     mConnection->postSendAddressToPassive();
+#endif
 #else
     mConnection->postRecvToPassive(mMemoryRegion);
     mConnection->postSendToPassive();

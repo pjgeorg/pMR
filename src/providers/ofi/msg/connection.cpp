@@ -79,7 +79,7 @@ void pMR::ofi::Connection::checkMessageSize(std::size_t size) const
 }
 
 #ifdef OFI_RMA
-void pMR::ofi::Connection::setLocalMemoryAddress(
+void pMR::ofi::Connection::setLocalTargetMemoryAddress(
     MemoryRegion const &memoryRegion)
 {
     mLocalMemoryAddress.set(memoryRegion);
