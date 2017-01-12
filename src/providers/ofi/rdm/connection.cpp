@@ -103,7 +103,8 @@ void pMR::ofi::Connection::postWriteToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
     RMA message(memoryRegion, {sizeByte}, mRemoteMemoryAddress,
-        mActiveEndpoint.getSendContext(), {mPeerAddress});
+        mActiveEndpoint.getSendContext(), {mActiveEndpoint.getRemoteID()},
+        {mPeerAddress});
     postWriteRequest(mEndpoint, message,
 #ifndef OFI_RMA_EVENT
         FI_REMOTE_CQ_DATA |

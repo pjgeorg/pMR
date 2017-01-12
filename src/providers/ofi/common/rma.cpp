@@ -16,15 +16,15 @@
 
 pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion,
     MemoryAddress const &remoteMemoryAddress, fi_context *context,
-    fi_addr_t address)
+    std::uint64_t const data, fi_addr_t const address)
     : RMA(memoryRegion, memoryRegion.getLength(), remoteMemoryAddress, context,
-          address)
+          data, address)
 {
 }
 
 pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     MemoryAddress const &remoteMemoryAddress, fi_context *context,
-    fi_addr_t address)
+    std::uint64_t const data, fi_addr_t const address)
 {
     if(sizeByte == 0)
     {
@@ -55,7 +55,7 @@ pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     }
 
 #ifdef OFI_MR_SCALABLE
-    mRMAIOV.addr = 0;
+    mRMAIOV.addr = {0};
 #else
     mRMAIOV.addr = {remoteMemoryAddress.getAddress()};
 #endif // OFI_MR_SCALABLE
@@ -63,8 +63,9 @@ pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     mRMA.msg_iov = &mIOV;
     mRMA.desc = {memoryRegion.getDescriptor()};
     mRMA.rma_iov = &mRMAIOV;
-    mRMA.addr = address;
+    mRMA.addr = {address};
     mRMA.context = context;
+    mRMA.data = {data};
 }
 
 fi_msg_rma *pMR::ofi::RMA::get()

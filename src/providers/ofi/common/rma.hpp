@@ -30,10 +30,11 @@ namespace pMR
         {
         public:
             RMA(MemoryRegion &, MemoryAddress const &remoteMemoryAddress,
-                fi_context *context, fi_addr_t address = 0);
+                fi_context *context, std::uint64_t const data = 0,
+                fi_addr_t const address = 0);
             RMA(MemoryRegion &, std::size_t const sizeByte,
                 MemoryAddress const &remoteMemoryAddress, fi_context *context,
-                fi_addr_t address = 0);
+                std::uint64_t const data = 0, fi_addr_t const address = 0);
             ~RMA() = default;
             fi_msg_rma *get();
             fi_msg_rma const *get() const;
