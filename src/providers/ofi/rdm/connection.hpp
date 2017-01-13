@@ -45,8 +45,8 @@ namespace pMR
             void postSendToActive(
                 MemoryRegion &memoryRegion, std::size_t const sizeByte);
             void postSendToPassive();
-            void postRecvToPassive(MemoryRegion &memoryRegion);
             void postRecvToActive();
+            void postRecvToPassive(MemoryRegion &memoryRegion);
             void postRecvToPassive();
 
             void pollActiveSend();
