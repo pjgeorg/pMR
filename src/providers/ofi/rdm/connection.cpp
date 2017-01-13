@@ -63,11 +63,9 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 
 #if defined OFI_RMA && !defined OFI_RMA_CONTROL
     postRecvAddressToActive();
-#endif // OFI_RMA && !OFI_RMA_CONTROL
-
-#if !defined OFI_RMA || defined OFI_RMA_TARGET_RX
+#elif !defined OFI_RMA || defined OFI_RMA_TARGET_RX
     postRecvToActive();
-#endif // !OFI_RMA || OFI_RMA_TARGET_RX
+#endif // OFI_RMA & !OFI_RMA_CONTROL // !OFI_RMA || OFI_RMA_TARGET_RX
 
     backend::sync(target);
 }
