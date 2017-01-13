@@ -48,18 +48,10 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
     backend::exchange(target, localAddress, peerAddress);
     backend::exchange(target, activeID, passiveRemoteID);
     backend::exchange(target, passiveID, activeRemoteID);
-#ifdef OFI_RMA_CONTROL
-    MemoryAddress localMemoryAddress(mRemoteTargetMemoryRegion);
-    backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
-#endif // OFI_RMA_CONTROL
 
     mPeerAddress = {mEndpoint->addPeer(peerAddress)};
     mActiveEndpoint.setRemoteID(activeRemoteID);
     mPassiveEndpoint.setRemoteID(passiveRemoteID);
-
-#if defined OFI_RMA_CONTROL && defined OFI_RMA_EVENT
-    mRemoteTargetMemoryRegion.bind(mCounter);
-#endif // OFI_RMA_CONTROL && OFI_RMA_EVENT
 
 #if defined OFI_RMA && !defined OFI_RMA_CONTROL
     postRecvAddressToActive();
@@ -67,7 +59,15 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
     postRecvToActive();
 #endif // OFI_RMA & !OFI_RMA_CONTROL // !OFI_RMA || OFI_RMA_TARGET_RX
 
+#ifdef OFI_RMA_CONTROL
+    MemoryAddress localMemoryAddress(mRemoteTargetMemoryRegion);
+    backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
+#ifdef OFI_RMA_EVENT
+    mRemoteTargetMemoryRegion.bind(mCounter);
+#endif // OFI_RMA_EVENT
+#else
     backend::sync(target);
+#endif // OFI_RMA_CONTROL
 }
 
 pMR::ofi::Domain &pMR::ofi::Connection::getDomain()
