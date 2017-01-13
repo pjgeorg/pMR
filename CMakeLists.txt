@@ -21,13 +21,11 @@ set(PROFILING OFF CACHE BOOL "Enable profiling.")
 set(ALIGNMENT 64 CACHE STRING "Set preferred memory alignment.")
 set(WARN.ZERO ON CACHE BOOL "Warn when using zero sized windows.")
 
+
+set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication.")
+
 set(NULL.WARN ON CACHE BOOL "Warn when using provider null.")
-set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
-set(VERBS.RDMA ON CACHE BOOL "Use RDMA capability.")
-set(VERBS.RDMA.CONTROL OFF CACHE BOOL "Also use RDMA capability for control messages.")
-set(VERBS.MTU 1024 CACHE STRING "Set MTU size.")
-set(VERBS.INLINE 128 CACHE STRING "Set max inline data size.")
-set(VERBS.ODP OFF CACHE BOOL "Use ODP capability.")
+
 set(OFI.EP RDM CACHE STRING "Specify endpoint type (MSG | RDM).")
 set(OFI.RMA ON CACHE BOOL "Use RMA capability.")
 set(OFI.RMA.EVENT ON CACHE BOOL "Use RMA Events for synchronization.")
@@ -38,7 +36,15 @@ set(OFI.CONTROL.PROGRESS.AUTO ON CACHE BOOL "Automatic progess of control.")
 set(OFI.DATA.PROGRESS.AUTO ON CACHE BOOL "Automatic progess of data.")
 set(OFI.RM OFF CACHE BOOL "Enable Resource Management.")
 set(OFI.MR.SCALABLE OFF CACHE BOOL "Scalable Memory Registration Mode")
-set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication.")
+
+set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
+
+set(VERBS.RDMA ON CACHE BOOL "Use RDMA capability.")
+set(VERBS.RDMA.CONTROL OFF CACHE BOOL "Also use RDMA capability for control messages.")
+set(VERBS.MTU 1024 CACHE STRING "Set MTU size.")
+set(VERBS.INLINE 128 CACHE STRING "Set max inline data size.")
+set(VERBS.ODP OFF CACHE BOOL "Use ODP capability.")
+
 
 set(QPACE2.WARN.TOPOLOGY ON CACHE BOOL "Warning about misuse of topology.")
 
