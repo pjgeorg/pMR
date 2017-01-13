@@ -20,8 +20,8 @@ extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "config.hpp"
-#include "connectionaddress.hpp"
 #include "completionqueue.hpp"
+#include "connectionaddress.hpp"
 #include "context.hpp"
 #include "memoryaddress.hpp"
 #include "memoryregion.hpp"

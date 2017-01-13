@@ -19,8 +19,8 @@
 extern "C" {
 #include <infiniband/verbs.h>
 }
-#include "connectionaddress.hpp"
 #include "completionqueue.hpp"
+#include "connectionaddress.hpp"
 #include "protectiondomain.hpp"
 
 namespace pMR
