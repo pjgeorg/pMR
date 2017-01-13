@@ -69,15 +69,27 @@ fi_addr_t pMR::ofi::GlobalEndpoint::addPeer(
 void pMR::ofi::GlobalEndpoint::bind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
-    bind(mSendCompletions, sendID);
-    bind(mRecvCompletions, recvID);
+    {
+        thread::ScopedLock scopedLock(mSendCompletionsMutex);
+        bind(mSendCompletions, sendID);
+    }
+    {
+        thread::ScopedLock scopedLock(mRecvCompletionsMutex);
+        bind(mRecvCompletions, recvID);
+    }
 }
 
 void pMR::ofi::GlobalEndpoint::unbind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
-    unbind(mSendCompletions, sendID);
-    unbind(mRecvCompletions, recvID);
+    {
+        thread::ScopedLock scopedLock(mSendCompletionsMutex);
+        unbind(mSendCompletions, sendID);
+    }
+    {
+        thread::ScopedLock scopedLock(mRecvCompletionsMutex);
+        unbind(mRecvCompletions, recvID);
+    }
 }
 
 void pMR::ofi::GlobalEndpoint::pollSend(std::uint64_t const iD)
@@ -146,59 +158,23 @@ bool pMR::ofi::GlobalEndpoint::checkCompletions(
     }
 }
 
-void pMR::ofi::GlobalEndpoint::retrieveCompletions(
-    CompletionQueueContext &queue, std::unordered_map<std::uint64_t, int> &map,
-    std::uint64_t const iD)
+std::uint64_t pMR::ofi::GlobalEndpoint::retrieveCompletions(
+    CompletionQueueContext &queue)
 {
-    while(true)
-    {
-        decltype(iD) rContext = {queue.poll()};
-
-        if(rContext == iD)
-        {
-            return;
-        }
-
-        try
-        {
-            ++map.at({rContext});
-        }
-        catch(std::exception const &e)
-        {
-            throw std::runtime_error("pMR: Retrieved unknown Context.");
-        }
-    }
+    return {queue.poll()};
 }
 
-void pMR::ofi::GlobalEndpoint::retrieveCompletions(CompletionQueueData &queue,
-    std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
+std::uint64_t pMR::ofi::GlobalEndpoint::retrieveCompletions(
+    CompletionQueueData &queue)
 {
-    while(true)
+    auto entry = queue.poll();
+
+    if(entry.second != 0)
     {
-        auto entry = queue.poll();
-        auto rID = decltype(iD){};
-
-        if(entry.second != 0)
-        {
-            rID = {entry.second};
-        }
-        else
-        {
-            rID = {entry.first};
-        }
-
-        if(rID == iD)
-        {
-            return;
-        }
-
-        try
-        {
-            ++map.at({rID});
-        }
-        catch(std::exception const &e)
-        {
-            throw std::runtime_error("pMR: Retrieved unknown Context/Data.");
-        }
+        return {entry.second};
+    }
+    else
+    {
+        return {entry.first};
     }
 }

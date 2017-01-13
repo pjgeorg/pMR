@@ -85,12 +85,8 @@ namespace pMR
 
             bool checkCompletions(std::unordered_map<std::uint64_t, int> &map,
                 std::uint64_t const iD);
-            void retrieveCompletions(CompletionQueueContext &queue,
-                std::unordered_map<std::uint64_t, int> &map,
-                std::uint64_t const iD);
-            void retrieveCompletions(CompletionQueueData &queue,
-                std::unordered_map<std::uint64_t, int> &map,
-                std::uint64_t const iD);
+            std::uint64_t retrieveCompletions(CompletionQueueContext &queue);
+            std::uint64_t retrieveCompletions(CompletionQueueData &queue);
 
             template<typename T>
             void poll(T &queue, thread::Mutex &mutexQueue,
@@ -125,7 +121,27 @@ void pMR::ofi::GlobalEndpoint::poll(T &queue, thread::Mutex &mutexQueue,
             }
         }
 
-        retrieveCompletions(queue, map, iD);
+        while(true)
+        {
+            auto rID = decltype(iD){retrieveCompletions(queue)};
+
+            if(rID == iD)
+            {
+                break;
+            }
+
+            {
+                thread::ScopedLock scopedLock(mutexMap);
+                try
+                {
+                    ++map.at({rID});
+                }
+                catch(std::exception const &e)
+                {
+                    throw std::runtime_error("pMR: Retrieved unknown ID.");
+                }
+            }
+        }
     }
 }
 #endif // pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
