@@ -84,20 +84,23 @@ namespace pMR
 #endif // OFI_RMA_CONTROL
 #endif // OFI_RMA
 
-            void postSend(SoftEndpoint &endpoint, MemoryRegion &memoryRegion);
-            void postSend(SoftEndpoint &endpoint, MemoryRegion &memoryRegion,
-                std::size_t const sizeByte);
-            void postSend(SoftEndpoint &endpoint);
+            void postSend(
+                SoftEndpoint &softEndpoint, MemoryRegion &memoryRegion);
+            void postSend(SoftEndpoint &softEndpoint,
+                MemoryRegion &memoryRegion, std::size_t const sizeByte);
+            void postSend(SoftEndpoint &softEndpoint);
             void postSend(Tagged &message);
 
-            void postRecv(SoftEndpoint &endpoint, MemoryRegion &memoryRegion);
-            void postRecv(SoftEndpoint &endpoint);
+            void postRecv(
+                SoftEndpoint &softEndpoint, MemoryRegion &memoryRegion);
+            void postRecv(SoftEndpoint &softEndpoint);
             void postRecv(Tagged &message);
 
-            void postWrite(SoftEndpoint &endpoint, MemoryRegion &memoryRegion,
-                MemoryAddress &target);
-            void postWrite(SoftEndpoint &endpoint, MemoryRegion &memoryRegion,
-                MemoryAddress &target, std::size_t const sizeByte);
+            void postWrite(SoftEndpoint &softEndpoint,
+                MemoryRegion &memoryRegion, MemoryAddress &target);
+            void postWrite(SoftEndpoint &softEndpoint,
+                MemoryRegion &memoryRegion, MemoryAddress &target,
+                std::size_t const sizeByte);
             void postWrite(RMA &message);
         };
     }
