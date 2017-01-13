@@ -5,10 +5,12 @@ add_library(PROVIDER_VERBS OBJECT
     context.cpp
     device.cpp
     deviceattributes.cpp
+    endpoint.cpp
     gid.cpp
     memoryaddress.cpp
     memoryregion.cpp
     odp.cpp
+    operations.cpp
     portattributes.cpp
     protectiondomain.cpp
     queuepair.cpp

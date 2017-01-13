@@ -33,8 +33,12 @@ void pMR::verbs::RecvMemoryWindow::init()
 {
 #ifdef VERBS_RDMA
     mConnection->postRecvToPassive();
-    mConnection->setLocalMemoryAddress(mMemoryRegion);
+    mConnection->setLocalTargetMemoryAddress(mMemoryRegion);
+#ifdef VERBS_RDMA_CONTROL
+    mConnection->postWriteAddressToPassive();
+#else
     mConnection->postSendAddressToPassive();
+#endif // VERBS_RDMA_CONTROL
 #else
     mConnection->postRecvToPassive(mMemoryRegion);
     mConnection->postSendToPassive();
@@ -47,6 +51,6 @@ void pMR::verbs::RecvMemoryWindow::post()
 
 void pMR::verbs::RecvMemoryWindow::wait()
 {
-    mConnection->pollPassiveCompletionQueue();
-    mConnection->pollPassiveCompletionQueue();
+    mConnection->pollPassive();
+    mConnection->pollPassive();
 }

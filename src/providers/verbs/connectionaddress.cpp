@@ -16,14 +16,28 @@
 #include <array>
 #include <stdexcept>
 #include "../../backends/backend.hpp"
+#include "endpoint.hpp"
 #include "portattributes.hpp"
+#include "queuepair.hpp"
 #include "verbs.hpp"
+
+pMR::verbs::ConnectionAddress::ConnectionAddress(
+    Context &context, Endpoint const &endpoint, std::uint8_t const portNumber)
+    : ConnectionAddress(context, endpoint.getQueuePair(), {portNumber})
+{
+}
 
 pMR::verbs::ConnectionAddress::ConnectionAddress(
     Context &context, QueuePair const &queuePair, std::uint8_t const portNumber)
     : mQPN{queuePair.getQPN()}, mGID{context, portNumber}
 {
     mLID = {PortAttributes(context, portNumber).getLID()};
+}
+
+pMR::verbs::ConnectionAddress::ConnectionAddress(
+    ConnectionAddress const &connectionAddress, Endpoint const &endpoint)
+    : ConnectionAddress(connectionAddress, endpoint.getQueuePair())
+{
 }
 
 pMR::verbs::ConnectionAddress::ConnectionAddress(

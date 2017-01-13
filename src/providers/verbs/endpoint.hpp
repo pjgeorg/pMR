@@ -12,44 +12,43 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_VERBS_QUEUEPAIR_H
-#define pMR_PROVIDERS_VERBS_QUEUEPAIR_H
+#ifndef pMR_PROVIDERS_VERBS_ENDPOINT_H
+#define pMR_PROVIDERS_VERBS_ENDPOINT_H
 
 #include <cstdint>
-extern "C" {
-#include <infiniband/verbs.h>
-}
-#include "completionqueue.hpp"
+#include "connectionaddress.hpp"
+#include "context.hpp"
 #include "protectiondomain.hpp"
+#include "queuepair.hpp"
 
 namespace pMR
 {
     namespace verbs
     {
-        class ConnectionAddress;
-
-        class QueuePair
+        class Endpoint
         {
         public:
-            QueuePair(ProtectionDomain &, CompletionQueue &recvCompletionQueue);
-            QueuePair(ProtectionDomain &, CompletionQueue &sendCompletionQueue,
-                CompletionQueue &recvCompletionQueue);
-            QueuePair(QueuePair const &) = delete;
-            QueuePair(QueuePair &&) = delete;
-            QueuePair &operator=(QueuePair const &) = delete;
-            QueuePair &operator=(QueuePair &&) = delete;
-            ~QueuePair();
-            ibv_qp *get();
-            ibv_qp const *get() const;
-            std::uint32_t getQPN() const;
+            Endpoint(Context &context, ProtectionDomain &protectionDomain);
+            Endpoint(Endpoint const &) = delete;
+            Endpoint(Endpoint &&) = delete;
+            Endpoint &operator=(Endpoint const &) = delete;
+            Endpoint &operator=(Endpoint &&) = delete;
+            ~Endpoint() = default;
+
+            QueuePair &getQueuePair();
+            QueuePair const &getQueuePair() const;
+
             void setStateINIT(std::uint8_t const portNumber);
             void setStateRTR(
                 std::uint8_t const portNumber, ConnectionAddress const &);
             void setStateRTS();
 
+            void poll();
+
         private:
-            ibv_qp *mQueuePair = nullptr;
+            CompletionQueue mCompletionQueue;
+            QueuePair mQueuePair;
         };
     }
 }
-#endif // pMR_PROVIDERS_VERBS_QUEUEPAIR_H
+#endif // pMR_PROVIDERS_VERBS_ENDPOINT_H

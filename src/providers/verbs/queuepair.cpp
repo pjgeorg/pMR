@@ -14,7 +14,14 @@
 
 #include "queuepair.hpp"
 #include <stdexcept>
+#include "connectionaddress.hpp"
 #include "verbs.hpp"
+
+pMR::verbs::QueuePair::QueuePair(
+    ProtectionDomain &protectionDomain, CompletionQueue &completionQueue)
+    : QueuePair(protectionDomain, completionQueue, completionQueue)
+{
+}
 
 pMR::verbs::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     CompletionQueue &sendCompletionQueue, CompletionQueue &recvCompletionQueue)

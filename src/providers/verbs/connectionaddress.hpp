@@ -21,7 +21,6 @@ extern "C" {
 }
 #include "context.hpp"
 #include "gid.hpp"
-#include "queuepair.hpp"
 
 namespace pMR
 {
@@ -33,13 +32,17 @@ namespace pMR
     namespace verbs
     {
         class QueuePair;
+        class Endpoint;
 
         class ConnectionAddress
         {
         public:
             ConnectionAddress() = default;
             ConnectionAddress(
+                Context &, Endpoint const &, std::uint8_t const portNumber);
+            ConnectionAddress(
                 Context &, QueuePair const &, std::uint8_t const portNumber);
+            ConnectionAddress(ConnectionAddress const &, Endpoint const &);
             ConnectionAddress(ConnectionAddress const &, QueuePair const &);
             void setQPN(std::uint32_t const);
             void setLID(std::uint16_t const);

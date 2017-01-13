@@ -20,13 +20,12 @@ extern "C" {
 #include <infiniband/verbs.h>
 }
 #include "config.hpp"
-#include "completionqueue.hpp"
 #include "connectionaddress.hpp"
 #include "context.hpp"
+#include "endpoint.hpp"
 #include "memoryaddress.hpp"
 #include "memoryregion.hpp"
 #include "protectiondomain.hpp"
-#include "queuepair.hpp"
 #include "scattergather.hpp"
 
 namespace pMR
@@ -48,45 +47,41 @@ namespace pMR
             ProtectionDomain &getProtectionDomain();
             ProtectionDomain const &getProtectionDomain() const;
 
-#ifdef VERBS_RDMA
-            void setLocalMemoryAddress(MemoryRegion const &);
-            void postRecvAddressToActive();
-            void postSendAddressToPassive();
-            void postRecvToPassive();
-            void postWriteToActive(
-                MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
-#else
-            void postRecvToActive();
-            void postSendToPassive();
-            void postRecvToPassive(MemoryRegion const &memoryRegion);
             void postSendToActive(
                 MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
-#endif // VERBS_RDMA
+            void postSendToPassive();
+            void postRecvToActive();
+            void postRecvToPassive(MemoryRegion &memoryRegion);
+            void postRecvToPassive();
 
-            void pollActiveCompletionQueue();
-            void pollPassiveCompletionQueue();
+            void pollActive();
+            void pollPassive();
+
+#ifdef VERBS_RDMA
+            void setLocalTargetMemoryAddress(MemoryRegion const &);
+#ifdef VERBS_RDMA_CONTROL
+            void postWriteAddressToPassive();
+#else
+            void postSendAddressToPassive();
+            void postRecvAddressToActive();
+#endif // VERBS_RDMA_CONTROL
+            void postWriteToActive(
+                MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
+#endif // VERBS_RDMA
 
         private:
             Context mContext;
             ProtectionDomain mProtectionDomain;
+            Endpoint mActiveEndpoint;
+            Endpoint mPassiveEndpoint;
 #ifdef VERBS_RDMA
-            alignas(alignment) MemoryAddress mLocalMemoryAddress;
-            alignas(alignment) MemoryAddress mRemoteMemoryAddress;
-            MemoryRegion mSendLocalAddress;
-            MemoryRegion mRecvRemoteAddress;
-#endif // VERBS_RDMA
-            CompletionQueue mActiveCompletionQueue;
-            CompletionQueue mPassiveCompletionQueue;
-            QueuePair mActiveQueuePair;
-            QueuePair mPassiveQueuePair;
-
-            void postSendRequest(QueuePair &queuePair,
-                ScatterGatherElement &scatterGatherElement);
-            void postRecvRequest(QueuePair &queuePair,
-                ScatterGatherElement &scatterGatherElement);
-#ifdef VERBS_RDMA
-            void postWriteRequest(QueuePair &queuePair,
-                ScatterGatherElement &scatterGatherElement);
+            alignas(alignment) MemoryAddress mLocalTargetMemoryAddress;
+            alignas(alignment) MemoryAddress mRemoteTargetMemoryAddress;
+            MemoryRegion mLocalTargetMemoryRegion;
+            MemoryRegion mRemoteTargetMemoryRegion;
+#ifdef VERBS_RDMA_CONTROL
+            MemoryAddress mRemoteMemoryAddress;
+#endif // VERBS_RDMA_CONTROL
 #endif // VERBS_RDMA
         };
     }

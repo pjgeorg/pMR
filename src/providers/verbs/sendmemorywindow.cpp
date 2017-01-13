@@ -27,16 +27,16 @@ pMR::verbs::SendMemoryWindow::SendMemoryWindow(
 
 void pMR::verbs::SendMemoryWindow::init()
 {
-#ifdef VERBS_RDMA
+#if defined VERBS_RDMA && !defined VERBS_RDMA_CONTROL
     mConnection->postRecvAddressToActive();
 #else
     mConnection->postRecvToActive();
-#endif // VERBS_RDMA
+#endif // VERBS_RDMA && !VERBS_RDMA_CONTROL
 }
 
 void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
-    mConnection->pollActiveCompletionQueue();
+    mConnection->pollActive();
 
 #ifdef VERBS_RDMA
     mConnection->postWriteToActive(mMemoryRegion, {sizeByte});
@@ -47,5 +47,5 @@ void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 
 void pMR::verbs::SendMemoryWindow::wait()
 {
-    mConnection->pollActiveCompletionQueue();
+    mConnection->pollActive();
 }
