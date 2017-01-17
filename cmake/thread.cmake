@@ -1,6 +1,8 @@
 if(THREAD STREQUAL "")
     ERROR("No thread given!")
 
+elseif(${THREAD} STREQUAL "C++11")
+
 elseif(${THREAD} STREQUAL "OpenMP")
     find_package(OpenMP)
     if(NOT OPENMP_FOUND)
@@ -20,5 +22,6 @@ endif()
 
 INFO("Thread Support: ${THREAD}")
 string(TOLOWER ${THREAD} THREAD)
+string(REPLACE + p THREAD ${THREAD})
 add_subdirectory(threads/${THREAD})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/threads/${THREAD})
