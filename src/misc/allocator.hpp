@@ -53,27 +53,27 @@ namespace pMR
         {
         }
 
-        pointer address(reference r)
+        pointer address(reference r) const
         {
             return &r;
         }
 
-        const_pointer address(const_reference r)
+        const_pointer address(const_reference r) const
         {
             return &r;
         }
 
-        size_type max_size() const
+        constexpr size_type max_size() const
         {
             return std::numeric_limits<size_type>::max() / sizeof(T);
         }
 
-        bool operator==(AlignedAllocator const &rhs)
+        bool operator!=(AlignedAllocator const &rhs) const
         {
             return !(*this == rhs);
         }
 
-        bool operator!=(AlignedAllocator const &)
+        bool operator==(AlignedAllocator const &) const
         {
             return true;
         }
@@ -88,7 +88,7 @@ namespace pMR
             p->~value_type();
         }
 
-        pointer allocate(size_type const n)
+        pointer allocate(size_type const n) const
         {
             if(n == 0)
             {
@@ -110,7 +110,7 @@ namespace pMR
             return static_cast<pointer>(p);
         }
 
-        void deallocate(pointer p, size_type const n)
+        void deallocate(pointer p, size_type const n) const
         {
             free(p);
         }
