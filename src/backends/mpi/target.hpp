@@ -31,7 +31,21 @@ namespace pMR
     {
     public:
         //! @brief Convert MPI Target to backend-agnostic Target.
+        //! @param communicator MPI Communicator.
+        //! @param targetRank Target MPI rank.
+        //! @param uniqueSendID Unique ID to distiguish MPI messages
+        //!     (Send Tag).
+        //! @param uniqueRecvID Unique ID to distinguish MPI messages
+        //!     (Recv Tag).
+        //! @return Return backend-agnostic Target.
+        Target(MPI_Comm const communicator, int const targetRank,
+            int const uniqueSendID, int const uniqueRecvID);
+        //! @brief Convert MPI Target to backend-agnostic Target.
         //! @warning Only one of the paramteter null and self can be true.
+        //! @note It is hardly ever required to specify the additional
+        //!     parameters null and self for a target. pMR is able to construct
+        //!     this information from source and target rank and send and
+        //!     receive tag.
         //! @param communicator MPI Communicator.
         //! @param targetRank Target MPI rank.
         //! @param uniqueSendID Unique ID to distiguish MPI messages
@@ -44,33 +58,23 @@ namespace pMR
         Target(MPI_Comm const communicator, int const targetRank,
             int const uniqueSendID, int const uniqueRecvID, bool const null,
             bool const self);
-        //! @brief Convert MPI Target to backend-agnostic Target.
-        //! @param communicator MPI Communicator.
-        //! @param targetRank Target MPI rank.
-        //! @param uniqueSendID Unique ID to distiguish MPI messages
-        //!     (Send Tag).
-        //! @param uniqueRecvID Unique ID to distinguish MPI messages
-        //!     (Recv Tag).
-        //! @return Return backend-agnostic Target.
-        Target(MPI_Comm const communicator, int const targetRank,
-            int const uniqueSendID, int const uniqueRecvID);
         ~Target() = default;
         //! @brief Checks whether the target is null (MPI_PROC_NULL).
-        //! @return true if null, false otherwise.
+        //! @return Returns true if null, false otherwise.
         bool isNull() const;
         //! @brief Checks whether the target is the same process.
-        //! @details Connections to the same process may or may not require
-        //!     a second connection attempt by the same process. Using only
-        //!     the backend-agnostic communicator the bahavior is naturally.
-        //!     A connection to a Target retrieved calling getNeighbor with
-        //!     a displacement not equal to zero, but still being the same
-        //!     process, assume there is a second connection attempt. For
-        //!     all other cases, getNeighbor with displacement of zero or
-        //!     getTarget of own ID, there is no other connection attempt
-        //!     required.
-        //!     In terms of MPI: The second is a SendRecv call with both
+        //! @note Connections to the same process may or may not require
+        //!     a second connection attempt by the same process.
+        //! @note Using only the backend-agnostic communicator the bahavior is
+        //!     straightforward. A connection to a Target retrieved calling
+        //!     getNeighbor() with a displacement not equal to zero, but still
+        //!     being the same process, assumes there is a second connection
+        //!     attempt. For all other cases, getNeighbor() with displacement of
+        //!     zero or getTarget() of own ID, there is no other connection
+        //!     attempt required.
+        //! @note In terms of MPI: The second is a SendRecv call with both
         //!     same source and destination rank, and send and receive tag.
-        //! @return true if self, false otherwise.
+        //! @return Returns true if self, false otherwise.
         bool isSelf() const;
         int getTargetRank() const;
         int getUniqueSendID() const;
