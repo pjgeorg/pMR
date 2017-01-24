@@ -53,5 +53,6 @@ namespace pMR
 {
     using size_type = int;
     constexpr std::size_t alignment = @ALIGNMENT@;
+    constexpr std::size_t padding = @PADDING@;
 }
 #endif // pMR_CONFIG_H

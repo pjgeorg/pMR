@@ -192,7 +192,7 @@ void runBenchmark(int argc, char **argv)
     while(msgSize <= maxMsgSize)
     {
         std::vector<std::vector<unsigned char,
-            pMR::AlignedAllocator<unsigned char>>> sendBuffers, recvBuffers;
+            pMR::Allocator<unsigned char>>> sendBuffers, recvBuffers;
         std::vector<pMR::SendWindow<unsigned char>> sendWindows;
         std::vector<pMR::RecvWindow<unsigned char>> recvWindows;
         

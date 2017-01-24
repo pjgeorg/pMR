@@ -61,7 +61,7 @@ namespace pMR
             // Connections for recursive-doubling
             std::vector<pMR::Connection> mRDConnections;
             // Memory Buffer(s)
-            std::vector<unsigned char, pMR::AlignedAllocator<unsigned char>>
+            std::vector<unsigned char, pMR::Allocator<unsigned char>>
                 mBuffers;
             // Memory Windows for pre and post step
             std::unique_ptr<pMR::SendMemoryWindow> mPPSendWindow;

@@ -23,8 +23,9 @@
 
 namespace pMR
 {
-    template<typename T, std::size_t Alignment = alignment>
-    class AlignedAllocator
+    template<typename T, std::size_t Alignment = alignment,
+        std::size_t Padding = padding>
+    class Allocator
     {
     public:
         using value_type = T;
@@ -38,18 +39,18 @@ namespace pMR
         template<class U>
         struct rebind
         {
-            using other = AlignedAllocator<U, Alignment>;
+            using other = Allocator<U, Alignment, Padding>;
         };
 
-        AlignedAllocator() = default;
-        AlignedAllocator(AlignedAllocator const &) = default;
-        AlignedAllocator(AlignedAllocator &&) = default;
-        AlignedAllocator &operator=(AlignedAllocator const &) = delete;
-        AlignedAllocator &operator=(AlignedAllocator &&) = delete;
-        ~AlignedAllocator() = default;
+        Allocator() = default;
+        Allocator(Allocator const &) = default;
+        Allocator(Allocator &&) = default;
+        Allocator &operator=(Allocator const &) = delete;
+        Allocator &operator=(Allocator &&) = delete;
+        ~Allocator() = default;
 
         template<typename U>
-        AlignedAllocator(AlignedAllocator<U, Alignment> const &)
+        Allocator(Allocator<U, Alignment, Padding> const &)
         {
         }
 
@@ -65,15 +66,15 @@ namespace pMR
 
         constexpr size_type max_size() const
         {
-            return std::numeric_limits<size_type>::max() / sizeof(T);
+            return std::numeric_limits<size_type>::max();
         }
 
-        bool operator!=(AlignedAllocator const &rhs) const
+        bool operator!=(Allocator const &rhs) const
         {
             return !(*this == rhs);
         }
 
-        bool operator==(AlignedAllocator const &) const
+        bool operator==(Allocator const &) const
         {
             return true;
         }
@@ -95,14 +96,23 @@ namespace pMR
                 return nullptr;
             }
 
-            if(n > max_size())
+            static_assert(Padding, "Allocator with padding equal to 0.");
+
+            auto size = n * sizeof(T);
+
+            if(Padding != 1)
+            {
+                size = (size + Padding - 1) / Padding * Padding;
+            }
+
+            if(size > max_size())
             {
                 throw std::length_error(
-                    "AlignedAllocator<T>::allocate() - Integer Overflow.");
+                    "Allocator<T>::allocate() - Integer Overflow.");
             }
 
             void *p;
-            if(posix_memalign(&p, Alignment, n * sizeof(T)))
+            if(posix_memalign(&p, Alignment, size))
             {
                 throw std::bad_alloc();
             }

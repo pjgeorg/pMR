@@ -19,6 +19,7 @@ set(MIC OFF CACHE BOOL "Build for for first generation Intel Xeon Phi.")
 set(PROFILING OFF CACHE BOOL "Enable profiling.")
 
 set(ALIGNMENT 64 CACHE STRING "Set preferred memory alignment.")
+set(PADDING 1 CACHE STRING "Set preferred memory allocation padding.")
 set(WARN.ZERO ON CACHE BOOL "Warn when using zero sized windows.")
 
 

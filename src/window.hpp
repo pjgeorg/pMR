@@ -141,7 +141,7 @@ namespace pMR
         bool isSame(size_type const count);
 
     protected:
-        std::vector<T, AlignedAllocator<T>> mVector;
+        std::vector<T, Allocator<T>> mVector;
         T *mBuffer;
         size_type const mCount;
         void checkBuffer();
