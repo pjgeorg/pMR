@@ -24,6 +24,12 @@ elseif(${CLUSTER} STREQUAL "QPACE2")
         add_definitions(-DQPACE2_WARN_TOPOLOGY)
     endif()
 
+elseif(${CLUSTER} STREQUAL "QPACE3")
+    set(PROVIDER.NULL ON)
+    set(PROVIDER.SELF ON)
+    set(PROVIDER.OFI ON)
+    set(ALLREDUCE "RECURSIVEDOUBLING")
+
 elseif(${CLUSTER} STREQUAL "QPACEB")
     set(PROVIDER.NULL ON)
     set(PROVIDER.SELF ON)
