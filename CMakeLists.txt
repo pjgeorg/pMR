@@ -24,6 +24,7 @@ set(WARN.ZERO ON CACHE BOOL "Warn when using zero sized windows.")
 
 
 set(MPI.PERSISTENT OFF CACHE BOOL "Enable persistent communication.")
+set(MPI.TAG.NARROW OFF CACHE BOOL "Enable narrow MPI tags to range [0,max(uint16_t))")
 
 set(NULL.WARN ON CACHE BOOL "Warn when using provider null.")
 

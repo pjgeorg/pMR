@@ -22,6 +22,11 @@ if(PROVIDER.MPI)
         add_definitions(-DMPI_PERSISTENT)
     endif()
 
+    if(MPI.TAG.NARROW)
+        set(MPI_CAPS "${MPI_CAPS} TagNarrow")
+        add_definitions(-DMPI_TAG_NARROW)
+    endif()
+
     add_subdirectory(providers/mpi)
     list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_MPI>)
     set(PROVIDER_STRING "${PROVIDER_STRING} MPI")
