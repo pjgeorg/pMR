@@ -14,6 +14,7 @@
 
 #include "counter.hpp"
 #include <stdexcept>
+#include "../../arch/processor.hpp"
 
 pMR::ofi::Counter::Counter(Domain &domain)
 {
@@ -49,10 +50,17 @@ fid_cntr const *pMR::ofi::Counter::get() const
 
 void pMR::ofi::Counter::poll()
 {
+#ifdef OFI_POLL_SPIN
+    while(fi_cntr_read(mCounter) != 1)
+    {
+        CPURelax();
+    }
+#else
     if(fi_cntr_wait(mCounter, 1, -1))
     {
         throw std::runtime_error("pMR: Error waiting on counter.");
     }
+#endif // OFI_POLL_SPIN
 
     if(fi_cntr_set(mCounter, 0))
     {

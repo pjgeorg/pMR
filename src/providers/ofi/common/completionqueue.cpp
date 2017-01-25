@@ -14,6 +14,9 @@
 
 #include "completionqueue.hpp"
 #include <stdexcept>
+extern "C" {
+#include <rdma/fi_errno.h>
+}
 
 pMR::ofi::CompletionQueue::~CompletionQueue()
 {
@@ -51,7 +54,22 @@ void pMR::ofi::CompletionQueue::open(
 
 void pMR::ofi::CompletionQueue::poll(void *entry)
 {
+#ifdef OFI_POLL_SPIN
+    decltype(fi_cq_read(mCompletionQueue, entry, 1)) ret;
+
+    do
+    {
+        ret = fi_cq_read(mCompletionQueue, entry, 1);
+
+        if(ret == 1)
+            return;
+
+        CPURelax();
+    } while(ret == -FI_EAGAIN);
+#else
     if(fi_cq_sread(mCompletionQueue, entry, 1, NULL, -1) != 1)
+#endif // OFI_POLL_SPIN
+
     {
         throw std::runtime_error(
             "pMR: Unable to retrieve Completion queue event.");

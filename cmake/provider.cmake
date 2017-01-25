@@ -87,6 +87,11 @@ if(PROVIDER.OFI)
         endif()
     endif()
 
+    if(OFI.POLL.SPIN)
+        set(OFI_CAPS "${OFI_CAPS} PollSpin")
+        add_definitions(-DOFI_POLL_SPIN)
+    endif()
+
     if(OFI.CONTROL.PROGRESS.AUTO)
         set(OFI_CAPS "${OFI_CAPS} ControlProgressAuto")
         add_definitions(-DOFI_CONTROL_PROGRESS_AUTO)
