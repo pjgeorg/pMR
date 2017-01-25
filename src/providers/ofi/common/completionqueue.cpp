@@ -17,6 +17,7 @@
 extern "C" {
 #include <rdma/fi_errno.h>
 }
+#include "../../arch/processor.hpp"
 
 pMR::ofi::CompletionQueue::~CompletionQueue()
 {
