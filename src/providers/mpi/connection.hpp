@@ -43,7 +43,7 @@ namespace pMR
         private:
             MPI_Comm const mCommunicator = MPI_COMM_NULL;
             int const mTargetRank = MPI_PROC_NULL;
-            int const mSendTag = -1;
+            int mSendTag = -1;
             int mRecvTag = -1;
             bool mMultipleThreadSupport = false;
         };

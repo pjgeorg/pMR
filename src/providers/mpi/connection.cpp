@@ -22,12 +22,11 @@ pMR::mpi::Connection::Connection(Target const &target)
     : mCommunicator{target.getMPICommunicator()}
     , mTargetRank{target.getTargetRank()}
 {
-    mSendTag =
-    { static_cast<int>(reinterpret_cast<std::intptr_t>(this) %
+    mSendTag = {static_cast<int>(reinterpret_cast<std::intptr_t>(this) %
 #ifdef MPI_TAG_NARROW
-        std::numeric_limits<std::uint16_t>::max()) }
+        std::numeric_limits<std::uint16_t>::max())};
 #else
-        std::numeric_limits<int>::max()) }
+        std::numeric_limits<int>::max())};
 #endif // MPI_TAG_NARROW
 
     if(backend::threadMultiple())
