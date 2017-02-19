@@ -128,7 +128,8 @@ void pMR::ofi::GlobalEndpoint::detectEagerSize()
     }
     catch(std::invalid_argument const &e)
     {
-        std::string err("Unable to parse rendezvous threshold environment variable: ");
+        std::string err(
+            "Unable to parse rendezvous threshold environment variable: ");
         err += OFIRndvThresholdEnv;
         throw std::runtime_error(err);
     }

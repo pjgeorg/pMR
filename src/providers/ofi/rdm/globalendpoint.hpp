@@ -19,12 +19,12 @@
 #include <unordered_map>
 #include <vector>
 #include "thread.hpp"
-#include "../ofi.hpp"
 #include "../common/addressvector.hpp"
 #include "../common/domain.hpp"
 #include "../common/endpoint.hpp"
 #include "../common/fabric.hpp"
 #include "../common/info.hpp"
+#include "../ofi.hpp"
 
 namespace pMR
 {
