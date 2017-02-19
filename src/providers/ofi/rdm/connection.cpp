@@ -85,6 +85,11 @@ void pMR::ofi::Connection::checkMessageSize(std::size_t size) const
     return mEndpoint->checkMessageSize(size);
 }
 
+bool pMR::ofi::Connection::checkEagerSize(std::size_t size) const
+{
+    return {mEndpoint->checkEagerSize(size)};
+}
+
 void pMR::ofi::Connection::postSendToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {

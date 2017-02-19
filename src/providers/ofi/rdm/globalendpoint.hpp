@@ -19,6 +19,7 @@
 #include <unordered_map>
 #include <vector>
 #include "thread.hpp"
+#include "../ofi.hpp"
 #include "../common/addressvector.hpp"
 #include "../common/domain.hpp"
 #include "../common/endpoint.hpp"
@@ -54,6 +55,7 @@ namespace pMR
 
             void checkMessageSize(std::size_t const size) const;
             std::uint64_t checkInjectSize(std::size_t size) const;
+            bool checkEagerSize(std::size_t size) const;
 
         private:
             Fabric mFabric;
@@ -77,6 +79,9 @@ namespace pMR
 
             std::size_t mMaxSize = 0;
             std::size_t mInjectSize = 0;
+            std::size_t mEagerSize = OFIRndvThreshold;
+
+            void detectEagerSize();
 
             void bind(std::unordered_map<std::uint64_t, int> &map,
                 std::uint64_t const iD);
