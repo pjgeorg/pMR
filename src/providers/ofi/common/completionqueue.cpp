@@ -66,7 +66,7 @@ void pMR::ofi::CompletionQueue::poll(void *entry)
             return;
 
         CPURelax();
-    } while(ret == -FI_EAGAIN);
+    } while(ret == -FI_EAGAIN || ret == 0);
 #else
     if(fi_cq_sread(mCompletionQueue, entry, 1, NULL, -1) != 1)
 #endif // OFI_POLL_SPIN
