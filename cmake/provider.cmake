@@ -66,6 +66,13 @@ if(PROVIDER.OFI)
     endif()
     add_definitions(-DOFI_EP_${OFI.EP})
 
+    if(OFI.EP STREQUAL "RDM")
+        if(OFI.RDM.DIRECTED.RECEIVE)
+            set(OFI_CAPS "${OFI_CAPS} RDMDirectedReceive")
+            add_definitions(-DOFI_RDM_DIRECTED_RECEIVE)
+        endif()
+    endif()
+
     if(OFI.RMA)
         set(OFI_CAPS "${OFI_CAPS} RMA")
         add_definitions(-DOFI_RMA)

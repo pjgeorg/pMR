@@ -39,6 +39,7 @@ set(OFI.CONTROL.PROGRESS.AUTO OFF CACHE BOOL "Automatic progess of control.")
 set(OFI.DATA.PROGRESS.AUTO OFF CACHE BOOL "Automatic progess of data.")
 set(OFI.RM OFF CACHE BOOL "Enable Resource Management.")
 set(OFI.MR.SCALABLE OFF CACHE BOOL "Scalable Memory Registration Mode")
+set(OFI.RDM.DIRECTED.RECEIVE OFF CACHE BOOL "Enable directed receive capability for RDM endpoints.")
 
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
 

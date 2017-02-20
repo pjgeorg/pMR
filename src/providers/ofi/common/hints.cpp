@@ -38,8 +38,12 @@ pMR::ofi::Hints::Hints()
     info->caps |= FI_MSG;
 #endif // OFI_EP_MSG
 #ifdef OFI_EP_RDM
-    info->caps |= FI_TAGGED | FI_DIRECTED_RECV;
+    info->caps |= FI_TAGGED;
 #endif // OFI_EP_RDM
+
+#ifdef OFI_RDM_DIRECTED_RECEIVE
+    info->caps |= FI_DIRECTED_RECV;
+#endif // OFI_RDM_DIRECTED_RECEIVE
 
 #ifdef OFI_RMA
     info->caps |= FI_RMA | FI_WRITE | FI_REMOTE_WRITE;
