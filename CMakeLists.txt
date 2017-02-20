@@ -35,10 +35,10 @@ set(OFI.RMA.EVENT.NONZERO ON CACHE BOOL "RMA Events require non-zero size receiv
 set(OFI.RMA.TARGET.RX OFF CACHE BOOL "RMA with immediate data consumes receive buffer.")
 set(OFI.RMA.CONTROL OFF CACHE BOOL "Also use RMA capability for control messages.")
 set(OFI.POLL.SPIN ON CACHE BOOL "Use spin method to poll for completion/counter.")
-set(OFI.CONTROL.PROGRESS.AUTO OFF CACHE BOOL "Automatic progess of control.")
-set(OFI.DATA.PROGRESS.AUTO OFF CACHE BOOL "Automatic progess of data.")
+set(OFI.CONTROL.PROGRESS.AUTO ON CACHE BOOL "Automatic progess of control.")
+set(OFI.DATA.PROGRESS.AUTO ON CACHE BOOL "Automatic progess of data.")
 set(OFI.RM OFF CACHE BOOL "Enable Resource Management.")
-set(OFI.MR.SCALABLE OFF CACHE BOOL "Scalable Memory Registration Mode")
+set(OFI.MR.SCALABLE ON CACHE BOOL "Scalable Memory Registration Mode.")
 set(OFI.RDM.DIRECTED.RECEIVE OFF CACHE BOOL "Enable directed receive capability for RDM endpoints.")
 
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
