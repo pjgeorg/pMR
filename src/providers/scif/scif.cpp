@@ -12,23 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "nodeid.hpp"
-#include <cstring>
-#include <stdexcept>
-extern "C" {
-#include <scif.h>
-}
-#include "../../misc/string.hpp"
+#include "scif.hpp"
 
-std::uint16_t pMR::scif::getNodeID()
+std::size_t pMR::scif::padSize(std::size_t const size)
 {
-    uint16_t iD;
-
-    if(scif_get_nodeIDs(NULL, 0, &iD) == -1)
-    {
-        throw std::runtime_error(
-            toString("pMR: Unable to get Node ID.", std::strerror(errno)));
-    }
-
-    return {iD};
+    return {(size + Padding - 1) / Padding * Padding};
 }

@@ -74,6 +74,21 @@ void pMR::ofi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_SCIF
+#include "../../providers/scif/recvmemorywindow.hpp"
+#include "../../providers/scif/sendmemorywindow.hpp"
+
+void pMR::scif::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+{
+    delete p;
+}
+
+void pMR::scif::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+{
+    delete p;
+}
+#endif // pMR_PROVIDER_SCIF
+
 #ifdef pMR_PROVIDER_SELF
 #include "../../providers/self/recvmemorywindow.hpp"
 #include "../../providers/self/sendmemorywindow.hpp"

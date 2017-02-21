@@ -65,6 +65,11 @@ namespace pMR
             mOFI;
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_SCIF
+        std::unique_ptr<scif::RecvMemoryWindow, scif::RecvMemoryWindowDeleter>
+            mSCIF;
+#endif // pMR_PROVIDER_SCIF
+
 #ifdef pMR_PROVIDER_SELF
         std::unique_ptr<self::RecvMemoryWindow, self::RecvMemoryWindowDeleter>
             mSelf;

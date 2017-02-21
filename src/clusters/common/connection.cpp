@@ -59,6 +59,16 @@ void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
 }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_SCIF
+#include "../../providers/scif/connection.hpp"
+
+void pMR::Connection::connectSCIF(Target const &target)
+{
+    mProvider = Provider::scif;
+    mSCIF = std::make_shared<scif::Connection>(target);
+}
+#endif // pMR_PROVIDER_SCIF
+
 #ifdef pMR_PROVIDER_SELF
 #include "../../providers/self/connection.hpp"
 

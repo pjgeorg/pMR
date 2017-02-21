@@ -12,23 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "nodeid.hpp"
-#include <cstring>
-#include <stdexcept>
-extern "C" {
-#include <scif.h>
-}
-#include "../../misc/string.hpp"
+#include "mmap.hpp"
 
-std::uint16_t pMR::scif::getNodeID()
+void pMR::scif::munmap(void *addr, std::size_t const size)
 {
-    uint16_t iD;
+    auto diff = static_cast<std::size_t>(
+        reinterpret_cast<std::uintptr_t>(addr) % Padding);
+    addr =
+        reinterpret_cast<void *>(reinterpret_cast<std::uintptr_t>(addr) - diff);
 
-    if(scif_get_nodeIDs(NULL, 0, &iD) == -1)
+    if(scif_munmap(addr, padSize({size + diff})) == -1)
     {
-        throw std::runtime_error(
-            toString("pMR: Unable to get Node ID.", std::strerror(errno)));
+        throw std::runtime_error(toString(
+            "pMR: Unable to unmap memory region.", std::strerror(errno)));
     }
-
-    return {iD};
 }

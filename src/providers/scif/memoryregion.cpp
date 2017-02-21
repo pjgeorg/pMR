@@ -12,23 +12,28 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "nodeid.hpp"
-#include <cstring>
-#include <stdexcept>
-extern "C" {
-#include <scif.h>
-}
-#include "../../misc/string.hpp"
+#include "memoryregion.hpp"
+#include "../../misc/print.hpp"
 
-std::uint16_t pMR::scif::getNodeID()
+pMR::scif::MemoryRegion::~MemoryRegion()
 {
-    uint16_t iD;
-
-    if(scif_get_nodeIDs(NULL, 0, &iD) == -1)
+    if(mLength > 0)
     {
-        throw std::runtime_error(
-            toString("pMR: Unable to get Node ID.", std::strerror(errno)));
+        if(scif_unregister(
+               mEndpoint, mMemoryRegion, padSize({mLength + mOffset})) == -1)
+        {
+            print("pMR: Probably unable to unregister memory region:",
+                std::strerror(errno));
+        }
     }
+}
 
-    return {iD};
+off_t pMR::scif::MemoryRegion::get() const
+{
+    return {mMemoryRegion + mOffset};
+}
+
+std::size_t pMR::scif::MemoryRegion::getLength() const
+{
+    return {mLength};
 }

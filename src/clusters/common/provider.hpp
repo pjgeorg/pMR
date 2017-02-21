@@ -33,6 +33,9 @@ namespace pMR
 #ifdef pMR_PROVIDER_OFI
         ofi,
 #endif // pMR_PROVIDER_OFI
+#ifdef pMR_PROVIDER_SCIF
+        scif,
+#endif // pMR_PROVIDER_SCIF
 #ifdef pMR_PROVIDER_SELF
         self,
 #endif // pMR_PROVIDER_SELF
@@ -117,6 +120,25 @@ namespace pMR
         };
     }
 #endif // pMR_PROVIDER_OFI
+
+#ifdef pMR_PROVIDER_SCIF
+    namespace scif
+    {
+        class Connection;
+        class SendMemoryWindow;
+        class SendMemoryWindowDeleter
+        {
+        public:
+            void operator()(SendMemoryWindow *) const;
+        };
+        class RecvMemoryWindow;
+        class RecvMemoryWindowDeleter
+        {
+        public:
+            void operator()(RecvMemoryWindow *) const;
+        };
+    }
+#endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
     namespace self

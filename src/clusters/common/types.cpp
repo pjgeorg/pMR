@@ -37,6 +37,12 @@ static_assert(std::numeric_limits<pMR::size_type>::max() <=
     "OFI max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_SCIF
+static_assert(std::numeric_limits<pMR::size_type>::max() <=
+        std::numeric_limits<std::size_t>::max(),
+    "SCIF max message size lower than desired pMR max message size.");
+#endif // pMR_PROVIDER_SCIF
+
 #ifdef pMR_PROVIDER_SELF
 static_assert(std::numeric_limits<pMR::size_type>::max() <=
         std::numeric_limits<std::size_t>::max(),

@@ -41,6 +41,10 @@
 #cmakedefine pMR_PROVIDER_OFI
 #endif // pMR_PROVIDER_OFI
 
+#ifndef pMR_PROVIDER_SCIF
+#cmakedefine pMR_PROVIDER_SCIF
+#endif // pMR_PROVIDER_SCIF
+
 #ifndef pMR_PROVIDER_SELF
 #cmakedefine pMR_PROVIDER_SELF
 #endif // pMR_PROVIDER_SELF
@@ -54,5 +58,11 @@ namespace pMR
     using size_type = int;
     constexpr std::size_t alignment = @ALIGNMENT@;
     constexpr std::size_t padding = @PADDING@;
+
+    template<typename T>
+    constexpr std::size_t cacheLineSize()
+    {
+        return {@CACHELINESIZE@ / sizeof(T)};
+    }
 }
 #endif // pMR_CONFIG_H

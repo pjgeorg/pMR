@@ -12,23 +12,31 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "nodeid.hpp"
-#include <cstring>
-#include <stdexcept>
-extern "C" {
-#include <scif.h>
-}
-#include "../../misc/string.hpp"
+#include "peerendpoint.hpp"
 
-std::uint16_t pMR::scif::getNodeID()
+pMR::scif::PeerEndpoint::PeerEndpoint(scif_epd_t const endpoint)
+    : mPeerEndpoint(endpoint)
 {
-    uint16_t iD;
+}
 
-    if(scif_get_nodeIDs(NULL, 0, &iD) == -1)
+bool pMR::scif::PeerEndpoint::isConnected() const
+{
+    if(mPeerEndpoint == static_cast<scif_epd_t>(-1))
     {
-        throw std::runtime_error(
-            toString("pMR: Unable to get Node ID.", std::strerror(errno)));
+        return {false};
     }
+    else
+    {
+        return {true};
+    }
+}
 
-    return {iD};
+scif_epd_t &pMR::scif::PeerEndpoint::get()
+{
+    return {mPeerEndpoint};
+}
+
+scif_epd_t const &pMR::scif::PeerEndpoint::get() const
+{
+    return {mPeerEndpoint};
 }

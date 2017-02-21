@@ -12,23 +12,28 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "nodeid.hpp"
-#include <cstring>
-#include <stdexcept>
-extern "C" {
-#include <scif.h>
-}
-#include "../../misc/string.hpp"
+#include "recvmemorywindow.hpp"
+#include "connection.hpp"
 
-std::uint16_t pMR::scif::getNodeID()
+pMR::scif::RecvMemoryWindow::RecvMemoryWindow(
+    std::shared_ptr<Connection> const connection, void *buffer,
+    std::size_t const sizeByte)
+    : mConnection(connection)
+    , mMemoryRegion(mConnection->getPassiveEndpoint(), buffer, {sizeByte},
+          SCIF_PROT_READ | SCIF_PROT_WRITE)
 {
-    uint16_t iD;
+}
 
-    if(scif_get_nodeIDs(NULL, 0, &iD) == -1)
-    {
-        throw std::runtime_error(
-            toString("pMR: Unable to get Node ID.", std::strerror(errno)));
-    }
+void pMR::scif::RecvMemoryWindow::init()
+{
+    mConnection->postAddress(mMemoryRegion.get());
+}
 
-    return {iD};
+void pMR::scif::RecvMemoryWindow::post()
+{
+}
+
+void pMR::scif::RecvMemoryWindow::wait()
+{
+    mConnection->pollRemoteNotify();
 }
