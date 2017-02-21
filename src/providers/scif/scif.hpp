@@ -22,7 +22,7 @@ namespace pMR
     namespace scif
     {
         constexpr std::size_t Padding = 4096;
-        constexpr std::size_t DMAThreshold = 32 * 1024;
+        constexpr std::size_t DMAThreshold = 0 * 1024;
 
         std::size_t padSize(std::size_t const size);
     }
