@@ -1,5 +1,6 @@
 add_library(MISC OBJECT
     ip.cpp
+    random.cpp
     string.cpp
     time.cpp
     xdump.cpp)

@@ -21,34 +21,61 @@
 
 namespace pMR
 {
+    class Seed
+    {
+    protected:
+        ~Seed() = default;
+        static std::random_device mSeed;
+        static std::default_random_engine mEngine;
+    };
+
+    template<typename T, bool = std::is_integral<T>::value>
+    class Random;
+
     template<typename T>
-    class Random
+    class Random<T, true> : Seed
     {
     public:
-        Random()
-            : mEngine(mSeed())
-            , mDistribution(
-                  std::numeric_limits<T>::min(), std::numeric_limits<T>::max())
-        {
-        }
-
-        ~Random() = default;
-
-        T getRandomNumber()
-        {
-            return mDistribution(mEngine);
-        }
+        T getRandomNumber();
 
     private:
-        std::random_device mSeed;
-        std::default_random_engine mEngine;
-        std::uniform_int_distribution<T> mDistribution;
+        static std::uniform_int_distribution<T> mDistribution;
+    };
+
+    template<typename T>
+    class Random<T, false> : Seed
+    {
+    public:
+        T getRandomNumber();
+
+    private:
+        static std::uniform_real_distribution<T> mDistribution;
     };
 
     template<typename T>
     T getRandomNumber()
     {
-        return Singleton<Random<T>>::Instance().getRandomNumber();
+        return Random<T>().getRandomNumber();
     }
 }
+
+template<typename T>
+T pMR::Random<T, true>::getRandomNumber()
+{
+    return mDistribution(mEngine);
+}
+
+template<typename T>
+std::uniform_int_distribution<T> pMR::Random<T, true>::mDistribution(
+    std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+
+template<typename T>
+T pMR::Random<T, false>::getRandomNumber()
+{
+    return mDistribution(mEngine);
+}
+
+template<typename T>
+std::uniform_real_distribution<T> pMR::Random<T, false>::mDistribution(
+    std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 #endif // pMR_MISC_RANDOM_H
