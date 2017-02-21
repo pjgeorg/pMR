@@ -15,6 +15,7 @@
 #include "endpoint.hpp"
 #include <cerrno>
 #include <cstring>
+#include <limits>
 #include <stdexcept>
 extern "C" {
 #include <fcntl.h>
@@ -49,17 +50,17 @@ scif_epd_t const &pMR::scif::Endpoint::get() const
     return {mEndpoint};
 }
 
-pMR::scif::Address pMR::scif::Endpoint::bind(std::uint16_t port)
+pMR::scif::Address pMR::scif::Endpoint::bind(std::uint16_t const port)
 {
-    port = scif_bind(mEndpoint, port);
+    auto boundPort = scif_bind(mEndpoint, port);
 
-    if(port == -1)
+    if(boundPort < 0 || boundPort > std::numeric_limits<std::uint16_t>::max())
     {
         throw std::runtime_error(
             toString("pMR: Unable to bind endpoint:", std::strerror(errno)));
     }
 
-    return Address(port);
+    return Address({static_cast<std::uint16_t>(boundPort)});
 }
 
 void pMR::scif::Endpoint::listen()

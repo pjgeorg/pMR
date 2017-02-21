@@ -37,7 +37,7 @@ namespace pMR
             ~Endpoint();
             scif_epd_t &get();
             scif_epd_t const &get() const;
-            Address bind(std::uint16_t port = 0);
+            Address bind(std::uint16_t const port = 0);
             void listen();
             bool connect(Address &address, bool const blocking = true);
             PeerEndpoint accept(
