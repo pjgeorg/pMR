@@ -16,6 +16,7 @@
 #define pMR_PROVIDERS_CMA_CONNECTION_H
 
 #include <cstdint>
+#include <array>
 extern "C" {
 #include <sys/uio.h>
 }
@@ -52,10 +53,10 @@ namespace pMR
             iovec mRemoteNotifyRecv;
             // Occupy a full cache line for notifier to avoid false cache
             // line sharing. However we only use the first element.
-            alignas(alignment) std::uint8_t mNotifySend[alignment] = {};
-            alignas(alignment) std::uint8_t mNotifyRecv[alignment] = {};
+            alignas(alignment) std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> mNotifySend = {};
+            alignas(alignment) std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> mNotifyRecv = {};
             void postNotify(iovec const &) const;
-            void pollNotify(std::uint8_t (&notify)[alignment]);
+            void pollNotify(std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> &notify);
             void checkBufferSize(iovec const &buffer) const;
         };
     }

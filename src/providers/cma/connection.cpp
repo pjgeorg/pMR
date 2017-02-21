@@ -31,11 +31,11 @@ pMR::cma::Connection::Connection(Target const &target)
         reinterpret_cast<std::uintptr_t>(&mDestination)};
     std::get<2>(originAddress) = {sizeof(mDestination)};
     std::get<3>(originAddress) = {
-        reinterpret_cast<std::uintptr_t>(mNotifySend)};
-    std::get<4>(originAddress) = {sizeof(mNotifySend[0])};
+        reinterpret_cast<std::uintptr_t>(mNotifySend.data())};
+    std::get<4>(originAddress) = {sizeof(std::get<0>(mNotifySend))};
     std::get<5>(originAddress) = {
-        reinterpret_cast<std::uintptr_t>(mNotifyRecv)};
-    std::get<6>(originAddress) = {sizeof(mNotifyRecv[0])};
+        reinterpret_cast<std::uintptr_t>(mNotifyRecv.data())};
+    std::get<6>(originAddress) = {sizeof(std::get<0>(mNotifyRecv))};
 
     backend::exchange(target, originAddress, targetAddress);
 
@@ -125,13 +125,13 @@ void pMR::cma::Connection::postNotify(iovec const &remoteNotify) const
     writeData(localNotify, remoteNotify);
 }
 
-void pMR::cma::Connection::pollNotify(std::uint8_t (&notify)[alignment])
+void pMR::cma::Connection::pollNotify(std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> &notify)
 {
-    while(notify[0] == 0)
+    while(std::get<0>(notify) == 0)
     {
         CPURelax();
     }
-    notify[0] = 0;
+    std::get<0>(notify) = 0;
 }
 
 void pMR::cma::Connection::checkBufferSize(iovec const &buffer) const
