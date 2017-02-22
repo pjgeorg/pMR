@@ -46,10 +46,9 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 - <b>MPI</b>: For applications using MPI for multi-processing.
 
 ### Supported options for THREAD ###
-- <b>None</b>: Suitable for single-threaded applications.
-- <b>Serialized</b>: Suitable for multi-threaded applications with serialized calls to pMR functions (except explicitly multi-threaded functions).
-- <b>OpenMP</b>: Support for multi-threaded applications using OpenMP.
-- <b>C++11</b>: Support for multi-threaded applications using C++11 threads.
+- <b>Single</b>: Single-threaded application.
+- <b>Serialized</b>: Multi-threaded application with serialized calls to pMR functions (except explicitly multi-threaded functions).
+- <b>Multiple</b>: Multi-threaded application.
 
 Note: Even in case of non-serialized multi-threaded applications, calls to one particular connection still have to be serialized. I.e. no two threads are allowed to be working on the same connection concurrently.
 

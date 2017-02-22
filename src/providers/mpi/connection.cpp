@@ -14,13 +14,13 @@
 
 #include "connection.hpp"
 #include "target.hpp"
-#include "thread.hpp"
 #include "../../backends/backend.hpp"
 #include "../../backends/mpi/threadsupport.hpp"
 
 pMR::mpi::Connection::Connection(Target const &target)
     : mCommunicator{target.getMPICommunicator()}
     , mTargetRank{target.getTargetRank()}
+    , mThreadLevel{backend::ThreadSupport().getLevel()}
 {
     mSendTag = {static_cast<int>(reinterpret_cast<std::intptr_t>(this) %
 #ifdef MPI_TAG_NARROW
@@ -28,19 +28,6 @@ pMR::mpi::Connection::Connection(Target const &target)
 #else
         std::numeric_limits<int>::max())};
 #endif // MPI_TAG_NARROW
-
-    if(backend::threadMultiple())
-    {
-        mMultipleThreadSupport = {true};
-    }
-    else
-    {
-        if(!backend::threadSerialized() && !thread::isThreaded())
-        {
-            throw std::runtime_error(
-                "pMR: Require at least MPI_THREAD_SERIALIZED Thread support");
-        }
-    }
 
     // Exchange a (hopefully) unique message tag with remote
     backend::exchange(target, mSendTag, mRecvTag);
@@ -66,7 +53,7 @@ int pMR::mpi::Connection::getRecvTag() const
     return {mRecvTag};
 }
 
-bool pMR::mpi::Connection::multipleThreadSupport() const
+enum pMR::ThreadLevel pMR::mpi::Connection::getThreadLevel() const
 {
-    return {mMultipleThreadSupport};
+    return {mThreadLevel};
 }

@@ -17,14 +17,16 @@ extern "C" {
 #include <mpi.h>
 }
 #include "target.hpp"
-#include "thread.hpp"
 #include "../backend.hpp"
 #include "threadsupport.hpp"
 
 void pMR::backend::exchange(Target const &target, void const *sendBuffer,
     void *recvBuffer, int const sizeByte)
 {
-    if(threadMultiple() || !thread::isThreaded() || thread::isSerialized())
+    auto threadMPI = ThreadSupport().getLevel();
+
+    if(threadMPI >= ThreadLevel::Multiple ||
+        ThreadLevel <= ThreadLevel::Serialized)
     {
         if(MPI_Sendrecv(sendBuffer, {sizeByte}, MPI_BYTE,
                {target.getTargetRank()}, {target.getUniqueSendID()}, recvBuffer,
@@ -38,12 +40,12 @@ void pMR::backend::exchange(Target const &target, void const *sendBuffer,
     }
     else
     {
-        if(threadSerialized())
+        if(threadMPI >= ThreadLevel::Serialized)
         {
             MPI_Request sendRequest;
             MPI_Request recvRequest;
             {
-                thread::ScopedLock scopedLock;
+                std::lock_guard<std::mutex> lock(ThreadSupport::Mutex);
                 if(MPI_Irecv(recvBuffer, {sizeByte}, MPI_BYTE,
                        {target.getTargetRank()}, {target.getUniqueRecvID()},
                        {target.getMPICommunicator()},
@@ -65,7 +67,7 @@ void pMR::backend::exchange(Target const &target, void const *sendBuffer,
             int flag = {static_cast<int>(false)};
             while(!flag)
             {
-                thread::ScopedLock scopedLock;
+                std::lock_guard<std::mutex> lock(ThreadSupport::Mutex);
                 if(MPI_Test(&sendRequest, &flag, MPI_STATUS_IGNORE) !=
                     MPI_SUCCESS)
                 {
@@ -76,7 +78,7 @@ void pMR::backend::exchange(Target const &target, void const *sendBuffer,
             flag = {static_cast<int>(false)};
             while(!flag)
             {
-                thread::ScopedLock scopedLock;
+                std::lock_guard<std::mutex> lock(ThreadSupport::Mutex);
                 if(MPI_Test(&recvRequest, &flag, MPI_STATUS_IGNORE) !=
                     MPI_SUCCESS)
                 {

@@ -16,16 +16,17 @@ if(WARN.ZERO)
     set(pMR_WARN_ZERO WARN.ZERO)
 endif()
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 include(arch)
 include(thread)
 include(backend)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 include(provider)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
+# Re-configure config.hpp to set all enabled providers
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY)
 
 add_subdirectory(clusters/common)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/common)
@@ -53,7 +54,6 @@ endif()
 add_library(pmr STATIC
     $<TARGET_OBJECTS:ARCH>
     $<TARGET_OBJECTS:MISC>
-    $<TARGET_OBJECTS:THREAD>
     $<TARGET_OBJECTS:BACKEND>
     $<TARGET_OBJECTS:CLUSTER_COMMON>
     $<TARGET_OBJECTS:CLUSTER>

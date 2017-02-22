@@ -14,8 +14,9 @@
 
 #include "recvmemorywindow.hpp"
 #include <stdexcept>
+#include "config.hpp"
 #include "connection.hpp"
-#include "thread.hpp"
+#include "../../backends/mpi/threadsupport.hpp"
 
 pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
@@ -23,13 +24,14 @@ pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
     : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
 {
 #ifdef MPI_PERSISTENT
-    if(mConnection->multipleThreadSupport())
+    if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
+        ThreadLevel <= ThreadLevel::Serialized)
     {
         initRecv();
     }
     else
     {
-        thread::ScopedLock scopedLock;
+        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
         initRecv();
     }
 #endif // MPI_PERSISTENT
@@ -37,30 +39,30 @@ pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
 
 pMR::mpi::RecvMemoryWindow::~RecvMemoryWindow()
 {
-    if(mConnection->multipleThreadSupport())
+    if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
+        ThreadLevel <= ThreadLevel::Serialized)
     {
         freeRequest();
     }
     else
     {
-        thread::ScopedLock scopedLock;
+        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
         freeRequest();
     }
 }
 
 void pMR::mpi::RecvMemoryWindow::init()
 {
-    if(mConnection->multipleThreadSupport())
+    if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
+        ThreadLevel <= ThreadLevel::Serialized)
     {
         recv();
     }
     else
     {
-        thread::ScopedLock scopedLock;
+        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
         recv();
     }
-
-    thread::ScopedLock scopedLock;
 }
 
 void pMR::mpi::RecvMemoryWindow::post()
@@ -69,7 +71,8 @@ void pMR::mpi::RecvMemoryWindow::post()
 
 void pMR::mpi::RecvMemoryWindow::wait()
 {
-    if(thread::isSerialized() || mConnection->multipleThreadSupport())
+    if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
+        ThreadLevel <= ThreadLevel::Serialized)
     {
         if(MPI_Wait(&mRequest, MPI_STATUS_IGNORE) != MPI_SUCCESS)
         {
@@ -81,7 +84,7 @@ void pMR::mpi::RecvMemoryWindow::wait()
         int flag = static_cast<int>(false);
         while(!flag)
         {
-            thread::ScopedLock scopedLock;
+            std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
             if(MPI_Test(&mRequest, &flag, MPI_STATUS_IGNORE) != MPI_SUCCESS)
             {
                 throw std::runtime_error("pMR: Unable to (test) receive data.");

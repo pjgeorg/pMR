@@ -16,9 +16,10 @@
 #define pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
 
 #include <cstdint>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
-#include "thread.hpp"
+#include "config.hpp"
 #include "../common/addressvector.hpp"
 #include "../common/domain.hpp"
 #include "../common/endpoint.hpp"
@@ -69,13 +70,13 @@ namespace pMR
 #else
             CompletionQueueContext mRecvCompletionQueue;
 #endif // OFI_RMA && !OFI_RMA_EVENT
-            thread::Mutex mSendCompletionQueueMutex;
-            thread::Mutex mRecvCompletionQueueMutex;
+            std::mutex mSendCompletionQueueMutex;
+            std::mutex mRecvCompletionQueueMutex;
 
             std::unordered_map<std::uint64_t, int> mSendCompletions;
             std::unordered_map<std::uint64_t, int> mRecvCompletions;
-            thread::Mutex mSendCompletionsMutex;
-            thread::Mutex mRecvCompletionsMutex;
+            std::mutex mSendCompletionsMutex;
+            std::mutex mRecvCompletionsMutex;
 
             std::size_t mMaxSize = 0;
             std::size_t mInjectSize = 0;
@@ -94,36 +95,67 @@ namespace pMR
             std::uint64_t retrieveCompletions(CompletionQueueData &queue);
 
             template<typename T>
-            void poll(T &queue, thread::Mutex &mutexQueue,
+            void poll(T &queue, std::mutex &mutexQueue,
                 std::unordered_map<std::uint64_t, int> &map,
-                thread::Mutex &mutexMap, std::uint64_t const iD);
+                std::mutex &mutexMap, std::uint64_t const iD);
         };
     }
 }
 
 template<typename T>
-void pMR::ofi::GlobalEndpoint::poll(T &queue, thread::Mutex &mutexQueue,
-    std::unordered_map<std::uint64_t, int> &map, thread::Mutex &mutexMap,
+void pMR::ofi::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
+    std::unordered_map<std::uint64_t, int> &map, std::mutex &mutexMap,
     std::uint64_t const iD)
 {
+    if(ThreadLevel >= ThreadLevel::Multiple)
     {
-        // Check whether completion already retrieved.
-        thread::ScopedLock scopedLock(mutexMap);
-        if(checkCompletions(map, iD))
         {
-            return;
-        }
-    }
-    {
-        thread::ScopedLock scopedLock(mutexQueue);
-        // For non serialized threading re-check retrieved completions.
-        if(!thread::isSerialized())
-        {
-            thread::ScopedLock scopedLock(mutexMap);
+            // Check whether completion already retrieved.
+            std::lock_guard<std::mutex> lock(mutexMap);
             if(checkCompletions(map, iD))
             {
                 return;
             }
+        }
+        {
+            std::lock_guard<std::mutex> lock(mutexQueue);
+            // Re-check retrieved completions.
+            {
+                std::lock_guard<std::mutex> lock(mutexMap);
+                if(checkCompletions(map, iD))
+                {
+                    return;
+                }
+            }
+
+            while(true)
+            {
+                auto rID = decltype(iD){retrieveCompletions(queue)};
+
+                if(rID == iD)
+                {
+                    break;
+                }
+
+                {
+                    std::lock_guard<std::mutex> lock(mutexMap);
+                    try
+                    {
+                        ++map.at({rID});
+                    }
+                    catch(std::exception const &e)
+                    {
+                        throw std::runtime_error("pMR: Retrieved unknown ID.");
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        if(checkCompletions(map, iD))
+        {
+            return;
         }
 
         while(true)
@@ -135,16 +167,13 @@ void pMR::ofi::GlobalEndpoint::poll(T &queue, thread::Mutex &mutexQueue,
                 break;
             }
 
+            try
             {
-                thread::ScopedLock scopedLock(mutexMap);
-                try
-                {
-                    ++map.at({rID});
-                }
-                catch(std::exception const &e)
-                {
-                    throw std::runtime_error("pMR: Retrieved unknown ID.");
-                }
+                ++map.at({rID});
+            }
+            catch(std::exception const &e)
+            {
+                throw std::runtime_error("pMR: Retrieved unknown ID.");
             }
         }
     }

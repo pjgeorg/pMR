@@ -55,6 +55,16 @@
 
 namespace pMR
 {
+    enum class ThreadLevel
+    {
+        Unknown,
+        Single,
+        Funneled,
+        Serialized,
+        Multiple,
+    };
+    constexpr ThreadLevel ThreadLevel = ThreadLevel::@THREAD@;
+
     using size_type = int;
     constexpr std::size_t alignment = @ALIGNMENT@;
     constexpr std::size_t padding = @PADDING@;

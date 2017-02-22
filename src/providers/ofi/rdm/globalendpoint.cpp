@@ -70,12 +70,20 @@ fi_addr_t pMR::ofi::GlobalEndpoint::addPeer(
 void pMR::ofi::GlobalEndpoint::bind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
+    if(ThreadLevel >= ThreadLevel::Multiple)
     {
-        thread::ScopedLock scopedLock(mSendCompletionsMutex);
-        bind(mSendCompletions, sendID);
+        {
+            std::lock_guard<std::mutex> lock(mSendCompletionsMutex);
+            bind(mSendCompletions, sendID);
+        }
+        {
+            std::lock_guard<std::mutex> lock(mRecvCompletionsMutex);
+            bind(mRecvCompletions, recvID);
+        }
     }
+    else
     {
-        thread::ScopedLock scopedLock(mRecvCompletionsMutex);
+        bind(mSendCompletions, sendID);
         bind(mRecvCompletions, recvID);
     }
 }
@@ -83,12 +91,20 @@ void pMR::ofi::GlobalEndpoint::bind(
 void pMR::ofi::GlobalEndpoint::unbind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
+    if(ThreadLevel >= ThreadLevel::Multiple)
     {
-        thread::ScopedLock scopedLock(mSendCompletionsMutex);
-        unbind(mSendCompletions, sendID);
+        {
+            std::lock_guard<std::mutex> lock(mSendCompletionsMutex);
+            unbind(mSendCompletions, sendID);
+        }
+        {
+            std::lock_guard<std::mutex> lock(mRecvCompletionsMutex);
+            unbind(mRecvCompletions, recvID);
+        }
     }
+    else
     {
-        thread::ScopedLock scopedLock(mRecvCompletionsMutex);
+        unbind(mSendCompletions, sendID);
         unbind(mRecvCompletions, recvID);
     }
 }
