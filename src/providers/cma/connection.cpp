@@ -125,7 +125,8 @@ void pMR::cma::Connection::postNotify(iovec const &remoteNotify) const
     writeData(localNotify, remoteNotify);
 }
 
-void pMR::cma::Connection::pollNotify(std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> &notify)
+void pMR::cma::Connection::pollNotify(
+    std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> &notify)
 {
     while(std::get<0>(notify) == 0)
     {

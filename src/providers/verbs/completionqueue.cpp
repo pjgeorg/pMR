@@ -60,8 +60,8 @@ void pMR::verbs::CompletionQueue::poll()
     if(workCompletion.status != IBV_WC_SUCCESS)
     {
         throw std::runtime_error(toString("pMR: Work Request ID",
-            workCompletion.wr_id, "failed with status:",
-            ibv_wc_status_str(workCompletion.status)));
+            workCompletion.wr_id,
+            "failed with status:", ibv_wc_status_str(workCompletion.status)));
     }
 }
 
@@ -83,8 +83,8 @@ bool pMR::verbs::CompletionQueue::poll(int retry)
     if(workCompletion.status != IBV_WC_SUCCESS)
     {
         throw std::runtime_error(toString("pMR: Work Request ID",
-            workCompletion.wr_id, "failed with status:",
-            ibv_wc_status_str(workCompletion.status)));
+            workCompletion.wr_id,
+            "failed with status:", ibv_wc_status_str(workCompletion.status)));
     }
 
     if(numCompletion)

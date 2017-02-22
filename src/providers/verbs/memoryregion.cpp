@@ -82,7 +82,7 @@ void pMR::verbs::MemoryRegion::registerMemoryRegion(
     ProtectionDomain &protectionDomain, void *buffer, std::uint32_t const size,
     int const access)
 {
-	if(size > 0)
+    if(size > 0)
     {
         mMemoryRegion =
             ibv_reg_mr(protectionDomain.get(), buffer, size, access);
