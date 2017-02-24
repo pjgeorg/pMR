@@ -51,6 +51,20 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
         new SoftEndpoint(mDomain, info, eventQueue));
     mActiveEndpoint->enable();
 
+#ifdef OFI_RMA
+#ifdef OFI_RMA_CONTROL
+#ifdef OFI_RMA_TARGET_RX
+    mConnection->postRecvToActive();
+#endif // OFI_RMA_TARGET_RX
+#else
+    mConnection->postRecvAddressToActive();
+#endif // OFI_RMA_CONTROL
+#else
+#ifndef OFI_NO_CONTROL
+    mConnection->postRecvToActive();
+#endif // !OFI_NO_CONTROL
+#endif // OFI_RMA
+
 #ifdef OFI_RMA_CONTROL
     MemoryAddress localMemoryAddress(mRemoteTargetMemoryRegion);
     backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
@@ -58,12 +72,6 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
     mRemoteTargetMemoryRegion.bind(mCounter);
 #endif // OFI_RMA_EVENT
 #endif // OFI_RMA_CONTROL
-
-#if defined OFI_RMA && !defined OFI_RMA_CONTROL
-    postRecvAddressToActive();
-#elif !defined OFI_RMA || defined OFI_RMA_TARGET_RX
-    postRecvToActive();
-#endif // OFI_RMA & !OFI_RMA_CONTROL // !OFI_RMA || OFI_RMA_TARGET_RX
 
     mActiveEndpoint->connect(remoteAddress);
     auto connReq = eventQueue.pollConnectionRequest();

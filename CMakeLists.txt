@@ -41,6 +41,7 @@ set(OFI.DATA.PROGRESS.AUTO ON CACHE BOOL "Automatic progess of data.")
 set(OFI.RM OFF CACHE BOOL "Enable Resource Management.")
 set(OFI.MR.SCALABLE ON CACHE BOOL "Scalable Memory Registration Mode.")
 set(OFI.RDM.DIRECTED.RECEIVE OFF CACHE BOOL "Enable directed receive capability for RDM endpoints.")
+set(OFI.NO.CONTROL ON CACHE BOOL "Disable any control mechanism by pMR, rely on provider to manage all resources. Only works for non-RMA transfers.")
 
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
 

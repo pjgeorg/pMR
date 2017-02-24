@@ -51,7 +51,9 @@ void pMR::ofi::RecvMemoryWindow::init()
 #endif // OFI_RMA_CONTROL
 #else
     mConnection->postRecvToPassive(mMemoryRegion);
+#ifndef OFI_NO_CONTROL
     mConnection->postSendToPassive();
+#endif // !OFI_NO_CONTROL
 #endif // OFI_RMA
 }
 
@@ -61,7 +63,9 @@ void pMR::ofi::RecvMemoryWindow::post()
 
 void pMR::ofi::RecvMemoryWindow::wait()
 {
+#ifndef OFI_NO_CONTROL
     mConnection->pollPassiveSend();
+#endif // !OFI_NO_CONTROL
 
 #ifdef OFI_RMA_EVENT
     mCounter.poll();
