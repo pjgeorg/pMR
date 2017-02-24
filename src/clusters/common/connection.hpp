@@ -85,6 +85,11 @@ namespace pMR
         void connectOFI(Target const &target, ofi::Info const &info);
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+        std::shared_ptr<psm2::Connection> mPSM2;
+        void connectPSM2(Target const &target);
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
         std::shared_ptr<scif::Connection> mSCIF;
         void connectSCIF(Target const &target);

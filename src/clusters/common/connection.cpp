@@ -59,6 +59,16 @@ void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
 }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+#include "../../providers/psm2/connection.hpp"
+
+void pMR::Connection::connectPSM2(Target const &target)
+{
+    mProvider = Provider::psm2;
+    mPSM2 = std::make_shared<psm2::Connection>(target);
+}
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
 #include "../../providers/scif/connection.hpp"
 

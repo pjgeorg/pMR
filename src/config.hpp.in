@@ -41,6 +41,10 @@
 #cmakedefine pMR_PROVIDER_OFI
 #endif // pMR_PROVIDER_OFI
 
+#ifndef pMR_PROVIDER_PSM2
+#cmakedefine pMR_PROVIDER_PSM2
+#endif // pMR_PROVIDER_PSM2
+
 #ifndef pMR_PROVIDER_SCIF
 #cmakedefine pMR_PROVIDER_SCIF
 #endif // pMR_PROVIDER_SCIF

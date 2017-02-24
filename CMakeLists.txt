@@ -43,6 +43,8 @@ set(OFI.MR.SCALABLE ON CACHE BOOL "Scalable Memory Registration Mode.")
 set(OFI.RDM.DIRECTED.RECEIVE OFF CACHE BOOL "Enable directed receive capability for RDM endpoints.")
 set(OFI.NO.CONTROL ON CACHE BOOL "Disable any control mechanism by pMR, rely on provider to manage all resources. Only works for non-RMA transfers.")
 
+set(PSM2.LIB DIRECT CACHE STRING "Set PSM2 library mode (DIRECT | PRELOAD).")
+
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
 
 set(VERBS.RDMA ON CACHE BOOL "Use RDMA capability.")

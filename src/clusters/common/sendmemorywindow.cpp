@@ -33,6 +33,11 @@
 #include "../../providers/ofi/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+#include <cstdint>
+#include "../../providers/psm2/sendmemorywindow.hpp"
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
 #include "../../providers/scif/sendmemorywindow.hpp"
 #endif // pMR_PROVIDER_SCIF
@@ -91,6 +96,17 @@ pMR::SendMemoryWindow::SendMemoryWindow(
             break;
         }
 #endif // pMR_PROVIDER_OFI
+
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2 = std::unique_ptr<psm2::SendMemoryWindow,
+                psm2::SendMemoryWindowDeleter>(
+                new psm2::SendMemoryWindow(connection.mPSM2, buffer,
+                    {static_cast<std::uint32_t>(sizeByte)}));
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
@@ -167,6 +183,14 @@ void pMR::SendMemoryWindow::init()
         }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2->init();
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
         {
@@ -239,6 +263,14 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
         }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2->post({static_cast<std::uint32_t>(sizeByte)});
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
         {
@@ -300,6 +332,14 @@ void pMR::SendMemoryWindow::wait()
             break;
         }
 #endif // pMR_PROVIDER_OFI
+
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:

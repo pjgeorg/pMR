@@ -33,6 +33,11 @@
 #include "../../providers/ofi/recvmemorywindow.hpp"
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+#include <cstdint>
+#include "../../providers/psm2/recvmemorywindow.hpp"
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
 #include <cstdint>
 #include "../../providers/scif/recvmemorywindow.hpp"
@@ -93,6 +98,17 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(
             break;
         }
 #endif // pMR_PROVIDER_OFI
+
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2 = std::unique_ptr<psm2::RecvMemoryWindow,
+                psm2::RecvMemoryWindowDeleter>(
+                new psm2::RecvMemoryWindow(connection.mPSM2, buffer,
+                    {static_cast<std::uint32_t>(sizeByte)}));
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
@@ -169,6 +185,14 @@ void pMR::RecvMemoryWindow::init()
         }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2->init();
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
         {
@@ -231,6 +255,14 @@ void pMR::RecvMemoryWindow::post()
         }
 #endif // pMR_PROVIDER_OFI
 
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2->post();
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
+
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
         {
@@ -292,6 +324,14 @@ void pMR::RecvMemoryWindow::wait()
             break;
         }
 #endif // pMR_PROVIDER_OFI
+
+#ifdef pMR_PROVIDER_PSM2
+        case Provider::psm2:
+        {
+            mPSM2->wait();
+            break;
+        }
+#endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
         case Provider::scif:
