@@ -1,1 +1,3 @@
-add_library(CLUSTER OBJECT connect.cpp)
+add_library(CLUSTER OBJECT 
+    connect.cpp
+    node.cpp)

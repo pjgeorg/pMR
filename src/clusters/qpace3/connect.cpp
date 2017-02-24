@@ -14,8 +14,11 @@
 
 #include "connection.hpp"
 #include "target.hpp"
+#include "../../backends/backend.hpp"
 #include "../../misc/ip.hpp"
+#include "../../misc/singleton.hpp"
 #include "../../providers/ofi/common/info.hpp"
+#include "node.hpp"
 
 void pMR::Connection::connect(Target const &target)
 {
@@ -30,7 +33,18 @@ void pMR::Connection::connect(Target const &target)
         connectSelf(target);
         return;
     }
+    auto originNode = Singleton<Node>::Instance();
+    decltype(originNode) targetNode;
 
-    auto info = ofi::getProvider("psm2", IP().getIPv4("ib0"));
-    connectOFI(target, info);
+    backend::exchange(target, originNode, targetNode);
+
+    if(originNode.getHostID() == targetNode.getHostID())
+    {
+        connectCMA(target);
+    }
+    else
+    {
+        auto info = ofi::getProvider("psm2", IP().getIPv4("ib0"));
+        connectOFI(target, info);
+    }
 }
