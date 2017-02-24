@@ -41,7 +41,6 @@ namespace pMR
             Domain &getDomain();
             Domain const &getDomain() const;
             void checkMessageSize(std::size_t const size) const;
-            bool checkEagerSize(std::size_t size) const;
 
             void postSendToActive(
                 MemoryRegion &memoryRegion, std::size_t const sizeByte);

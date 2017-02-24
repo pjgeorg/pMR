@@ -14,6 +14,7 @@
 
 #include "globalendpoint.hpp"
 #include <stdexcept>
+#include "../ofi.hpp"
 
 pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
     : mFabric(info)
@@ -32,8 +33,6 @@ pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
 
     mSendCompletions.reserve(OFIReserveSizeCompletion);
     mRecvCompletions.reserve(OFIReserveSizeCompletion);
-
-    detectEagerSize();
 }
 
 fid_ep *pMR::ofi::GlobalEndpoint::get()
@@ -129,30 +128,6 @@ void pMR::ofi::GlobalEndpoint::checkMessageSize(std::size_t const size) const
 std::uint64_t pMR::ofi::GlobalEndpoint::checkInjectSize(std::size_t size) const
 {
     return mDomain.checkInjectSize(size);
-}
-
-bool pMR::ofi::GlobalEndpoint::checkEagerSize(std::size_t size) const
-{
-    return {size < mEagerSize};
-}
-
-void pMR::ofi::GlobalEndpoint::detectEagerSize()
-{
-    try
-    {
-        mEagerSize = std::stoul(std::string(std::getenv(OFIRndvThresholdEnv)));
-    }
-    catch(std::invalid_argument const &e)
-    {
-        std::string err(
-            "Unable to parse rendezvous threshold environment variable: ");
-        err += OFIRndvThresholdEnv;
-        throw std::runtime_error(err);
-    }
-    catch(...)
-    {
-        // Environment variable most likely not set
-    }
 }
 
 void pMR::ofi::GlobalEndpoint::bind(

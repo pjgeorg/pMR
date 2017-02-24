@@ -26,8 +26,6 @@ namespace pMR
         constexpr std::size_t OFIEventQueueSize = 2;
         constexpr std::size_t OFIAVCount = 16;
         constexpr std::size_t OFIReserveSizeCompletion = 128;
-        constexpr std::size_t OFIRndvThreshold = 64000;
-        constexpr char OFIRndvThresholdEnv[] = "PSM2_MQ_RNDV_HFI_THRESH";
     }
 }
 #endif // pMR_PROVIDERS_OFI_OFI_H
