@@ -20,7 +20,7 @@ extern "C" {
 #include <psm2.h>
 #include <psm2_mq.h>
 }
-#include "softendpoint.hpp"
+#include "globalendpoint.hpp"
 
 namespace pMR
 {
@@ -44,7 +44,8 @@ namespace pMR
             void pollRecv();
 
         private:
-            SoftEndpoint mEndpoint;
+            GlobalEndpoint *mEndpoint = nullptr;
+            psm2_epaddr_t mRemoteEndpoint = nullptr;
             std::uint64_t const mSendTag;
             std::uint64_t mRecvTag;
             psm2_mq_req_t mRecvRequest;

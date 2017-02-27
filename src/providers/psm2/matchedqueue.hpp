@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_DIRECT_MATCHEDQUEUE_H
-#define pMR_PROVIDERS_PSM2_DIRECT_MATCHEDQUEUE_H
+#ifndef pMR_PROVIDERS_PSM2_MATCHEDQUEUE_H
+#define pMR_PROVIDERS_PSM2_MATCHEDQUEUE_H
 
 extern "C" {
 #include <psm2_mq.h>
@@ -41,4 +41,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_PSM2_DIRECT_MATCHEDQUEUE_H
+#endif // pMR_PROVIDERS_PSM2_MATCHEDQUEUE_H

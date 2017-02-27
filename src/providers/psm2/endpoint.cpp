@@ -14,9 +14,9 @@
 
 #include "endpoint.hpp"
 #include <stdexcept>
-#include "../config.hpp"
-#include "../error.hpp"
+#include "error.hpp"
 #include "options.hpp"
+#include "psm2.hpp"
 #include "uuid.hpp"
 
 pMR::psm2::Endpoint::Endpoint()

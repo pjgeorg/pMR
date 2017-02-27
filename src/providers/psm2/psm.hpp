@@ -12,15 +12,23 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_SOFTENDPOINT_H
-#define pMR_PROVIDERS_PSM2_SOFTENDPOINT_H
+#ifndef pMR_PROVIDERS_PSM2_PSM_H
+#define pMR_PROVIDERS_PSM2_PSM_H
 
-#ifdef PSM2_LIB_DIRECT
-#include "direct/softendpoint.hpp"
-#elif defined PSM2_LIB_PRELOAD
-#include "preload/softendpoint.hpp"
-#else
-#error "Unknown library mode."
-#endif // PSM2_LIB
-
-#endif // pMR_PROVIDERS_PSM2_SOFTENDPOINT_H
+namespace pMR
+{
+    namespace psm2
+    {
+        class PSM
+        {
+        public:
+            PSM();
+            PSM(PSM const &) = delete;
+            PSM(PSM &&) = delete;
+            PSM &operator=(PSM const &) = delete;
+            PSM &operator=(PSM &&) = delete;
+            ~PSM();
+        };
+    }
+}
+#endif // pMR_PROVIDERS_PSM2_PSM_H

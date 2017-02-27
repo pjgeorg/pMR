@@ -12,34 +12,34 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "psm.hpp"
+#include "matchedqueue.hpp"
 #include <stdexcept>
-extern "C" {
-#include <psm2.h>
-}
-#include "../error.hpp"
+#include "../../misc/print.hpp"
+#include "error.hpp"
+#include "options.hpp"
+#include "psm2.hpp"
+#include "uuid.hpp"
 
-pMR::psm2::PSM::PSM()
+pMR::psm2::MatchedQueue::MatchedQueue(Endpoint &endpoint)
 {
-    int vMajor = PSM2_VERNO_MAJOR;
-    int vMinor = PSM2_VERNO_MINOR;
-
-    auto err = psm2_error_register_handler(NULL, PSM2_ERRHANDLER_NO_HANDLER);
+    auto err = psm2_mq_init(
+        endpoint.get(), PSM2_MQ_ORDERMASK_NONE, NULL, 0, &mMatchedQueue);
     if(err)
     {
         throw std::runtime_error(
-            "pMR: Unable to register error handler: " + toString(err));
-    }
-
-    err = psm2_init(&vMajor, &vMinor);
-    if(err)
-    {
-        throw std::runtime_error(
-            "pMR: Unable to initialize PSM2: " + toString(err));
+            "pMR: Unable to open MatchedQueue: " + toString(err));
     }
 }
 
-pMR::psm2::PSM::~PSM()
+pMR::psm2::MatchedQueue::~MatchedQueue()
 {
-    psm2_finalize();
+    if(psm2_mq_finalize(mMatchedQueue))
+    {
+        print("pMR: Probably unable to finalize Matched Queue.");
+    }
+}
+
+psm2_mq_t pMR::psm2::MatchedQueue::get() const
+{
+    return mMatchedQueue;
 }

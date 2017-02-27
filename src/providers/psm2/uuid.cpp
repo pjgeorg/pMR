@@ -16,7 +16,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
-#include "../config.hpp"
+#include "psm2.hpp"
 
 pMR::psm2::UUID::UUID()
 {

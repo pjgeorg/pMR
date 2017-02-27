@@ -1,23 +1,19 @@
-list(APPEND PSM2_COMMON
+add_library(PROVIDER_PSM2 OBJECT
     connection.cpp
+    endpoint.cpp
     error.cpp
+    globalendpoint.cpp
+    matchedqueue.cpp
     message.cpp
+    options.cpp
+    psm.cpp
     recvmemorywindow.cpp
     sendmemorywindow.cpp
     stats.cpp
-    units.cpp)
+    units.cpp
+    uuid.cpp)
 
-list(APPEND PSM2_DIRECT
-    direct/endpoint.cpp
-    direct/globalendpoint.cpp
-    direct/matchedqueue.cpp
-    direct/options.cpp
-    direct/psm.cpp
-    direct/softendpoint.cpp
-    direct/uuid.cpp)
-
-if(PSM2.LIB STREQUAL "DIRECT")
-    add_library(PROVIDER_PSM2 OBJECT ${PSM2_COMMON} ${PSM2_DIRECT})
-elseif(PSM2.LIB STREQUAL "PRELOAD")
-    add_library(PROVIDER_PSM2 OBJECT ${OFI_COMMON} ${PSM2_PRELOAD})
+if(PSM2.WRAPPER)
+    add_library(pmr_psm2_preload SHARED libwrapper.c)
+    install(TARGETS pmr_psm2_preload LIBRARY DESTINATION lib)
 endif()

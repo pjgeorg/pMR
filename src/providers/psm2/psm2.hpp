@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_CONFIG_H
-#define pMR_PROVIDERS_PSM2_CONFIG_H
+#ifndef pMR_PROVIDERS_PSM2_PSM2_H
+#define pMR_PROVIDERS_PSM2_PSM2_H
 
 #include <cstdint>
 extern "C" {
@@ -40,4 +40,4 @@ namespace pMR
             0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
     }
 }
-#endif // pMR_PROVIDERS_PSM2_CONFIG_H
+#endif // pMR_PROVIDERS_PSM2_PSM2_H

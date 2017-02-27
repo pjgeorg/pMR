@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_DIRECT_ENDPOINT_H
-#define pMR_PROVIDERS_PSM2_DIRECT_ENDPOINT_H
+#ifndef pMR_PROVIDERS_PSM2_ENDPOINT_H
+#define pMR_PROVIDERS_PSM2_ENDPOINT_H
 
 #include <cstdint>
 extern "C" {
@@ -48,4 +48,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_PSM2_DIRECT_ENDPOINT_H
+#endif // pMR_PROVIDERS_PSM2_ENDPOINT_H

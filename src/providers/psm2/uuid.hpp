@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_DIRECT_UUID_H
-#define pMR_PROVIDERS_PSM2_DIRECT_UUID_H
+#ifndef pMR_PROVIDERS_PSM2_UUID_H
+#define pMR_PROVIDERS_PSM2_UUID_H
 
 #include <cstdint>
 extern "C" {
@@ -43,4 +43,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_PSM2_DIRECT_UUID_H
+#endif // pMR_PROVIDERS_PSM2_UUID_H

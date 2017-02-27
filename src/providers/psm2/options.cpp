@@ -14,7 +14,7 @@
 
 #include "options.hpp"
 #include <stdexcept>
-#include "../error.hpp"
+#include "error.hpp"
 
 pMR::psm2::Options::Options()
 {

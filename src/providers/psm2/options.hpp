@@ -12,23 +12,35 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_DIRECT_PSM_H
-#define pMR_PROVIDERS_PSM2_DIRECT_PSM_H
+#ifndef pMR_PROVIDERS_PSM2_OPTIONS_H
+#define pMR_PROVIDERS_PSM2_OPTIONS_H
+
+#include <cstdint>
+extern "C" {
+#include <psm2.h>
+}
 
 namespace pMR
 {
     namespace psm2
     {
-        class PSM
+        class Options
         {
         public:
-            PSM();
-            PSM(PSM const &) = delete;
-            PSM(PSM &&) = delete;
-            PSM &operator=(PSM const &) = delete;
-            PSM &operator=(PSM &&) = delete;
-            ~PSM();
+            Options();
+            ~Options() = default;
+
+            psm2_ep_open_opts *get();
+            psm2_ep_open_opts const *get() const;
+
+            void setTimeout(std::int64_t const);
+            void setUnit(int const);
+            void setPort(int const);
+            void setAffinity(int const);
+
+        private:
+            psm2_ep_open_opts mOptions;
         };
     }
 }
-#endif // pMR_PROVIDERS_PSM2_DIRECT_PSM_H
+#endif // pMR_PROVIDERS_PSM2_OPTIONS_H

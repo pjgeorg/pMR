@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_DIRECT_GLOBALENDPOINT_H
-#define pMR_PROVIDERS_PSM2_DIRECT_GLOBALENDPOINT_H
+#ifndef pMR_PROVIDERS_PSM2_GLOBALENDPOINT_H
+#define pMR_PROVIDERS_PSM2_GLOBALENDPOINT_H
 
 #include <cstdint>
 #include <mutex>
@@ -56,4 +56,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_PSM2_DIRECT_GLOBALENDPOINT_H
+#endif // pMR_PROVIDERS_PSM2_GLOBALENDPOINT_H

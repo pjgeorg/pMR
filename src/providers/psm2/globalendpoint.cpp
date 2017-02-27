@@ -14,8 +14,9 @@
 
 #include "globalendpoint.hpp"
 #include "config.hpp"
-#include "../message.hpp"
-#include "../stats.hpp"
+#include "message.hpp"
+#include "psm2.hpp"
+#include "stats.hpp"
 
 pMR::psm2::GlobalEndpoint::GlobalEndpoint() : mMatchedQueue(mEndpoint)
 {
@@ -23,7 +24,9 @@ pMR::psm2::GlobalEndpoint::GlobalEndpoint() : mMatchedQueue(mEndpoint)
 
 pMR::psm2::GlobalEndpoint::~GlobalEndpoint()
 {
+#ifdef PSM2_PRINT_STATS
     printStats(mMatchedQueue.get());
+#endif // PSM2_PRINT_STATS
 }
 
 psm2_epid_t pMR::psm2::GlobalEndpoint::getID()

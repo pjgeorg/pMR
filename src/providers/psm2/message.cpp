@@ -14,9 +14,9 @@
 
 #include "message.hpp"
 #include <stdexcept>
-#include "config.hpp"
 #include "error.hpp"
-#include "softendpoint.hpp"
+#include "psm2.hpp"
+#include "matchedqueue.hpp"
 
 psm2_mq_tag_t pMR::psm2::psmTag(std::uint64_t const tag)
 {
