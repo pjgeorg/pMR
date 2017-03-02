@@ -21,10 +21,10 @@ namespace pMR
 {
     namespace scif
     {
-        constexpr std::size_t Padding = 4096;
+        constexpr std::size_t Granularity = 4096;
         constexpr std::size_t DMAThreshold = 0 * 1024;
 
-        std::size_t padSize(std::size_t const size);
+        std::size_t granularitySize(std::size_t const size);
     }
 }
 #endif // pMR_PROVIDERS_SCIF_SCIF_H

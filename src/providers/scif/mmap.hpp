@@ -40,10 +40,10 @@ template<typename T, typename E>
 T *pMR::scif::mmap(
     E &endpoint, off_t const offset, std::size_t const size, int const access)
 {
-    auto diff = offset % Padding;
+    auto diff = offset % Granularity;
 
-    void *pa = scif_mmap(
-        0, padSize({size + diff}), access, 0, endpoint.get(), offset - diff);
+    void *pa = scif_mmap(0, granularitySize({size + diff}), access, 0,
+        endpoint.get(), offset - diff);
 
     if(pa == reinterpret_cast<void *>(-1))
     {

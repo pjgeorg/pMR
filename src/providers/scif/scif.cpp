@@ -14,7 +14,7 @@
 
 #include "scif.hpp"
 
-std::size_t pMR::scif::padSize(std::size_t const size)
+std::size_t pMR::scif::granularitySize(std::size_t const size)
 {
-    return {(size + Padding - 1) / Padding * Padding};
+    return {(size + Granularity - 1) / Granularity * Granularity};
 }

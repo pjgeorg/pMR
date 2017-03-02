@@ -60,12 +60,12 @@ namespace pMR
             if(mLength > 0)
             {
                 mOffset = static_cast<off_t>(
-                    reinterpret_cast<std::uintptr_t>(buffer) % Padding);
+                    reinterpret_cast<std::uintptr_t>(buffer) % Granularity);
                 auto addr = reinterpret_cast<void *>(
                     reinterpret_cast<std::uintptr_t>(buffer) - mOffset);
 
                 mMemoryRegion = scif_register(mEndpoint, addr,
-                    padSize({mLength + mOffset}), 0, access, 0);
+                    granularitySize({mLength + mOffset}), 0, access, 0);
 
                 if(mMemoryRegion == SCIF_REGISTER_FAILED)
                 {

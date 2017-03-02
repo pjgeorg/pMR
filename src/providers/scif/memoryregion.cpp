@@ -19,8 +19,8 @@ pMR::scif::MemoryRegion::~MemoryRegion()
 {
     if(mLength > 0)
     {
-        if(scif_unregister(
-               mEndpoint, mMemoryRegion, padSize({mLength + mOffset})) == -1)
+        if(scif_unregister(mEndpoint, mMemoryRegion,
+               granularitySize({mLength + mOffset})) == -1)
         {
             print("pMR: Probably unable to unregister memory region:",
                 std::strerror(errno));

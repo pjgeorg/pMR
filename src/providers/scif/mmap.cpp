@@ -17,11 +17,11 @@
 void pMR::scif::munmap(void *addr, std::size_t const size)
 {
     auto diff = static_cast<std::size_t>(
-        reinterpret_cast<std::uintptr_t>(addr) % Padding);
+        reinterpret_cast<std::uintptr_t>(addr) % Granularity);
     addr =
         reinterpret_cast<void *>(reinterpret_cast<std::uintptr_t>(addr) - diff);
 
-    if(scif_munmap(addr, padSize({size + diff})) == -1)
+    if(scif_munmap(addr, granularitySize({size + diff})) == -1)
     {
         throw std::runtime_error(toString(
             "pMR: Unable to unmap memory region.", std::strerror(errno)));
