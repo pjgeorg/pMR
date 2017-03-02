@@ -24,8 +24,8 @@ pMR::verbs::mad::MAD::MAD(Context &context, std::uint8_t const portNumber)
     : mPortNumber{portNumber}
     , mPortAttributes(context, {mPortNumber})
     , mProtectionDomain(context)
-    , mSendCompletionQueue(context, {VerbsMaxSend})
-    , mRecvCompletionQueue(context, {VerbsMaxRecv})
+    , mSendCompletionQueue(context, {MaxSend})
+    , mRecvCompletionQueue(context, {MaxRecv})
     , mQueuePair(mProtectionDomain, mSendCompletionQueue, mRecvCompletionQueue)
     , mRecvMemoryRegion(context, mProtectionDomain,
           static_cast<void *>(mRecvMAD.data()),
@@ -42,7 +42,7 @@ void pMR::verbs::mad::MAD::postRecvRequest()
     ScatterGatherElement scatterGatherElement(mRecvMemoryRegion);
 
     ibv_recv_wr workRequest = {};
-    workRequest.wr_id = {VerbsRecvWRID};
+    workRequest.wr_id = {RecvWRID};
     workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = 1;
 
@@ -63,14 +63,14 @@ void pMR::verbs::mad::MAD::postSendRequest()
     AddressHandle addressHandle(mProtectionDomain, subnetManager);
 
     ibv_send_wr workRequest = {};
-    workRequest.wr_id = {VerbsSendWRID};
+    workRequest.wr_id = {SendWRID};
     workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = {scatterGatherElement.getNumEntries()};
     workRequest.opcode = IBV_WR_SEND;
     workRequest.send_flags = IBV_SEND_INLINE;
     workRequest.wr.ud.ah = addressHandle.get();
     workRequest.wr.ud.remote_qpn = 1;
-    workRequest.wr.ud.remote_qkey = {VerbsDefaultQP1QKey};
+    workRequest.wr.ud.remote_qkey = {DefaultQP1QKey};
 
     ibv_send_wr *badRequest;
 
@@ -87,5 +87,5 @@ void pMR::verbs::mad::MAD::query()
     {
         postSendRequest();
         mSendCompletionQueue.poll();
-    } while(!mRecvCompletionQueue.poll({VerbsMADPollCQRetry}));
+    } while(!mRecvCompletionQueue.poll({MADPollCQRetry}));
 }

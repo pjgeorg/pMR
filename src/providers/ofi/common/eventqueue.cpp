@@ -19,7 +19,7 @@
 pMR::ofi::EventQueue::EventQueue(Fabric &fabric)
 {
     fi_eq_attr attr = {};
-    attr.size = OFIEventQueueSize;
+    attr.size = EventQueueSize;
     attr.wait_obj = FI_WAIT_UNSPEC;
 
     if(fi_eq_open(fabric.get(), &attr, &mEventQueue, &mContext))

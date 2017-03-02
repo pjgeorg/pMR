@@ -23,12 +23,12 @@ pMR::verbs::mad::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     ibv_qp_init_attr initialAttributes = {};
     initialAttributes.send_cq = sendCompletionQueue.get();
     initialAttributes.recv_cq = recvCompletionQueue.get();
-    initialAttributes.cap.max_send_wr = {VerbsMaxSend};
-    initialAttributes.cap.max_recv_wr = {VerbsMaxRecv};
-    initialAttributes.cap.max_send_sge = {VerbsMaxSendSG};
-    initialAttributes.cap.max_recv_sge = {VerbsMaxRecvSG};
+    initialAttributes.cap.max_send_wr = {MaxSend};
+    initialAttributes.cap.max_recv_wr = {MaxRecv};
+    initialAttributes.cap.max_send_sge = {MaxSendSG};
+    initialAttributes.cap.max_recv_sge = {MaxRecvSG};
     initialAttributes.sq_sig_all = 1;
-    initialAttributes.cap.max_inline_data = {VerbsMADBlockSize};
+    initialAttributes.cap.max_inline_data = {MADBlockSize};
     initialAttributes.qp_type = IBV_QPT_UD;
 
     mQueuePair = ibv_create_qp(protectionDomain.get(), &initialAttributes);
@@ -58,9 +58,9 @@ void pMR::verbs::mad::QueuePair::setStateINIT(std::uint8_t const portNumber)
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_INIT;
-    attr.pkey_index = {VerbsPKeyIndex};
+    attr.pkey_index = {PKeyIndex};
     attr.port_num = {portNumber};
-    attr.qkey = {VerbsDefaultQP1QKey};
+    attr.qkey = {DefaultQP1QKey};
 
     if(ibv_modify_qp(get(), &attr,
            IBV_QP_STATE | IBV_QP_PKEY_INDEX | IBV_QP_PORT | IBV_QP_QKEY))
@@ -84,7 +84,7 @@ void pMR::verbs::mad::QueuePair::setStateRTS()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTS;
-    attr.sq_psn = {VerbsPSN};
+    attr.sq_psn = {PSN};
 
     if(ibv_modify_qp(get(), &attr, IBV_QP_STATE | IBV_QP_SQ_PSN))
     {

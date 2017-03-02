@@ -48,8 +48,8 @@ namespace pMR
                 void query();
 
             protected:
-                std::array<std::uint8_t, VerbsMADBlockSize> mSendMAD{};
-                std::array<std::uint8_t, VerbsMADBlockGRHSize> mRecvMAD{};
+                std::array<std::uint8_t, MADBlockSize> mSendMAD{};
+                std::array<std::uint8_t, MADBlockGRHSize> mRecvMAD{};
                 std::uint8_t const mPortNumber;
                 PortAttributes mPortAttributes;
 

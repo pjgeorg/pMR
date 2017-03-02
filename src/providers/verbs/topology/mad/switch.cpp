@@ -63,30 +63,29 @@ pMR::verbs::mad::SwitchLID::SwitchLID(
 
 bool pMR::verbs::mad::SwitchLID::validate()
 {
-    std::uint32_t status = std::get<VerbsGRHSize + 4>(mRecvMAD) << 24 |
-        std::get<VerbsGRHSize + 5>(mRecvMAD) << 16 |
-        std::get<VerbsGRHSize + 6>(mRecvMAD) << 8 |
-        std::get<VerbsGRHSize + 75>(mRecvMAD);
+    std::uint32_t status = std::get<GRHSize + 4>(mRecvMAD) << 24 |
+        std::get<GRHSize + 5>(mRecvMAD) << 16 |
+        std::get<GRHSize + 6>(mRecvMAD) << 8 | std::get<GRHSize + 75>(mRecvMAD);
     if(status)
     {
         return false;
     }
 
-    std::uint8_t method = std::get<VerbsGRHSize + 3>(mRecvMAD) & 0x0F;
+    std::uint8_t method = std::get<GRHSize + 3>(mRecvMAD) & 0x0F;
     if(method != 0x01)
     {
         return false;
     }
 
-    std::uint16_t offset = std::get<VerbsGRHSize + 44>(mRecvMAD) << 8 |
-        std::get<VerbsGRHSize + 45>(mRecvMAD);
+    std::uint16_t offset = std::get<GRHSize + 44>(mRecvMAD) << 8 |
+        std::get<GRHSize + 45>(mRecvMAD);
     if(!offset)
     {
         return false;
     }
 
-    if(!std::equal(mRecvMAD.begin() + VerbsGRHSize + 12,
-           mRecvMAD.begin() + VerbsGRHSize + 12 + 4, mSendMAD.begin() + 12))
+    if(!std::equal(mRecvMAD.begin() + GRHSize + 12,
+           mRecvMAD.begin() + GRHSize + 12 + 4, mSendMAD.begin() + 12))
     {
         return false;
     }
@@ -100,6 +99,6 @@ int pMR::verbs::mad::SwitchLID::getSwitchLID()
         query();
     } while(!validate());
 
-    return (std::get<VerbsGRHSize + 60>(mRecvMAD) << 8 |
-        std::get<VerbsGRHSize + 61>(mRecvMAD));
+    return (std::get<GRHSize + 60>(mRecvMAD) << 8 |
+        std::get<GRHSize + 61>(mRecvMAD));
 }

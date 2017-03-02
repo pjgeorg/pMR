@@ -26,13 +26,13 @@ pMR::ofi::Info::Info(std::string const &address)
     int returnValue;
     if(!address.empty())
     {
-        returnValue = fi_getinfo(FI_VERSION(OFIVersionMajor, OFIVersionMinor),
-            address.data(), NULL, FI_SOURCE | FI_NUMERICHOST, Hints().get(),
-            &mInfo);
+        returnValue =
+            fi_getinfo(FI_VERSION(VersionMajor, VersionMinor), address.data(),
+                NULL, FI_SOURCE | FI_NUMERICHOST, Hints().get(), &mInfo);
     }
     else
     {
-        returnValue = fi_getinfo(FI_VERSION(OFIVersionMajor, OFIVersionMinor),
+        returnValue = fi_getinfo(FI_VERSION(VersionMajor, VersionMinor),
             nullptr, NULL, 0, Hints().get(), &mInfo);
     }
 

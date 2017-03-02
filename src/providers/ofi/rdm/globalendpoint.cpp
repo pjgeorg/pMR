@@ -31,8 +31,8 @@ pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
     mEndpoint.bind(mRecvCompletionQueue, FI_RECV);
     mEndpoint.enable();
 
-    mSendCompletions.reserve(OFIReserveSizeCompletion);
-    mRecvCompletions.reserve(OFIReserveSizeCompletion);
+    mSendCompletions.reserve(ReserveSizeCompletion);
+    mRecvCompletions.reserve(ReserveSizeCompletion);
 }
 
 fid_ep *pMR::ofi::GlobalEndpoint::get()

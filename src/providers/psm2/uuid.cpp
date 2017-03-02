@@ -20,7 +20,7 @@
 
 pMR::psm2::UUID::UUID()
 {
-    auto cUUID = std::getenv(PSMUUIDEnv);
+    auto cUUID = std::getenv(UUIDEnv);
 
     auto sUUID = [&]() {
         if(cUUID)
@@ -29,7 +29,7 @@ pMR::psm2::UUID::UUID()
         }
         else
         {
-            return std::string(PSMDefaultUUID);
+            return std::string(DefaultUUID);
         }
     }();
 

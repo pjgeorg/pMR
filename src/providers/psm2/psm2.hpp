@@ -24,10 +24,9 @@ namespace pMR
 {
     namespace psm2
     {
-        constexpr std::int64_t PSMEndpointCloseTimeout = 5 * 1000000000LL;
-        constexpr char PSMUUIDEnv[] = "PSM2_UUID";
-        constexpr char PSMDefaultUUID[] =
-            "00FF00FF-0000-0000-0000-00FF00FF00FF";
+        constexpr std::int64_t EndpointCloseTimeout = 5 * 1000000000LL;
+        constexpr char UUIDEnv[] = "PSM2_UUID";
+        constexpr char DefaultUUID[] = "00FF00FF-0000-0000-0000-00FF00FF00FF";
 
         // We use the additional 32bit to distinguish from any other library
         // E.g. OFI is using these for (L->R):
@@ -35,8 +34,8 @@ namespace pMR
         // 8-31: SEQ
         // 32-47: SRC pEP
         // 48-63: DST pEP
-        constexpr std::uint32_t PSMExtraTag = 0xFFFFFFFF;
-        constexpr psm2_mq_tag_t PSMTagSelector = {
+        constexpr std::uint32_t ExtraTag = 0xFFFFFFFF;
+        constexpr psm2_mq_tag_t TagSelector = {
             0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
     }
 }

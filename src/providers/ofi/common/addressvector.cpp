@@ -23,7 +23,7 @@ pMR::ofi::AddressVector::AddressVector(Domain &domain)
 {
     fi_av_attr attr = {};
     attr.type = FI_AV_MAP;
-    attr.count = {OFIAVCount};
+    attr.count = {AVCount};
     attr.ep_per_node = 0;
     attr.name = NULL;
 
