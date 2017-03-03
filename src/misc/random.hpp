@@ -55,14 +55,14 @@ namespace pMR
     template<typename T>
     T getRandomNumber()
     {
-        return Random<T>().getRandomNumber();
+        return {Random<T>().getRandomNumber()};
     }
 }
 
 template<typename T>
 T pMR::Random<T, true>::getRandomNumber()
 {
-    return mDistribution(mEngine);
+    return {mDistribution(mEngine)};
 }
 
 template<typename T>
@@ -72,10 +72,10 @@ std::uniform_int_distribution<T> pMR::Random<T, true>::mDistribution(
 template<typename T>
 T pMR::Random<T, false>::getRandomNumber()
 {
-    return mDistribution(mEngine);
+    return {mDistribution(mEngine) * 2};
 }
 
 template<typename T>
 std::uniform_real_distribution<T> pMR::Random<T, false>::mDistribution(
-    std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+    std::numeric_limits<T>::lowest() / 2, std::numeric_limits<T>::max() / 2);
 #endif // pMR_MISC_RANDOM_H
