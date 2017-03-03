@@ -734,8 +734,6 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/../src \
-                         @CMAKE_CURRENT_SOURCE_DIR@/../src/clusters/common \
-                         @CMAKE_CURRENT_SOURCE_DIR@/../src/allreduce \
                          @CMAKE_CURRENT_SOURCE_DIR@/../src/backends/@BACKEND@
 
 # This tag can be used to specify the character encoding of the source files

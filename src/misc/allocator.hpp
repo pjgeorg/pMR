@@ -19,7 +19,7 @@
 #include <limits>
 #include <memory>
 #include <stdexcept>
-#include "config.hpp"
+#include "../config.hpp"
 
 namespace pMR
 {

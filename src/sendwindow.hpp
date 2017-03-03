@@ -21,11 +21,11 @@
 
 #include <cmath>
 #include <cstdint>
-#include "config.hpp"
-#include "sendmemorywindow.hpp"
 #include "misc/numeric.hpp"
 #include "misc/thread.hpp"
 #include "misc/type.hpp"
+#include "config.hpp"
+#include "sendmemorywindow.hpp"
 #include "window.hpp"
 
 namespace pMR

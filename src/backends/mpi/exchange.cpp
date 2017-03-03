@@ -16,8 +16,8 @@
 extern "C" {
 #include <mpi.h>
 }
-#include "target.hpp"
 #include "../backend.hpp"
+#include "target.hpp"
 #include "threadsupport.hpp"
 
 void pMR::backend::exchange(Target const &target, void const *sendBuffer,

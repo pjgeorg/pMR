@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "connection.hpp"
+#include "../../connection.hpp"
 
 void pMR::Connection::connect(Target const &target)
 {

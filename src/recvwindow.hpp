@@ -20,11 +20,11 @@
 #define pMR_RECVWINDOW_H
 
 #include <cstdint>
-#include "config.hpp"
-#include "recvmemorywindow.hpp"
 #include "misc/numeric.hpp"
 #include "misc/thread.hpp"
 #include "misc/type.hpp"
+#include "config.hpp"
+#include "recvmemorywindow.hpp"
 #include "window.hpp"
 
 namespace pMR

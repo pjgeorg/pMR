@@ -17,7 +17,7 @@
 
 #include <cstdint>
 #include <memory>
-#include "config.hpp"
+#include <config.hpp>
 #include "../common/domain.hpp"
 #include "../common/fabric.hpp"
 #include "../common/memoryaddress.hpp"

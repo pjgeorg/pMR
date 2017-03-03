@@ -15,7 +15,7 @@
 #ifndef pMR_PROVIDERS_OFI_RMD_CONNECTION_H
 #define pMR_PROVIDERS_OFI_RMD_CONNECTION_H
 
-#include "config.hpp"
+#include <config.hpp>
 #include "../common/memoryaddress.hpp"
 #include "../common/memoryregion.hpp"
 #include "../common/rma.hpp"

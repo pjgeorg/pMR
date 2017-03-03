@@ -12,9 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "connection.hpp"
-#include "target.hpp"
+#include "../../connection.hpp"
 #include "../../misc/print.hpp"
+#include "../../target.hpp"
 
 extern "C" {
 #include "pmr.h"

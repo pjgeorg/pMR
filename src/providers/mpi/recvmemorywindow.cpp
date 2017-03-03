@@ -14,9 +14,9 @@
 
 #include "recvmemorywindow.hpp"
 #include <stdexcept>
-#include "config.hpp"
-#include "connection.hpp"
+#include <config.hpp>
 #include "../../backends/mpi/threadsupport.hpp"
+#include "connection.hpp"
 
 pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,

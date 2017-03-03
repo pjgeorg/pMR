@@ -57,6 +57,14 @@
 #cmakedefine pMR_PROVIDER_VERBS
 #endif // pMR_PROVIDER_VERBS
 
+#ifndef pMR_ALLREDUCE_MPI
+#cmakedefine pMR_ALLREDUCE_MPI
+#endif // pMR_ALLREDUCE_MPI
+
+#ifndef pMR_ALLREDUCE_RECURSIVE_DOUBLING
+#cmakedefine pMR_ALLREDUCE_RECURSIVE_DOUBLING
+#endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
+
 namespace pMR
 {
     enum class ThreadLevel

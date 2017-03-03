@@ -16,7 +16,7 @@
 #define pMR_PROVIDERS_NULL_SENDMEMORYWINDOW_H
 
 #include <memory>
-#include "config.hpp"
+#include <config.hpp>
 
 namespace pMR
 {

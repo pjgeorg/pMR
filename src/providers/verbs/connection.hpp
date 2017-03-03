@@ -19,7 +19,7 @@
 extern "C" {
 #include <infiniband/verbs.h>
 }
-#include "config.hpp"
+#include <config.hpp>
 #include "connectionaddress.hpp"
 #include "context.hpp"
 #include "endpoint.hpp"

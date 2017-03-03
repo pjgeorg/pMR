@@ -12,23 +12,4 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "../../connection.hpp"
-#include "../../providers/verbs/topology.hpp"
-#include "../../target.hpp"
-
-void pMR::Connection::connect(Target const &target)
-{
-    if(target.isNull())
-    {
-        connectNull(target);
-        return;
-    }
-
-    if(target.isSelf())
-    {
-        connectSelf(target);
-        return;
-    }
-
-    connectVerbs(target, verbs::getIBAdapter());
-}
+#include <target.hpp>

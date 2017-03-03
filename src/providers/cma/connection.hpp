@@ -20,7 +20,7 @@
 extern "C" {
 #include <sys/uio.h>
 }
-#include "config.hpp"
+#include <config.hpp>
 
 namespace pMR
 {

@@ -15,12 +15,13 @@
 #include "allreduce.hpp"
 #include <cmath>
 
-#include <iostream>
+#include "../../misc/print.hpp"
 
-pMR::AllReduce::AllReduce(Communicator const communicator,
-        std::uint32_t const sizeByte)
-    :   mSizeByte(std::ceil(static_cast<double>(sizeByte) / alignment)
-            * alignment)
+pMR::RecursiveDoubling::AllReduce::AllReduce(
+    Communicator const &communicator, void *buffer, size_type const sizeByte)
+    : mBuffer(buffer)
+    , mSizeByte(
+          std::ceil(static_cast<double>(sizeByte) / alignment) * alignment)
 {
     // Recursive doubling only works for a power of two number of processes.
     // For the non-power of two case we do:
@@ -34,14 +35,14 @@ pMR::AllReduce::AllReduce(Communicator const communicator,
     int depth = -1;
     while(Po2Processes <= communicator.size())
     {
-        Po2Processes <<=1;
+        Po2Processes <<= 1;
         ++depth;
     }
     Po2Processes >>= 1;
 
     // Number of required buffers
     // Start at 1, as we always require at least one to store the local data.
-    int numBuffers = 1;
+    int numBuffers = 0;
 
     // processID for recursive-doubling
     // -1 indicates that the process is not part of recursive-doubling.
@@ -59,9 +60,9 @@ pMR::AllReduce::AllReduce(Communicator const communicator,
             if(communicator.ID() % 2 == 0)
             {
                 // Establish connection to odd rank (+1)
-                mPPConnection = std::unique_ptr<pMR::Connection>(
-                        new pMR::Connection(communicator.getTarget(
-                                communicator.ID() + 1)));
+                mPPConnection =
+                    std::unique_ptr<pMR::Connection>(new pMR::Connection(
+                        communicator.getTarget(communicator.ID() + 1)));
 
                 // Assign new process ID
                 processID /= 2;
@@ -72,9 +73,9 @@ pMR::AllReduce::AllReduce(Communicator const communicator,
             else
             {
                 // Establish connection to even rank (-1)
-                mPPConnection = std::unique_ptr<pMR::Connection>(
-                        new pMR::Connection(communicator.getTarget(
-                                communicator.ID() - 1)));
+                mPPConnection =
+                    std::unique_ptr<pMR::Connection>(new pMR::Connection(
+                        communicator.getTarget(communicator.ID() - 1)));
 
                 // Assign new process ID
                 processID = -1;
@@ -128,33 +129,39 @@ pMR::AllReduce::AllReduce(Communicator const communicator,
     if(mPPConnection)
     {
         mPPSendWindow = std::unique_ptr<pMR::SendMemoryWindow>(
-                new pMR::SendMemoryWindow(*mPPConnection,
-                    static_cast<void*>(mBuffers.data() + 0), mSizeByte));
+            new pMR::SendMemoryWindow(*mPPConnection, mBuffer, sizeByte));
 
         // For processes only involved in pre and post step we use the same
         // buffer for send (pre) and receive (post) memory window.
         if(processID != -1)
         {
-            offsetBuffer += mSizeByte;
         }
 
-        mPPRecvWindow = std::unique_ptr<pMR::RecvMemoryWindow>(
+        if(processID == -1)
+        {
+            mPPRecvWindow = std::unique_ptr<pMR::RecvMemoryWindow>(
+                new pMR::RecvMemoryWindow(*mPPConnection, mBuffer, sizeByte));
+        }
+        else
+        {
+            mPPRecvWindow = std::unique_ptr<pMR::RecvMemoryWindow>(
                 new pMR::RecvMemoryWindow(*mPPConnection,
-                    static_cast<void*>(mBuffers.data() + offsetBuffer),
-                    mSizeByte));
+                    static_cast<void *>(mBuffers.data() + offsetBuffer),
+                    sizeByte));
+            offsetBuffer += mSizeByte;
+        }
     }
 
     // Setup Memory Windows for recursive-doubling
     for(auto const &connection : mRDConnections)
     {
         // Use the same send buffer for all connections.
-        mRDSendWindows.emplace_back(connection,
-                static_cast<void*>(mBuffers.data() + 0), mSizeByte);
+        mRDSendWindows.emplace_back(connection, mBuffer, sizeByte);
 
         // Increment offset by message size. I.e. use a different receive
         // buffer for each connection.
-        offsetBuffer += mSizeByte;
         mRDRecvWindows.emplace_back(connection,
-                static_cast<void*>(mBuffers.data() + offsetBuffer), mSizeByte);
+            static_cast<void *>(mBuffers.data() + offsetBuffer), sizeByte);
+        offsetBuffer += mSizeByte;
     }
 }

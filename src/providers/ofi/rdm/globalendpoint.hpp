@@ -19,7 +19,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <vector>
-#include "config.hpp"
+#include <config.hpp>
 #include "../common/addressvector.hpp"
 #include "../common/domain.hpp"
 #include "../common/endpoint.hpp"

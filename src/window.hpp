@@ -24,9 +24,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
-#include "config.hpp"
 #include "misc/allocator.hpp"
 #include "misc/profiling.hpp"
+#include "config.hpp"
 #ifdef pMR_WARN_ZERO
 #include "misc/print.hpp"
 #endif // pMR_WARN_ZERO

@@ -12,105 +12,86 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_ALLREDUCE_RECURSIVEDOUBLING_ALLREDUCE_H
-#define pMR_ALLREDUCE_RECURSIVEDOUBLING_ALLREDUCE_H
+#ifndef pMR_ALLREDUCE_RECURSIVE_DOUBLING_ALLREDUCE_H
+#define pMR_ALLREDUCE_RECURSIVE_DOUBLING_ALLREDUCE_H
 
-#include <cstdint>
-#include <algorithm>
-
-#include "communicator.hpp"
-#include "connection.hpp"
-#include "sendmemorywindow.hpp"
-#include "recvmemorywindow.hpp"
-#include "misc/allocator.hpp"
+#include "../../communicator.hpp"
+#include "../../connection.hpp"
+#include "../../misc/allocator.hpp"
+#include "../../operations.hpp"
+#include "../../recvmemorywindow.hpp"
+#include "../../sendmemorywindow.hpp"
 
 namespace pMR
 {
-    class AllReduce
+    namespace RecursiveDoubling
     {
+        class AllReduce
+        {
         public:
-            AllReduce(Communicator const communicator,
-                    std::uint32_t const sizeByte);
-            AllReduce(const AllReduce&) = delete;
-            AllReduce(AllReduce&&) = delete;
-            AllReduce& operator=(const AllReduce&) = delete;
-            AllReduce& operator=(AllReduce&&) = delete;
+            AllReduce(Communicator const &communicator, void *buffer,
+                size_type const sizeByte);
+            AllReduce(const AllReduce &) = delete;
+            AllReduce(AllReduce &&) = delete;
+            AllReduce &operator=(const AllReduce &) = delete;
+            AllReduce &operator=(AllReduce &&) = delete;
             ~AllReduce() = default;
 
-            template<typename T, class Iterator>
-            void insert(Iterator inputIt, std::uint32_t const count);
-
-            template<typename T, class Iterator>
-            void extract(Iterator outputIt, std::uint32_t const count);
+            template<typename T>
+            bool execute(Operation reduce, size_type const count);
 
             template<typename T>
-            T* data();
-            template<typename T>
-            T const* data() const;
-            template<typename T>
-            std::uint32_t size() const;
+            bool execute(
+                void (*reduce)(T const *in, T *inout, size_type const count),
+                size_type const count);
 
-            template<typename T>
-            void execute(void (*reduce)
-                    (T const *in, T *inout, std::uint32_t const count),
-                    std::uint32_t const count);
         private:
-            std::uint32_t const mSizeByte;
+            void *mBuffer;
+            size_type const mSizeByte;
             // Connection for (potential) pre and post step
             std::unique_ptr<pMR::Connection> mPPConnection;
             // Connections for recursive-doubling
             std::vector<pMR::Connection> mRDConnections;
             // Memory Buffer(s)
-            std::vector<unsigned char, pMR::Allocator<unsigned char>>
-                mBuffers;
+            std::vector<unsigned char, pMR::Allocator<unsigned char>> mBuffers;
             // Memory Windows for pre and post step
             std::unique_ptr<pMR::SendMemoryWindow> mPPSendWindow;
             std::unique_ptr<pMR::RecvMemoryWindow> mPPRecvWindow;
             // Memory Windows for recursive-doubling
             std::vector<pMR::SendMemoryWindow> mRDSendWindows;
             std::vector<pMR::RecvMemoryWindow> mRDRecvWindows;
-
-            template<typename T>
-            void checkBoundaries(std::uint32_t const count);
-    };
-}
-
-template<typename T, class Iterator>
-void pMR::AllReduce::insert(Iterator inputIt, std::uint32_t const count)
-{
-    checkBoundaries<T>(count);
-    std::copy_n(inputIt, count, reinterpret_cast<T*>(mBuffers.data()));
-}
-
-template<typename T, class Iterator>
-void pMR::AllReduce::extract(Iterator outputIt, std::uint32_t const count)
-{
-    checkBoundaries<T>(count);
-    std::copy_n(reinterpret_cast<T const*>(mBuffers.data()), count, outputIt);
+        };
+    }
 }
 
 template<typename T>
-T* pMR::AllReduce::data()
+bool pMR::RecursiveDoubling::AllReduce::execute(
+    Operation op, size_type const count)
 {
-    return reinterpret_cast<T*>(mBuffers.data());
+    switch(op)
+    {
+        case Operation::Max:
+            return {execute<T>(&max, count)};
+            break;
+        case Operation::Min:
+            return {execute<T>(&min, count)};
+            break;
+        case Operation::Sum:
+            return {execute<T>(&sum, count)};
+            break;
+        case Operation::Prod:
+            return {execute<T>(&sum, count)};
+            break;
+        default:
+            return {false};
+            break;
+    }
 }
 
 template<typename T>
-T const* pMR::AllReduce::data() const
-{
-    return reinterpret_cast<T const*>(mBuffers.data());
-}
-
-template<typename T>
-std::uint32_t pMR::AllReduce::size() const
-{
-    return mSizeByte / sizeof(T);
-}
-
-template<typename T>
-void pMR::AllReduce::execute(
-        void (*reduce) (T const *in, T *inout, std::uint32_t const count),
-        std::uint32_t const count)
+bool pMR::RecursiveDoubling::AllReduce::execute(
+    void (*reduce)(T const *in, T *inout, size_type const count),
+    size_type const count)
 {
     // Init data exchange for all connections.
     // This way we can at least overlap the control messages thanks to
@@ -130,10 +111,10 @@ void pMR::AllReduce::execute(
     decltype(mRDSendWindows.begin()) sendWindow;
     decltype(mRDRecvWindows.begin()) recvWindow;
     for(sendWindow = mRDSendWindows.begin(),
-            recvWindow = mRDRecvWindows.begin();
-            sendWindow != mRDSendWindows.end() &&
-            recvWindow != mRDRecvWindows.cend();
-            ++sendWindow, ++recvWindow)
+    recvWindow = mRDRecvWindows.begin();
+        sendWindow != mRDSendWindows.end() &&
+        recvWindow != mRDRecvWindows.cend();
+        ++sendWindow, ++recvWindow)
     {
         recvWindow->init();
         sendWindow->init();
@@ -151,24 +132,24 @@ void pMR::AllReduce::execute(
         {
             mPPRecvWindow->post();
             mPPRecvWindow->wait();
-            reduce(reinterpret_cast<T const*>(mPPRecvWindow->data()),
-                   reinterpret_cast<T*>(mPPSendWindow->data()), count);
+            reduce(reinterpret_cast<T const *>(mPPRecvWindow->data()),
+                reinterpret_cast<T *>(mPPSendWindow->data()), count);
         }
     }
 
     // Recursive-doubling
     for(sendWindow = mRDSendWindows.begin(),
-            recvWindow = mRDRecvWindows.begin();
-            sendWindow != mRDSendWindows.end() &&
-            recvWindow != mRDRecvWindows.cend();
-            ++sendWindow, ++recvWindow)
+    recvWindow = mRDRecvWindows.begin();
+        sendWindow != mRDSendWindows.end() &&
+        recvWindow != mRDRecvWindows.cend();
+        ++sendWindow, ++recvWindow)
     {
         sendWindow->post();
         recvWindow->post();
         sendWindow->wait();
         recvWindow->wait();
-        reduce(reinterpret_cast<T const*>(recvWindow->data()),
-               reinterpret_cast<T*>(sendWindow->data()), count);
+        reduce(reinterpret_cast<T const *>(recvWindow->data()),
+            reinterpret_cast<T *>(sendWindow->data()), count);
     }
 
     // Post step
@@ -187,14 +168,7 @@ void pMR::AllReduce::execute(
             mPPSendWindow->wait();
         }
     }
-}
 
-template<typename T>
-void pMR::AllReduce::checkBoundaries(std::uint32_t const count)
-{
-    if(count > size<T>())
-    {
-        throw std::out_of_range("AllReduce buffer");
-    }
+    return true;
 }
-#endif // pMR_ALLREDUCE_RECURSIVEDOUBLING_ALLREDUCE_H
+#endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING_ALLREDUCE_H

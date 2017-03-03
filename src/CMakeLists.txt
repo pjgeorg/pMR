@@ -24,24 +24,16 @@ include(arch)
 include(thread)
 include(backend)
 include(provider)
+include(allreduce)
 
 # Re-configure config.hpp to set all enabled providers
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY)
 
-add_subdirectory(clusters/common)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/common)
-
 string(TOLOWER ${CLUSTER} CLUSTER)
 add_subdirectory(clusters/${CLUSTER})
 
-install(FILES recvwindow.hpp sendwindow.hpp window.hpp DESTINATION include/pmr)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_subdirectory(misc)
 
-string(TOLOWER ${ALLREDUCE} ALLREDUCE)
-add_subdirectory(allreduce/${ALLREDUCE})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/allreduce/${ALLREDUCE})
 
 if(CAPI)
     if(NOT ${BACKEND} STREQUAL "MPI")
@@ -51,15 +43,31 @@ if(CAPI)
     list(APPEND API_SRC $<TARGET_OBJECTS:API_C>)
 endif()
 
+install(FILES
+    allreduce.hpp
+    connection.hpp
+    operations.hpp
+    provider.hpp
+    recvmemorywindow.hpp
+    recvwindow.hpp
+    sendmemorywindow.hpp
+    sendwindow.hpp
+    window.hpp DESTINATION include/pmr)
+
 add_library(pmr STATIC
     $<TARGET_OBJECTS:ARCH>
     $<TARGET_OBJECTS:MISC>
     $<TARGET_OBJECTS:BACKEND>
-    $<TARGET_OBJECTS:CLUSTER_COMMON>
     $<TARGET_OBJECTS:CLUSTER>
-    $<TARGET_OBJECTS:ALLREDUCE>
     ${PROVIDERS}
-    ${API_SRC})
+    ${ALLREDUCE}
+    ${API_SRC}
+    allreduce.cpp
+    connection.cpp
+    provider.cpp
+    recvmemorywindow.cpp
+    sendmemorywindow.cpp
+    types.cpp)
 
 target_link_libraries(pmr ${LIBRARIES})
 target_include_directories(pmr PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)

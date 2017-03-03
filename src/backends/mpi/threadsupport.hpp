@@ -16,7 +16,7 @@
 #define pMR_BACKENDS_MPI_THREADSUPPORT_H
 
 #include <mutex>
-#include "config.hpp"
+#include <config.hpp>
 
 namespace pMR
 {

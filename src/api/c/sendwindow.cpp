@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "sendwindow.hpp"
-#include "config.hpp"
+#include "../../sendwindow.hpp"
+#include <config.hpp>
 #include "../../misc/print.hpp"
 
 extern "C" {

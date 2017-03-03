@@ -13,8 +13,8 @@
 //  limitations under the License.
 
 #include "connection.hpp"
-#include "target.hpp"
 #include "../../backends/backend.hpp"
+#include "../../backends/mpi/target.hpp"
 #include "../../backends/mpi/threadsupport.hpp"
 
 pMR::mpi::Connection::Connection(Target const &target)

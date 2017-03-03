@@ -13,7 +13,7 @@
 //  limitations under the License.
 
 #include "globalendpoint.hpp"
-#include "config.hpp"
+#include <config.hpp>
 #include "message.hpp"
 #include "psm2.hpp"
 #include "stats.hpp"

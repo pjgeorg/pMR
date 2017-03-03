@@ -17,7 +17,7 @@
 
 #include <array>
 #include <memory>
-#include "config.hpp"
+#include <config.hpp>
 #include "endpoint.hpp"
 #include "memoryregion.hpp"
 #include "peerendpoint.hpp"
