@@ -55,6 +55,11 @@ set(VERBS.INLINE 128 CACHE STRING "Set max inline data size.")
 set(VERBS.ODP OFF CACHE BOOL "Use ODP capability.")
 
 
+set(RECURSIVE.DOUBLING.BLOCKING 1 CACHE STRING "Set Recursive Doubling blocking factor.")
+set(RECURSIVE.DOUBLING.DOMAIN.SIZE 1 CACHE STRING "Set Recursive Doubling pre reduction domain size.")
+set(RECURSIVE.DOUBLING.FBT OFF CACHE BOOL "Enable optimization for 1D FBT with four blocks.")
+
+
 set(QPACE2.WARN.TOPOLOGY ON CACHE BOOL "Warning about misuse of topology.")
 
 add_subdirectory(src)

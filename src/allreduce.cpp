@@ -19,7 +19,7 @@ pMR::AllReduce::AllReduce(
     : mSizeByte{sizeByte}
     , mBuffer(mSizeByte)
 #ifdef pMR_ALLREDUCE_MPI
-    , mRecursiveDoubling(communicator, mBuffer.data(), mSizeByte)
+    , mMPI(communicator, mBuffer.data(), mSizeByte)
 #endif // pMR_ALLREDUCE_MPI
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
     , mRecursiveDoubling(communicator, mBuffer.data(), mSizeByte)

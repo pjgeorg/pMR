@@ -128,6 +128,54 @@ namespace pMR
         void execute(void (*op)(T const *in, T *inout, size_type const count),
             size_type const count);
 
+        //! @brief Execute the global reduction using the supplied reduce
+        //!     function. Afterwards all process have the result stored in
+        //!     their local internal buffers. Results are guaranteed to be bit
+        //!     identical.
+        //! @param op Reduce function used in reduction operation.
+        //! @param count Number of element of type T to be part of global
+        //!     reduction.
+        //! @note The bit identical reduction is in general slower. Only use
+        //!     when it is a requirement to have bit identical results.
+        //! @warning The size of all elements of type T to be part of global
+        //!     reduction might not exceed the size as returned by size().
+        //! @warning The content of the internal buffer that was not
+        //!     required for the global reduction is undefined.
+        template<typename T>
+        void executeBit(Operation op, size_type const count);
+
+        //! @brief Execute the global reduction using the user-defined reduce
+        //!     function. Afterwards all process have the result stored in
+        //!     their local internal buffers. Results are guaranteed to be bit
+        //!     identical.
+        //! @param op Reduce function used in reduction operation.
+        //! @param count Number of element of type T to be part of global
+        //!     reduction.
+        //! @note The bit identical reduction is in general slower. Only use
+        //!     when it is a requirement to have bit identical results.
+        //! @note Example op function:
+        //! @code
+        //! void sum(float const *in, float *inout, pMR::size_type count)
+        //! {
+        //!     for(auto i = decltype(count){0}; i != count; ++i)
+        //!     {
+        //!        inout[i] += in[i];
+        //!     }
+        //! }
+        //! @endcode
+        //! @warning The size of all elements of type T to be part of global
+        //!     reduction might not exceed the size as returned by size().
+        //! @warning The content of the internal buffer that was not
+        //!     required for the global reduction is undefined.
+        //! @warning User-defined reduce functions might not be able to use
+        //!     best performing routines.
+        //! @warning User-defined reduce functions are assumed to be
+        //!     associative and commutative.
+        template<typename T>
+        void executeBit(
+            void (*op)(T const *in, T *inout, size_type const count),
+            size_type const count);
+
     private:
         size_type const mSizeByte;
         std::vector<unsigned char, pMR::Allocator<unsigned char>> mBuffer;
@@ -185,14 +233,14 @@ template<typename T>
 void pMR::AllReduce::execute(Operation op, size_type const count)
 {
 #ifdef pMR_ALLREDUCE_MPI
-    if(mMPI.execute<T>(op, count))
+    if(mMPI.execute<T>(mBuffer.data(), op, count))
     {
         return;
     }
 #endif // pMR_ALLREDUCE_MPI
 
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
-    if(mRecursiveDoubling.execute<T>(op, count))
+    if(mRecursiveDoubling.execute<T>(mBuffer.data(), op, count))
     {
         return;
     }
@@ -207,14 +255,56 @@ void pMR::AllReduce::execute(
     size_type const count)
 {
 #ifdef pMR_ALLREDUCE_MPI
-    if(mMPI.execute<T>(op, count))
+    if(mMPI.execute<T>(mBuffer.data(), op, count))
     {
         return;
     }
 #endif // pMR_ALLREDUCE_MPI
 
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
-    if(mRecursiveDoubling.execute<T>(op, count))
+    if(mRecursiveDoubling.execute<T>(mBuffer.data(), op, count))
+    {
+        return;
+    }
+#endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
+
+    throw std::runtime_error("pMR: No suitable AllReduce algorithm");
+}
+
+template<typename T>
+void pMR::AllReduce::executeBit(Operation op, size_type const count)
+{
+#ifdef pMR_ALLREDUCE_MPI
+    if(mMPI.executeBit<T>(mBuffer.data(), op, count))
+    {
+        return;
+    }
+#endif // pMR_ALLREDUCE_MPI
+
+#ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
+    if(mRecursiveDoubling.executeBit<T>(mBuffer.data(), op, count))
+    {
+        return;
+    }
+#endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
+
+    throw std::runtime_error("pMR: No suitable AllReduce algorithm");
+}
+
+template<typename T>
+void pMR::AllReduce::executeBit(
+    void (*op)(T const *in, T *inout, size_type const count),
+    size_type const count)
+{
+#ifdef pMR_ALLREDUCE_MPI
+    if(mMPI.executeBit<T>(mBuffer.data(), op, count))
+    {
+        return;
+    }
+#endif // pMR_ALLREDUCE_MPI
+
+#ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
+    if(mRecursiveDoubling.executeBit<T>(mBuffer.data(), op, count))
     {
         return;
     }
