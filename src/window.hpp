@@ -327,14 +327,6 @@ bool pMR::Window<T>::isSame(size_type const count)
     {
         return {false};
     }
-    if(mBuffer != mVector.data())
-    {
-        return {false};
-    }
-    if(mCount != mVector.size())
-    {
-        return {false};
-    }
     return {true};
 }
 
