@@ -33,9 +33,9 @@ namespace pMR
             AllReduce(Communicator const &communicator, void *buffer,
                 size_type const sizeByte);
             AllReduce(const AllReduce &) = delete;
-            AllReduce(AllReduce &&) = delete;
+            AllReduce(AllReduce &&) = default;
             AllReduce &operator=(const AllReduce &) = delete;
-            AllReduce &operator=(AllReduce &&) = delete;
+            AllReduce &operator=(AllReduce &&) = default;
             ~AllReduce() = default;
 
             template<typename T>

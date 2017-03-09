@@ -13,6 +13,7 @@
 //  limitations under the License.
 
 #include "allreduce.hpp"
+#include "misc/print.hpp"
 
 pMR::AllReduce::AllReduce(
     Communicator const &communicator, size_type const sizeByte)
@@ -34,7 +35,50 @@ pMR::AllReduce::AllReduce(
     }
 }
 
+pMR::AllReduce::AllReduce(AllReduce &&other)
+    : mSizeByte(std::move(other.mSizeByte))
+    , mBuffer(std::move(other.mBuffer))
+#ifdef pMR_ALLREDUCE_MPI
+    , mMPI(std::move(other.mMPI))
+#endif // pMR_ALLREDUCE_MPI
+#ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
+    , mRecursiveDoubling(std::move(other.mRecursiveDoubling))
+#endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
+#ifdef pMR_PROFILING
+    , mIterations(std::move(other.mIterations))
+    , mTimeExecute(std::move(other.mTimeExecute))
+    , mTimeCopy(std::move(other.mTimeCopy))
+{
+    other.mPrintStats = {false};
+}
+#else
+{
+}
+#endif // pMR_PROFILING
+
+pMR::AllReduce::~AllReduce()
+{
+#ifdef pMR_PROFILING
+    printStats();
+#endif // pMR_PROFILING
+}
+
 pMR::size_type pMR::AllReduce::size() const
 {
     return {mSizeByte};
 }
+
+#ifdef pMR_PROFILING
+void pMR::AllReduce::printStats() const
+{
+    if(mPrintStats)
+    {
+        std::ostringstream oss;
+        oss << "pMR: AllReduce"
+            << " SizeByte " << std::setw(8) << mSizeByte << " Exec "
+            << std::scientific << mTimeExecute << " Copy " << std::scientific
+            << mTimeCopy << " Iterations " << mIterations << std::endl;
+        std::cout << oss.str();
+    }
+}
+#endif // pMR_PROFILING

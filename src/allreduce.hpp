@@ -23,7 +23,9 @@
 #define pMR_ALLREDUCE_H
 
 #include <algorithm>
+#include <sstream>
 #include "misc/allocator.hpp"
+#include "misc/profiling.hpp"
 #include "communicator.hpp"
 #include "config.hpp"
 
@@ -48,10 +50,10 @@ namespace pMR
         //!     messages sizes.
         AllReduce(Communicator const &communicator, size_type const sizeByte);
         AllReduce(AllReduce const &) = delete;
-        AllReduce(AllReduce &&) = delete;
+        AllReduce(AllReduce &&);
         AllReduce &operator=(AllReduce const &) = delete;
-        AllReduce &operator=(AllReduce &&) = delete;
-        ~AllReduce() = default;
+        AllReduce &operator=(AllReduce &&) = default;
+        ~AllReduce();
 
         //! @brief Copy data to internal buffer.
         //! @details Copies data from storage - inputIt iterator points to -
@@ -186,6 +188,14 @@ namespace pMR
         RecursiveDoubling::AllReduce mRecursiveDoubling;
 #endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
 
+#ifdef pMR_PROFILING
+        std::uint64_t mIterations = 0;
+        double mTimeExecute = 0.0;
+        double mTimeCopy = 0.0;
+        bool mPrintStats = true;
+        void printStats() const;
+#endif // pMR_PROFILING
+
         template<typename T>
         void checkBuffer(size_type const count);
     };
@@ -194,21 +204,25 @@ namespace pMR
 template<class Iterator>
 void pMR::AllReduce::insert(Iterator inputIt, size_type const count)
 {
+    pMR_PROF_START(mTimeCopy);
     checkBuffer<typename std::iterator_traits<Iterator>::value_type>(count);
     std::copy_n(inputIt, count,
         reinterpret_cast<typename std::iterator_traits<Iterator>::value_type *>(
             mBuffer.data()));
+    pMR_PROF_STOP(mTimeCopy);
 }
 
 template<class Iterator>
 void pMR::AllReduce::extract(Iterator outputIt, size_type const count)
 {
+    pMR_PROF_START(mTimeCopy);
     checkBuffer<typename std::iterator_traits<Iterator>::value_type>(count);
     std::copy_n(
         reinterpret_cast<
             typename std::iterator_traits<Iterator>::value_type const *>(
             mBuffer.data()),
         count, outputIt);
+    pMR_PROF_STOP(mTimeCopy);
 }
 
 template<typename T>
@@ -232,9 +246,12 @@ pMR::size_type pMR::AllReduce::count() const
 template<typename T>
 void pMR::AllReduce::execute(Operation op, size_type const count)
 {
+    pMR_PROF_COUNT(mIterations);
+    pMR_PROF_START(mTimeExecute);
 #ifdef pMR_ALLREDUCE_MPI
     if(mMPI.execute<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_MPI
@@ -242,6 +259,7 @@ void pMR::AllReduce::execute(Operation op, size_type const count)
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
     if(mRecursiveDoubling.execute<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
@@ -254,9 +272,12 @@ void pMR::AllReduce::execute(
     void (*op)(T const *in, T *inout, size_type const count),
     size_type const count)
 {
+    pMR_PROF_COUNT(mIterations);
+    pMR_PROF_START(mTimeExecute);
 #ifdef pMR_ALLREDUCE_MPI
     if(mMPI.execute<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_MPI
@@ -264,6 +285,7 @@ void pMR::AllReduce::execute(
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
     if(mRecursiveDoubling.execute<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
@@ -274,9 +296,12 @@ void pMR::AllReduce::execute(
 template<typename T>
 void pMR::AllReduce::executeBit(Operation op, size_type const count)
 {
+    pMR_PROF_COUNT(mIterations);
+    pMR_PROF_START(mTimeExecute);
 #ifdef pMR_ALLREDUCE_MPI
     if(mMPI.executeBit<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_MPI
@@ -284,6 +309,7 @@ void pMR::AllReduce::executeBit(Operation op, size_type const count)
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
     if(mRecursiveDoubling.executeBit<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
@@ -296,9 +322,12 @@ void pMR::AllReduce::executeBit(
     void (*op)(T const *in, T *inout, size_type const count),
     size_type const count)
 {
+    pMR_PROF_COUNT(mIterations);
+    pMR_PROF_START(mTimeExecute);
 #ifdef pMR_ALLREDUCE_MPI
     if(mMPI.executeBit<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_MPI
@@ -306,6 +335,7 @@ void pMR::AllReduce::executeBit(
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
     if(mRecursiveDoubling.executeBit<T>(mBuffer.data(), op, count))
     {
+        pMR_PROF_STOP(mTimeExecute);
         return;
     }
 #endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
