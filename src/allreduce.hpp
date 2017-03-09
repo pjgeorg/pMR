@@ -180,7 +180,7 @@ namespace pMR
         size_type const mSizeByte;
         std::vector<unsigned char, pMR::Allocator<unsigned char>> mBuffer;
 #ifdef pMR_ALLREDUCE_MPI
-        std::unique_ptr<MPI::AllReduce> mMPI;
+        MPI::AllReduce mMPI;
 #endif // pMR_ALLREDUCE_MPI
 #ifdef pMR_ALLREDUCE_RECURSIVE_DOUBLING
         RecursiveDoubling::AllReduce mRecursiveDoubling;
