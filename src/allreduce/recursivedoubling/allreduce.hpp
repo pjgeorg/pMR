@@ -23,8 +23,6 @@
 #include "../../recvmemorywindow.hpp"
 #include "../../sendmemorywindow.hpp"
 
-#include "../../misc/print.hpp"
-
 namespace pMR
 {
     namespace RecursiveDoubling
@@ -41,7 +39,8 @@ namespace pMR
             ~AllReduce() = default;
 
             template<typename T>
-            bool execute(void *buffer, Operation op, size_type const count);
+            bool execute(
+                void *buffer, Operation const op, size_type const count);
 
             template<typename T>
             bool execute(void *buffer,
@@ -49,7 +48,8 @@ namespace pMR
                 size_type const count);
 
             template<typename T>
-            bool executeBit(void *buffer, Operation op, size_type const count);
+            bool executeBit(
+                void *buffer, Operation const op, size_type const count);
 
             template<typename T>
             bool executeBit(void *buffer,
@@ -103,7 +103,7 @@ namespace pMR
 
 template<typename T>
 bool pMR::RecursiveDoubling::AllReduce::execute(
-    void *buffer, Operation op, size_type const count)
+    void *buffer, Operation const op, size_type const count)
 {
     switch(op)
     {
@@ -144,7 +144,7 @@ bool pMR::RecursiveDoubling::AllReduce::execute(void *buffer,
 
 template<typename T>
 bool pMR::RecursiveDoubling::AllReduce::executeBit(
-    void *buffer, Operation op, size_type const count)
+    void *buffer, Operation const op, size_type const count)
 {
     switch(op)
     {
