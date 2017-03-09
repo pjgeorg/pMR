@@ -27,9 +27,7 @@
 #include "misc/allocator.hpp"
 #include "misc/profiling.hpp"
 #include "config.hpp"
-#ifdef pMR_WARN_ZERO
 #include "misc/print.hpp"
-#endif // pMR_WARN_ZERO
 
 namespace pMR
 {
@@ -150,7 +148,7 @@ namespace pMR
         void checkBufferSize();
         void checkBoundaries(size_type const offset, size_type const count);
 #ifdef pMR_PROFILING
-        std::size_type mSizeByte = 0;
+        size_type mSizeByte = 0;
         std::uint64_t mIterations = 0;
         double mTimeInit = 0.0;
         double mTimePost = 0.0;
