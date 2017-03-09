@@ -12,6 +12,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+//! @file operations.hpp
+//! @brief Defines pre-defined reduce oprations for AllReduce.
+//!
+//! @author Peter Georg
 #ifndef pMR_OPERATIONS_H
 #define pMR_OPERATIONS_H
 
@@ -20,12 +24,16 @@
 
 namespace pMR
 {
-    //! @brief Pre-defined reduce functions.
+    //! Pre-defined reduce operations.
     enum class Operation
     {
+        //! Return the maximum
         Max,
+        //! Return the minimum
         Min,
+        //! Return the sum
         Sum,
+        //! Return the product
         Prod,
     };
 
