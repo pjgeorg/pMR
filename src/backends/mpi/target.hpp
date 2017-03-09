@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-//! @file target.hpp
+//! @file mpi/target.hpp
 //! @brief Public interface for Target.
 //!
 //! @author Peter Georg
