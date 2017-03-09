@@ -40,7 +40,7 @@ namespace pMR
     template<typename T>
     void max(T const *in, T *inout, size_type const count)
     {
-#pragma omp simd aligned(inout,in:alignment)
+#pragma omp simd aligned(inout, in : cAlignment)
         for(auto i = decltype(count){0}; i < count; ++i)
         {
             inout[i] = std::max(inout[i], in[i]);
@@ -50,7 +50,7 @@ namespace pMR
     template<typename T>
     void min(T const *in, T *inout, size_type const count)
     {
-#pragma omp simd aligned(inout,in:alignment)
+#pragma omp simd aligned(inout, in : cAlignment)
         for(auto i = decltype(count){0}; i < count; ++i)
         {
             inout[i] = std::min(inout[i], in[i]);
@@ -60,7 +60,7 @@ namespace pMR
     template<typename T>
     void sum(T const *in, T *inout, size_type const count)
     {
-#pragma omp simd aligned(inout,in:alignment)
+#pragma omp simd aligned(inout, in : cAlignment)
         for(auto i = decltype(count){0}; i < count; ++i)
         {
             inout[i] += in[i];
@@ -70,7 +70,7 @@ namespace pMR
     template<typename T>
     void prod(T const *in, T *inout, size_type const count)
     {
-#pragma omp simd aligned(inout,in:alignment)
+#pragma omp simd aligned(inout, in : cAlignment)
         for(auto i = decltype(count){0}; i < count; ++i)
         {
             inout[i] *= in[i];

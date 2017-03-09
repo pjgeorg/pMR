@@ -21,11 +21,11 @@ namespace pMR
 {
     namespace ofi
     {
-        constexpr int VersionMajor = 1;
-        constexpr int VersionMinor = 3;
-        constexpr std::size_t EventQueueSize = 2;
-        constexpr std::size_t AVCount = 16;
-        constexpr std::size_t ReserveSizeCompletion = 128;
+        constexpr int cVersionMajor = 1;
+        constexpr int cVersionMinor = 3;
+        constexpr std::size_t cEventQueueSize = 2;
+        constexpr std::size_t cAVCount = 16;
+        constexpr std::size_t cReserveSizeCompletion = 128;
     }
 }
 #endif // pMR_PROVIDERS_OFI_OFI_H

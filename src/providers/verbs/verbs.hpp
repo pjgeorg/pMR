@@ -24,36 +24,36 @@ namespace pMR
 {
     namespace verbs
     {
-        constexpr std::uint64_t RecvWRID = 1;
-        constexpr std::uint64_t SendWRID = 2;
-        constexpr std::uint64_t WriteWRID = 3;
-        constexpr int MaxCQEntry = 16;
-        constexpr std::uint32_t MaxSend = 1;
-        constexpr std::uint32_t MaxRecv = 32;
-        constexpr std::uint32_t MaxSendSG = 1;
-        constexpr std::uint32_t MaxRecvSG = 1;
-        constexpr std::uint32_t MaxInlineDataSize = VERBS_INLINE;
-        constexpr std::uint16_t PKeyIndex = 0;
-        constexpr ibv_mtu MTU = VERBS_MTU;
-        constexpr std::uint32_t PSN = 0;
-        constexpr std::uint8_t DestRDAtomic = 1;
-        constexpr std::uint8_t RNRTimer = 12;
-        constexpr std::uint8_t ServiceLevel = 0;
-        constexpr std::uint8_t SrcPath = 0;
-        constexpr std::uint8_t StaticRate = 0;
-        constexpr std::uint8_t Global = 1;
-        constexpr std::uint8_t SGIDIndex = 0;
-        constexpr std::uint8_t HopLimit = 1;
-        constexpr std::uint8_t RDAtomic = 1;
-        constexpr std::uint8_t Timeout = 14;
-        constexpr std::uint8_t RetryCounter = 7;
-        constexpr std::uint8_t RNRRetry = 7;
-        constexpr int InitialPostRecv = 16;
-        constexpr std::uint32_t DefaultQP1QKey = 0x80010000;
-        constexpr int MADPollCQRetry = 1000;
-        constexpr int MADBlockSize = 256;
-        constexpr int MADBlockGRHSize = 296;
-        constexpr int GRHSize = MADBlockGRHSize - MADBlockSize;
+        constexpr std::uint64_t cRecvWRID = 1;
+        constexpr std::uint64_t cSendWRID = 2;
+        constexpr std::uint64_t cWriteWRID = 3;
+        constexpr int cMaxCQEntry = 16;
+        constexpr std::uint32_t cMaxSend = 1;
+        constexpr std::uint32_t cMaxRecv = 32;
+        constexpr std::uint32_t cMaxSendSG = 1;
+        constexpr std::uint32_t cMaxRecvSG = 1;
+        constexpr std::uint32_t cMaxInlineDataSize = VERBS_INLINE;
+        constexpr std::uint16_t cPKeyIndex = 0;
+        constexpr ibv_mtu cMTU = VERBS_MTU;
+        constexpr std::uint32_t cPSN = 0;
+        constexpr std::uint8_t cDestRDAtomic = 1;
+        constexpr std::uint8_t cRNRTimer = 12;
+        constexpr std::uint8_t cServiceLevel = 0;
+        constexpr std::uint8_t cSrcPath = 0;
+        constexpr std::uint8_t cStaticRate = 0;
+        constexpr std::uint8_t cGlobal = 1;
+        constexpr std::uint8_t cSGIDIndex = 0;
+        constexpr std::uint8_t cHopLimit = 1;
+        constexpr std::uint8_t cRDAtomic = 1;
+        constexpr std::uint8_t cTimeout = 14;
+        constexpr std::uint8_t cRetryCounter = 7;
+        constexpr std::uint8_t cRNRRetry = 7;
+        constexpr int cInitialPostRecv = 16;
+        constexpr std::uint32_t cDefaultQP1QKey = 0x80010000;
+        constexpr int cMADPollCQRetry = 1000;
+        constexpr int cMADBlockSize = 256;
+        constexpr int cMADBlockGRHSize = 296;
+        constexpr int cGRHSize = cMADBlockGRHSize - cMADBlockSize;
     }
 }
 #endif // pMR_PROVIDERS_VERBS_VERBS_H

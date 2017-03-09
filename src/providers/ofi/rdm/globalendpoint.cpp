@@ -31,8 +31,8 @@ pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
     mEndpoint.bind(mRecvCompletionQueue, FI_RECV);
     mEndpoint.enable();
 
-    mSendCompletions.reserve(ReserveSizeCompletion);
-    mRecvCompletions.reserve(ReserveSizeCompletion);
+    mSendCompletions.reserve(cReserveSizeCompletion);
+    mRecvCompletions.reserve(cReserveSizeCompletion);
 }
 
 fid_ep *pMR::ofi::GlobalEndpoint::get()
@@ -69,7 +69,7 @@ fi_addr_t pMR::ofi::GlobalEndpoint::addPeer(
 void pMR::ofi::GlobalEndpoint::bind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         {
             std::lock_guard<std::mutex> lock(mSendCompletionsMutex);
@@ -90,7 +90,7 @@ void pMR::ofi::GlobalEndpoint::bind(
 void pMR::ofi::GlobalEndpoint::unbind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         {
             std::lock_guard<std::mutex> lock(mSendCompletionsMutex);

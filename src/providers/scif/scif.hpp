@@ -21,8 +21,8 @@ namespace pMR
 {
     namespace scif
     {
-        constexpr std::size_t Granularity = 4096;
-        constexpr std::size_t DMAThreshold = 0 * 1024;
+        constexpr std::size_t cGranularity = 4096;
+        constexpr std::size_t cDMAThreshold = 0 * 1024;
 
         std::size_t granularitySize(std::size_t const size);
     }

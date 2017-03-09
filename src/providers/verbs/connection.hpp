@@ -75,8 +75,8 @@ namespace pMR
             Endpoint mActiveEndpoint;
             Endpoint mPassiveEndpoint;
 #ifdef VERBS_RDMA
-            alignas(alignment) MemoryAddress mLocalTargetMemoryAddress;
-            alignas(alignment) MemoryAddress mRemoteTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mLocalTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mRemoteTargetMemoryAddress;
             MemoryRegion mLocalTargetMemoryRegion;
             MemoryRegion mRemoteTargetMemoryRegion;
 #ifdef VERBS_RDMA_CONTROL

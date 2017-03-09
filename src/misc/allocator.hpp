@@ -23,8 +23,8 @@
 
 namespace pMR
 {
-    template<typename T, std::size_t Alignment = alignment,
-        std::size_t Padding = padding>
+    template<typename T, std::size_t Alignment = cAlignment,
+        std::size_t Padding = cPadding>
     class Allocator
     {
     public:
@@ -102,7 +102,7 @@ namespace pMR
 
             if(Padding != 1)
             {
-                size = (size + Padding - 1) / Padding * Padding;
+                size = padSize<decltype(size), Padding>(size);
             }
 
             if(size > max_size())

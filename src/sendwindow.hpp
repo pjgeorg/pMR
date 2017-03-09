@@ -231,7 +231,7 @@ void pMR::SendWindow<T>::insertMT(Iterator inputIt, size_type const offset,
     size_type threadEnd;
     splitWorkToThreads(offset, static_cast<size_type>(offset + count), threadID,
         threadCount, threadStart, threadEnd,
-        getLeastCommonMultiple(static_cast<size_type>(alignment),
+        getLeastCommonMultiple(static_cast<size_type>(cAlignment),
             static_cast<size_type>(sizeof(T))));
 
     std::copy_n(inputIt + threadStart, threadEnd - threadStart,

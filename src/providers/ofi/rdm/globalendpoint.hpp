@@ -102,7 +102,7 @@ void pMR::ofi::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
     std::unordered_map<std::uint64_t, int> &map, std::mutex &mutexMap,
     std::uint64_t const iD)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         {
             // Check whether completion already retrieved.

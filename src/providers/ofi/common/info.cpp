@@ -27,12 +27,12 @@ pMR::ofi::Info::Info(std::string const &address)
     if(!address.empty())
     {
         returnValue =
-            fi_getinfo(FI_VERSION(VersionMajor, VersionMinor), address.data(),
+            fi_getinfo(FI_VERSION(cVersionMajor, cVersionMinor), address.data(),
                 NULL, FI_SOURCE | FI_NUMERICHOST, Hints().get(), &mInfo);
     }
     else
     {
-        returnValue = fi_getinfo(FI_VERSION(VersionMajor, VersionMinor),
+        returnValue = fi_getinfo(FI_VERSION(cVersionMajor, cVersionMinor),
             nullptr, NULL, 0, Hints().get(), &mInfo);
     }
 

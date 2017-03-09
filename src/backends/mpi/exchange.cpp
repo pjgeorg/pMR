@@ -26,7 +26,7 @@ void pMR::backend::exchange(Target const &target, void const *sendBuffer,
     auto threadMPI = ThreadSupport().getLevel();
 
     if(threadMPI >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         if(MPI_Sendrecv(sendBuffer, {sizeByte}, MPI_BYTE,
                {target.getTargetRank()}, {target.getUniqueSendID()}, recvBuffer,

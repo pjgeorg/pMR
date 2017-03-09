@@ -17,7 +17,7 @@
 
 pMR::verbs::Endpoint::Endpoint(
     Context &context, ProtectionDomain &protectionDomain)
-    : mCompletionQueue(context, {MaxCQEntry})
+    : mCompletionQueue(context, {cMaxCQEntry})
     , mQueuePair(protectionDomain, mCompletionQueue)
 {
 }

@@ -76,8 +76,8 @@ namespace pMR
             std::unique_ptr<SoftEndpoint> mActiveEndpoint;
             std::unique_ptr<SoftEndpoint> mPassiveEndpoint;
 #ifdef OFI_RMA
-            alignas(alignment) MemoryAddress mLocalTargetMemoryAddress;
-            alignas(alignment) MemoryAddress mRemoteTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mLocalTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mRemoteTargetMemoryAddress;
             MemoryRegion mLocalTargetMemoryRegion;
             MemoryRegion mRemoteTargetMemoryRegion;
 #ifdef OFI_RMA_CONTROL

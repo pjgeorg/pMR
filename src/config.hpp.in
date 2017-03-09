@@ -75,11 +75,23 @@ namespace pMR
         Serialized,
         Multiple,
     };
-    constexpr ThreadLevel ThreadLevel = ThreadLevel::@THREAD@;
+    constexpr ThreadLevel cThreadLevel = ThreadLevel::@THREAD@;
 
     using size_type = int;
-    constexpr std::size_t alignment = @ALIGNMENT@;
-    constexpr std::size_t padding = @PADDING@;
+    constexpr std::size_t cAlignment = @ALIGNMENT@;
+    constexpr std::size_t cPadding = @PADDING@;
+
+    template<typename T, T Padding = cPadding>
+    T padSize(T const size)
+    {
+        return (size + Padding - 1) / Padding * Padding;
+    }
+
+    template<typename T>
+    T alignedSize(T const size)
+    {
+        return {padSize<T, cAlignment>(size)};
+    }
 
     template<typename T>
     constexpr std::size_t cacheLineSize()

@@ -53,7 +53,7 @@ void pMR::scif::write(E &endpoint, MemoryRegion const &localBuffer,
     off_t const remoteBuffer, std::size_t const size)
 {
     int flags = 0;
-    if(size < DMAThreshold)
+    if(size < cDMAThreshold)
     {
         flags |= SCIF_RMA_USECPU;
     }

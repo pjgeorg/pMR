@@ -40,7 +40,7 @@ template<typename T, typename E>
 T *pMR::scif::mmap(
     E &endpoint, off_t const offset, std::size_t const size, int const access)
 {
-    auto diff = offset % Granularity;
+    auto diff = offset % cGranularity;
 
     void *pa = scif_mmap(0, granularitySize({size + diff}), access, 0,
         endpoint.get(), offset - diff);

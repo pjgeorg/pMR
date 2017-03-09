@@ -23,7 +23,7 @@ psm2_mq_tag_t pMR::psm2::psmTag(std::uint64_t const tag)
     psm2_mq_tag_t psmTag;
     psmTag.tag0 = static_cast<std::uint32_t>(tag);
     psmTag.tag1 = static_cast<std::uint32_t>(tag >> 32);
-    psmTag.tag2 = ExtraTag;
+    psmTag.tag2 = cExtraTag;
 
     return psmTag;
 }
@@ -32,7 +32,7 @@ psm2_mq_req_t pMR::psm2::postRecv(MatchedQueue &mq, psm2_epaddr_t const source,
     void *buffer, std::uint32_t const sizeByte, std::uint64_t const rTag)
 {
     auto tag = psmTag(rTag);
-    auto tagSelector = TagSelector;
+    auto tagSelector = cTagSelector;
     psm2_mq_req_t req;
 
     auto err = psm2_mq_irecv2(

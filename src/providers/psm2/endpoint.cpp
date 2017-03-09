@@ -36,7 +36,7 @@ pMR::psm2::Endpoint::Endpoint()
 
 pMR::psm2::Endpoint::~Endpoint()
 {
-    if(psm2_ep_close(mEndpoint, PSM2_EP_CLOSE_GRACEFUL, EndpointCloseTimeout))
+    if(psm2_ep_close(mEndpoint, PSM2_EP_CLOSE_GRACEFUL, cEndpointCloseTimeout))
     {
         psm2_ep_close(mEndpoint, PSM2_EP_CLOSE_FORCE, 0);
     }

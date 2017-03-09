@@ -55,7 +55,7 @@ pMR::verbs::Connection::Connection(
     mActiveEndpoint.setStateRTR(portNumber, targetPassiveAddress);
     mPassiveEndpoint.setStateRTR(portNumber, targetActiveAddress);
 
-    for(int i = 0; i != InitialPostRecv; ++i)
+    for(auto i = decltype(cInitialPostRecv){0}; i != cInitialPostRecv; ++i)
     {
 #if defined VERBS_RDMA && !defined VERBS_RDMA_CONTROL
         postRecvAddressToActive();

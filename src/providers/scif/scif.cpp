@@ -13,8 +13,9 @@
 //  limitations under the License.
 
 #include "scif.hpp"
+#include <config.hpp>
 
 std::size_t pMR::scif::granularitySize(std::size_t const size)
 {
-    return {(size + Granularity - 1) / Granularity * Granularity};
+    return {padSize<decltype(size), cGranularity>(size)};
 }

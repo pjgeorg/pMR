@@ -72,8 +72,8 @@ namespace pMR
             SoftEndpoint mActiveEndpoint;
             SoftEndpoint mPassiveEndpoint;
 #ifdef OFI_RMA
-            alignas(alignment) MemoryAddress mLocalTargetMemoryAddress;
-            alignas(alignment) MemoryAddress mRemoteTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mLocalTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mRemoteTargetMemoryAddress;
             MemoryRegion mLocalTargetMemoryRegion;
             MemoryRegion mRemoteTargetMemoryRegion;
 #ifdef OFI_RMA_CONTROL

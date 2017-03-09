@@ -26,7 +26,7 @@ pMR::mpi::SendMemoryWindow::SendMemoryWindow(
 {
 #ifdef MPI_PERSISTENT
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         initSend();
     }
@@ -41,7 +41,7 @@ pMR::mpi::SendMemoryWindow::SendMemoryWindow(
 pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         freeRequest();
     }
@@ -59,7 +59,7 @@ void pMR::mpi::SendMemoryWindow::init()
 void pMR::mpi::SendMemoryWindow::post(int const sizeByte)
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         send({sizeByte});
     }
@@ -73,7 +73,7 @@ void pMR::mpi::SendMemoryWindow::post(int const sizeByte)
 void pMR::mpi::SendMemoryWindow::wait()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         if(MPI_Wait(&mRequest, MPI_STATUS_IGNORE) != MPI_SUCCESS)
         {

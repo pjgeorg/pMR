@@ -17,7 +17,7 @@
 void pMR::scif::munmap(void *addr, std::size_t const size)
 {
     auto diff = static_cast<std::size_t>(
-        reinterpret_cast<std::uintptr_t>(addr) % Granularity);
+        reinterpret_cast<std::uintptr_t>(addr) % cGranularity);
     addr =
         reinterpret_cast<void *>(reinterpret_cast<std::uintptr_t>(addr) - diff);
 

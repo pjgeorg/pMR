@@ -18,7 +18,7 @@
 
 pMR::verbs::GID::GID(Context &context, std::uint8_t const portNumber)
 {
-    if(ibv_query_gid(context.get(), portNumber, SGIDIndex, &mGID))
+    if(ibv_query_gid(context.get(), portNumber, cSGIDIndex, &mGID))
     {
         throw std::runtime_error("pMR: Unable to query GID.");
     }

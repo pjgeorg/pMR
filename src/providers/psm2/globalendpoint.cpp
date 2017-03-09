@@ -31,7 +31,7 @@ pMR::psm2::GlobalEndpoint::~GlobalEndpoint()
 
 psm2_epid_t pMR::psm2::GlobalEndpoint::getID()
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {mEndpoint.getID()};
@@ -45,7 +45,7 @@ psm2_epid_t pMR::psm2::GlobalEndpoint::getID()
 psm2_epaddr_t pMR::psm2::GlobalEndpoint::connect(
     psm2_epid_t const remoteAddress)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {mEndpoint.connect({remoteAddress})};
@@ -59,7 +59,7 @@ psm2_epaddr_t pMR::psm2::GlobalEndpoint::connect(
 psm2_mq_req_t pMR::psm2::GlobalEndpoint::postRecv(psm2_epaddr_t const source,
     void *buffer, std::uint32_t sizeByte, std::uint64_t const rTag)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {
@@ -76,7 +76,7 @@ psm2_mq_req_t pMR::psm2::GlobalEndpoint::postSend(
     psm2_epaddr_t const destination, void const *buffer, std::uint32_t sizeByte,
     std::uint64_t sTag)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {psm2::postSend(
@@ -91,7 +91,7 @@ psm2_mq_req_t pMR::psm2::GlobalEndpoint::postSend(
 
 void pMR::psm2::GlobalEndpoint::poll(psm2_mq_req_t &request)
 {
-    if(ThreadLevel >= ThreadLevel::Multiple)
+    if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         psm2::poll(mEndpoint, request);

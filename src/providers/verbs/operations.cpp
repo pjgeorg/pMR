@@ -30,12 +30,12 @@ void pMR::verbs::postSendRequest(
 {
     ibv_send_wr workRequest = {};
 
-    workRequest.wr_id = {SendWRID};
+    workRequest.wr_id = {cSendWRID};
     workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = {scatterGatherElement.getNumEntries()};
     workRequest.opcode = IBV_WR_SEND;
 
-    if(scatterGatherElement.getLength() <= MaxInlineDataSize)
+    if(scatterGatherElement.getLength() <= cMaxInlineDataSize)
     {
         workRequest.send_flags = IBV_SEND_INLINE;
     }
@@ -59,7 +59,7 @@ void pMR::verbs::postRecvRequest(
 {
     ibv_recv_wr workRequest = {};
 
-    workRequest.wr_id = {RecvWRID};
+    workRequest.wr_id = {cRecvWRID};
     workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = {scatterGatherElement.getNumEntries()};
 
@@ -83,14 +83,14 @@ void pMR::verbs::postWriteRequest(QueuePair &queuePair,
 {
     ibv_send_wr workRequest = {};
 
-    workRequest.wr_id = {WriteWRID};
+    workRequest.wr_id = {cWriteWRID};
     workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = {scatterGatherElement.getNumEntries()};
     workRequest.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
     workRequest.wr.rdma.remote_addr = {target.getAddress()};
     workRequest.wr.rdma.rkey = {target.getRKey()};
 
-    if(scatterGatherElement.getLength() <= MaxInlineDataSize)
+    if(scatterGatherElement.getLength() <= cMaxInlineDataSize)
     {
         workRequest.send_flags = IBV_SEND_INLINE;
     }

@@ -53,11 +53,11 @@ namespace pMR
         private:
             Endpoint mActiveEndpoint;
             PeerEndpoint mPassiveEndpoint;
-            alignas(alignment)
+            alignas(cAlignment)
                 std::array<off_t, cacheLineSize<off_t>()> mTarget = {};
-            alignas(alignment) std::array<std::uint64_t,
+            alignas(cAlignment) std::array<std::uint64_t,
                 cacheLineSize<std::uint64_t>()> mLocalNotify = {};
-            alignas(alignment) std::array<std::uint64_t,
+            alignas(cAlignment) std::array<std::uint64_t,
                 cacheLineSize<std::uint64_t>()> mRemoteNotify = {};
             std::unique_ptr<MemoryRegion> mTargetMR;
             std::unique_ptr<MemoryRegion> mLocalNotifyMR;

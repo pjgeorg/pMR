@@ -29,11 +29,11 @@ pMR::verbs::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     ibv_qp_init_attr initialAttributes = {};
     initialAttributes.send_cq = sendCompletionQueue.get();
     initialAttributes.recv_cq = recvCompletionQueue.get();
-    initialAttributes.cap.max_send_wr = {MaxSend};
-    initialAttributes.cap.max_recv_wr = {MaxRecv};
-    initialAttributes.cap.max_send_sge = {MaxSendSG};
-    initialAttributes.cap.max_recv_sge = {MaxRecvSG};
-    initialAttributes.cap.max_inline_data = {MaxInlineDataSize};
+    initialAttributes.cap.max_send_wr = {cMaxSend};
+    initialAttributes.cap.max_recv_wr = {cMaxRecv};
+    initialAttributes.cap.max_send_sge = {cMaxSendSG};
+    initialAttributes.cap.max_recv_sge = {cMaxRecvSG};
+    initialAttributes.cap.max_inline_data = {cMaxInlineDataSize};
     initialAttributes.sq_sig_all = 1;
     initialAttributes.qp_type = IBV_QPT_RC;
 
@@ -70,7 +70,7 @@ void pMR::verbs::QueuePair::setStateINIT(std::uint8_t const portNumber)
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_INIT;
     attr.qp_access_flags = IBV_ACCESS_REMOTE_WRITE;
-    attr.pkey_index = {PKeyIndex};
+    attr.pkey_index = {cPKeyIndex};
     attr.port_num = portNumber;
 
     if(ibv_modify_qp(this->get(), &attr,
@@ -86,20 +86,20 @@ void pMR::verbs::QueuePair::setStateRTR(
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTR;
-    attr.path_mtu = {MTU};
-    attr.rq_psn = {PSN};
+    attr.path_mtu = {cMTU};
+    attr.rq_psn = {cPSN};
     attr.dest_qp_num = {targetAddress.getQPN()};
-    attr.max_dest_rd_atomic = {DestRDAtomic};
-    attr.min_rnr_timer = {RNRTimer};
+    attr.max_dest_rd_atomic = {cDestRDAtomic};
+    attr.min_rnr_timer = {cRNRTimer};
     attr.ah_attr.dlid = {targetAddress.getLID()};
-    attr.ah_attr.sl = {ServiceLevel};
-    attr.ah_attr.src_path_bits = {SrcPath};
-    attr.ah_attr.static_rate = {StaticRate};
-    attr.ah_attr.is_global = {Global};
+    attr.ah_attr.sl = {cServiceLevel};
+    attr.ah_attr.src_path_bits = {cSrcPath};
+    attr.ah_attr.static_rate = {cStaticRate};
+    attr.ah_attr.is_global = {cGlobal};
     attr.ah_attr.port_num = {portNumber};
     attr.ah_attr.grh.dgid = targetAddress.getGID();
-    attr.ah_attr.grh.sgid_index = {SGIDIndex};
-    attr.ah_attr.grh.hop_limit = {HopLimit};
+    attr.ah_attr.grh.sgid_index = {cSGIDIndex};
+    attr.ah_attr.grh.hop_limit = {cHopLimit};
 
     if(ibv_modify_qp(this->get(), &attr,
            IBV_QP_STATE | IBV_QP_PATH_MTU | IBV_QP_RQ_PSN | IBV_QP_DEST_QPN |
@@ -113,11 +113,11 @@ void pMR::verbs::QueuePair::setStateRTS()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTS;
-    attr.sq_psn = {PSN};
-    attr.max_rd_atomic = {RDAtomic};
-    attr.timeout = {Timeout};
-    attr.retry_cnt = {RetryCounter};
-    attr.rnr_retry = {RNRRetry};
+    attr.sq_psn = {cPSN};
+    attr.max_rd_atomic = {cRDAtomic};
+    attr.timeout = {cTimeout};
+    attr.retry_cnt = {cRetryCounter};
+    attr.rnr_retry = {cRNRRetry};
 
     if(ibv_modify_qp(this->get(), &attr,
            IBV_QP_STATE | IBV_QP_SQ_PSN | IBV_QP_MAX_QP_RD_ATOMIC |

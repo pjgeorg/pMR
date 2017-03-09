@@ -14,15 +14,15 @@
 
 #include "allreduce.hpp"
 
-static constexpr int Blocking = RECURSIVE_DOUBLING_BLOCKING;
-static constexpr int DomainSize = RECURSIVE_DOUBLING_DOMAIN_SIZE;
+static constexpr int cBlocking = RECURSIVE_DOUBLING_BLOCKING;
+static constexpr int cDomainSize = RECURSIVE_DOUBLING_DOMAIN_SIZE;
 
 static constexpr bool isPowerOfTwo(int x)
 {
     return x && ((x & (x - 1)) == 0);
 }
 
-static_assert(isPowerOfTwo(Blocking),
+static_assert(isPowerOfTwo(cBlocking),
     "Recursive Doubling blocking factor is not a power of two.");
 
 pMR::RecursiveDoubling::AllReduce::AllReduce(
@@ -40,33 +40,22 @@ pMR::RecursiveDoubling::AllReduce::AllReduce(
     auto numProcesses = communicator.size();
     auto processID = communicator.ID();
 
-    // Padded size for contigious buffers
-    auto padSize = [&]() {
-        if(sizeByte == 0)
-        {
-            return sizeByte;
-        }
-        if(sizeByte % alignment == 0)
-        {
-            return sizeByte;
-        }
-
-        return static_cast<size_type>(((sizeByte / alignment) + 1) * alignment);
-    }();
+    // Padded size for contigious buffers (each chunk is aligned)
+    auto padSize = alignedSize(sizeByte);
     auto offsetBuffer = decltype(mDomainBuffers.size()){0};
 
-    auto domainSize = DomainSize;
-    if(DomainSize > 1)
+    auto domainSize = cDomainSize;
+    if(cDomainSize > 1)
     {
-        if(numProcesses % DomainSize == 0)
+        if(numProcesses % cDomainSize == 0)
         {
-            if(processID % DomainSize == 0)
+            if(processID % cDomainSize == 0)
             {
-                mDomainBuffers.resize((DomainSize - 1) * padSize);
+                mDomainBuffers.resize((cDomainSize - 1) * padSize);
                 mDomainRoot = {true};
                 offsetBuffer = 0;
                 for(auto target = processID + 1;
-                    target < processID + DomainSize; ++target)
+                    target < processID + cDomainSize; ++target)
                 {
                     mDomainConnections.emplace_back(
                         communicator.getTarget(target));
@@ -82,7 +71,7 @@ pMR::RecursiveDoubling::AllReduce::AllReduce(
             }
             else
             {
-                auto target = processID - (processID % DomainSize);
+                auto target = processID - (processID % cDomainSize);
                 mDomainConnections.emplace_back(communicator.getTarget(target));
                 mDomainSendWindows.emplace_back(
                     mDomainConnections.back(), buffer, sizeByte);
@@ -91,8 +80,8 @@ pMR::RecursiveDoubling::AllReduce::AllReduce(
                 return;
             }
 
-            processID /= DomainSize;
-            numProcesses /= DomainSize;
+            processID /= cDomainSize;
+            numProcesses /= cDomainSize;
         }
         else
         {
@@ -111,15 +100,15 @@ pMR::RecursiveDoubling::AllReduce::AllReduce(
     }
     Po2Processes >>= 1;
 
-    auto blocking = decltype(Blocking){1};
+    auto blocking = decltype(cBlocking){1};
     if(numProcesses != Po2Processes)
     {
         // Need to perform pre step to reduce number of processes.
 
         // Do a blocking of ranks only if possible
-        if((numProcesses - Po2Processes) % Blocking == 0)
+        if((numProcesses - Po2Processes) % cBlocking == 0)
         {
-            blocking = Blocking;
+            blocking = cBlocking;
         }
 
         if(processID % (numProcesses / blocking) <
@@ -204,7 +193,7 @@ pMR::RecursiveDoubling::AllReduce::AllReduce(
         {
             target = (target / (Po2Processes / blocking)) *
                     (numProcesses / blocking) +
-                ((target % (Po2Processes / Blocking)) * 2);
+                ((target % (Po2Processes / blocking)) * 2);
         }
         else
         {

@@ -25,7 +25,7 @@ pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
 {
 #ifdef MPI_PERSISTENT
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         initRecv();
     }
@@ -40,7 +40,7 @@ pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
 pMR::mpi::RecvMemoryWindow::~RecvMemoryWindow()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         freeRequest();
     }
@@ -54,7 +54,7 @@ pMR::mpi::RecvMemoryWindow::~RecvMemoryWindow()
 void pMR::mpi::RecvMemoryWindow::init()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         recv();
     }
@@ -72,7 +72,7 @@ void pMR::mpi::RecvMemoryWindow::post()
 void pMR::mpi::RecvMemoryWindow::wait()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
-        ThreadLevel <= ThreadLevel::Serialized)
+        cThreadLevel <= ThreadLevel::Serialized)
     {
         if(MPI_Wait(&mRequest, MPI_STATUS_IGNORE) != MPI_SUCCESS)
         {

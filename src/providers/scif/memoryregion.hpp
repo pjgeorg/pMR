@@ -60,7 +60,7 @@ namespace pMR
             if(mLength > 0)
             {
                 mOffset = static_cast<off_t>(
-                    reinterpret_cast<std::uintptr_t>(buffer) % Granularity);
+                    reinterpret_cast<std::uintptr_t>(buffer) % cGranularity);
                 auto addr = reinterpret_cast<void *>(
                     reinterpret_cast<std::uintptr_t>(buffer) - mOffset);
 

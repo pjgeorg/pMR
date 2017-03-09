@@ -20,20 +20,20 @@
 
 pMR::psm2::UUID::UUID()
 {
-    auto cUUID = std::getenv(UUIDEnv);
+    auto charUUID = std::getenv(cUUIDEnv);
 
-    auto sUUID = [&]() {
-        if(cUUID)
+    auto stringUUID = [&]() {
+        if(charUUID)
         {
-            return std::string(cUUID);
+            return std::string(charUUID);
         }
         else
         {
-            return std::string(DefaultUUID);
+            return std::string(cDefaultUUID);
         }
     }();
 
-    if(sscanf(sUUID.c_str(),
+    if(sscanf(stringUUID.c_str(),
            "%2hhx%2hhx%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-"
            "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
            &mUUID[0], &mUUID[1], &mUUID[2], &mUUID[3], &mUUID[4], &mUUID[5],
