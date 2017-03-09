@@ -25,9 +25,9 @@
 #include <stdexcept>
 #include <vector>
 #include "misc/allocator.hpp"
+#include "misc/print.hpp"
 #include "misc/profiling.hpp"
 #include "config.hpp"
-#include "misc/print.hpp"
 
 namespace pMR
 {
