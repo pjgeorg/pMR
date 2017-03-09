@@ -15,7 +15,7 @@
 #include "recvmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
+pMR::Verbs::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::uint32_t const sizeByte)
     : mConnection(connection)
@@ -29,7 +29,7 @@ pMR::verbs::RecvMemoryWindow::RecvMemoryWindow(
 {
 }
 
-void pMR::verbs::RecvMemoryWindow::init()
+void pMR::Verbs::RecvMemoryWindow::init()
 {
 #ifdef VERBS_RDMA
     mConnection->postRecvToPassive();
@@ -45,11 +45,11 @@ void pMR::verbs::RecvMemoryWindow::init()
 #endif // VERBS_RDMA
 }
 
-void pMR::verbs::RecvMemoryWindow::post()
+void pMR::Verbs::RecvMemoryWindow::post()
 {
 }
 
-void pMR::verbs::RecvMemoryWindow::wait()
+void pMR::Verbs::RecvMemoryWindow::wait()
 {
     mConnection->pollPassive();
     mConnection->pollPassive();

@@ -26,7 +26,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace scif
+    namespace SCIF
     {
         template<typename E>
         void write(E &endpoint, MemoryRegion const &localBuffer,
@@ -42,14 +42,14 @@ namespace pMR
 }
 
 template<typename E>
-void pMR::scif::write(
+void pMR::SCIF::write(
     E &endpoint, MemoryRegion const &localBuffer, off_t const remoteBuffer)
 {
     write(endpoint, localBuffer, {remoteBuffer}, {localBuffer.getLength()});
 }
 
 template<typename E>
-void pMR::scif::write(E &endpoint, MemoryRegion const &localBuffer,
+void pMR::SCIF::write(E &endpoint, MemoryRegion const &localBuffer,
     off_t const remoteBuffer, std::size_t const size)
 {
     int flags = 0;
@@ -67,7 +67,7 @@ void pMR::scif::write(E &endpoint, MemoryRegion const &localBuffer,
 }
 
 template<typename E>
-void pMR::scif::fenceSignal(E &endpoint, off_t const localOffset,
+void pMR::SCIF::fenceSignal(E &endpoint, off_t const localOffset,
     std::uint64_t localValue, off_t remoteOffset, std::uint64_t remoteValue)
 {
     if(scif_fence_signal(endpoint.get(), localOffset, localValue, remoteOffset,

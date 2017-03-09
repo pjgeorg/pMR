@@ -22,7 +22,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         constexpr std::uint64_t cRecvWRID = 1;
         constexpr std::uint64_t cSendWRID = 2;

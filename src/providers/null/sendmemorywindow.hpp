@@ -20,7 +20,7 @@
 
 namespace pMR
 {
-    namespace null
+    namespace Null
     {
         class Connection;
 

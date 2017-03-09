@@ -14,7 +14,7 @@
 
 #include "error.hpp"
 
-std::string pMR::psm2::toString(psm2_error_t error)
+std::string pMR::PSM2::toString(psm2_error_t error)
 {
     return std::string(psm2_error_get_string(error));
 }

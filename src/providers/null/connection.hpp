@@ -19,7 +19,7 @@ namespace pMR
 {
     class Target;
 
-    namespace null
+    namespace Null
     {
         class Connection
         {

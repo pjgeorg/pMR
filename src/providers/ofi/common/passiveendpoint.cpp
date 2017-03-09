@@ -20,7 +20,7 @@ extern "C" {
 #include <rdma/fi_errno.h>
 }
 
-pMR::ofi::PassiveEndpoint::PassiveEndpoint(Fabric &fabric, Info &info)
+pMR::OFI::PassiveEndpoint::PassiveEndpoint(Fabric &fabric, Info &info)
 {
     if(fi_passive_ep(fabric.get(), info.get(), &mPassiveEndpoint, &mContext))
     {
@@ -28,7 +28,7 @@ pMR::ofi::PassiveEndpoint::PassiveEndpoint(Fabric &fabric, Info &info)
     }
 }
 
-pMR::ofi::PassiveEndpoint::~PassiveEndpoint()
+pMR::OFI::PassiveEndpoint::~PassiveEndpoint()
 {
     if(mPassiveEndpoint)
     {
@@ -36,17 +36,17 @@ pMR::ofi::PassiveEndpoint::~PassiveEndpoint()
     }
 }
 
-fid_pep *pMR::ofi::PassiveEndpoint::get()
+fid_pep *pMR::OFI::PassiveEndpoint::get()
 {
     return mPassiveEndpoint;
 }
 
-fid_pep const *pMR::ofi::PassiveEndpoint::get() const
+fid_pep const *pMR::OFI::PassiveEndpoint::get() const
 {
     return mPassiveEndpoint;
 }
 
-void pMR::ofi::PassiveEndpoint::bind(EventQueue &queue)
+void pMR::OFI::PassiveEndpoint::bind(EventQueue &queue)
 {
     if(fi_pep_bind(mPassiveEndpoint, &queue.get()->fid, 0))
     {
@@ -54,7 +54,7 @@ void pMR::ofi::PassiveEndpoint::bind(EventQueue &queue)
     }
 }
 
-void pMR::ofi::PassiveEndpoint::listen()
+void pMR::OFI::PassiveEndpoint::listen()
 {
     if(fi_listen(mPassiveEndpoint))
     {
@@ -63,7 +63,7 @@ void pMR::ofi::PassiveEndpoint::listen()
     }
 }
 
-std::vector<std::uint8_t> pMR::ofi::PassiveEndpoint::getAddress() const
+std::vector<std::uint8_t> pMR::OFI::PassiveEndpoint::getAddress() const
 {
     std::vector<std::uint8_t> address;
     std::size_t size = 0;

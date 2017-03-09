@@ -21,7 +21,7 @@ extern "C" {
 #include "../../arch/processor.hpp"
 #include "../../backends/backend.hpp"
 
-pMR::cma::Connection::Connection(Target const &target)
+pMR::CMA::Connection::Connection(Target const &target)
 {
     std::array<std::uint64_t, 7> originAddress, targetAddress;
 
@@ -37,7 +37,7 @@ pMR::cma::Connection::Connection(Target const &target)
         reinterpret_cast<std::uintptr_t>(mNotifyRecv.data())};
     std::get<6>(originAddress) = {sizeof(std::get<0>(mNotifyRecv))};
 
-    backend::exchange(target, originAddress, targetAddress);
+    Backend::exchange(target, originAddress, targetAddress);
 
     mRemotePID = {static_cast<int>(
         *reinterpret_cast<std::int64_t *>(&std::get<0>(targetAddress)))};
@@ -55,7 +55,7 @@ pMR::cma::Connection::Connection(Target const &target)
         static_cast<std::size_t>(std::get<6>(targetAddress))};
 }
 
-void pMR::cma::Connection::sendAddress(iovec &buffer) const
+void pMR::CMA::Connection::sendAddress(iovec &buffer) const
 {
     iovec localBuffer;
     localBuffer.iov_base = &buffer;
@@ -64,7 +64,7 @@ void pMR::cma::Connection::sendAddress(iovec &buffer) const
     writeData(localBuffer, mRemoteAddress);
 }
 
-void pMR::cma::Connection::sendData(
+void pMR::CMA::Connection::sendData(
     iovec buffer, std::size_t const sizeByte) const
 {
     buffer.iov_len = {sizeByte};
@@ -73,7 +73,7 @@ void pMR::cma::Connection::sendData(
     writeData(buffer, mDestination);
 }
 
-void pMR::cma::Connection::writeData(
+void pMR::CMA::Connection::writeData(
     iovec localBuffer, iovec remoteBuffer) const
 {
     while(localBuffer.iov_len > 0)
@@ -95,27 +95,27 @@ void pMR::cma::Connection::writeData(
     }
 }
 
-void pMR::cma::Connection::postNotifySend() const
+void pMR::CMA::Connection::postNotifySend() const
 {
     postNotify(mRemoteNotifySend);
 }
 
-void pMR::cma::Connection::pollNotifySend()
+void pMR::CMA::Connection::pollNotifySend()
 {
     pollNotify(mNotifySend);
 }
 
-void pMR::cma::Connection::postNotifyRecv() const
+void pMR::CMA::Connection::postNotifyRecv() const
 {
     postNotify(mRemoteNotifyRecv);
 }
 
-void pMR::cma::Connection::pollNotifyRecv()
+void pMR::CMA::Connection::pollNotifyRecv()
 {
     pollNotify(mNotifyRecv);
 }
 
-void pMR::cma::Connection::postNotify(iovec const &remoteNotify) const
+void pMR::CMA::Connection::postNotify(iovec const &remoteNotify) const
 {
     std::uint8_t notify = 1;
     iovec localNotify;
@@ -125,7 +125,7 @@ void pMR::cma::Connection::postNotify(iovec const &remoteNotify) const
     writeData(localNotify, remoteNotify);
 }
 
-void pMR::cma::Connection::pollNotify(
+void pMR::CMA::Connection::pollNotify(
     std::array<std::uint8_t, cacheLineSize<std::uint8_t>()> &notify)
 {
     while(std::get<0>(notify) == 0)
@@ -135,7 +135,7 @@ void pMR::cma::Connection::pollNotify(
     std::get<0>(notify) = 0;
 }
 
-void pMR::cma::Connection::checkBufferSize(iovec const &buffer) const
+void pMR::CMA::Connection::checkBufferSize(iovec const &buffer) const
 {
     if(mDestination.iov_len < buffer.iov_len)
     {

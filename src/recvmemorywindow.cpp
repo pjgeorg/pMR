@@ -60,84 +60,84 @@ pMR::RecvMemoryWindow::RecvMemoryWindow(
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
-            mCMA = std::unique_ptr<cma::RecvMemoryWindow,
-                cma::RecvMemoryWindowDeleter>(new cma::RecvMemoryWindow(
+            mCMA = std::unique_ptr<CMA::RecvMemoryWindow,
+                CMA::RecvMemoryWindowDeleter>(new CMA::RecvMemoryWindow(
                 connection.mCMA, buffer, {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
-            mMPI = std::unique_ptr<mpi::RecvMemoryWindow,
-                mpi::RecvMemoryWindowDeleter>(new mpi::RecvMemoryWindow(
+            mMPI = std::unique_ptr<MPI::RecvMemoryWindow,
+                MPI::RecvMemoryWindowDeleter>(new MPI::RecvMemoryWindow(
                 connection.mMPI, buffer, {static_cast<int>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
-            mNull = std::unique_ptr<null::RecvMemoryWindow,
-                null::RecvMemoryWindowDeleter>(new null::RecvMemoryWindow(
+            mNull = std::unique_ptr<Null::RecvMemoryWindow,
+                Null::RecvMemoryWindowDeleter>(new Null::RecvMemoryWindow(
                 connection.mNull, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
-            mOFI = std::unique_ptr<ofi::RecvMemoryWindow,
-                ofi::RecvMemoryWindowDeleter>(new ofi::RecvMemoryWindow(
+            mOFI = std::unique_ptr<OFI::RecvMemoryWindow,
+                OFI::RecvMemoryWindowDeleter>(new OFI::RecvMemoryWindow(
                 connection.mOFI, buffer, {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
-            mPSM2 = std::unique_ptr<psm2::RecvMemoryWindow,
-                psm2::RecvMemoryWindowDeleter>(
-                new psm2::RecvMemoryWindow(connection.mPSM2, buffer,
+            mPSM2 = std::unique_ptr<PSM2::RecvMemoryWindow,
+                PSM2::RecvMemoryWindowDeleter>(
+                new PSM2::RecvMemoryWindow(connection.mPSM2, buffer,
                     {static_cast<std::uint32_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
-            mSCIF = std::unique_ptr<scif::RecvMemoryWindow,
-                scif::RecvMemoryWindowDeleter>(
-                new scif::RecvMemoryWindow(connection.mSCIF, buffer,
+            mSCIF = std::unique_ptr<SCIF::RecvMemoryWindow,
+                SCIF::RecvMemoryWindowDeleter>(
+                new SCIF::RecvMemoryWindow(connection.mSCIF, buffer,
                     {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
-            mSelf = std::unique_ptr<self::RecvMemoryWindow,
-                self::RecvMemoryWindowDeleter>(
-                new self::RecvMemoryWindow(connection.mSelf, buffer,
+            mSelf = std::unique_ptr<Self::RecvMemoryWindow,
+                Self::RecvMemoryWindowDeleter>(
+                new Self::RecvMemoryWindow(connection.mSelf, buffer,
                     {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
-            mVerbs = std::unique_ptr<verbs::RecvMemoryWindow,
-                verbs::RecvMemoryWindowDeleter>(
-                new verbs::RecvMemoryWindow(connection.mVerbs, buffer,
+            mVerbs = std::unique_ptr<Verbs::RecvMemoryWindow,
+                Verbs::RecvMemoryWindowDeleter>(
+                new Verbs::RecvMemoryWindow(connection.mVerbs, buffer,
                     {static_cast<std::uint32_t>(sizeByte)}));
             break;
         }
@@ -154,7 +154,7 @@ void pMR::RecvMemoryWindow::init()
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
             mCMA->init();
             break;
@@ -162,7 +162,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
             mMPI->init();
             break;
@@ -170,7 +170,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
             mNull->init();
             break;
@@ -178,7 +178,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
             mOFI->init();
             break;
@@ -186,7 +186,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
             mPSM2->init();
             break;
@@ -194,7 +194,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
             mSCIF->init();
             break;
@@ -202,7 +202,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
             mSelf->init();
             break;
@@ -210,7 +210,7 @@ void pMR::RecvMemoryWindow::init()
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
             mVerbs->init();
             break;
@@ -224,7 +224,7 @@ void pMR::RecvMemoryWindow::post()
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
             mCMA->post();
             break;
@@ -232,7 +232,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
             mMPI->post();
             break;
@@ -240,7 +240,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
             mNull->post();
             break;
@@ -248,7 +248,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
             mOFI->post();
             break;
@@ -256,7 +256,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
             mPSM2->post();
             break;
@@ -264,7 +264,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
             mSCIF->post();
             break;
@@ -272,7 +272,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
             mSelf->post();
             break;
@@ -280,7 +280,7 @@ void pMR::RecvMemoryWindow::post()
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
             mVerbs->post();
             break;
@@ -294,7 +294,7 @@ void pMR::RecvMemoryWindow::wait()
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
             mCMA->wait();
             break;
@@ -302,7 +302,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
             mMPI->wait();
             break;
@@ -310,7 +310,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
             mNull->wait();
             break;
@@ -318,7 +318,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
             mOFI->wait();
             break;
@@ -326,7 +326,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
             mPSM2->wait();
             break;
@@ -334,7 +334,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
             mSCIF->wait();
             break;
@@ -342,7 +342,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
             mSelf->wait();
             break;
@@ -350,7 +350,7 @@ void pMR::RecvMemoryWindow::wait()
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
             mVerbs->wait();
             break;

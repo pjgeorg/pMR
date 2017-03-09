@@ -46,42 +46,42 @@ namespace pMR
         Provider mProvider;
 
 #ifdef pMR_PROVIDER_CMA
-        std::unique_ptr<cma::RecvMemoryWindow, cma::RecvMemoryWindowDeleter>
+        std::unique_ptr<CMA::RecvMemoryWindow, CMA::RecvMemoryWindowDeleter>
             mCMA;
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        std::unique_ptr<mpi::RecvMemoryWindow, mpi::RecvMemoryWindowDeleter>
+        std::unique_ptr<MPI::RecvMemoryWindow, MPI::RecvMemoryWindowDeleter>
             mMPI;
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        std::unique_ptr<null::RecvMemoryWindow, null::RecvMemoryWindowDeleter>
+        std::unique_ptr<Null::RecvMemoryWindow, Null::RecvMemoryWindowDeleter>
             mNull;
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        std::unique_ptr<ofi::RecvMemoryWindow, ofi::RecvMemoryWindowDeleter>
+        std::unique_ptr<OFI::RecvMemoryWindow, OFI::RecvMemoryWindowDeleter>
             mOFI;
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        std::unique_ptr<psm2::RecvMemoryWindow, psm2::RecvMemoryWindowDeleter>
+        std::unique_ptr<PSM2::RecvMemoryWindow, PSM2::RecvMemoryWindowDeleter>
             mPSM2;
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        std::unique_ptr<scif::RecvMemoryWindow, scif::RecvMemoryWindowDeleter>
+        std::unique_ptr<SCIF::RecvMemoryWindow, SCIF::RecvMemoryWindowDeleter>
             mSCIF;
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        std::unique_ptr<self::RecvMemoryWindow, self::RecvMemoryWindowDeleter>
+        std::unique_ptr<Self::RecvMemoryWindow, Self::RecvMemoryWindowDeleter>
             mSelf;
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        std::unique_ptr<verbs::RecvMemoryWindow, verbs::RecvMemoryWindowDeleter>
+        std::unique_ptr<Verbs::RecvMemoryWindow, Verbs::RecvMemoryWindowDeleter>
             mVerbs;
 #endif // pMR_PROVIDER_VERBS
     };

@@ -18,9 +18,9 @@
 #include "../../misc/print.hpp"
 #endif // NULL_WARN
 
-pMR::null::Connection::Connection(Target const &target)
+pMR::Null::Connection::Connection(Target const &target)
 {
 #ifdef NULL_WARN
-    print("pMR: Using provider null.");
+    print("pMR: Using provider Null.");
 #endif // NULL_WARN
 }

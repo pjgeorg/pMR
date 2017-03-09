@@ -18,18 +18,18 @@
 #include "psm2.hpp"
 #include "stats.hpp"
 
-pMR::psm2::GlobalEndpoint::GlobalEndpoint() : mMatchedQueue(mEndpoint)
+pMR::PSM2::GlobalEndpoint::GlobalEndpoint() : mMatchedQueue(mEndpoint)
 {
 }
 
-pMR::psm2::GlobalEndpoint::~GlobalEndpoint()
+pMR::PSM2::GlobalEndpoint::~GlobalEndpoint()
 {
 #ifdef PSM2_PRINT_STATS
     printStats(mMatchedQueue.get());
 #endif // PSM2_PRINT_STATS
 }
 
-psm2_epid_t pMR::psm2::GlobalEndpoint::getID()
+psm2_epid_t pMR::PSM2::GlobalEndpoint::getID()
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
@@ -42,7 +42,7 @@ psm2_epid_t pMR::psm2::GlobalEndpoint::getID()
     }
 }
 
-psm2_epaddr_t pMR::psm2::GlobalEndpoint::connect(
+psm2_epaddr_t pMR::PSM2::GlobalEndpoint::connect(
     psm2_epid_t const remoteAddress)
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
@@ -56,48 +56,48 @@ psm2_epaddr_t pMR::psm2::GlobalEndpoint::connect(
     }
 }
 
-psm2_mq_req_t pMR::psm2::GlobalEndpoint::postRecv(psm2_epaddr_t const source,
+psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postRecv(psm2_epaddr_t const source,
     void *buffer, std::uint32_t sizeByte, std::uint64_t const rTag)
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {
-            psm2::postRecv(mMatchedQueue, source, buffer, {sizeByte}, {rTag})};
+            PSM2::postRecv(mMatchedQueue, source, buffer, {sizeByte}, {rTag})};
     }
     else
     {
         return {
-            psm2::postRecv(mMatchedQueue, source, buffer, {sizeByte}, {rTag})};
+            PSM2::postRecv(mMatchedQueue, source, buffer, {sizeByte}, {rTag})};
     }
 }
 
-psm2_mq_req_t pMR::psm2::GlobalEndpoint::postSend(
+psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postSend(
     psm2_epaddr_t const destination, void const *buffer, std::uint32_t sizeByte,
     std::uint64_t sTag)
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
-        return {psm2::postSend(
+        return {PSM2::postSend(
             mMatchedQueue, destination, buffer, {sizeByte}, {sTag})};
     }
     else
     {
-        return {psm2::postSend(
+        return {PSM2::postSend(
             mMatchedQueue, destination, buffer, {sizeByte}, {sTag})};
     }
 }
 
-void pMR::psm2::GlobalEndpoint::poll(psm2_mq_req_t &request)
+void pMR::PSM2::GlobalEndpoint::poll(psm2_mq_req_t &request)
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
-        psm2::poll(mEndpoint, request);
+        PSM2::poll(mEndpoint, request);
     }
     else
     {
-        psm2::poll(mEndpoint, request);
+        PSM2::poll(mEndpoint, request);
     }
 }

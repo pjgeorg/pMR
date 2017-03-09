@@ -28,7 +28,7 @@
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class GlobalEndpoint
         {
@@ -98,7 +98,7 @@ namespace pMR
 }
 
 template<typename T>
-void pMR::ofi::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
+void pMR::OFI::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
     std::unordered_map<std::uint64_t, int> &map, std::mutex &mutexMap,
     std::uint64_t const iD)
 {

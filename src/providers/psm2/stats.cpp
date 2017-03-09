@@ -15,7 +15,7 @@
 #include "stats.hpp"
 #include "../../misc/print.hpp"
 
-void pMR::psm2::printStats(psm2_mq_t mq)
+void pMR::PSM2::printStats(psm2_mq_t mq)
 {
     psm2_mq_stats stats;
 

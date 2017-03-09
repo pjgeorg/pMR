@@ -22,7 +22,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class Hints
         {

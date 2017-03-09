@@ -44,7 +44,7 @@ void pMR::Connection::connect(Target const &target)
     }
     else
     {
-        auto info = ofi::getProvider("psm2", IP().getIPv4("ib0"));
+        auto info = OFI::getProvider("psm2", IP().getIPv4("ib0"));
         connectOFI(target, info);
     }
 }

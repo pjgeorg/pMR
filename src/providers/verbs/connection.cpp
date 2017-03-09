@@ -18,7 +18,7 @@
 #include "operations.hpp"
 #include "verbs.hpp"
 
-pMR::verbs::Connection::Connection(
+pMR::Verbs::Connection::Connection(
     Target const &target, Device const &device, std::uint8_t const portNumber)
     : mContext(device)
     , mProtectionDomain(mContext)
@@ -66,106 +66,106 @@ pMR::verbs::Connection::Connection(
 
 #ifdef VERBS_RDMA_CONTROL
     MemoryAddress localMemoryAddress(mRemoteTargetMemoryRegion);
-    backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
+    Backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
 #else
-    pMR::backend::sync(target);
+    pMR::Backend::sync(target);
 #endif // VERBS_RDMA_CONTROL
 
     mActiveEndpoint.setStateRTS();
     mPassiveEndpoint.setStateRTS();
 }
 
-pMR::verbs::Context &pMR::verbs::Connection::getContext()
+pMR::Verbs::Context &pMR::Verbs::Connection::getContext()
 {
     return mContext;
 }
 
-pMR::verbs::Context const &pMR::verbs::Connection::getContext() const
+pMR::Verbs::Context const &pMR::Verbs::Connection::getContext() const
 {
     return mContext;
 }
 
-pMR::verbs::ProtectionDomain &pMR::verbs::Connection::getProtectionDomain()
+pMR::Verbs::ProtectionDomain &pMR::Verbs::Connection::getProtectionDomain()
 {
     return mProtectionDomain;
 }
 
-pMR::verbs::ProtectionDomain const &
-pMR::verbs::Connection::getProtectionDomain() const
+pMR::Verbs::ProtectionDomain const &
+pMR::Verbs::Connection::getProtectionDomain() const
 {
     return mProtectionDomain;
 }
 
-void pMR::verbs::Connection::postSendToActive(
+void pMR::Verbs::Connection::postSendToActive(
     MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
 {
     ScatterGatherElement scatterGatherElement(memoryRegion, {sizeByte});
     postSendRequest(mActiveEndpoint, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postSendToPassive()
+void pMR::Verbs::Connection::postSendToPassive()
 {
     ScatterGatherElement scatterGatherElement;
     postSendRequest(mPassiveEndpoint, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postRecvToActive()
+void pMR::Verbs::Connection::postRecvToActive()
 {
     ScatterGatherElement scatterGatherElement;
     postRecvRequest(mActiveEndpoint, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
+void pMR::Verbs::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
 {
     ScatterGatherElement scatterGatherElement(memoryRegion);
     postRecvRequest(mPassiveEndpoint, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postRecvToPassive()
+void pMR::Verbs::Connection::postRecvToPassive()
 {
     ScatterGatherElement scatterGatherElement;
     postRecvRequest(mPassiveEndpoint, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::pollActive()
+void pMR::Verbs::Connection::pollActive()
 {
     mActiveEndpoint.poll();
 }
 
-void pMR::verbs::Connection::pollPassive()
+void pMR::Verbs::Connection::pollPassive()
 {
     mPassiveEndpoint.poll();
 }
 
 #ifdef VERBS_RDMA
-void pMR::verbs::Connection::setLocalTargetMemoryAddress(
+void pMR::Verbs::Connection::setLocalTargetMemoryAddress(
     MemoryRegion const &memoryRegion)
 {
     mLocalTargetMemoryAddress.set(memoryRegion);
 }
 
 #ifdef VERBS_RDMA_CONTROL
-void pMR::verbs::Connection::postWriteAddressToPassive()
+void pMR::Verbs::Connection::postWriteAddressToPassive()
 {
     ScatterGatherElement scatterGatherElement(mLocalTargetMemoryRegion);
     postWriteRequest(
         mPassiveEndpoint, scatterGatherElement, mRemoteMemoryAddress);
 }
 #else
-void pMR::verbs::Connection::postSendAddressToPassive()
+void pMR::Verbs::Connection::postSendAddressToPassive()
 {
     ScatterGatherElement scatterGatherElement(mLocalTargetMemoryRegion);
     postSendRequest(mPassiveEndpoint, scatterGatherElement);
 }
 
-void pMR::verbs::Connection::postRecvAddressToActive()
+void pMR::Verbs::Connection::postRecvAddressToActive()
 {
     ScatterGatherElement scatterGatherElement(mRemoteTargetMemoryRegion);
     postRecvRequest(mActiveEndpoint, scatterGatherElement);
 }
 #endif // VERBS_RDMA_CONTROL
 
-void pMR::verbs::Connection::postWriteToActive(
+void pMR::Verbs::Connection::postWriteToActive(
     MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
 {
     ScatterGatherElement scatterGatherElement(memoryRegion, {sizeByte});

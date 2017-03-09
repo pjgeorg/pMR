@@ -20,7 +20,7 @@
 #include "psm2.hpp"
 #include "uuid.hpp"
 
-pMR::psm2::MatchedQueue::MatchedQueue(Endpoint &endpoint)
+pMR::PSM2::MatchedQueue::MatchedQueue(Endpoint &endpoint)
 {
     auto err = psm2_mq_init(
         endpoint.get(), PSM2_MQ_ORDERMASK_NONE, NULL, 0, &mMatchedQueue);
@@ -31,7 +31,7 @@ pMR::psm2::MatchedQueue::MatchedQueue(Endpoint &endpoint)
     }
 }
 
-pMR::psm2::MatchedQueue::~MatchedQueue()
+pMR::PSM2::MatchedQueue::~MatchedQueue()
 {
     if(psm2_mq_finalize(mMatchedQueue))
     {
@@ -39,7 +39,7 @@ pMR::psm2::MatchedQueue::~MatchedQueue()
     }
 }
 
-psm2_mq_t pMR::psm2::MatchedQueue::get() const
+psm2_mq_t pMR::PSM2::MatchedQueue::get() const
 {
     return mMatchedQueue;
 }

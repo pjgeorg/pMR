@@ -24,7 +24,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class Tagged
         {
@@ -54,7 +54,7 @@ namespace pMR
 }
 
 template<typename T>
-void pMR::ofi::postSendRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
+void pMR::OFI::postSendRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
 {
     if(fi_tsendmsg(endpoint->get(), tagged.get(), flags))
     {
@@ -63,7 +63,7 @@ void pMR::ofi::postSendRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
 }
 
 template<typename T>
-void pMR::ofi::postRecvRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
+void pMR::OFI::postRecvRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
 {
     if(fi_trecvmsg(endpoint->get(), tagged.get(), flags))
     {

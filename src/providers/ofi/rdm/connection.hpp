@@ -26,7 +26,7 @@ namespace pMR
 {
     class Target;
 
-    namespace ofi
+    namespace OFI
     {
         class Connection
         {

@@ -21,7 +21,7 @@ extern "C" {
 #include "../ofi.hpp"
 #include "hints.hpp"
 
-pMR::ofi::Info::Info(std::string const &address)
+pMR::OFI::Info::Info(std::string const &address)
 {
     int returnValue;
     if(!address.empty())
@@ -60,27 +60,27 @@ pMR::ofi::Info::Info(std::string const &address)
     queryStruct();
 }
 
-pMR::ofi::Info::Info(fi_info *info) : mInfo(info)
+pMR::OFI::Info::Info(fi_info *info) : mInfo(info)
 {
     queryStruct();
 }
 
 // Copies only the currently set provider
-pMR::ofi::Info::Info(Info const &other)
+pMR::OFI::Info::Info(Info const &other)
 {
     mInfo = fi_dupinfo(other.get());
 
     queryStruct();
 }
 
-pMR::ofi::Info::Info(Info &&other)
+pMR::OFI::Info::Info(Info &&other)
     : mInfos(std::move(other.mInfos)), mProvider(std::move(other.mProvider))
 {
     mInfo = other.mInfo;
     other.mInfo = nullptr;
 }
 
-pMR::ofi::Info::~Info()
+pMR::OFI::Info::~Info()
 {
     if(mInfo)
     {
@@ -88,27 +88,27 @@ pMR::ofi::Info::~Info()
     }
 }
 
-fi_info *pMR::ofi::Info::get()
+fi_info *pMR::OFI::Info::get()
 {
     return mInfos.at({mProvider});
 }
 
-fi_info const *pMR::ofi::Info::get() const
+fi_info const *pMR::OFI::Info::get() const
 {
     return mInfos.at({mProvider});
 }
 
-std::size_t pMR::ofi::Info::numProviders() const
+std::size_t pMR::OFI::Info::numProviders() const
 {
     return {mInfos.size()};
 }
 
-std::size_t pMR::ofi::Info::getProvider() const
+std::size_t pMR::OFI::Info::getProvider() const
 {
     return {mProvider};
 }
 
-void pMR::ofi::Info::setProvider(std::size_t num)
+void pMR::OFI::Info::setProvider(std::size_t num)
 {
     if(num >= numProviders())
     {
@@ -118,27 +118,27 @@ void pMR::ofi::Info::setProvider(std::size_t num)
     mProvider = {num};
 }
 
-std::string pMR::ofi::Info::getName() const
+std::string pMR::OFI::Info::getName() const
 {
     return getFabric()->name;
 }
 
-std::string pMR::ofi::Info::getProviderName() const
+std::string pMR::OFI::Info::getProviderName() const
 {
     return getFabric()->prov_name;
 }
 
-std::string pMR::ofi::Info::getProtocol() const
+std::string pMR::OFI::Info::getProtocol() const
 {
     return fi_tostr(mInfos.at(mProvider)->ep_attr, FI_TYPE_PROTOCOL);
 }
 
-std::string pMR::ofi::Info::getStruct() const
+std::string pMR::OFI::Info::getStruct() const
 {
     return fi_tostr(mInfos.at(mProvider), FI_TYPE_INFO);
 }
 
-bool pMR::ofi::Info::checkProvider() const
+bool pMR::OFI::Info::checkProvider() const
 {
 #ifdef OFI_RMA_TARGET_RX
     if(!(mInfos.at(mProvider)->rx_attr->mode & FI_RX_CQ_DATA))
@@ -150,7 +150,7 @@ bool pMR::ofi::Info::checkProvider() const
     return {true};
 }
 
-void pMR::ofi::Info::searchProvider(std::string const &providerName)
+void pMR::OFI::Info::searchProvider(std::string const &providerName)
 {
     do
     {
@@ -163,42 +163,42 @@ void pMR::ofi::Info::searchProvider(std::string const &providerName)
     } while(true);
 }
 
-fi_fabric_attr *pMR::ofi::Info::getFabric()
+fi_fabric_attr *pMR::OFI::Info::getFabric()
 {
     return mInfos.at({mProvider})->fabric_attr;
 }
 
-fi_fabric_attr const *pMR::ofi::Info::getFabric() const
+fi_fabric_attr const *pMR::OFI::Info::getFabric() const
 {
     return mInfos.at({mProvider})->fabric_attr;
 }
 
-std::size_t pMR::ofi::Info::injectSize() const
+std::size_t pMR::OFI::Info::injectSize() const
 {
     return {mInfos.at({mProvider})->tx_attr->inject_size};
 }
 
-std::size_t pMR::ofi::Info::maxSize() const
+std::size_t pMR::OFI::Info::maxSize() const
 {
     return {mInfos.at({mProvider})->ep_attr->max_msg_size};
 }
 
-std::size_t pMR::ofi::Info::getContextSize() const
+std::size_t pMR::OFI::Info::getContextSize() const
 {
     return {std::min(getTransmitContextSize(), getReceiveContextSize())};
 }
 
-std::size_t pMR::ofi::Info::getTransmitContextSize() const
+std::size_t pMR::OFI::Info::getTransmitContextSize() const
 {
     return {mInfos.at({mProvider})->tx_attr->size};
 }
 
-std::size_t pMR::ofi::Info::getReceiveContextSize() const
+std::size_t pMR::OFI::Info::getReceiveContextSize() const
 {
     return {mInfos.at({mProvider})->rx_attr->size};
 }
 
-void pMR::ofi::Info::setSourceAddress(std::vector<std::uint8_t> const &address)
+void pMR::OFI::Info::setSourceAddress(std::vector<std::uint8_t> const &address)
 {
     if(mInfos.at({mProvider})->src_addrlen != address.size())
     {
@@ -210,7 +210,7 @@ void pMR::ofi::Info::setSourceAddress(std::vector<std::uint8_t> const &address)
         static_cast<std::uint8_t *>(mInfos.at({mProvider})->src_addr));
 }
 
-void pMR::ofi::Info::setDestinationAddress(
+void pMR::OFI::Info::setDestinationAddress(
     std::vector<std::uint8_t> const &address)
 {
     if(mInfos.at({mProvider})->dest_addrlen != address.size())
@@ -227,19 +227,19 @@ void pMR::ofi::Info::setDestinationAddress(
         static_cast<std::uint8_t *>(mInfos.at(mProvider)->dest_addr));
 }
 
-pMR::ofi::Info &pMR::ofi::Info::operator++()
+pMR::OFI::Info &pMR::OFI::Info::operator++()
 {
     setProvider({getProvider() + 1});
     return *this;
 }
 
-pMR::ofi::Info &pMR::ofi::Info::operator--()
+pMR::OFI::Info &pMR::OFI::Info::operator--()
 {
     setProvider({getProvider() - 1});
     return *this;
 }
 
-void pMR::ofi::Info::queryStruct()
+void pMR::OFI::Info::queryStruct()
 {
     for(auto info = mInfo; info; info = info->next)
     {
@@ -247,7 +247,7 @@ void pMR::ofi::Info::queryStruct()
     }
 }
 
-pMR::ofi::Info pMR::ofi::getProvider(
+pMR::OFI::Info pMR::OFI::getProvider(
     std::string const &providerName, std::string const &address)
 {
     Info info(address);

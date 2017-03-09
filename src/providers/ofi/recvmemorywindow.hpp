@@ -22,7 +22,7 @@
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class Connection;
 

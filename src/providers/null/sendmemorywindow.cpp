@@ -14,20 +14,20 @@
 
 #include "sendmemorywindow.hpp"
 
-pMR::null::SendMemoryWindow::SendMemoryWindow(
+pMR::Null::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     size_type const sizeByte)
 {
 }
 
-void pMR::null::SendMemoryWindow::init()
+void pMR::Null::SendMemoryWindow::init()
 {
 }
 
-void pMR::null::SendMemoryWindow::post(size_type const)
+void pMR::Null::SendMemoryWindow::post(size_type const)
 {
 }
 
-void pMR::null::SendMemoryWindow::wait()
+void pMR::Null::SendMemoryWindow::wait()
 {
 }

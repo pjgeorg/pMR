@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include "verbs.hpp"
 
-pMR::verbs::GID::GID(Context &context, std::uint8_t const portNumber)
+pMR::Verbs::GID::GID(Context &context, std::uint8_t const portNumber)
 {
     if(ibv_query_gid(context.get(), portNumber, cSGIDIndex, &mGID))
     {
@@ -24,31 +24,31 @@ pMR::verbs::GID::GID(Context &context, std::uint8_t const portNumber)
     }
 }
 
-pMR::verbs::GID::GID(ibv_gid const gID) : mGID(gID)
+pMR::Verbs::GID::GID(ibv_gid const gID) : mGID(gID)
 {
 }
 
-void pMR::verbs::GID::setGUID(std::uint64_t const GUID)
+void pMR::Verbs::GID::setGUID(std::uint64_t const GUID)
 {
     mGID.global.interface_id = {GUID};
 }
 
-void pMR::verbs::GID::setSubnetPrefix(std::uint64_t const subnetPrefix)
+void pMR::Verbs::GID::setSubnetPrefix(std::uint64_t const subnetPrefix)
 {
     mGID.global.subnet_prefix = {subnetPrefix};
 }
 
-ibv_gid const &pMR::verbs::GID::get() const
+ibv_gid const &pMR::Verbs::GID::get() const
 {
     return mGID;
 }
 
-std::uint64_t pMR::verbs::GID::getGUID() const
+std::uint64_t pMR::Verbs::GID::getGUID() const
 {
     return {mGID.global.interface_id};
 }
 
-std::uint64_t pMR::verbs::GID::getSubnetPrefix() const
+std::uint64_t pMR::Verbs::GID::getSubnetPrefix() const
 {
     return {mGID.global.subnet_prefix};
 }

@@ -14,44 +14,44 @@
 
 #include "memoryaddress.hpp"
 
-pMR::ofi::MemoryAddress::MemoryAddress(MemoryRegion const &memoryRegion)
+pMR::OFI::MemoryAddress::MemoryAddress(MemoryRegion const &memoryRegion)
 {
     set(memoryRegion);
 }
 
-void pMR::ofi::MemoryAddress::set(MemoryRegion const &memoryRegion)
+void pMR::OFI::MemoryAddress::set(MemoryRegion const &memoryRegion)
 {
     std::get<0>(mData) = {memoryRegion.getAddress()};
     std::get<1>(mData) = {memoryRegion.getKey()};
     std::get<2>(mData) = {memoryRegion.getLength()};
 }
 
-std::uint64_t pMR::ofi::MemoryAddress::getAddress() const
+std::uint64_t pMR::OFI::MemoryAddress::getAddress() const
 {
     return {std::get<0>(mData)};
 }
 
-std::uint64_t pMR::ofi::MemoryAddress::getKey() const
+std::uint64_t pMR::OFI::MemoryAddress::getKey() const
 {
     return {std::get<1>(mData)};
 }
 
-std::size_t pMR::ofi::MemoryAddress::getLength() const
+std::size_t pMR::OFI::MemoryAddress::getLength() const
 {
     return {static_cast<std::size_t>(std::get<2>(mData))};
 }
 
-std::uint64_t *pMR::ofi::MemoryAddress::rawData()
+std::uint64_t *pMR::OFI::MemoryAddress::rawData()
 {
     return mData.data();
 }
 
-std::uint64_t const *pMR::ofi::MemoryAddress::rawData() const
+std::uint64_t const *pMR::OFI::MemoryAddress::rawData() const
 {
     return mData.data();
 }
 
-std::size_t pMR::ofi::MemoryAddress::size() const
+std::size_t pMR::OFI::MemoryAddress::size() const
 {
     return {sizeof(mData)};
 }

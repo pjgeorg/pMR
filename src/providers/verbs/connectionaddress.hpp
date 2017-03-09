@@ -29,7 +29,7 @@ namespace pMR
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         class QueuePair;
         class Endpoint;

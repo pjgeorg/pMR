@@ -21,7 +21,7 @@ extern "C" {
 #include "context.hpp"
 #include "odp.hpp"
 
-pMR::verbs::ODP::ODP(Context &context)
+pMR::Verbs::ODP::ODP(Context &context)
 {
     ibv_device_attr_ex extendedAttr;
 
@@ -42,12 +42,12 @@ pMR::verbs::ODP::ODP(Context &context)
     }
 }
 
-bool pMR::verbs::ODP::isTrue() const
+bool pMR::Verbs::ODP::isTrue() const
 {
     return {mHasODP};
 }
 
-int pMR::verbs::updateMemoryRegionAccessODP(Context &context, int const access)
+int pMR::Verbs::updateMemoryRegionAccessODP(Context &context, int const access)
 {
     if(Singleton<ODP>::Instance(context).isTrue())
     {

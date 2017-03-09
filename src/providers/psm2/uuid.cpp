@@ -18,7 +18,7 @@
 #include <string>
 #include "psm2.hpp"
 
-pMR::psm2::UUID::UUID()
+pMR::PSM2::UUID::UUID()
 {
     auto charUUID = std::getenv(cUUIDEnv);
 

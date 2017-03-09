@@ -20,7 +20,7 @@ extern "C" {
 #include "target.hpp"
 #include "threadsupport.hpp"
 
-void pMR::backend::exchange(Target const &target, void const *sendBuffer,
+void pMR::Backend::exchange(Target const &target, void const *sendBuffer,
     void *recvBuffer, int const sizeByte)
 {
     auto threadMPI = ThreadSupport().getLevel();

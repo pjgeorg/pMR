@@ -20,7 +20,7 @@
 #include "mmap.hpp"
 #include "rma.hpp"
 
-pMR::scif::Connection::Connection(Target const &target)
+pMR::SCIF::Connection::Connection(Target const &target)
 {
     Endpoint passiveEndpoint;
 
@@ -30,7 +30,7 @@ pMR::scif::Connection::Connection(Target const &target)
     passiveEndpoint.listen();
 
     decltype(originAddress) targetAddress;
-    backend::exchange(target, originAddress, targetAddress);
+    Backend::exchange(target, originAddress, targetAddress);
 
     mActiveEndpoint.connect(std::get<1>(targetAddress), {false});
     mPassiveEndpoint =
@@ -62,37 +62,37 @@ pMR::scif::Connection::Connection(Target const &target)
     mNotifyRemote = std::get<1>(targetOffsets);
 }
 
-pMR::scif::Connection::~Connection()
+pMR::SCIF::Connection::~Connection()
 {
     munmap(mTargetRemote, {sizeof(mTarget)});
 }
 
-pMR::scif::Endpoint &pMR::scif::Connection::getActiveEndpoint()
+pMR::SCIF::Endpoint &pMR::SCIF::Connection::getActiveEndpoint()
 {
     return mActiveEndpoint;
 }
 
-pMR::scif::Endpoint const &pMR::scif::Connection::getActiveEndpoint() const
+pMR::SCIF::Endpoint const &pMR::SCIF::Connection::getActiveEndpoint() const
 {
     return mActiveEndpoint;
 }
 
-pMR::scif::PeerEndpoint &pMR::scif::Connection::getPassiveEndpoint()
+pMR::SCIF::PeerEndpoint &pMR::SCIF::Connection::getPassiveEndpoint()
 {
     return mPassiveEndpoint;
 }
 
-pMR::scif::PeerEndpoint const &pMR::scif::Connection::getPassiveEndpoint() const
+pMR::SCIF::PeerEndpoint const &pMR::SCIF::Connection::getPassiveEndpoint() const
 {
     return mPassiveEndpoint;
 }
 
-void pMR::scif::Connection::postAddress(off_t const localAddress)
+void pMR::SCIF::Connection::postAddress(off_t const localAddress)
 {
     *mTargetRemote = {localAddress};
 }
 
-off_t pMR::scif::Connection::pollAddress()
+off_t pMR::SCIF::Connection::pollAddress()
 {
     while(std::get<0>(mTarget) == static_cast<off_t>(-1))
     {
@@ -106,7 +106,7 @@ off_t pMR::scif::Connection::pollAddress()
     return {target};
 }
 
-void pMR::scif::Connection::writeData(
+void pMR::SCIF::Connection::writeData(
     MemoryRegion const &memoryRegion, std::size_t const sizeByte)
 {
     if(sizeByte > 0)
@@ -121,17 +121,17 @@ void pMR::scif::Connection::writeData(
     fenceSignal(mActiveEndpoint, mLocalNotifyMR->get(), 1, mNotifyRemote, 1);
 }
 
-void pMR::scif::Connection::pollLocalNotify()
+void pMR::SCIF::Connection::pollLocalNotify()
 {
     pollNotify(mLocalNotify);
 }
 
-void pMR::scif::Connection::pollRemoteNotify()
+void pMR::SCIF::Connection::pollRemoteNotify()
 {
     pollNotify(mRemoteNotify);
 }
 
-void pMR::scif::Connection::pollNotify(
+void pMR::SCIF::Connection::pollNotify(
     std::array<std::uint64_t, cacheLineSize<std::uint64_t>()> &notify)
 {
     while(std::get<0>(notify) == 0)

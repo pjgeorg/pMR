@@ -14,7 +14,7 @@
 
 #include "scattergather.hpp"
 
-pMR::verbs::ScatterGatherElement::ScatterGatherElement(
+pMR::Verbs::ScatterGatherElement::ScatterGatherElement(
     MemoryRegion const &memoryRegion)
 {
     mScatterGatherElement.addr = {memoryRegion.getAddress()};
@@ -22,7 +22,7 @@ pMR::verbs::ScatterGatherElement::ScatterGatherElement(
     mScatterGatherElement.lkey = {memoryRegion.getLKey()};
 }
 
-pMR::verbs::ScatterGatherElement::ScatterGatherElement(
+pMR::Verbs::ScatterGatherElement::ScatterGatherElement(
     MemoryRegion const &memoryRegion, std::uint32_t const sizeByte)
 {
     mScatterGatherElement.addr = {memoryRegion.getAddress()};
@@ -30,29 +30,29 @@ pMR::verbs::ScatterGatherElement::ScatterGatherElement(
     mScatterGatherElement.lkey = {memoryRegion.getLKey()};
 }
 
-pMR::verbs::ScatterGatherElement::ScatterGatherElement(
+pMR::Verbs::ScatterGatherElement::ScatterGatherElement(
     void *address, std::uint32_t const sizeByte)
 {
     mScatterGatherElement.addr = {reinterpret_cast<std::uint64_t>(address)};
     mScatterGatherElement.length = {sizeByte};
 }
 
-ibv_sge *pMR::verbs::ScatterGatherElement::get()
+ibv_sge *pMR::Verbs::ScatterGatherElement::get()
 {
     return &mScatterGatherElement;
 }
 
-ibv_sge const *pMR::verbs::ScatterGatherElement::get() const
+ibv_sge const *pMR::Verbs::ScatterGatherElement::get() const
 {
     return &mScatterGatherElement;
 }
 
-std::uint32_t pMR::verbs::ScatterGatherElement::getLength() const
+std::uint32_t pMR::Verbs::ScatterGatherElement::getLength() const
 {
     return {mScatterGatherElement.length};
 }
 
-int pMR::verbs::ScatterGatherElement::getNumEntries() const
+int pMR::Verbs::ScatterGatherElement::getNumEntries() const
 {
     if(mScatterGatherElement.length == 0)
     {

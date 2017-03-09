@@ -15,40 +15,40 @@
 #include "endpoint.hpp"
 #include "verbs.hpp"
 
-pMR::verbs::Endpoint::Endpoint(
+pMR::Verbs::Endpoint::Endpoint(
     Context &context, ProtectionDomain &protectionDomain)
     : mCompletionQueue(context, {cMaxCQEntry})
     , mQueuePair(protectionDomain, mCompletionQueue)
 {
 }
 
-pMR::verbs::QueuePair &pMR::verbs::Endpoint::getQueuePair()
+pMR::Verbs::QueuePair &pMR::Verbs::Endpoint::getQueuePair()
 {
     return mQueuePair;
 }
 
-pMR::verbs::QueuePair const &pMR::verbs::Endpoint::getQueuePair() const
+pMR::Verbs::QueuePair const &pMR::Verbs::Endpoint::getQueuePair() const
 {
     return mQueuePair;
 }
 
-void pMR::verbs::Endpoint::setStateINIT(std::uint8_t const portNumber)
+void pMR::Verbs::Endpoint::setStateINIT(std::uint8_t const portNumber)
 {
     return mQueuePair.setStateINIT({portNumber});
 }
 
-void pMR::verbs::Endpoint::setStateRTR(
+void pMR::Verbs::Endpoint::setStateRTR(
     std::uint8_t const portNumber, ConnectionAddress const &connectionAddress)
 {
     return mQueuePair.setStateRTR({portNumber}, connectionAddress);
 }
 
-void pMR::verbs::Endpoint::setStateRTS()
+void pMR::Verbs::Endpoint::setStateRTS()
 {
     return mQueuePair.setStateRTS();
 }
 
-void pMR::verbs::Endpoint::poll()
+void pMR::Verbs::Endpoint::poll()
 {
     mCompletionQueue.poll();
 }

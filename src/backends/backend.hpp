@@ -25,7 +25,7 @@ namespace pMR
 {
     class Target;
 
-    namespace backend
+    namespace Backend
     {
         void sync(Target const &target);
 

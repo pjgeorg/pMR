@@ -19,7 +19,7 @@
 
 namespace pMR
 {
-    namespace scif
+    namespace SCIF
     {
         constexpr std::size_t cGranularity = 4096;
         constexpr std::size_t cDMAThreshold = 0 * 1024;

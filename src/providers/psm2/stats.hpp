@@ -21,7 +21,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace psm2
+    namespace PSM2
     {
         void printStats(psm2_mq_t);
     }

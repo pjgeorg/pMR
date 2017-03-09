@@ -20,7 +20,7 @@
 #include "address.hpp"
 #include "addresshandle.hpp"
 
-pMR::verbs::mad::MAD::MAD(Context &context, std::uint8_t const portNumber)
+pMR::Verbs::MAD::MAD::MAD(Context &context, std::uint8_t const portNumber)
     : mPortNumber{portNumber}
     , mPortAttributes(context, {mPortNumber})
     , mProtectionDomain(context)
@@ -37,7 +37,7 @@ pMR::verbs::mad::MAD::MAD(Context &context, std::uint8_t const portNumber)
     mQueuePair.setStateRTS();
 }
 
-void pMR::verbs::mad::MAD::postRecvRequest()
+void pMR::Verbs::MAD::MAD::postRecvRequest()
 {
     ScatterGatherElement scatterGatherElement(mRecvMemoryRegion);
 
@@ -54,7 +54,7 @@ void pMR::verbs::mad::MAD::postRecvRequest()
     }
 }
 
-void pMR::verbs::mad::MAD::postSendRequest()
+void pMR::Verbs::MAD::MAD::postSendRequest()
 {
     ScatterGatherElement scatterGatherElement(
         mSendMAD.data(), sizeof(mSendMAD));
@@ -80,7 +80,7 @@ void pMR::verbs::mad::MAD::postSendRequest()
     }
 }
 
-void pMR::verbs::mad::MAD::query()
+void pMR::Verbs::MAD::MAD::query()
 {
     postRecvRequest();
     do

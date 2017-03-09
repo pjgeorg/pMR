@@ -18,12 +18,12 @@
 #include "../../providers/cma/recvmemorywindow.hpp"
 #include "../../providers/cma/sendmemorywindow.hpp"
 
-void pMR::cma::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::CMA::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::cma::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::CMA::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -33,12 +33,12 @@ void pMR::cma::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/mpi/recvmemorywindow.hpp"
 #include "../../providers/mpi/sendmemorywindow.hpp"
 
-void pMR::mpi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::MPI::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::mpi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::MPI::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -48,12 +48,12 @@ void pMR::mpi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/null/recvmemorywindow.hpp"
 #include "../../providers/null/sendmemorywindow.hpp"
 
-void pMR::null::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::Null::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::null::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::Null::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -63,12 +63,12 @@ void pMR::null::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/ofi/recvmemorywindow.hpp"
 #include "../../providers/ofi/sendmemorywindow.hpp"
 
-void pMR::ofi::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::OFI::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::ofi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::OFI::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -78,12 +78,12 @@ void pMR::ofi::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/psm2/recvmemorywindow.hpp"
 #include "../../providers/psm2/sendmemorywindow.hpp"
 
-void pMR::psm2::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::PSM2::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::psm2::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::PSM2::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -93,12 +93,12 @@ void pMR::psm2::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/scif/recvmemorywindow.hpp"
 #include "../../providers/scif/sendmemorywindow.hpp"
 
-void pMR::scif::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::SCIF::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::scif::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::SCIF::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -108,12 +108,12 @@ void pMR::scif::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/self/recvmemorywindow.hpp"
 #include "../../providers/self/sendmemorywindow.hpp"
 
-void pMR::self::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::Self::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::self::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::Self::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }
@@ -123,12 +123,12 @@ void pMR::self::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 #include "../../providers/verbs/recvmemorywindow.hpp"
 #include "../../providers/verbs/sendmemorywindow.hpp"
 
-void pMR::verbs::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
+void pMR::Verbs::SendMemoryWindowDeleter::operator()(SendMemoryWindow *p) const
 {
     delete p;
 }
 
-void pMR::verbs::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
+void pMR::Verbs::RecvMemoryWindowDeleter::operator()(RecvMemoryWindow *p) const
 {
     delete p;
 }

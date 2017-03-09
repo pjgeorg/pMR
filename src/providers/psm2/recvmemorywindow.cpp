@@ -16,23 +16,23 @@
 #include <iostream>
 #include "connection.hpp"
 
-pMR::psm2::RecvMemoryWindow::RecvMemoryWindow(
+pMR::PSM2::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::uint32_t const sizeByte)
     : mConnection(connection), mBuffer(buffer), mSizeByte(sizeByte)
 {
 }
 
-void pMR::psm2::RecvMemoryWindow::init()
+void pMR::PSM2::RecvMemoryWindow::init()
 {
     mConnection->postRecv(mBuffer, mSizeByte);
 }
 
-void pMR::psm2::RecvMemoryWindow::post()
+void pMR::PSM2::RecvMemoryWindow::post()
 {
 }
 
-void pMR::psm2::RecvMemoryWindow::wait()
+void pMR::PSM2::RecvMemoryWindow::wait()
 {
     mConnection->pollRecv();
 }

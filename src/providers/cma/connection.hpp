@@ -26,7 +26,7 @@ namespace pMR
 {
     class Target;
 
-    namespace cma
+    namespace CMA
     {
         class Connection
         {

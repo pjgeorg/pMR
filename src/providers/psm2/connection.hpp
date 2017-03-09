@@ -26,7 +26,7 @@ namespace pMR
 {
     class Target;
 
-    namespace psm2
+    namespace PSM2
     {
         class Connection
         {

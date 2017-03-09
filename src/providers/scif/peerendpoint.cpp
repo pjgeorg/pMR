@@ -14,12 +14,12 @@
 
 #include "peerendpoint.hpp"
 
-pMR::scif::PeerEndpoint::PeerEndpoint(scif_epd_t const endpoint)
+pMR::SCIF::PeerEndpoint::PeerEndpoint(scif_epd_t const endpoint)
     : mPeerEndpoint(endpoint)
 {
 }
 
-bool pMR::scif::PeerEndpoint::isConnected() const
+bool pMR::SCIF::PeerEndpoint::isConnected() const
 {
     if(mPeerEndpoint == static_cast<scif_epd_t>(-1))
     {
@@ -31,12 +31,12 @@ bool pMR::scif::PeerEndpoint::isConnected() const
     }
 }
 
-scif_epd_t &pMR::scif::PeerEndpoint::get()
+scif_epd_t &pMR::SCIF::PeerEndpoint::get()
 {
     return {mPeerEndpoint};
 }
 
-scif_epd_t const &pMR::scif::PeerEndpoint::get() const
+scif_epd_t const &pMR::SCIF::PeerEndpoint::get() const
 {
     return {mPeerEndpoint};
 }

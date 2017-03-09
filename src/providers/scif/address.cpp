@@ -15,47 +15,47 @@
 #include "address.hpp"
 #include "nodeid.hpp"
 
-pMR::scif::Address::Address(std::uint16_t port) : Address({getNodeID()}, {port})
+pMR::SCIF::Address::Address(std::uint16_t port) : Address({getNodeID()}, {port})
 {
 }
 
-pMR::scif::Address::Address(std::uint16_t node, std::uint16_t port)
+pMR::SCIF::Address::Address(std::uint16_t node, std::uint16_t port)
 {
     mPortID.node = {node};
     mPortID.port = {port};
 }
 
-scif_portID *pMR::scif::Address::get()
+scif_portID *pMR::SCIF::Address::get()
 {
     return &mPortID;
 }
 
-scif_portID const *pMR::scif::Address::get() const
+scif_portID const *pMR::SCIF::Address::get() const
 {
     return &mPortID;
 }
 
-std::uint16_t pMR::scif::Address::getNode() const
+std::uint16_t pMR::SCIF::Address::getNode() const
 {
     return {mPortID.node};
 }
 
-std::uint16_t pMR::scif::Address::getPort() const
+std::uint16_t pMR::SCIF::Address::getPort() const
 {
     return {mPortID.port};
 }
 
-void pMR::scif::Address::setNode(std::uint16_t const node)
+void pMR::SCIF::Address::setNode(std::uint16_t const node)
 {
     mPortID.node = {node};
 }
 
-void pMR::scif::Address::setPort(std::uint16_t const port)
+void pMR::SCIF::Address::setPort(std::uint16_t const port)
 {
     mPortID.port = {port};
 }
 
-bool pMR::scif::Address::operator==(Address const &other) const
+bool pMR::SCIF::Address::operator==(Address const &other) const
 {
     if((mPortID.node == other.mPortID.node) &&
         (mPortID.port == other.mPortID.port))
@@ -68,7 +68,7 @@ bool pMR::scif::Address::operator==(Address const &other) const
     }
 }
 
-bool pMR::scif::Address::operator!=(Address const &other) const
+bool pMR::SCIF::Address::operator!=(Address const &other) const
 {
     return {!operator==(other)};
 }

@@ -20,7 +20,7 @@ extern "C" {
 }
 #include "numa.hpp"
 
-int pMR::numa::getCPU()
+int pMR::NUMA::getCPU()
 {
     auto cpu = sched_getcpu();
 
@@ -32,7 +32,7 @@ int pMR::numa::getCPU()
     return {cpu};
 }
 
-int pMR::numa::getNode(int const cpu)
+int pMR::NUMA::getNode(int const cpu)
 {
     checkAvailable();
 

@@ -22,33 +22,33 @@ namespace pMR
     enum class Provider
     {
 #ifdef pMR_PROVIDER_CMA
-        cma,
+        CMA,
 #endif // pMR_PROVIDER_CMA
 #ifdef pMR_PROVIDER_MPI
-        mpi,
+        MPI,
 #endif // pMR_PROVIDER_MPI
 #ifdef pMR_PROVIDER_NULL
-        null,
+        Null,
 #endif // pMR_PROVIDER_NULL
 #ifdef pMR_PROVIDER_OFI
-        ofi,
+        OFI,
 #endif // pMR_PROVIDER_OFI
 #ifdef pMR_PROVIDER_PSM2
-        psm2,
+        PSM2,
 #endif // pMR_PROVIDER_PSM2
 #ifdef pMR_PROVIDER_SCIF
-        scif,
+        SCIF,
 #endif // pMR_PROVIDER_SCIF
 #ifdef pMR_PROVIDER_SELF
-        self,
+        Self,
 #endif // pMR_PROVIDER_SELF
 #ifdef pMR_PROVIDER_VERBS
-        verbs,
+        Verbs,
 #endif // pMR_PROVIDER_VERBS
     };
 
 #ifdef pMR_PROVIDER_CMA
-    namespace cma
+    namespace CMA
     {
         class Connection;
         class SendMemoryWindow;
@@ -67,7 +67,7 @@ namespace pMR
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-    namespace mpi
+    namespace MPI
     {
         class Connection;
         class SendMemoryWindow;
@@ -86,7 +86,7 @@ namespace pMR
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-    namespace null
+    namespace Null
     {
         class Connection;
         class SendMemoryWindow;
@@ -105,7 +105,7 @@ namespace pMR
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-    namespace ofi
+    namespace OFI
     {
         class Info;
         class Connection;
@@ -125,7 +125,7 @@ namespace pMR
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-    namespace psm2
+    namespace PSM2
     {
         class Connection;
         class SendMemoryWindow;
@@ -144,7 +144,7 @@ namespace pMR
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-    namespace scif
+    namespace SCIF
     {
         class Connection;
         class SendMemoryWindow;
@@ -163,7 +163,7 @@ namespace pMR
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-    namespace self
+    namespace Self
     {
         class Connection;
         class SendMemoryWindow;
@@ -182,7 +182,7 @@ namespace pMR
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-    namespace verbs
+    namespace Verbs
     {
         class Device;
         class Connection;

@@ -21,7 +21,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         std::uint64_t getNodeGUID(Device const &);
         std::uint64_t getNodeGUID(Context &);

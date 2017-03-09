@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include "../ofi.hpp"
 
-pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
+pMR::OFI::GlobalEndpoint::GlobalEndpoint(Info &info)
     : mFabric(info)
     , mDomain(mFabric, info)
     , mEndpoint(mDomain, info)
@@ -35,38 +35,38 @@ pMR::ofi::GlobalEndpoint::GlobalEndpoint(Info &info)
     mRecvCompletions.reserve(cReserveSizeCompletion);
 }
 
-fid_ep *pMR::ofi::GlobalEndpoint::get()
+fid_ep *pMR::OFI::GlobalEndpoint::get()
 {
     return mEndpoint.get();
 }
 
-fid_ep const *pMR::ofi::GlobalEndpoint::get() const
+fid_ep const *pMR::OFI::GlobalEndpoint::get() const
 {
     return mEndpoint.get();
 }
 
-pMR::ofi::Domain &pMR::ofi::GlobalEndpoint::getDomain()
+pMR::OFI::Domain &pMR::OFI::GlobalEndpoint::getDomain()
 {
     return mDomain;
 }
 
-pMR::ofi::Domain const &pMR::ofi::GlobalEndpoint::getDomain() const
+pMR::OFI::Domain const &pMR::OFI::GlobalEndpoint::getDomain() const
 {
     return mDomain;
 }
 
-std::vector<std::uint8_t> pMR::ofi::GlobalEndpoint::getAddress() const
+std::vector<std::uint8_t> pMR::OFI::GlobalEndpoint::getAddress() const
 {
     return mEndpoint.getAddress();
 }
 
-fi_addr_t pMR::ofi::GlobalEndpoint::addPeer(
+fi_addr_t pMR::OFI::GlobalEndpoint::addPeer(
     std::vector<std::uint8_t> const &addr)
 {
     return {mAddressVector.add(addr)};
 }
 
-void pMR::ofi::GlobalEndpoint::bind(
+void pMR::OFI::GlobalEndpoint::bind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
@@ -87,7 +87,7 @@ void pMR::ofi::GlobalEndpoint::bind(
     }
 }
 
-void pMR::ofi::GlobalEndpoint::unbind(
+void pMR::OFI::GlobalEndpoint::unbind(
     std::uint64_t const sendID, std::uint64_t const recvID)
 {
     if(cThreadLevel >= ThreadLevel::Multiple)
@@ -108,29 +108,29 @@ void pMR::ofi::GlobalEndpoint::unbind(
     }
 }
 
-void pMR::ofi::GlobalEndpoint::pollSend(std::uint64_t const iD)
+void pMR::OFI::GlobalEndpoint::pollSend(std::uint64_t const iD)
 {
     poll(mSendCompletionQueue, mSendCompletionQueueMutex, mSendCompletions,
         mSendCompletionsMutex, iD);
 }
 
-void pMR::ofi::GlobalEndpoint::pollRecv(std::uint64_t const iD)
+void pMR::OFI::GlobalEndpoint::pollRecv(std::uint64_t const iD)
 {
     poll(mRecvCompletionQueue, mRecvCompletionQueueMutex, mRecvCompletions,
         mRecvCompletionsMutex, iD);
 }
 
-void pMR::ofi::GlobalEndpoint::checkMessageSize(std::size_t const size) const
+void pMR::OFI::GlobalEndpoint::checkMessageSize(std::size_t const size) const
 {
     return mDomain.checkMessageSize(size);
 }
 
-std::uint64_t pMR::ofi::GlobalEndpoint::checkInjectSize(std::size_t size) const
+std::uint64_t pMR::OFI::GlobalEndpoint::checkInjectSize(std::size_t size) const
 {
     return mDomain.checkInjectSize(size);
 }
 
-void pMR::ofi::GlobalEndpoint::bind(
+void pMR::OFI::GlobalEndpoint::bind(
     std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
 {
     auto insert = map.insert(std::make_pair(iD, 0));
@@ -141,7 +141,7 @@ void pMR::ofi::GlobalEndpoint::bind(
     }
 }
 
-void pMR::ofi::GlobalEndpoint::unbind(
+void pMR::OFI::GlobalEndpoint::unbind(
     std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
 {
     auto search = map.find(iD);
@@ -154,7 +154,7 @@ void pMR::ofi::GlobalEndpoint::unbind(
     map.erase(search);
 }
 
-bool pMR::ofi::GlobalEndpoint::checkCompletions(
+bool pMR::OFI::GlobalEndpoint::checkCompletions(
     std::unordered_map<std::uint64_t, int> &map, std::uint64_t const iD)
 {
     auto search = map.find(iD);
@@ -174,13 +174,13 @@ bool pMR::ofi::GlobalEndpoint::checkCompletions(
     }
 }
 
-std::uint64_t pMR::ofi::GlobalEndpoint::retrieveCompletions(
+std::uint64_t pMR::OFI::GlobalEndpoint::retrieveCompletions(
     CompletionQueueContext &queue)
 {
     return {queue.poll()};
 }
 
-std::uint64_t pMR::ofi::GlobalEndpoint::retrieveCompletions(
+std::uint64_t pMR::OFI::GlobalEndpoint::retrieveCompletions(
     CompletionQueueData &queue)
 {
     auto entry = queue.poll();

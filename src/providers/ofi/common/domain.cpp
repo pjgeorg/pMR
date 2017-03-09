@@ -18,7 +18,7 @@ extern "C" {
 #include <rdma/fi_domain.h>
 }
 
-pMR::ofi::Domain::Domain(Fabric &fabric, Info &info)
+pMR::OFI::Domain::Domain(Fabric &fabric, Info &info)
     : mMaxSize{info.maxSize()}, mInjectSize{info.injectSize()}
 {
     if(fi_domain(fabric.get(), info.get(), &mDomain, &mContext))
@@ -27,7 +27,7 @@ pMR::ofi::Domain::Domain(Fabric &fabric, Info &info)
     }
 }
 
-pMR::ofi::Domain::~Domain()
+pMR::OFI::Domain::~Domain()
 {
     if(mDomain)
     {
@@ -35,17 +35,17 @@ pMR::ofi::Domain::~Domain()
     }
 }
 
-fid_domain *pMR::ofi::Domain::get()
+fid_domain *pMR::OFI::Domain::get()
 {
     return mDomain;
 }
 
-fid_domain const *pMR::ofi::Domain::get() const
+fid_domain const *pMR::OFI::Domain::get() const
 {
     return mDomain;
 }
 
-void pMR::ofi::Domain::checkMessageSize(std::size_t size) const
+void pMR::OFI::Domain::checkMessageSize(std::size_t size) const
 {
     if(size > mMaxSize)
     {
@@ -53,7 +53,7 @@ void pMR::ofi::Domain::checkMessageSize(std::size_t size) const
     }
 }
 
-std::uint64_t pMR::ofi::Domain::checkInjectSize(std::size_t size) const
+std::uint64_t pMR::OFI::Domain::checkInjectSize(std::size_t size) const
 {
     if(size <= mInjectSize)
     {

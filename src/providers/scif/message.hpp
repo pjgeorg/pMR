@@ -25,7 +25,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace scif
+    namespace SCIF
     {
         template<typename E, typename T>
         void send(E &endpoint, T &buffer);
@@ -39,13 +39,13 @@ namespace pMR
 }
 
 template<typename E, typename T>
-void pMR::scif::send(E &endpoint, T &buffer)
+void pMR::SCIF::send(E &endpoint, T &buffer)
 {
     send(endpoint, &buffer, {sizeof(buffer)});
 }
 
 template<typename E, typename T>
-void pMR::scif::send(E &endpoint, T *const buffer, std::size_t const size)
+void pMR::SCIF::send(E &endpoint, T *const buffer, std::size_t const size)
 {
     auto ret = scif_send(endpoint.get(), buffer, size, SCIF_SEND_BLOCK);
 
@@ -57,13 +57,13 @@ void pMR::scif::send(E &endpoint, T *const buffer, std::size_t const size)
 }
 
 template<typename E, typename T>
-void pMR::scif::recv(E &endpoint, T &buffer)
+void pMR::SCIF::recv(E &endpoint, T &buffer)
 {
     recv(endpoint, &buffer, {sizeof(buffer)});
 }
 
 template<typename E, typename T>
-void pMR::scif::recv(E &endpoint, T *const buffer, std::size_t const size)
+void pMR::SCIF::recv(E &endpoint, T *const buffer, std::size_t const size)
 {
     auto ret = scif_recv(endpoint.get(), buffer, size, SCIF_RECV_BLOCK);
 

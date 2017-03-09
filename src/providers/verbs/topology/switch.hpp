@@ -21,7 +21,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         std::uint16_t getSwitchLID(
             Device const &, std::uint8_t const portNumber);

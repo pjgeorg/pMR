@@ -14,38 +14,38 @@
 
 #include "memoryaddress.hpp"
 
-pMR::verbs::MemoryAddress::MemoryAddress(MemoryRegion const &memoryRegion)
+pMR::Verbs::MemoryAddress::MemoryAddress(MemoryRegion const &memoryRegion)
 {
     set(memoryRegion);
 }
 
-void pMR::verbs::MemoryAddress::set(MemoryRegion const &memoryRegion)
+void pMR::Verbs::MemoryAddress::set(MemoryRegion const &memoryRegion)
 {
     std::get<0>(mData) = {memoryRegion.getAddress()};
     std::get<1>(mData) = {memoryRegion.getRKey()};
 }
 
-std::uint64_t pMR::verbs::MemoryAddress::getAddress() const
+std::uint64_t pMR::Verbs::MemoryAddress::getAddress() const
 {
     return {*reinterpret_cast<std::uint64_t const *>(mData.data())};
 }
 
-std::uint32_t pMR::verbs::MemoryAddress::getRKey() const
+std::uint32_t pMR::Verbs::MemoryAddress::getRKey() const
 {
     return {static_cast<std::uint32_t>(std::get<1>(mData))};
 }
 
-std::uint64_t *pMR::verbs::MemoryAddress::rawData()
+std::uint64_t *pMR::Verbs::MemoryAddress::rawData()
 {
     return mData.data();
 }
 
-std::uint64_t const *pMR::verbs::MemoryAddress::rawData() const
+std::uint64_t const *pMR::Verbs::MemoryAddress::rawData() const
 {
     return mData.data();
 }
 
-std::uint32_t pMR::verbs::MemoryAddress::size() const
+std::uint32_t pMR::Verbs::MemoryAddress::size() const
 {
     return {static_cast<std::uint32_t>(sizeof(mData))};
 }

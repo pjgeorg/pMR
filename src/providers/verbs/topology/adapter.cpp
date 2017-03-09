@@ -15,7 +15,7 @@
 #include "adapter.hpp"
 #include <stdexcept>
 
-int pMR::verbs::getAdapter(Devices const &devices, ibv_node_type const nodeType,
+int pMR::Verbs::getAdapter(Devices const &devices, ibv_node_type const nodeType,
     ibv_transport_type const transportType, int deviceNumber)
 {
     for(decltype(devices.size()) i = 0; i != devices.size(); ++i)
@@ -33,12 +33,12 @@ int pMR::verbs::getAdapter(Devices const &devices, ibv_node_type const nodeType,
     return -1;
 }
 
-pMR::verbs::Device pMR::verbs::getIBAdapter(int const deviceNumber)
+pMR::Verbs::Device pMR::Verbs::getIBAdapter(int const deviceNumber)
 {
     return getIBAdapter(Devices(), deviceNumber);
 }
 
-pMR::verbs::Device pMR::verbs::getIBAdapter(
+pMR::Verbs::Device pMR::Verbs::getIBAdapter(
     Devices const &devices, int const deviceNumber)
 {
     auto device = getAdapter(devices, {IBV_NODE_CA}, {IBV_TRANSPORT_IB});

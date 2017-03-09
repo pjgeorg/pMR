@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include "../../arch/processor.hpp"
 
-pMR::ofi::Counter::Counter(Domain &domain)
+pMR::OFI::Counter::Counter(Domain &domain)
 {
     fi_cntr_attr attr = {};
 
@@ -30,7 +30,7 @@ pMR::ofi::Counter::Counter(Domain &domain)
     }
 }
 
-pMR::ofi::Counter::~Counter()
+pMR::OFI::Counter::~Counter()
 {
     if(mCounter)
     {
@@ -38,17 +38,17 @@ pMR::ofi::Counter::~Counter()
     }
 }
 
-fid_cntr *pMR::ofi::Counter::get()
+fid_cntr *pMR::OFI::Counter::get()
 {
     return mCounter;
 }
 
-fid_cntr const *pMR::ofi::Counter::get() const
+fid_cntr const *pMR::OFI::Counter::get() const
 {
     return mCounter;
 }
 
-void pMR::ofi::Counter::poll()
+void pMR::OFI::Counter::poll()
 {
 #ifdef OFI_POLL_SPIN
     while(fi_cntr_read(mCounter) != 1)

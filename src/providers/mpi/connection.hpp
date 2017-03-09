@@ -24,7 +24,7 @@ namespace pMR
 {
     class Target;
 
-    namespace mpi
+    namespace MPI
     {
         class Connection
         {

@@ -17,7 +17,7 @@
 
 namespace pMR
 {
-    namespace psm2
+    namespace PSM2
     {
         class PSM
         {

@@ -14,7 +14,7 @@
 
 #include "hints.hpp"
 
-pMR::ofi::Hints::Hints()
+pMR::OFI::Hints::Hints()
 {
     mInfo = fi_allocinfo();
 
@@ -85,17 +85,17 @@ pMR::ofi::Hints::Hints()
 #endif // OFI_MR_SCALABLE
 }
 
-fi_info *pMR::ofi::Hints::get()
+fi_info *pMR::OFI::Hints::get()
 {
     return mInfo;
 }
 
-fi_info const *pMR::ofi::Hints::get() const
+fi_info const *pMR::OFI::Hints::get() const
 {
     return mInfo;
 }
 
-std::string pMR::ofi::Hints::getStruct() const
+std::string pMR::OFI::Hints::getStruct() const
 {
     return fi_tostr(mInfo, FI_TYPE_INFO);
 }

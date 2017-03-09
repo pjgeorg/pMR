@@ -15,7 +15,7 @@
 #include "portattributes.hpp"
 #include <stdexcept>
 
-pMR::verbs::PortAttributes::PortAttributes(
+pMR::Verbs::PortAttributes::PortAttributes(
     Context &context, std::uint8_t const portNumber)
 {
     if(ibv_query_port(context.get(), {portNumber}, &mPortAttributes))
@@ -24,32 +24,32 @@ pMR::verbs::PortAttributes::PortAttributes(
     }
 }
 
-std::uint16_t pMR::verbs::PortAttributes::getLID() const
+std::uint16_t pMR::Verbs::PortAttributes::getLID() const
 {
     return {mPortAttributes.lid};
 }
 
-ibv_mtu pMR::verbs::PortAttributes::getActiveMTU() const
+ibv_mtu pMR::Verbs::PortAttributes::getActiveMTU() const
 {
     return {mPortAttributes.active_mtu};
 }
 
-ibv_mtu pMR::verbs::PortAttributes::getMaxMTU() const
+ibv_mtu pMR::Verbs::PortAttributes::getMaxMTU() const
 {
     return {mPortAttributes.max_mtu};
 }
 
-std::uint16_t pMR::verbs::PortAttributes::getSubnetManagerLID() const
+std::uint16_t pMR::Verbs::PortAttributes::getSubnetManagerLID() const
 {
     return {mPortAttributes.sm_lid};
 }
 
-std::uint8_t pMR::verbs::PortAttributes::getSubnetManagerServiceLevel() const
+std::uint8_t pMR::Verbs::PortAttributes::getSubnetManagerServiceLevel() const
 {
     return {mPortAttributes.sm_sl};
 }
 
-std::uint32_t pMR::verbs::PortAttributes::getMaxMessageSize() const
+std::uint32_t pMR::Verbs::PortAttributes::getMaxMessageSize() const
 {
     return {mPortAttributes.max_msg_sz};
 }

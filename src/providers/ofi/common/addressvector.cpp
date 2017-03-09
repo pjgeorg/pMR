@@ -19,7 +19,7 @@ extern "C" {
 }
 #include "../ofi.hpp"
 
-pMR::ofi::AddressVector::AddressVector(Domain &domain)
+pMR::OFI::AddressVector::AddressVector(Domain &domain)
 {
     fi_av_attr attr = {};
     attr.type = FI_AV_MAP;
@@ -33,7 +33,7 @@ pMR::ofi::AddressVector::AddressVector(Domain &domain)
     }
 }
 
-pMR::ofi::AddressVector::~AddressVector()
+pMR::OFI::AddressVector::~AddressVector()
 {
     if(mAddressVector)
     {
@@ -41,17 +41,17 @@ pMR::ofi::AddressVector::~AddressVector()
     }
 }
 
-fid_av *pMR::ofi::AddressVector::get()
+fid_av *pMR::OFI::AddressVector::get()
 {
     return mAddressVector;
 }
 
-fid_av const *pMR::ofi::AddressVector::get() const
+fid_av const *pMR::OFI::AddressVector::get() const
 {
     return mAddressVector;
 }
 
-fi_addr_t pMR::ofi::AddressVector::add(std::vector<std::uint8_t> const &addr)
+fi_addr_t pMR::OFI::AddressVector::add(std::vector<std::uint8_t> const &addr)
 {
     fi_addr_t lAddr = {};
 
@@ -63,7 +63,7 @@ fi_addr_t pMR::ofi::AddressVector::add(std::vector<std::uint8_t> const &addr)
     return lAddr;
 }
 
-std::string pMR::ofi::AddressVector::addressString(
+std::string pMR::OFI::AddressVector::addressString(
     std::vector<std::uint8_t> const &addr) const
 {
     size_t size = 0;

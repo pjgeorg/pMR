@@ -20,7 +20,7 @@ extern "C" {
 }
 #include "../../misc/string.hpp"
 
-std::uint16_t pMR::scif::getNodeID()
+std::uint16_t pMR::SCIF::getNodeID()
 {
     uint16_t iD;
 

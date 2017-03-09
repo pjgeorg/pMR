@@ -18,7 +18,7 @@
 #include "deviceattributes.hpp"
 #include "portattributes.hpp"
 
-pMR::verbs::Context::Context(Device const &device)
+pMR::Verbs::Context::Context(Device const &device)
 {
     mContext = ibv_open_device(const_cast<ibv_device *>(device.get()));
     if(!mContext)
@@ -40,27 +40,27 @@ pMR::verbs::Context::Context(Device const &device)
     }
 }
 
-pMR::verbs::Context::~Context()
+pMR::Verbs::Context::~Context()
 {
     ibv_close_device(mContext);
 }
 
-ibv_context *pMR::verbs::Context::get()
+ibv_context *pMR::Verbs::Context::get()
 {
     return mContext;
 }
 
-ibv_context const *pMR::verbs::Context::get() const
+ibv_context const *pMR::Verbs::Context::get() const
 {
     return mContext;
 }
 
-std::uint64_t pMR::verbs::Context::getMaxMemoryRegionSize() const
+std::uint64_t pMR::Verbs::Context::getMaxMemoryRegionSize() const
 {
     return {mMaxMemoryRegionSize};
 }
 
-std::uint32_t pMR::verbs::Context::getMaxMessageSize() const
+std::uint32_t pMR::Verbs::Context::getMaxMessageSize() const
 {
     return {mMaxMessageSize};
 }

@@ -16,7 +16,7 @@
 #include <cstring>
 #include <stdexcept>
 
-pMR::ofi::SoftEndpoint::SoftEndpoint(
+pMR::OFI::SoftEndpoint::SoftEndpoint(
     Domain &domain, Info &info, EventQueue &eventQueue)
     : mEndpoint(domain, info), mCompletionQueue(domain, {info.getContextSize()})
 {
@@ -24,48 +24,48 @@ pMR::ofi::SoftEndpoint::SoftEndpoint(
     mEndpoint.bind(eventQueue);
 }
 
-fid_ep *pMR::ofi::SoftEndpoint::get()
+fid_ep *pMR::OFI::SoftEndpoint::get()
 {
     return mEndpoint.get();
 }
 
-fid_ep const *pMR::ofi::SoftEndpoint::get() const
+fid_ep const *pMR::OFI::SoftEndpoint::get() const
 {
     return mEndpoint.get();
 }
 
-void pMR::ofi::SoftEndpoint::enable()
+void pMR::OFI::SoftEndpoint::enable()
 {
     return mEndpoint.enable();
 }
 
-void pMR::ofi::SoftEndpoint::connect(std::vector<std::uint8_t> const &address)
+void pMR::OFI::SoftEndpoint::connect(std::vector<std::uint8_t> const &address)
 {
     return mEndpoint.connect(address);
 }
 
-void pMR::ofi::SoftEndpoint::accept()
+void pMR::OFI::SoftEndpoint::accept()
 {
     return mEndpoint.accept();
 }
 
-fi_context *pMR::ofi::SoftEndpoint::getSendContext()
+fi_context *pMR::OFI::SoftEndpoint::getSendContext()
 {
     return &mSendContext;
 }
 
-fi_context *pMR::ofi::SoftEndpoint::getRecvContext()
+fi_context *pMR::OFI::SoftEndpoint::getRecvContext()
 {
     return &mRecvContext;
 }
 
-void pMR::ofi::SoftEndpoint::pollSend()
+void pMR::OFI::SoftEndpoint::pollSend()
 {
     mCompletionQueue.poll();
     return;
 }
 
-void pMR::ofi::SoftEndpoint::pollRecv()
+void pMR::OFI::SoftEndpoint::pollRecv()
 {
     mCompletionQueue.poll();
     return;

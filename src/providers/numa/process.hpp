@@ -17,7 +17,7 @@
 
 namespace pMR
 {
-    namespace numa
+    namespace NUMA
     {
         int getNode();
     }

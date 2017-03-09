@@ -18,7 +18,7 @@ extern "C" {
 #include <numa.h>
 }
 
-void pMR::numa::checkAvailable()
+void pMR::NUMA::checkAvailable()
 {
     if(numa_available() == -1)
     {

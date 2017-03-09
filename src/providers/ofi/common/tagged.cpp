@@ -14,7 +14,7 @@
 
 #include "tagged.hpp"
 
-pMR::ofi::Tagged::Tagged(
+pMR::OFI::Tagged::Tagged(
     fi_context *context, std::uint64_t tag, fi_addr_t address)
 {
     mIOV.iov_base = nullptr;
@@ -29,13 +29,13 @@ pMR::ofi::Tagged::Tagged(
     mTagged.context = context;
 }
 
-pMR::ofi::Tagged::Tagged(MemoryRegion &memoryRegion, fi_context *context,
+pMR::OFI::Tagged::Tagged(MemoryRegion &memoryRegion, fi_context *context,
     std::uint64_t tag, fi_addr_t address)
     : Tagged(memoryRegion, memoryRegion.getLength(), context, tag, address)
 {
 }
 
-pMR::ofi::Tagged::Tagged(MemoryRegion &memoryRegion, std::size_t const sizeByte,
+pMR::OFI::Tagged::Tagged(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     fi_context *context, std::uint64_t tag, fi_addr_t address)
 {
     if(sizeByte == 0)
@@ -57,17 +57,17 @@ pMR::ofi::Tagged::Tagged(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     mTagged.context = context;
 }
 
-fi_msg_tagged *pMR::ofi::Tagged::get()
+fi_msg_tagged *pMR::OFI::Tagged::get()
 {
     return &mTagged;
 }
 
-fi_msg_tagged const *pMR::ofi::Tagged::get() const
+fi_msg_tagged const *pMR::OFI::Tagged::get() const
 {
     return &mTagged;
 }
 
-std::size_t pMR::ofi::Tagged::getLength() const
+std::size_t pMR::OFI::Tagged::getLength() const
 {
     return {mIOV.iov_len};
 }

@@ -15,24 +15,24 @@
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::self::SendMemoryWindow::SendMemoryWindow(
+pMR::Self::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection), mBuffer(buffer)
 {
 }
 
-void pMR::self::SendMemoryWindow::init()
+void pMR::Self::SendMemoryWindow::init()
 {
 }
 
-void pMR::self::SendMemoryWindow::post(std::size_t const sizeByte)
+void pMR::Self::SendMemoryWindow::post(std::size_t const sizeByte)
 {
     mConnection->pollAddress();
     mConnection->sendData(mBuffer, {sizeByte});
     mConnection->postNotify();
 }
 
-void pMR::self::SendMemoryWindow::wait()
+void pMR::Self::SendMemoryWindow::wait()
 {
 }

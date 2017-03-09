@@ -52,11 +52,11 @@ static_assert(std::numeric_limits<pMR::size_type>::max() <=
 #ifdef pMR_PROVIDER_SELF
 static_assert(std::numeric_limits<pMR::size_type>::max() <=
         std::numeric_limits<std::size_t>::max(),
-    "self max message size lower than desired pMR max message size.");
+    "Self max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
 static_assert(std::numeric_limits<pMR::size_type>::max() <=
         std::numeric_limits<std::uint32_t>::max(),
-    "verbs max message size lower than desired pMR max message size.");
+    "Verbs max message size lower than desired pMR max message size.");
 #endif // pMR_PROVIDER_VERBS

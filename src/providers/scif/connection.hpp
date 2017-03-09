@@ -26,7 +26,7 @@ namespace pMR
 {
     class Target;
 
-    namespace scif
+    namespace SCIF
     {
         class Connection
         {

@@ -22,7 +22,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         int getAdapter(Devices const &, ibv_node_type const nodeType,
             ibv_transport_type const transportType, int deviceNumber = 1);

@@ -23,7 +23,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         class DeviceAttributes
         {

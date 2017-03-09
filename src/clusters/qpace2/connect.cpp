@@ -34,7 +34,7 @@ void pMR::Connection::connect(Target const &target)
         return;
     }
 
-    auto device = verbs::getIBAdapter();
+    auto device = Verbs::getIBAdapter();
 
     auto originNode = Singleton<Node>::Instance(device);
 

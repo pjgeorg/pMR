@@ -17,7 +17,7 @@
 #include "../../backends/backend.hpp"
 #include "../../misc/singleton.hpp"
 
-pMR::psm2::Connection::Connection(Target const &target)
+pMR::PSM2::Connection::Connection(Target const &target)
     : mEndpoint(&Singleton<GlobalEndpoint>::Instance())
     , mSendTag{reinterpret_cast<std::uintptr_t>(this)}
 {
@@ -25,31 +25,31 @@ pMR::psm2::Connection::Connection(Target const &target)
 
     decltype(originAddress) targetAddress;
 
-    backend::exchange(target, originAddress, targetAddress);
+    Backend::exchange(target, originAddress, targetAddress);
 
     mRecvTag = {std::get<0>(targetAddress)};
 
     mRemoteEndpoint = {mEndpoint->connect(std::get<1>(targetAddress))};
 }
 
-void pMR::psm2::Connection::postRecv(void *buffer, std::uint32_t sizeByte)
+void pMR::PSM2::Connection::postRecv(void *buffer, std::uint32_t sizeByte)
 {
     mRecvRequest = {
         mEndpoint->postRecv(mRemoteEndpoint, buffer, {sizeByte}, {mRecvTag})};
 }
 
-void pMR::psm2::Connection::postSend(void const *buffer, std::uint32_t sizeByte)
+void pMR::PSM2::Connection::postSend(void const *buffer, std::uint32_t sizeByte)
 {
     mSendRequest = {
         mEndpoint->postSend(mRemoteEndpoint, buffer, {sizeByte}, {mSendTag})};
 }
 
-void pMR::psm2::Connection::pollSend()
+void pMR::PSM2::Connection::pollSend()
 {
     mEndpoint->poll(mSendRequest);
 }
 
-void pMR::psm2::Connection::pollRecv()
+void pMR::PSM2::Connection::pollRecv()
 {
     mEndpoint->poll(mRecvRequest);
 }

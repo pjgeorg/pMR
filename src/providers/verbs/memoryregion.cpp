@@ -19,7 +19,7 @@
 #include "odp.hpp"
 #endif // VERBS_ODP
 
-pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
+pMR::Verbs::MemoryRegion::MemoryRegion(Context &context,
     ProtectionDomain &protectionDomain, void *buffer, std::uint32_t size,
     int access)
 {
@@ -36,7 +36,7 @@ pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
     registerMemoryRegion(protectionDomain, buffer, size, access);
 }
 
-pMR::verbs::MemoryRegion::~MemoryRegion()
+pMR::Verbs::MemoryRegion::~MemoryRegion()
 {
     if(getLength() > 0)
     {
@@ -48,37 +48,37 @@ pMR::verbs::MemoryRegion::~MemoryRegion()
     }
 }
 
-ibv_mr *pMR::verbs::MemoryRegion::get()
+ibv_mr *pMR::Verbs::MemoryRegion::get()
 {
     return mMemoryRegion;
 }
 
-ibv_mr const *pMR::verbs::MemoryRegion::get() const
+ibv_mr const *pMR::Verbs::MemoryRegion::get() const
 {
     return mMemoryRegion;
 }
 
-std::uint64_t pMR::verbs::MemoryRegion::getAddress() const
+std::uint64_t pMR::Verbs::MemoryRegion::getAddress() const
 {
     return {reinterpret_cast<std::uintptr_t>(mMemoryRegion->addr)};
 }
 
-std::uint32_t pMR::verbs::MemoryRegion::getLKey() const
+std::uint32_t pMR::Verbs::MemoryRegion::getLKey() const
 {
     return {mMemoryRegion->lkey};
 }
 
-std::uint32_t pMR::verbs::MemoryRegion::getRKey() const
+std::uint32_t pMR::Verbs::MemoryRegion::getRKey() const
 {
     return {mMemoryRegion->rkey};
 }
 
-std::uint32_t pMR::verbs::MemoryRegion::getLength() const
+std::uint32_t pMR::Verbs::MemoryRegion::getLength() const
 {
     return {static_cast<std::uint32_t>(mMemoryRegion->length)};
 }
 
-void pMR::verbs::MemoryRegion::registerMemoryRegion(
+void pMR::Verbs::MemoryRegion::registerMemoryRegion(
     ProtectionDomain &protectionDomain, void *buffer, std::uint32_t const size,
     int const access)
 {

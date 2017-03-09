@@ -19,7 +19,7 @@
 #include "../../backends/mpi/threadsupport.hpp"
 #include "connection.hpp"
 
-pMR::mpi::SendMemoryWindow::SendMemoryWindow(
+pMR::MPI::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     int const sizeByte)
     : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
@@ -32,13 +32,13 @@ pMR::mpi::SendMemoryWindow::SendMemoryWindow(
     }
     else
     {
-        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+        std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
         initSend();
     }
 #endif // MPI_PERSISTENT
 }
 
-pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
+pMR::MPI::SendMemoryWindow::~SendMemoryWindow()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
         cThreadLevel <= ThreadLevel::Serialized)
@@ -47,16 +47,16 @@ pMR::mpi::SendMemoryWindow::~SendMemoryWindow()
     }
     else
     {
-        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+        std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
         freeRequest();
     }
 }
 
-void pMR::mpi::SendMemoryWindow::init()
+void pMR::MPI::SendMemoryWindow::init()
 {
 }
 
-void pMR::mpi::SendMemoryWindow::post(int const sizeByte)
+void pMR::MPI::SendMemoryWindow::post(int const sizeByte)
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
         cThreadLevel <= ThreadLevel::Serialized)
@@ -65,12 +65,12 @@ void pMR::mpi::SendMemoryWindow::post(int const sizeByte)
     }
     else
     {
-        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+        std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
         send({sizeByte});
     }
 }
 
-void pMR::mpi::SendMemoryWindow::wait()
+void pMR::MPI::SendMemoryWindow::wait()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
         cThreadLevel <= ThreadLevel::Serialized)
@@ -85,7 +85,7 @@ void pMR::mpi::SendMemoryWindow::wait()
         int flag = static_cast<int>(false);
         while(!flag)
         {
-            std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+            std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
             if(MPI_Test(&mRequest, &flag, MPI_STATUS_IGNORE) != MPI_SUCCESS)
             {
                 throw std::runtime_error("pMR: Unable to (test) send data.");
@@ -95,7 +95,7 @@ void pMR::mpi::SendMemoryWindow::wait()
 }
 
 #ifdef MPI_PERSISTENT
-void pMR::mpi::SendMemoryWindow::initSend()
+void pMR::MPI::SendMemoryWindow::initSend()
 {
     if(MPI_Send_init(mBuffer, {mSizeByte}, MPI_BYTE,
            {mConnection->getTargetRank()}, {mConnection->getSendTag()},
@@ -106,7 +106,7 @@ void pMR::mpi::SendMemoryWindow::initSend()
 }
 #endif // MPI_PERSISTENT
 
-void pMR::mpi::SendMemoryWindow::send(int const sizeByte)
+void pMR::MPI::SendMemoryWindow::send(int const sizeByte)
 {
 #ifdef MPI_PERSISTENT
     if(MPI_Start(&mRequest) != MPI_SUCCESS)
@@ -120,7 +120,7 @@ void pMR::mpi::SendMemoryWindow::send(int const sizeByte)
     }
 }
 
-void pMR::mpi::SendMemoryWindow::freeRequest()
+void pMR::MPI::SendMemoryWindow::freeRequest()
 {
     if(mRequest != MPI_REQUEST_NULL)
     {

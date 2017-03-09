@@ -19,7 +19,7 @@
 #include "psm2.hpp"
 #include "uuid.hpp"
 
-pMR::psm2::Endpoint::Endpoint()
+pMR::PSM2::Endpoint::Endpoint()
 {
     Options options;
     options.setAffinity(PSM2_EP_OPEN_AFFINITY_SKIP);
@@ -34,7 +34,7 @@ pMR::psm2::Endpoint::Endpoint()
     }
 }
 
-pMR::psm2::Endpoint::~Endpoint()
+pMR::PSM2::Endpoint::~Endpoint()
 {
     if(psm2_ep_close(mEndpoint, PSM2_EP_CLOSE_GRACEFUL, cEndpointCloseTimeout))
     {
@@ -42,27 +42,27 @@ pMR::psm2::Endpoint::~Endpoint()
     }
 }
 
-psm2_ep_t pMR::psm2::Endpoint::get() const
+psm2_ep_t pMR::PSM2::Endpoint::get() const
 {
     return mEndpoint;
 }
 
-std::uint64_t pMR::psm2::Endpoint::getNetworkID()
+std::uint64_t pMR::PSM2::Endpoint::getNetworkID()
 {
     return {psm2_epid_nid(mEndpointID)};
 }
 
-std::uint64_t pMR::psm2::Endpoint::getContext()
+std::uint64_t pMR::PSM2::Endpoint::getContext()
 {
     return {psm2_epid_context(mEndpointID)};
 }
 
-psm2_epid_t pMR::psm2::Endpoint::getID() const
+psm2_epid_t pMR::PSM2::Endpoint::getID() const
 {
     return mEndpointID;
 }
 
-psm2_epaddr_t pMR::psm2::Endpoint::connect(psm2_epid_t const remoteEndpointID)
+psm2_epaddr_t pMR::PSM2::Endpoint::connect(psm2_epid_t const remoteEndpointID)
 {
     psm2_epconn_t endpointConnection;
     if(psm2_ep_epid_lookup(remoteEndpointID, &endpointConnection) == PSM2_OK)

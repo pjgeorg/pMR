@@ -15,23 +15,23 @@
 #include "recvmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::self::RecvMemoryWindow::RecvMemoryWindow(
+pMR::Self::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
 {
 }
 
-void pMR::self::RecvMemoryWindow::init()
+void pMR::Self::RecvMemoryWindow::init()
 {
     mConnection->postAddress(mBuffer, {mSizeByte});
 }
 
-void pMR::self::RecvMemoryWindow::post()
+void pMR::Self::RecvMemoryWindow::post()
 {
 }
 
-void pMR::self::RecvMemoryWindow::wait()
+void pMR::Self::RecvMemoryWindow::wait()
 {
     mConnection->pollNotify();
 }

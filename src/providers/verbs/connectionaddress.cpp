@@ -21,26 +21,26 @@
 #include "queuepair.hpp"
 #include "verbs.hpp"
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
     Context &context, Endpoint const &endpoint, std::uint8_t const portNumber)
     : ConnectionAddress(context, endpoint.getQueuePair(), {portNumber})
 {
 }
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
     Context &context, QueuePair const &queuePair, std::uint8_t const portNumber)
     : mQPN{queuePair.getQPN()}, mGID{context, portNumber}
 {
     mLID = {PortAttributes(context, portNumber).getLID()};
 }
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
     ConnectionAddress const &connectionAddress, Endpoint const &endpoint)
     : ConnectionAddress(connectionAddress, endpoint.getQueuePair())
 {
 }
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
     ConnectionAddress const &connectionAddress, QueuePair const &queuePair)
     : mQPN{queuePair.getQPN()}
     , mGID{connectionAddress.getGID()}
@@ -48,53 +48,53 @@ pMR::verbs::ConnectionAddress::ConnectionAddress(
 {
 }
 
-void pMR::verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
+void pMR::Verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
 {
     mQPN = {QPN};
 }
 
-void pMR::verbs::ConnectionAddress::setLID(std::uint16_t const LID)
+void pMR::Verbs::ConnectionAddress::setLID(std::uint16_t const LID)
 {
     mLID = {LID};
 }
 
-void pMR::verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
+void pMR::Verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
 {
     mGID.setGUID(GUID);
 }
 
-void pMR::verbs::ConnectionAddress::setSubnetPrefix(
+void pMR::Verbs::ConnectionAddress::setSubnetPrefix(
     std::uint64_t const subnetPrefix)
 {
     mGID.setSubnetPrefix({subnetPrefix});
 }
 
-std::uint32_t pMR::verbs::ConnectionAddress::getQPN() const
+std::uint32_t pMR::Verbs::ConnectionAddress::getQPN() const
 {
     return {mQPN};
 }
 
-std::uint16_t pMR::verbs::ConnectionAddress::getLID() const
+std::uint16_t pMR::Verbs::ConnectionAddress::getLID() const
 {
     return {mLID};
 }
 
-ibv_gid pMR::verbs::ConnectionAddress::getGID() const
+ibv_gid pMR::Verbs::ConnectionAddress::getGID() const
 {
     return mGID.get();
 }
 
-std::uint64_t pMR::verbs::ConnectionAddress::getGUID() const
+std::uint64_t pMR::Verbs::ConnectionAddress::getGUID() const
 {
     return {mGID.getGUID()};
 }
 
-std::uint64_t pMR::verbs::ConnectionAddress::getSubnetPrefix() const
+std::uint64_t pMR::Verbs::ConnectionAddress::getSubnetPrefix() const
 {
     return {mGID.getSubnetPrefix()};
 }
 
-void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,
+void pMR::Verbs::exchangeConnectionAddress(pMR::Target const &target,
     ConnectionAddress const &originActiveAddress,
     ConnectionAddress const &originPassiveAddress,
     ConnectionAddress &targetActiveAddress,
@@ -107,7 +107,7 @@ void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,
     };
     decltype(sendBuffer) recvBuffer;
 
-    pMR::backend::exchange(target, sendBuffer, recvBuffer);
+    pMR::Backend::exchange(target, sendBuffer, recvBuffer);
 
     targetActiveAddress.setQPN(std::get<0>(recvBuffer));
     targetActiveAddress.setLID(std::get<1>(recvBuffer));

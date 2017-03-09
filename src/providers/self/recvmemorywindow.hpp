@@ -20,7 +20,7 @@
 
 namespace pMR
 {
-    namespace self
+    namespace Self
     {
         class Connection;
 

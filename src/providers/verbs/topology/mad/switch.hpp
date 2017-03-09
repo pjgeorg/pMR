@@ -19,9 +19,9 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
-        namespace mad
+        namespace MAD
         {
             class SwitchLID : public MAD
             {

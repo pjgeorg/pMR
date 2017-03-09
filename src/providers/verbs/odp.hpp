@@ -18,7 +18,7 @@
 #ifdef VERBS_ODP
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         class ODP
         {

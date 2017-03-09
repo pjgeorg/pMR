@@ -19,7 +19,7 @@ extern "C" {
 }
 #include "../../arch/processor.hpp"
 
-pMR::ofi::CompletionQueue::~CompletionQueue()
+pMR::OFI::CompletionQueue::~CompletionQueue()
 {
     if(mCompletionQueue)
     {
@@ -27,17 +27,17 @@ pMR::ofi::CompletionQueue::~CompletionQueue()
     }
 }
 
-fid_cq *pMR::ofi::CompletionQueue::get()
+fid_cq *pMR::OFI::CompletionQueue::get()
 {
     return mCompletionQueue;
 }
 
-fid_cq const *pMR::ofi::CompletionQueue::get() const
+fid_cq const *pMR::OFI::CompletionQueue::get() const
 {
     return mCompletionQueue;
 }
 
-void pMR::ofi::CompletionQueue::open(
+void pMR::OFI::CompletionQueue::open(
     Domain &domain, std::size_t const size, fi_cq_format const format)
 {
     fi_cq_attr attr = {};
@@ -53,7 +53,7 @@ void pMR::ofi::CompletionQueue::open(
     }
 }
 
-void pMR::ofi::CompletionQueue::poll(void *entry)
+void pMR::OFI::CompletionQueue::poll(void *entry)
 {
 #ifdef OFI_POLL_SPIN
     decltype(fi_cq_read(mCompletionQueue, entry, 1)) ret;
@@ -77,13 +77,13 @@ void pMR::ofi::CompletionQueue::poll(void *entry)
     }
 }
 
-pMR::ofi::CompletionQueueContext::CompletionQueueContext(
+pMR::OFI::CompletionQueueContext::CompletionQueueContext(
     Domain &domain, std::size_t size)
 {
     open(domain, size, FI_CQ_FORMAT_CONTEXT);
 }
 
-std::uintptr_t pMR::ofi::CompletionQueueContext::poll()
+std::uintptr_t pMR::OFI::CompletionQueueContext::poll()
 {
     fi_cq_entry entry;
 
@@ -92,13 +92,13 @@ std::uintptr_t pMR::ofi::CompletionQueueContext::poll()
     return {reinterpret_cast<std::uintptr_t>(entry.op_context)};
 }
 
-pMR::ofi::CompletionQueueData::CompletionQueueData(
+pMR::OFI::CompletionQueueData::CompletionQueueData(
     Domain &domain, std::size_t size)
 {
     open(domain, size, FI_CQ_FORMAT_DATA);
 }
 
-std::pair<std::uintptr_t, std::uint64_t> pMR::ofi::CompletionQueueData::poll()
+std::pair<std::uintptr_t, std::uint64_t> pMR::OFI::CompletionQueueData::poll()
 {
     fi_cq_data_entry entry;
 

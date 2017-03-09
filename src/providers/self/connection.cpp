@@ -23,7 +23,7 @@
 #include "../../misc/print.hpp"
 #endif // SELF_WARN
 
-pMR::self::Connection::Connection(Target const &target)
+pMR::Self::Connection::Connection(Target const &target)
 {
 #ifdef SELF_WARN
     print("pMR: Using provider self.");
@@ -36,14 +36,14 @@ pMR::self::Connection::Connection(Target const &target)
     std::get<1>(originAddress) = {
         reinterpret_cast<std::uintptr_t>(&mDestinationSizeByte)};
 
-    backend::exchange(target, originAddress, targetAddress);
+    Backend::exchange(target, originAddress, targetAddress);
 
     mRemoteBuffer = reinterpret_cast<void **>(std::get<0>(targetAddress));
     mRemoteSizeByte = {
         reinterpret_cast<std::size_t *>(std::get<1>(targetAddress))};
 }
 
-void pMR::self::Connection::postAddress(
+void pMR::Self::Connection::postAddress(
     void *const buffer, std::size_t const sizeByte)
 {
     if(sizeByte == 0)
@@ -58,7 +58,7 @@ void pMR::self::Connection::postAddress(
     *mRemoteSizeByte = {sizeByte};
 }
 
-void pMR::self::Connection::pollAddress() const
+void pMR::Self::Connection::pollAddress() const
 {
     while(mDestinationBuffer == nullptr)
     {
@@ -66,20 +66,20 @@ void pMR::self::Connection::pollAddress() const
     }
 }
 
-void pMR::self::Connection::sendData(
+void pMR::Self::Connection::sendData(
     void *const buffer, std::size_t const sizeByte)
 {
     checkBufferSizeByte({sizeByte});
     std::memcpy(mDestinationBuffer, buffer, {sizeByte});
 }
 
-void pMR::self::Connection::postNotify()
+void pMR::Self::Connection::postNotify()
 {
     mDestinationBuffer = nullptr;
     mDestinationSizeByte = 0;
 }
 
-void pMR::self::Connection::pollNotify() const
+void pMR::Self::Connection::pollNotify() const
 {
     while(*mRemoteBuffer != nullptr)
     {
@@ -87,7 +87,7 @@ void pMR::self::Connection::pollNotify() const
     }
 }
 
-void pMR::self::Connection::checkBufferSizeByte(
+void pMR::Self::Connection::checkBufferSizeByte(
     std::size_t const sizeByte) const
 {
     if(mDestinationSizeByte < sizeByte)

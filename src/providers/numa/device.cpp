@@ -18,7 +18,7 @@
 #include <stdexcept>
 #include "numa.hpp"
 
-int pMR::numa::getNode(std::string const devicePath)
+int pMR::NUMA::getNode(std::string const devicePath)
 {
     checkAvailable();
 

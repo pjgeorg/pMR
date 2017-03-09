@@ -15,23 +15,23 @@
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::psm2::SendMemoryWindow::SendMemoryWindow(
+pMR::PSM2::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::uint32_t const sizeByte)
     : mConnection(connection), mBuffer(buffer)
 {
 }
 
-void pMR::psm2::SendMemoryWindow::init()
+void pMR::PSM2::SendMemoryWindow::init()
 {
 }
 
-void pMR::psm2::SendMemoryWindow::post(std::uint32_t const sizeByte)
+void pMR::PSM2::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
     mConnection->postSend(mBuffer, {sizeByte});
 }
 
-void pMR::psm2::SendMemoryWindow::wait()
+void pMR::PSM2::SendMemoryWindow::wait()
 {
     mConnection->pollSend();
 }

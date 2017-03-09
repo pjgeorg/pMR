@@ -15,7 +15,7 @@
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::cma::SendMemoryWindow::SendMemoryWindow(
+pMR::CMA::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection)
@@ -24,17 +24,17 @@ pMR::cma::SendMemoryWindow::SendMemoryWindow(
     mBuffer.iov_len = {sizeByte};
 }
 
-void pMR::cma::SendMemoryWindow::init()
+void pMR::CMA::SendMemoryWindow::init()
 {
 }
 
-void pMR::cma::SendMemoryWindow::post(std::size_t const sizeByte)
+void pMR::CMA::SendMemoryWindow::post(std::size_t const sizeByte)
 {
     mConnection->pollNotifySend();
     mConnection->sendData(mBuffer, {sizeByte});
     mConnection->postNotifyRecv();
 }
 
-void pMR::cma::SendMemoryWindow::wait()
+void pMR::CMA::SendMemoryWindow::wait()
 {
 }

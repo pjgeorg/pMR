@@ -19,7 +19,7 @@
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         constexpr int cVersionMajor = 1;
         constexpr int cVersionMinor = 3;

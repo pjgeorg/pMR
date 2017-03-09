@@ -21,7 +21,7 @@ namespace pMR
 {
     class Target;
 
-    namespace self
+    namespace Self
     {
         class Connection
         {

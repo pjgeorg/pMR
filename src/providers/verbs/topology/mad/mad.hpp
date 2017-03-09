@@ -30,9 +30,9 @@ extern "C" {
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
-        namespace mad
+        namespace MAD
         {
             class MAD
             {

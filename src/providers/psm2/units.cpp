@@ -19,7 +19,7 @@ extern "C" {
 }
 #include "error.hpp"
 
-std::uint32_t pMR::psm2::getNumberOfUnits()
+std::uint32_t pMR::PSM2::getNumberOfUnits()
 {
     std::uint32_t devices;
 

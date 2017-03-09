@@ -15,7 +15,7 @@
 #include "process.hpp"
 #include "cpu.hpp"
 
-int pMR::numa::getNode()
+int pMR::NUMA::getNode()
 {
     return {getNode({getCPU()})};
 }

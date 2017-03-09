@@ -18,7 +18,7 @@ extern "C" {
 #include <mpi.h>
 }
 
-pMR::backend::ThreadSupport::ThreadSupport()
+pMR::Backend::ThreadSupport::ThreadSupport()
 {
     if(sLevel == ThreadLevel::Unknown)
     {
@@ -49,12 +49,12 @@ pMR::backend::ThreadSupport::ThreadSupport()
     }
 }
 
-enum pMR::ThreadLevel pMR::backend::ThreadSupport::getLevel() const
+enum pMR::ThreadLevel pMR::Backend::ThreadSupport::getLevel() const
 {
     return {sLevel};
 }
 
-std::mutex pMR::backend::ThreadSupport::Mutex;
+std::mutex pMR::Backend::ThreadSupport::Mutex;
 
-enum pMR::ThreadLevel pMR::backend::ThreadSupport::sLevel =
+enum pMR::ThreadLevel pMR::Backend::ThreadSupport::sLevel =
     pMR::ThreadLevel::Unknown;

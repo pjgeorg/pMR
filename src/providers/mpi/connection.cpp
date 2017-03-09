@@ -17,10 +17,10 @@
 #include "../../backends/mpi/target.hpp"
 #include "../../backends/mpi/threadsupport.hpp"
 
-pMR::mpi::Connection::Connection(Target const &target)
+pMR::MPI::Connection::Connection(Target const &target)
     : mCommunicator{target.getMPICommunicator()}
     , mTargetRank{target.getTargetRank()}
-    , mThreadLevel{backend::ThreadSupport().getLevel()}
+    , mThreadLevel{Backend::ThreadSupport().getLevel()}
 {
     mSendTag = {static_cast<int>(reinterpret_cast<std::intptr_t>(this) %
 #ifdef MPI_TAG_NARROW
@@ -30,30 +30,30 @@ pMR::mpi::Connection::Connection(Target const &target)
 #endif // MPI_TAG_NARROW
 
     // Exchange a (hopefully) unique message tag with remote
-    backend::exchange(target, mSendTag, mRecvTag);
+    Backend::exchange(target, mSendTag, mRecvTag);
 }
 
-MPI_Comm pMR::mpi::Connection::getCommunicator() const
+MPI_Comm pMR::MPI::Connection::getCommunicator() const
 {
     return {mCommunicator};
 }
 
-int pMR::mpi::Connection::getTargetRank() const
+int pMR::MPI::Connection::getTargetRank() const
 {
     return {mTargetRank};
 }
 
-int pMR::mpi::Connection::getSendTag() const
+int pMR::MPI::Connection::getSendTag() const
 {
     return {mSendTag};
 }
 
-int pMR::mpi::Connection::getRecvTag() const
+int pMR::MPI::Connection::getRecvTag() const
 {
     return {mRecvTag};
 }
 
-enum pMR::ThreadLevel pMR::mpi::Connection::getThreadLevel() const
+enum pMR::ThreadLevel pMR::MPI::Connection::getThreadLevel() const
 {
     return {mThreadLevel};
 }

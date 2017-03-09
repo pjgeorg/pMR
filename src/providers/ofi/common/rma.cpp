@@ -14,7 +14,7 @@
 
 #include "rma.hpp"
 
-pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion,
+pMR::OFI::RMA::RMA(MemoryRegion &memoryRegion,
     MemoryAddress const &remoteMemoryAddress, fi_context *context,
     std::uint64_t const data, fi_addr_t const address)
     : RMA(memoryRegion, memoryRegion.getLength(), remoteMemoryAddress, context,
@@ -22,7 +22,7 @@ pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion,
 {
 }
 
-pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
+pMR::OFI::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     MemoryAddress const &remoteMemoryAddress, fi_context *context,
     std::uint64_t const data, fi_addr_t const address)
 {
@@ -68,17 +68,17 @@ pMR::ofi::RMA::RMA(MemoryRegion &memoryRegion, std::size_t const sizeByte,
     mRMA.data = {data};
 }
 
-fi_msg_rma *pMR::ofi::RMA::get()
+fi_msg_rma *pMR::OFI::RMA::get()
 {
     return &mRMA;
 }
 
-fi_msg_rma const *pMR::ofi::RMA::get() const
+fi_msg_rma const *pMR::OFI::RMA::get() const
 {
     return &mRMA;
 }
 
-std::size_t pMR::ofi::RMA::getLength() const
+std::size_t pMR::OFI::RMA::getLength() const
 {
     return {mIOV.iov_len};
 }

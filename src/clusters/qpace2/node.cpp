@@ -14,15 +14,14 @@
 
 #include "node.hpp"
 #include "../../providers/scif/topology.hpp"
-#include "../../providers/verbs/topology.hpp"
 
-pMR::Node::Node(pMR::verbs::Device const &device)
+pMR::Node::Node(pMR::Verbs::Device const &device)
 {
-    verbs::Context context(device);
-    mNodeGUID = {verbs::getNodeGUID(context)};
-    std::get<0>(mSwitchLID) = {verbs::getSwitchLID(context, 1)};
-    std::get<1>(mSwitchLID) = {verbs::getSwitchLID(context, 2)};
-    mSCIFNodeID = {scif::getNodeID()};
+    Verbs::Context context(device);
+    mNodeGUID = {Verbs::getNodeGUID(context)};
+    std::get<0>(mSwitchLID) = {Verbs::getSwitchLID(context, 1)};
+    std::get<1>(mSwitchLID) = {Verbs::getSwitchLID(context, 2)};
+    mSCIFNodeID = {SCIF::getNodeID()};
 }
 
 pMR::Node::Node(std::array<std::uint64_t, 4> const &flat)

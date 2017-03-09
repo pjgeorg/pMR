@@ -23,7 +23,7 @@ extern "C" {
 #include "../../misc/print.hpp"
 #include "../../misc/string.hpp"
 
-pMR::scif::Endpoint::Endpoint() : mEndpoint(scif_open())
+pMR::SCIF::Endpoint::Endpoint() : mEndpoint(scif_open())
 {
     if(mEndpoint == static_cast<scif_epd_t>(-1))
     {
@@ -32,7 +32,7 @@ pMR::scif::Endpoint::Endpoint() : mEndpoint(scif_open())
     }
 }
 
-pMR::scif::Endpoint::~Endpoint()
+pMR::SCIF::Endpoint::~Endpoint()
 {
     if(scif_close(mEndpoint) == -1)
     {
@@ -40,17 +40,17 @@ pMR::scif::Endpoint::~Endpoint()
     }
 }
 
-scif_epd_t &pMR::scif::Endpoint::get()
+scif_epd_t &pMR::SCIF::Endpoint::get()
 {
     return {mEndpoint};
 }
 
-scif_epd_t const &pMR::scif::Endpoint::get() const
+scif_epd_t const &pMR::SCIF::Endpoint::get() const
 {
     return {mEndpoint};
 }
 
-pMR::scif::Address pMR::scif::Endpoint::bind(std::uint16_t const port)
+pMR::SCIF::Address pMR::SCIF::Endpoint::bind(std::uint16_t const port)
 {
     auto boundPort = scif_bind(mEndpoint, port);
 
@@ -63,7 +63,7 @@ pMR::scif::Address pMR::scif::Endpoint::bind(std::uint16_t const port)
     return Address({static_cast<std::uint16_t>(boundPort)});
 }
 
-void pMR::scif::Endpoint::listen()
+void pMR::SCIF::Endpoint::listen()
 {
     if(scif_listen(mEndpoint, 1) == -1)
     {
@@ -73,7 +73,7 @@ void pMR::scif::Endpoint::listen()
     }
 }
 
-bool pMR::scif::Endpoint::connect(Address &address, bool blocking)
+bool pMR::SCIF::Endpoint::connect(Address &address, bool blocking)
 {
     setFileDescriptorBlocking(blocking);
 
@@ -97,7 +97,7 @@ bool pMR::scif::Endpoint::connect(Address &address, bool blocking)
     }
 }
 
-pMR::scif::PeerEndpoint pMR::scif::Endpoint::accept(
+pMR::SCIF::PeerEndpoint pMR::SCIF::Endpoint::accept(
     Address const &address, bool const blocking)
 {
     Address peerAddress;
@@ -131,7 +131,7 @@ pMR::scif::PeerEndpoint pMR::scif::Endpoint::accept(
     }
 }
 
-void pMR::scif::Endpoint::setFileDescriptorBlocking(bool const blocking)
+void pMR::SCIF::Endpoint::setFileDescriptorBlocking(bool const blocking)
 {
     auto fd = scif_get_fd(mEndpoint);
 

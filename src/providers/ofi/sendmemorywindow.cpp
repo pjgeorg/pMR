@@ -15,7 +15,7 @@
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::ofi::SendMemoryWindow::SendMemoryWindow(
+pMR::OFI::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection)
@@ -29,11 +29,11 @@ pMR::ofi::SendMemoryWindow::SendMemoryWindow(
     mConnection->checkMessageSize({sizeByte});
 }
 
-void pMR::ofi::SendMemoryWindow::init()
+void pMR::OFI::SendMemoryWindow::init()
 {
 }
 
-void pMR::ofi::SendMemoryWindow::post(std::size_t const sizeByte)
+void pMR::OFI::SendMemoryWindow::post(std::size_t const sizeByte)
 {
 #ifndef OFI_NO_CONTROL
     mConnection->pollActiveRecv();
@@ -60,7 +60,7 @@ void pMR::ofi::SendMemoryWindow::post(std::size_t const sizeByte)
 #endif // OFI_RMA
 }
 
-void pMR::ofi::SendMemoryWindow::wait()
+void pMR::OFI::SendMemoryWindow::wait()
 {
     mConnection->pollActiveSend();
 }

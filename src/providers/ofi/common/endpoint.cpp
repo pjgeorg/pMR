@@ -20,7 +20,7 @@ extern "C" {
 #include <rdma/fi_errno.h>
 }
 
-pMR::ofi::Endpoint::Endpoint(Domain &domain, Info &info)
+pMR::OFI::Endpoint::Endpoint(Domain &domain, Info &info)
 {
     if(fi_endpoint(domain.get(), info.get(), &mEndpoint, &mContext))
     {
@@ -28,7 +28,7 @@ pMR::ofi::Endpoint::Endpoint(Domain &domain, Info &info)
     }
 }
 
-pMR::ofi::Endpoint::~Endpoint()
+pMR::OFI::Endpoint::~Endpoint()
 {
     if(mEndpoint)
     {
@@ -36,17 +36,17 @@ pMR::ofi::Endpoint::~Endpoint()
     }
 }
 
-fid_ep *pMR::ofi::Endpoint::get()
+fid_ep *pMR::OFI::Endpoint::get()
 {
     return mEndpoint;
 }
 
-fid_ep const *pMR::ofi::Endpoint::get() const
+fid_ep const *pMR::OFI::Endpoint::get() const
 {
     return mEndpoint;
 }
 
-void pMR::ofi::Endpoint::bind(AddressVector &av)
+void pMR::OFI::Endpoint::bind(AddressVector &av)
 {
     if(fi_ep_bind(mEndpoint, &av.get()->fid, 0))
     {
@@ -54,7 +54,7 @@ void pMR::ofi::Endpoint::bind(AddressVector &av)
     }
 }
 
-void pMR::ofi::Endpoint::bind(CompletionQueue &queue, std::uint64_t flags)
+void pMR::OFI::Endpoint::bind(CompletionQueue &queue, std::uint64_t flags)
 {
     if(fi_ep_bind(mEndpoint, &queue.get()->fid, {flags}))
     {
@@ -62,7 +62,7 @@ void pMR::ofi::Endpoint::bind(CompletionQueue &queue, std::uint64_t flags)
     }
 }
 
-void pMR::ofi::Endpoint::bind(EventQueue &queue)
+void pMR::OFI::Endpoint::bind(EventQueue &queue)
 {
     if(fi_ep_bind(mEndpoint, &queue.get()->fid, 0))
     {
@@ -70,7 +70,7 @@ void pMR::ofi::Endpoint::bind(EventQueue &queue)
     }
 }
 
-void pMR::ofi::Endpoint::enable()
+void pMR::OFI::Endpoint::enable()
 {
     if(fi_enable(mEndpoint))
     {
@@ -78,7 +78,7 @@ void pMR::ofi::Endpoint::enable()
     }
 }
 
-void pMR::ofi::Endpoint::connect(std::vector<std::uint8_t> const &address)
+void pMR::OFI::Endpoint::connect(std::vector<std::uint8_t> const &address)
 {
     if(fi_connect(mEndpoint, address.data(), NULL, 0))
     {
@@ -86,7 +86,7 @@ void pMR::ofi::Endpoint::connect(std::vector<std::uint8_t> const &address)
     }
 }
 
-void pMR::ofi::Endpoint::accept()
+void pMR::OFI::Endpoint::accept()
 {
     if(fi_accept(mEndpoint, NULL, 0))
     {
@@ -94,7 +94,7 @@ void pMR::ofi::Endpoint::accept()
     }
 }
 
-std::vector<std::uint8_t> pMR::ofi::Endpoint::getAddress() const
+std::vector<std::uint8_t> pMR::OFI::Endpoint::getAddress() const
 {
     std::vector<std::uint8_t> address;
     std::size_t size = 0;
@@ -114,7 +114,7 @@ std::vector<std::uint8_t> pMR::ofi::Endpoint::getAddress() const
     return address;
 }
 
-std::vector<std::uint8_t> pMR::ofi::Endpoint::getPeerAddress() const
+std::vector<std::uint8_t> pMR::OFI::Endpoint::getPeerAddress() const
 {
     std::vector<std::uint8_t> address;
     std::size_t size = 0;
@@ -134,7 +134,7 @@ std::vector<std::uint8_t> pMR::ofi::Endpoint::getPeerAddress() const
     return address;
 }
 
-void pMR::ofi::Endpoint::setAddress(std::vector<std::uint8_t> address)
+void pMR::OFI::Endpoint::setAddress(std::vector<std::uint8_t> address)
 {
     if(fi_setname(&mEndpoint->fid, address.data(), {address.size()}))
     {

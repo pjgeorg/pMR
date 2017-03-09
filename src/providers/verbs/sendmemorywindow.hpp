@@ -21,7 +21,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         class Connection;
 

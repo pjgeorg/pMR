@@ -17,7 +17,7 @@
 #include "../../misc/singleton.hpp"
 #include "../ofi.hpp"
 
-pMR::ofi::Connection::Connection(Target const &target, Info info)
+pMR::OFI::Connection::Connection(Target const &target, Info info)
     : mEndpoint(&Singleton<GlobalEndpoint>::Instance(info))
     , mActiveEndpoint(mEndpoint)
     , mPassiveEndpoint(mEndpoint)
@@ -45,9 +45,9 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
     auto activeRemoteID = activeID;
     auto passiveRemoteID = passiveID;
 
-    backend::exchange(target, localAddress, peerAddress);
-    backend::exchange(target, activeID, passiveRemoteID);
-    backend::exchange(target, passiveID, activeRemoteID);
+    Backend::exchange(target, localAddress, peerAddress);
+    Backend::exchange(target, activeID, passiveRemoteID);
+    Backend::exchange(target, passiveID, activeRemoteID);
 
     mPeerAddress = {mEndpoint->addPeer(peerAddress)};
     mActiveEndpoint.setRemoteID(activeRemoteID);
@@ -69,62 +69,62 @@ pMR::ofi::Connection::Connection(Target const &target, Info info)
 
 #ifdef OFI_RMA_CONTROL
     MemoryAddress localMemoryAddress(mRemoteTargetMemoryRegion);
-    backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
+    Backend::exchange(target, localMemoryAddress, mRemoteMemoryAddress);
 #ifdef OFI_RMA_EVENT
     mRemoteTargetMemoryRegion.bind(mCounter);
 #endif // OFI_RMA_EVENT
 #else
-    backend::sync(target);
+    Backend::sync(target);
 #endif // OFI_RMA_CONTROL
 }
 
-pMR::ofi::Domain &pMR::ofi::Connection::getDomain()
+pMR::OFI::Domain &pMR::OFI::Connection::getDomain()
 {
     return mEndpoint->getDomain();
 }
 
-pMR::ofi::Domain const &pMR::ofi::Connection::getDomain() const
+pMR::OFI::Domain const &pMR::OFI::Connection::getDomain() const
 {
     return mEndpoint->getDomain();
 }
 
-void pMR::ofi::Connection::checkMessageSize(std::size_t size) const
+void pMR::OFI::Connection::checkMessageSize(std::size_t size) const
 {
     return mEndpoint->checkMessageSize(size);
 }
 
-void pMR::ofi::Connection::postSendToActive(
+void pMR::OFI::Connection::postSendToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
     postSend(mActiveEndpoint, memoryRegion, {sizeByte});
 }
 
-void pMR::ofi::Connection::postSendToPassive()
+void pMR::OFI::Connection::postSendToPassive()
 {
     postSend(mPassiveEndpoint);
 }
 
-void pMR::ofi::Connection::postRecvToActive()
+void pMR::OFI::Connection::postRecvToActive()
 {
     postRecv(mActiveEndpoint);
 }
 
-void pMR::ofi::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
+void pMR::OFI::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
 {
     postRecv(mPassiveEndpoint, memoryRegion);
 }
 
-void pMR::ofi::Connection::postRecvToPassive()
+void pMR::OFI::Connection::postRecvToPassive()
 {
     postRecv(mPassiveEndpoint);
 }
 
-void pMR::ofi::Connection::pollActiveSend()
+void pMR::OFI::Connection::pollActiveSend()
 {
     mActiveEndpoint.pollSend();
 }
 
-void pMR::ofi::Connection::pollActiveRecv()
+void pMR::OFI::Connection::pollActiveRecv()
 {
 #if defined OFI_RMA_CONTROL && defined OFI_RMA_EVENT
     mCounter.poll();
@@ -133,42 +133,42 @@ void pMR::ofi::Connection::pollActiveRecv()
 #endif // OFI_RMA_CONTROL && OFI_RMA_EVENT
 }
 
-void pMR::ofi::Connection::pollPassiveSend()
+void pMR::OFI::Connection::pollPassiveSend()
 {
     mPassiveEndpoint.pollSend();
 }
 
-void pMR::ofi::Connection::pollPassiveRecv()
+void pMR::OFI::Connection::pollPassiveRecv()
 {
     mPassiveEndpoint.pollRecv();
 }
 
 #ifdef OFI_RMA
-void pMR::ofi::Connection::setLocalTargetMemoryAddress(
+void pMR::OFI::Connection::setLocalTargetMemoryAddress(
     MemoryRegion const &memoryRegion)
 {
     mLocalTargetMemoryAddress.set(memoryRegion);
 }
 
 #ifdef OFI_RMA_CONTROL
-void pMR::ofi::Connection::postWriteAddressToPassive()
+void pMR::OFI::Connection::postWriteAddressToPassive()
 {
     postWrite(mPassiveEndpoint, mLocalTargetMemoryRegion, mRemoteMemoryAddress);
 }
 
 #else
-void pMR::ofi::Connection::postSendAddressToPassive()
+void pMR::OFI::Connection::postSendAddressToPassive()
 {
     postSend(mPassiveEndpoint, mLocalTargetMemoryRegion);
 }
 
-void pMR::ofi::Connection::postRecvAddressToActive()
+void pMR::OFI::Connection::postRecvAddressToActive()
 {
     postRecv(mActiveEndpoint, mRemoteTargetMemoryRegion);
 }
 #endif // OFI_RMA_CONTROL
 
-void pMR::ofi::Connection::postWriteToActive(
+void pMR::OFI::Connection::postWriteToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
     postWrite(
@@ -176,13 +176,13 @@ void pMR::ofi::Connection::postWriteToActive(
 }
 #endif // OFI_RMA
 
-void pMR::ofi::Connection::postSend(
+void pMR::OFI::Connection::postSend(
     SoftEndpoint &softEndpoint, MemoryRegion &memoryRegion)
 {
     postSend(softEndpoint, memoryRegion, {memoryRegion.getLength()});
 }
 
-void pMR::ofi::Connection::postSend(SoftEndpoint &softEndpoint,
+void pMR::OFI::Connection::postSend(SoftEndpoint &softEndpoint,
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
     Tagged message(memoryRegion, {sizeByte}, softEndpoint.getSendContext(),
@@ -190,20 +190,20 @@ void pMR::ofi::Connection::postSend(SoftEndpoint &softEndpoint,
     postSend(message);
 }
 
-void pMR::ofi::Connection::postSend(SoftEndpoint &softEndpoint)
+void pMR::OFI::Connection::postSend(SoftEndpoint &softEndpoint)
 {
     Tagged message(softEndpoint.getSendContext(), {softEndpoint.getSendTag()},
         {mPeerAddress});
     postSend(message);
 }
 
-void pMR::ofi::Connection::postSend(Tagged &message)
+void pMR::OFI::Connection::postSend(Tagged &message)
 {
     postSendRequest(
         mEndpoint, message, mEndpoint->checkInjectSize({message.getLength()}));
 }
 
-void pMR::ofi::Connection::postRecv(
+void pMR::OFI::Connection::postRecv(
     SoftEndpoint &softEndpoint, MemoryRegion &memoryRegion)
 {
     Tagged message(memoryRegion, softEndpoint.getRecvContext(),
@@ -211,25 +211,25 @@ void pMR::ofi::Connection::postRecv(
     postRecv(message);
 }
 
-void pMR::ofi::Connection::postRecv(SoftEndpoint &softEndpoint)
+void pMR::OFI::Connection::postRecv(SoftEndpoint &softEndpoint)
 {
     Tagged message(softEndpoint.getRecvContext(), {softEndpoint.getRecvTag()},
         {mPeerAddress});
     postRecv(message);
 }
 
-void pMR::ofi::Connection::postRecv(Tagged &message)
+void pMR::OFI::Connection::postRecv(Tagged &message)
 {
     postRecvRequest(mEndpoint, message);
 }
 
-void pMR::ofi::Connection::postWrite(SoftEndpoint &softEndpoint,
+void pMR::OFI::Connection::postWrite(SoftEndpoint &softEndpoint,
     MemoryRegion &memoryRegion, MemoryAddress &target)
 {
     postWrite(softEndpoint, memoryRegion, target, {memoryRegion.getLength()});
 }
 
-void pMR::ofi::Connection::postWrite(SoftEndpoint &softEndpoint,
+void pMR::OFI::Connection::postWrite(SoftEndpoint &softEndpoint,
     MemoryRegion &memoryRegion, MemoryAddress &target,
     std::size_t const sizeByte)
 {
@@ -238,7 +238,7 @@ void pMR::ofi::Connection::postWrite(SoftEndpoint &softEndpoint,
     postWrite(message);
 }
 
-void pMR::ofi::Connection::postWrite(RMA &message)
+void pMR::OFI::Connection::postWrite(RMA &message)
 {
     postWriteRequest(mEndpoint, message,
 #ifndef OFI_RMA_EVENT

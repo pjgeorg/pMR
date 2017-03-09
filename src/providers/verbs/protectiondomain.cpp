@@ -15,7 +15,7 @@
 #include "protectiondomain.hpp"
 #include <stdexcept>
 
-pMR::verbs::ProtectionDomain::ProtectionDomain(Context &context)
+pMR::Verbs::ProtectionDomain::ProtectionDomain(Context &context)
 {
     mProtectionDomain = ibv_alloc_pd(context.get());
 
@@ -25,17 +25,17 @@ pMR::verbs::ProtectionDomain::ProtectionDomain(Context &context)
     }
 }
 
-pMR::verbs::ProtectionDomain::~ProtectionDomain()
+pMR::Verbs::ProtectionDomain::~ProtectionDomain()
 {
     ibv_dealloc_pd(mProtectionDomain);
 }
 
-ibv_pd *pMR::verbs::ProtectionDomain::get()
+ibv_pd *pMR::Verbs::ProtectionDomain::get()
 {
     return mProtectionDomain;
 }
 
-ibv_pd const *pMR::verbs::ProtectionDomain::get() const
+ibv_pd const *pMR::Verbs::ProtectionDomain::get() const
 {
     return mProtectionDomain;
 }

@@ -15,7 +15,7 @@
 #include "recvmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::ofi::RecvMemoryWindow::RecvMemoryWindow(
+pMR::OFI::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection)
@@ -37,7 +37,7 @@ pMR::ofi::RecvMemoryWindow::RecvMemoryWindow(
 #endif // OFI_RMA_EVENT
 }
 
-void pMR::ofi::RecvMemoryWindow::init()
+void pMR::OFI::RecvMemoryWindow::init()
 {
 #ifdef OFI_RMA
 #ifdef OFI_RMA_TARGET_RX
@@ -57,11 +57,11 @@ void pMR::ofi::RecvMemoryWindow::init()
 #endif // OFI_RMA
 }
 
-void pMR::ofi::RecvMemoryWindow::post()
+void pMR::OFI::RecvMemoryWindow::post()
 {
 }
 
-void pMR::ofi::RecvMemoryWindow::wait()
+void pMR::OFI::RecvMemoryWindow::wait()
 {
 #ifndef OFI_NO_CONTROL
     mConnection->pollPassiveSend();

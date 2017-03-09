@@ -22,7 +22,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace mpi
+    namespace MPI
     {
         class Connection;
 

@@ -15,7 +15,7 @@
 #include "recvmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::scif::RecvMemoryWindow::RecvMemoryWindow(
+pMR::SCIF::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection)
@@ -24,16 +24,16 @@ pMR::scif::RecvMemoryWindow::RecvMemoryWindow(
 {
 }
 
-void pMR::scif::RecvMemoryWindow::init()
+void pMR::SCIF::RecvMemoryWindow::init()
 {
     mConnection->postAddress(mMemoryRegion.get());
 }
 
-void pMR::scif::RecvMemoryWindow::post()
+void pMR::SCIF::RecvMemoryWindow::post()
 {
 }
 
-void pMR::scif::RecvMemoryWindow::wait()
+void pMR::SCIF::RecvMemoryWindow::wait()
 {
     mConnection->pollRemoteNotify();
 }

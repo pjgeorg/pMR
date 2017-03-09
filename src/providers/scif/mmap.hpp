@@ -27,7 +27,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace scif
+    namespace SCIF
     {
         template<typename T, typename E>
         T *mmap(E &endpoint, off_t offset, std::size_t const size,
@@ -37,7 +37,7 @@ namespace pMR
 }
 
 template<typename T, typename E>
-T *pMR::scif::mmap(
+T *pMR::SCIF::mmap(
     E &endpoint, off_t const offset, std::size_t const size, int const access)
 {
     auto diff = offset % cGranularity;

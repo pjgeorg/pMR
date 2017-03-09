@@ -15,7 +15,7 @@
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::scif::SendMemoryWindow::SendMemoryWindow(
+pMR::SCIF::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::size_t const sizeByte)
     : mConnection(connection)
@@ -24,16 +24,16 @@ pMR::scif::SendMemoryWindow::SendMemoryWindow(
 {
 }
 
-void pMR::scif::SendMemoryWindow::init()
+void pMR::SCIF::SendMemoryWindow::init()
 {
 }
 
-void pMR::scif::SendMemoryWindow::post(std::size_t const sizeByte)
+void pMR::SCIF::SendMemoryWindow::post(std::size_t const sizeByte)
 {
     mConnection->writeData(mMemoryRegion, {sizeByte});
 }
 
-void pMR::scif::SendMemoryWindow::wait()
+void pMR::SCIF::SendMemoryWindow::wait()
 {
     mConnection->pollLocalNotify();
 }

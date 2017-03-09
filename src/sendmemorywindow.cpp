@@ -58,84 +58,84 @@ pMR::SendMemoryWindow::SendMemoryWindow(
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
-            mCMA = std::unique_ptr<cma::SendMemoryWindow,
-                cma::SendMemoryWindowDeleter>(new cma::SendMemoryWindow(
+            mCMA = std::unique_ptr<CMA::SendMemoryWindow,
+                CMA::SendMemoryWindowDeleter>(new CMA::SendMemoryWindow(
                 connection.mCMA, buffer, {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
-            mMPI = std::unique_ptr<mpi::SendMemoryWindow,
-                mpi::SendMemoryWindowDeleter>(new mpi::SendMemoryWindow(
+            mMPI = std::unique_ptr<MPI::SendMemoryWindow,
+                MPI::SendMemoryWindowDeleter>(new MPI::SendMemoryWindow(
                 connection.mMPI, buffer, {static_cast<int>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
-            mNull = std::unique_ptr<null::SendMemoryWindow,
-                null::SendMemoryWindowDeleter>(new null::SendMemoryWindow(
+            mNull = std::unique_ptr<Null::SendMemoryWindow,
+                Null::SendMemoryWindowDeleter>(new Null::SendMemoryWindow(
                 connection.mNull, buffer, {sizeByte}));
             break;
         }
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
-            mOFI = std::unique_ptr<ofi::SendMemoryWindow,
-                ofi::SendMemoryWindowDeleter>(new ofi::SendMemoryWindow(
+            mOFI = std::unique_ptr<OFI::SendMemoryWindow,
+                OFI::SendMemoryWindowDeleter>(new OFI::SendMemoryWindow(
                 connection.mOFI, buffer, {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
-            mPSM2 = std::unique_ptr<psm2::SendMemoryWindow,
-                psm2::SendMemoryWindowDeleter>(
-                new psm2::SendMemoryWindow(connection.mPSM2, buffer,
+            mPSM2 = std::unique_ptr<PSM2::SendMemoryWindow,
+                PSM2::SendMemoryWindowDeleter>(
+                new PSM2::SendMemoryWindow(connection.mPSM2, buffer,
                     {static_cast<std::uint32_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
-            mSCIF = std::unique_ptr<scif::SendMemoryWindow,
-                scif::SendMemoryWindowDeleter>(
-                new scif::SendMemoryWindow(connection.mSCIF, buffer,
+            mSCIF = std::unique_ptr<SCIF::SendMemoryWindow,
+                SCIF::SendMemoryWindowDeleter>(
+                new SCIF::SendMemoryWindow(connection.mSCIF, buffer,
                     {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
-            mSelf = std::unique_ptr<self::SendMemoryWindow,
-                self::SendMemoryWindowDeleter>(
-                new self::SendMemoryWindow(connection.mSelf, buffer,
+            mSelf = std::unique_ptr<Self::SendMemoryWindow,
+                Self::SendMemoryWindowDeleter>(
+                new Self::SendMemoryWindow(connection.mSelf, buffer,
                     {static_cast<std::size_t>(sizeByte)}));
             break;
         }
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
-            mVerbs = std::unique_ptr<verbs::SendMemoryWindow,
-                verbs::SendMemoryWindowDeleter>(
-                new verbs::SendMemoryWindow(connection.mVerbs, buffer,
+            mVerbs = std::unique_ptr<Verbs::SendMemoryWindow,
+                Verbs::SendMemoryWindowDeleter>(
+                new Verbs::SendMemoryWindow(connection.mVerbs, buffer,
                     {static_cast<std::uint32_t>(sizeByte)}));
             break;
         }
@@ -152,7 +152,7 @@ void pMR::SendMemoryWindow::init()
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
             mCMA->init();
             break;
@@ -160,7 +160,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
             mMPI->init();
             break;
@@ -168,7 +168,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
             mNull->init();
             break;
@@ -176,7 +176,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
             mOFI->init();
             break;
@@ -184,7 +184,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
             mPSM2->init();
             break;
@@ -192,7 +192,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
             mSCIF->init();
             break;
@@ -200,7 +200,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
             mSelf->init();
             break;
@@ -208,7 +208,7 @@ void pMR::SendMemoryWindow::init()
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
             mVerbs->init();
             break;
@@ -232,7 +232,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
             mCMA->post({static_cast<std::size_t>(sizeByte)});
             break;
@@ -240,7 +240,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
             mMPI->post({static_cast<int>(sizeByte)});
             break;
@@ -248,7 +248,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
             mNull->post({sizeByte});
             break;
@@ -256,7 +256,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
             mOFI->post({static_cast<std::size_t>(sizeByte)});
             break;
@@ -264,7 +264,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
             mPSM2->post({static_cast<std::uint32_t>(sizeByte)});
             break;
@@ -272,7 +272,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
             mSCIF->post({static_cast<std::size_t>(sizeByte)});
             break;
@@ -280,7 +280,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
             mSelf->post({static_cast<std::size_t>(sizeByte)});
             break;
@@ -288,7 +288,7 @@ void pMR::SendMemoryWindow::post(size_type const sizeByte)
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
             mVerbs->post({static_cast<std::uint32_t>(sizeByte)});
             break;
@@ -302,7 +302,7 @@ void pMR::SendMemoryWindow::wait()
     switch(mProvider)
     {
 #ifdef pMR_PROVIDER_CMA
-        case Provider::cma:
+        case Provider::CMA:
         {
             mCMA->wait();
             break;
@@ -310,7 +310,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        case Provider::mpi:
+        case Provider::MPI:
         {
             mMPI->wait();
             break;
@@ -318,7 +318,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        case Provider::null:
+        case Provider::Null:
         {
             mNull->wait();
             break;
@@ -326,7 +326,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        case Provider::ofi:
+        case Provider::OFI:
         {
             mOFI->wait();
             break;
@@ -334,7 +334,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        case Provider::psm2:
+        case Provider::PSM2:
         {
             mPSM2->wait();
             break;
@@ -342,7 +342,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        case Provider::scif:
+        case Provider::SCIF:
         {
             mSCIF->wait();
             break;
@@ -350,7 +350,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        case Provider::self:
+        case Provider::Self:
         {
             mSelf->wait();
             break;
@@ -358,7 +358,7 @@ void pMR::SendMemoryWindow::wait()
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        case Provider::verbs:
+        case Provider::Verbs:
         {
             mVerbs->wait();
             break;

@@ -28,7 +28,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         Device getIBAdapter(int const deviceNumber = 1);
         Device getIBAdapter(Devices const &, int const deviceNumber = 1);

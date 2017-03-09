@@ -24,8 +24,8 @@ pMR::Connection::Connection(Target const &target)
 
 void pMR::Connection::connectCMA(Target const &target)
 {
-    mProvider = Provider::cma;
-    mCMA = std::make_shared<cma::Connection>(target);
+    mProvider = Provider::CMA;
+    mCMA = std::make_shared<CMA::Connection>(target);
 }
 #endif // pMR_PROVIDER_CMA
 
@@ -34,8 +34,8 @@ void pMR::Connection::connectCMA(Target const &target)
 
 void pMR::Connection::connectMPI(Target const &target)
 {
-    mProvider = Provider::mpi;
-    mMPI = std::make_shared<mpi::Connection>(target);
+    mProvider = Provider::MPI;
+    mMPI = std::make_shared<MPI::Connection>(target);
 }
 #endif // pMR_PROVIDER_MPI
 
@@ -44,18 +44,18 @@ void pMR::Connection::connectMPI(Target const &target)
 
 void pMR::Connection::connectNull(Target const &target)
 {
-    mProvider = Provider::null;
-    mNull = std::make_shared<null::Connection>(target);
+    mProvider = Provider::Null;
+    mNull = std::make_shared<Null::Connection>(target);
 }
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
 #include "../../providers/ofi/connection.hpp"
 
-void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
+void pMR::Connection::connectOFI(Target const &target, OFI::Info const &info)
 {
-    mProvider = Provider::ofi;
-    mOFI = std::make_shared<ofi::Connection>(target, info);
+    mProvider = Provider::OFI;
+    mOFI = std::make_shared<OFI::Connection>(target, info);
 }
 #endif // pMR_PROVIDER_OFI
 
@@ -64,8 +64,8 @@ void pMR::Connection::connectOFI(Target const &target, ofi::Info const &info)
 
 void pMR::Connection::connectPSM2(Target const &target)
 {
-    mProvider = Provider::psm2;
-    mPSM2 = std::make_shared<psm2::Connection>(target);
+    mProvider = Provider::PSM2;
+    mPSM2 = std::make_shared<PSM2::Connection>(target);
 }
 #endif // pMR_PROVIDER_PSM2
 
@@ -74,8 +74,8 @@ void pMR::Connection::connectPSM2(Target const &target)
 
 void pMR::Connection::connectSCIF(Target const &target)
 {
-    mProvider = Provider::scif;
-    mSCIF = std::make_shared<scif::Connection>(target);
+    mProvider = Provider::SCIF;
+    mSCIF = std::make_shared<SCIF::Connection>(target);
 }
 #endif // pMR_PROVIDER_SCIF
 
@@ -84,8 +84,8 @@ void pMR::Connection::connectSCIF(Target const &target)
 
 void pMR::Connection::connectSelf(Target const &target)
 {
-    mProvider = Provider::self;
-    mSelf = std::make_shared<self::Connection>(target);
+    mProvider = Provider::Self;
+    mSelf = std::make_shared<Self::Connection>(target);
 }
 #endif // pMR_PROVIDER_SELF
 
@@ -93,9 +93,9 @@ void pMR::Connection::connectSelf(Target const &target)
 #include "../../providers/verbs/connection.hpp"
 
 void pMR::Connection::connectVerbs(Target const &target,
-    verbs::Device const &device, std::uint8_t const portNumber)
+    Verbs::Device const &device, std::uint8_t const portNumber)
 {
-    mProvider = Provider::verbs;
-    mVerbs = std::make_shared<verbs::Connection>(target, device, portNumber);
+    mProvider = Provider::Verbs;
+    mVerbs = std::make_shared<Verbs::Connection>(target, device, portNumber);
 }
 #endif // pMR_PROVIDER_VERBS

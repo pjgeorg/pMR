@@ -19,7 +19,7 @@
 
 namespace pMR
 {
-    namespace scif
+    namespace SCIF
     {
         std::uint16_t getNodeID();
     }

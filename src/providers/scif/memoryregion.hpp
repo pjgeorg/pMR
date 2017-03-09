@@ -28,7 +28,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace scif
+    namespace SCIF
     {
         class MemoryRegion
         {

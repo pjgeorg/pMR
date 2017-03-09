@@ -20,7 +20,7 @@
 
 namespace pMR
 {
-    namespace backend
+    namespace Backend
     {
         class ThreadSupport
         {

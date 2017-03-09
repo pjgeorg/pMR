@@ -18,7 +18,7 @@
 #include "../../backends/mpi/threadsupport.hpp"
 #include "connection.hpp"
 
-pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
+pMR::MPI::RecvMemoryWindow::RecvMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     int const sizeByte)
     : mConnection(connection), mBuffer(buffer), mSizeByte{sizeByte}
@@ -31,13 +31,13 @@ pMR::mpi::RecvMemoryWindow::RecvMemoryWindow(
     }
     else
     {
-        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+        std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
         initRecv();
     }
 #endif // MPI_PERSISTENT
 }
 
-pMR::mpi::RecvMemoryWindow::~RecvMemoryWindow()
+pMR::MPI::RecvMemoryWindow::~RecvMemoryWindow()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
         cThreadLevel <= ThreadLevel::Serialized)
@@ -46,12 +46,12 @@ pMR::mpi::RecvMemoryWindow::~RecvMemoryWindow()
     }
     else
     {
-        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+        std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
         freeRequest();
     }
 }
 
-void pMR::mpi::RecvMemoryWindow::init()
+void pMR::MPI::RecvMemoryWindow::init()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
         cThreadLevel <= ThreadLevel::Serialized)
@@ -60,16 +60,16 @@ void pMR::mpi::RecvMemoryWindow::init()
     }
     else
     {
-        std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+        std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
         recv();
     }
 }
 
-void pMR::mpi::RecvMemoryWindow::post()
+void pMR::MPI::RecvMemoryWindow::post()
 {
 }
 
-void pMR::mpi::RecvMemoryWindow::wait()
+void pMR::MPI::RecvMemoryWindow::wait()
 {
     if(mConnection->getThreadLevel() >= ThreadLevel::Multiple ||
         cThreadLevel <= ThreadLevel::Serialized)
@@ -84,7 +84,7 @@ void pMR::mpi::RecvMemoryWindow::wait()
         int flag = static_cast<int>(false);
         while(!flag)
         {
-            std::lock_guard<std::mutex> lock(backend::ThreadSupport::Mutex);
+            std::lock_guard<std::mutex> lock(Backend::ThreadSupport::Mutex);
             if(MPI_Test(&mRequest, &flag, MPI_STATUS_IGNORE) != MPI_SUCCESS)
             {
                 throw std::runtime_error("pMR: Unable to (test) receive data.");
@@ -94,7 +94,7 @@ void pMR::mpi::RecvMemoryWindow::wait()
 }
 
 #ifdef MPI_PERSISTENT
-void pMR::mpi::RecvMemoryWindow::initRecv()
+void pMR::MPI::RecvMemoryWindow::initRecv()
 {
     if(MPI_Recv_init(mBuffer, {mSizeByte}, MPI_BYTE,
            {mConnection->getTargetRank()}, {mConnection->getRecvTag()},
@@ -105,7 +105,7 @@ void pMR::mpi::RecvMemoryWindow::initRecv()
 }
 #endif // MPI_PERSISTENT
 
-void pMR::mpi::RecvMemoryWindow::recv()
+void pMR::MPI::RecvMemoryWindow::recv()
 {
 #ifdef MPI_PERSISTENT
     if(MPI_Start(&mRequest) != MPI_SUCCESS)
@@ -119,7 +119,7 @@ void pMR::mpi::RecvMemoryWindow::recv()
     }
 }
 
-void pMR::mpi::RecvMemoryWindow::freeRequest()
+void pMR::MPI::RecvMemoryWindow::freeRequest()
 {
     if(mRequest != MPI_REQUEST_NULL)
     {

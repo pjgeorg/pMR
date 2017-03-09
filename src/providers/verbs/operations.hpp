@@ -21,7 +21,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         void postSendRequest(
             Endpoint &endpoint, ScatterGatherElement &scatterGatherElement);

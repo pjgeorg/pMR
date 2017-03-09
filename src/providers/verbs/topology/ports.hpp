@@ -22,7 +22,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         std::uint8_t getPortCount(Device const &);
         std::uint8_t getPortCount(Context &);

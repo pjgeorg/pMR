@@ -18,7 +18,7 @@
 #include "matchedqueue.hpp"
 #include "psm2.hpp"
 
-psm2_mq_tag_t pMR::psm2::psmTag(std::uint64_t const tag)
+psm2_mq_tag_t pMR::PSM2::psmTag(std::uint64_t const tag)
 {
     psm2_mq_tag_t psmTag;
     psmTag.tag0 = static_cast<std::uint32_t>(tag);
@@ -28,7 +28,7 @@ psm2_mq_tag_t pMR::psm2::psmTag(std::uint64_t const tag)
     return psmTag;
 }
 
-psm2_mq_req_t pMR::psm2::postRecv(MatchedQueue &mq, psm2_epaddr_t const source,
+psm2_mq_req_t pMR::PSM2::postRecv(MatchedQueue &mq, psm2_epaddr_t const source,
     void *buffer, std::uint32_t const sizeByte, std::uint64_t const rTag)
 {
     auto tag = psmTag(rTag);
@@ -47,7 +47,7 @@ psm2_mq_req_t pMR::psm2::postRecv(MatchedQueue &mq, psm2_epaddr_t const source,
     return req;
 }
 
-psm2_mq_req_t pMR::psm2::postSend(MatchedQueue &mq,
+psm2_mq_req_t pMR::PSM2::postSend(MatchedQueue &mq,
     psm2_epaddr_t const destination, void const *buffer,
     std::uint32_t const sizeByte, std::uint64_t const sTag)
 {
@@ -66,7 +66,7 @@ psm2_mq_req_t pMR::psm2::postSend(MatchedQueue &mq,
     return req;
 }
 
-void pMR::psm2::poll(Endpoint &endpoint, psm2_mq_req_t &request)
+void pMR::PSM2::poll(Endpoint &endpoint, psm2_mq_req_t &request)
 {
     psm2_mq_status2_t status;
     do

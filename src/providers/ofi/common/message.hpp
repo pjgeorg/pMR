@@ -24,7 +24,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class Message
         {
@@ -52,7 +52,7 @@ namespace pMR
 }
 
 template<typename T>
-void pMR::ofi::postSendRequest(
+void pMR::OFI::postSendRequest(
     T &pEndpoint, Message &message, std::uint64_t flags)
 {
     if(fi_sendmsg(pEndpoint->get(), message.get(), flags))
@@ -62,7 +62,7 @@ void pMR::ofi::postSendRequest(
 }
 
 template<typename T>
-void pMR::ofi::postRecvRequest(
+void pMR::OFI::postRecvRequest(
     T &pEndpoint, Message &message, std::uint64_t flags)
 {
     if(fi_recvmsg(pEndpoint->get(), message.get(), flags))

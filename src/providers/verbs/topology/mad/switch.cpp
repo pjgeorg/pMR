@@ -15,7 +15,7 @@
 #include "switch.hpp"
 #include "../../../../misc/random.hpp"
 
-pMR::verbs::mad::SwitchLID::SwitchLID(
+pMR::Verbs::MAD::SwitchLID::SwitchLID(
     Context &context, std::uint8_t const portNumber)
     : MAD(context, {portNumber})
 {
@@ -61,7 +61,7 @@ pMR::verbs::mad::SwitchLID::SwitchLID(
     // Reserved 48 2Byte
 }
 
-bool pMR::verbs::mad::SwitchLID::validate()
+bool pMR::Verbs::MAD::SwitchLID::validate()
 {
     std::uint32_t status = std::get<cGRHSize + 4>(mRecvMAD) << 24 |
         std::get<cGRHSize + 5>(mRecvMAD) << 16 |
@@ -93,7 +93,7 @@ bool pMR::verbs::mad::SwitchLID::validate()
     return true;
 }
 
-int pMR::verbs::mad::SwitchLID::getSwitchLID()
+int pMR::Verbs::MAD::SwitchLID::getSwitchLID()
 {
     do
     {

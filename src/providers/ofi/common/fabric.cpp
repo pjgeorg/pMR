@@ -15,7 +15,7 @@
 #include "fabric.hpp"
 #include <stdexcept>
 
-pMR::ofi::Fabric::Fabric(Info &info)
+pMR::OFI::Fabric::Fabric(Info &info)
 {
     if(fi_fabric(info.getFabric(), &mFabric, &mContext))
     {
@@ -23,7 +23,7 @@ pMR::ofi::Fabric::Fabric(Info &info)
     }
 }
 
-pMR::ofi::Fabric::~Fabric()
+pMR::OFI::Fabric::~Fabric()
 {
     if(mFabric)
     {
@@ -31,12 +31,12 @@ pMR::ofi::Fabric::~Fabric()
     }
 }
 
-fid_fabric *pMR::ofi::Fabric::get()
+fid_fabric *pMR::OFI::Fabric::get()
 {
     return mFabric;
 }
 
-fid_fabric const *pMR::ofi::Fabric::get() const
+fid_fabric const *pMR::OFI::Fabric::get() const
 {
     return mFabric;
 }

@@ -14,19 +14,19 @@
 
 #include "ports.hpp"
 
-std::uint8_t pMR::verbs::getPortCount(Device const &device)
+std::uint8_t pMR::Verbs::getPortCount(Device const &device)
 {
     Context context(device);
     return {getPortCount(context)};
 }
 
-std::uint8_t pMR::verbs::getPortCount(Context &context)
+std::uint8_t pMR::Verbs::getPortCount(Context &context)
 {
     DeviceAttributes const deviceAttributes(context);
     return {getPortCount(deviceAttributes)};
 }
 
-std::uint8_t pMR::verbs::getPortCount(DeviceAttributes const &deviceAttributes)
+std::uint8_t pMR::Verbs::getPortCount(DeviceAttributes const &deviceAttributes)
 {
     return {deviceAttributes.getPortCount()};
 }

@@ -17,18 +17,14 @@
 
 #include <array>
 #include <cstdint>
+#include "../../providers/verbs/topology.hpp"
 
 namespace pMR
 {
-    namespace verbs
-    {
-        class Device;
-    }
-
     class Node
     {
     public:
-        Node(verbs::Device const &);
+        Node(Verbs::Device const &);
         Node(std::array<std::uint64_t, 4> const &);
         ~Node() = default;
         std::array<std::uint64_t, 4> flatten() const;

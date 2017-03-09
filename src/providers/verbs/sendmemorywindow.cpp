@@ -15,7 +15,7 @@
 #include "sendmemorywindow.hpp"
 #include "connection.hpp"
 
-pMR::verbs::SendMemoryWindow::SendMemoryWindow(
+pMR::Verbs::SendMemoryWindow::SendMemoryWindow(
     std::shared_ptr<Connection> const connection, void *buffer,
     std::uint32_t const sizeByte)
     : mConnection(connection)
@@ -25,7 +25,7 @@ pMR::verbs::SendMemoryWindow::SendMemoryWindow(
 {
 }
 
-void pMR::verbs::SendMemoryWindow::init()
+void pMR::Verbs::SendMemoryWindow::init()
 {
 #if defined VERBS_RDMA && !defined VERBS_RDMA_CONTROL
     mConnection->postRecvAddressToActive();
@@ -34,7 +34,7 @@ void pMR::verbs::SendMemoryWindow::init()
 #endif // VERBS_RDMA && !VERBS_RDMA_CONTROL
 }
 
-void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
+void pMR::Verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 {
     mConnection->pollActive();
 
@@ -45,7 +45,7 @@ void pMR::verbs::SendMemoryWindow::post(std::uint32_t const sizeByte)
 #endif // VERBS_RDMA
 }
 
-void pMR::verbs::SendMemoryWindow::wait()
+void pMR::Verbs::SendMemoryWindow::wait()
 {
     mConnection->pollActive();
 }

@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include "error.hpp"
 
-pMR::psm2::Options::Options()
+pMR::PSM2::Options::Options()
 {
     auto err = psm2_ep_open_opts_get_defaults(&mOptions);
     if(err)
@@ -26,32 +26,32 @@ pMR::psm2::Options::Options()
     }
 }
 
-psm2_ep_open_opts *pMR::psm2::Options::get()
+psm2_ep_open_opts *pMR::PSM2::Options::get()
 {
     return &mOptions;
 }
 
-psm2_ep_open_opts const *pMR::psm2::Options::get() const
+psm2_ep_open_opts const *pMR::PSM2::Options::get() const
 {
     return &mOptions;
 }
 
-void pMR::psm2::Options::setTimeout(std::int64_t const timeout)
+void pMR::PSM2::Options::setTimeout(std::int64_t const timeout)
 {
     mOptions.timeout = {timeout};
 }
 
-void pMR::psm2::Options::setUnit(int const unit)
+void pMR::PSM2::Options::setUnit(int const unit)
 {
     mOptions.unit = {unit};
 }
 
-void pMR::psm2::Options::setPort(int const port)
+void pMR::PSM2::Options::setPort(int const port)
 {
     mOptions.port = {port};
 }
 
-void pMR::psm2::Options::setAffinity(int const affinity)
+void pMR::PSM2::Options::setAffinity(int const affinity)
 {
     mOptions.affinity = {affinity};
 }

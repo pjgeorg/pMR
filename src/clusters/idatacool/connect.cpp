@@ -44,6 +44,6 @@ void pMR::Connection::connect(Target const &target)
     }
     else
     {
-        connectVerbs(target, verbs::getIBAdapter());
+        connectVerbs(target, Verbs::getIBAdapter());
     }
 }

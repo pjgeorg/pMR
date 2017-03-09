@@ -21,7 +21,7 @@
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class MemoryAddress
         {

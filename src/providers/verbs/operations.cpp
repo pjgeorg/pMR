@@ -19,13 +19,13 @@ extern "C" {
 #include <stdexcept>
 #include "verbs.hpp"
 
-void pMR::verbs::postSendRequest(
+void pMR::Verbs::postSendRequest(
     Endpoint &endpoint, ScatterGatherElement &scatterGatherElement)
 {
     return postSendRequest(endpoint.getQueuePair(), scatterGatherElement);
 }
 
-void pMR::verbs::postSendRequest(
+void pMR::Verbs::postSendRequest(
     QueuePair &queuePair, ScatterGatherElement &scatterGatherElement)
 {
     ibv_send_wr workRequest = {};
@@ -48,13 +48,13 @@ void pMR::verbs::postSendRequest(
     }
 }
 
-void pMR::verbs::postRecvRequest(
+void pMR::Verbs::postRecvRequest(
     Endpoint &endpoint, ScatterGatherElement &scatterGatherElement)
 {
     return postRecvRequest(endpoint.getQueuePair(), scatterGatherElement);
 }
 
-void pMR::verbs::postRecvRequest(
+void pMR::Verbs::postRecvRequest(
     QueuePair &queuePair, ScatterGatherElement &scatterGatherElement)
 {
     ibv_recv_wr workRequest = {};
@@ -71,14 +71,14 @@ void pMR::verbs::postRecvRequest(
     }
 }
 
-void pMR::verbs::postWriteRequest(Endpoint &endpoint,
+void pMR::Verbs::postWriteRequest(Endpoint &endpoint,
     ScatterGatherElement &scatterGatherElement, MemoryAddress &target)
 {
     return postWriteRequest(
         endpoint.getQueuePair(), scatterGatherElement, target);
 }
 
-void pMR::verbs::postWriteRequest(QueuePair &queuePair,
+void pMR::Verbs::postWriteRequest(QueuePair &queuePair,
     ScatterGatherElement &scatterGatherElement, MemoryAddress &target)
 {
     ibv_send_wr workRequest = {};

@@ -14,21 +14,21 @@
 
 #include "lid.hpp"
 
-std::uint16_t pMR::verbs::getLID(
+std::uint16_t pMR::Verbs::getLID(
     Device const &device, std::uint8_t const portNumber)
 {
     Context context(device);
     return {getLID(context, {portNumber})};
 }
 
-std::uint16_t pMR::verbs::getLID(
+std::uint16_t pMR::Verbs::getLID(
     Context &context, std::uint8_t const portNumber)
 {
     PortAttributes const portAttributes(context, {portNumber});
     return {getLID(portAttributes)};
 }
 
-std::uint16_t pMR::verbs::getLID(PortAttributes const &portAttributes)
+std::uint16_t pMR::Verbs::getLID(PortAttributes const &portAttributes)
 {
     return {portAttributes.getLID()};
 }

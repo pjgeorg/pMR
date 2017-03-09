@@ -14,19 +14,19 @@
 
 #include "guid.hpp"
 
-std::uint64_t pMR::verbs::getNodeGUID(Device const &device)
+std::uint64_t pMR::Verbs::getNodeGUID(Device const &device)
 {
     Context context(device);
     return {getNodeGUID(context)};
 }
 
-std::uint64_t pMR::verbs::getNodeGUID(Context &context)
+std::uint64_t pMR::Verbs::getNodeGUID(Context &context)
 {
     DeviceAttributes const deviceAttributes(context);
     return {getNodeGUID(deviceAttributes)};
 }
 
-std::uint64_t pMR::verbs::getNodeGUID(DeviceAttributes const &deviceAttributes)
+std::uint64_t pMR::Verbs::getNodeGUID(DeviceAttributes const &deviceAttributes)
 {
     return {deviceAttributes.getNodeGUID()};
 }

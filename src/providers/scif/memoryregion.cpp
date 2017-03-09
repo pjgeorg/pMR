@@ -15,7 +15,7 @@
 #include "memoryregion.hpp"
 #include "../../misc/print.hpp"
 
-pMR::scif::MemoryRegion::~MemoryRegion()
+pMR::SCIF::MemoryRegion::~MemoryRegion()
 {
     if(mLength > 0)
     {
@@ -28,12 +28,12 @@ pMR::scif::MemoryRegion::~MemoryRegion()
     }
 }
 
-off_t pMR::scif::MemoryRegion::get() const
+off_t pMR::SCIF::MemoryRegion::get() const
 {
     return {mMemoryRegion + mOffset};
 }
 
-std::size_t pMR::scif::MemoryRegion::getLength() const
+std::size_t pMR::SCIF::MemoryRegion::getLength() const
 {
     return {mLength};
 }

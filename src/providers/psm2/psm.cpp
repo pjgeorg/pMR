@@ -19,7 +19,7 @@ extern "C" {
 }
 #include "error.hpp"
 
-pMR::psm2::PSM::PSM()
+pMR::PSM2::PSM::PSM()
 {
     int vMajor = PSM2_VERNO_MAJOR;
     int vMinor = PSM2_VERNO_MINOR;
@@ -39,7 +39,7 @@ pMR::psm2::PSM::PSM()
     }
 }
 
-pMR::psm2::PSM::~PSM()
+pMR::PSM2::PSM::~PSM()
 {
     psm2_finalize();
 }

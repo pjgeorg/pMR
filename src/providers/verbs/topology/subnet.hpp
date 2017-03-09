@@ -22,7 +22,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         std::uint64_t getSubnetPrefix(
             Device const &, std::uint8_t const portNumber);

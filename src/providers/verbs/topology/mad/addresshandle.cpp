@@ -14,23 +14,23 @@
 
 #include "addresshandle.hpp"
 
-pMR::verbs::mad::AddressHandle::AddressHandle(
+pMR::Verbs::MAD::AddressHandle::AddressHandle(
     ProtectionDomain &protectionDomain, Address &address)
 {
     mAddressHandle = ibv_create_ah(protectionDomain.get(), address.get());
 }
 
-pMR::verbs::mad::AddressHandle::~AddressHandle()
+pMR::Verbs::MAD::AddressHandle::~AddressHandle()
 {
     ibv_destroy_ah(mAddressHandle);
 }
 
-ibv_ah *pMR::verbs::mad::AddressHandle::get()
+ibv_ah *pMR::Verbs::MAD::AddressHandle::get()
 {
     return mAddressHandle;
 }
 
-ibv_ah const *pMR::verbs::mad::AddressHandle::get() const
+ibv_ah const *pMR::Verbs::MAD::AddressHandle::get() const
 {
     return mAddressHandle;
 }

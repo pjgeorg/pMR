@@ -47,42 +47,42 @@ namespace pMR
         Provider mProvider;
 
 #ifdef pMR_PROVIDER_CMA
-        std::unique_ptr<cma::SendMemoryWindow, cma::SendMemoryWindowDeleter>
+        std::unique_ptr<CMA::SendMemoryWindow, CMA::SendMemoryWindowDeleter>
             mCMA;
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        std::unique_ptr<mpi::SendMemoryWindow, mpi::SendMemoryWindowDeleter>
+        std::unique_ptr<MPI::SendMemoryWindow, MPI::SendMemoryWindowDeleter>
             mMPI;
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        std::unique_ptr<null::SendMemoryWindow, null::SendMemoryWindowDeleter>
+        std::unique_ptr<Null::SendMemoryWindow, Null::SendMemoryWindowDeleter>
             mNull;
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        std::unique_ptr<ofi::SendMemoryWindow, ofi::SendMemoryWindowDeleter>
+        std::unique_ptr<OFI::SendMemoryWindow, OFI::SendMemoryWindowDeleter>
             mOFI;
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        std::unique_ptr<psm2::SendMemoryWindow, psm2::SendMemoryWindowDeleter>
+        std::unique_ptr<PSM2::SendMemoryWindow, PSM2::SendMemoryWindowDeleter>
             mPSM2;
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        std::unique_ptr<scif::SendMemoryWindow, scif::SendMemoryWindowDeleter>
+        std::unique_ptr<SCIF::SendMemoryWindow, SCIF::SendMemoryWindowDeleter>
             mSCIF;
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        std::unique_ptr<self::SendMemoryWindow, self::SendMemoryWindowDeleter>
+        std::unique_ptr<Self::SendMemoryWindow, Self::SendMemoryWindowDeleter>
             mSelf;
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        std::unique_ptr<verbs::SendMemoryWindow, verbs::SendMemoryWindowDeleter>
+        std::unique_ptr<Verbs::SendMemoryWindow, Verbs::SendMemoryWindowDeleter>
             mVerbs;
 #endif // pMR_PROVIDER_VERBS
     };

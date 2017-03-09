@@ -17,7 +17,7 @@
 #include "../../queuepair.hpp"
 #include "../../verbs.hpp"
 
-pMR::verbs::mad::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
+pMR::Verbs::MAD::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     CompletionQueue &sendCompletionQueue, CompletionQueue &recvCompletionQueue)
 {
     ibv_qp_init_attr initialAttributes = {};
@@ -39,22 +39,22 @@ pMR::verbs::mad::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     }
 }
 
-pMR::verbs::mad::QueuePair::~QueuePair()
+pMR::Verbs::MAD::QueuePair::~QueuePair()
 {
     ibv_destroy_qp(mQueuePair);
 }
 
-ibv_qp *pMR::verbs::mad::QueuePair::get()
+ibv_qp *pMR::Verbs::MAD::QueuePair::get()
 {
     return mQueuePair;
 }
 
-ibv_qp const *pMR::verbs::mad::QueuePair::get() const
+ibv_qp const *pMR::Verbs::MAD::QueuePair::get() const
 {
     return mQueuePair;
 }
 
-void pMR::verbs::mad::QueuePair::setStateINIT(std::uint8_t const portNumber)
+void pMR::Verbs::MAD::QueuePair::setStateINIT(std::uint8_t const portNumber)
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_INIT;
@@ -69,7 +69,7 @@ void pMR::verbs::mad::QueuePair::setStateINIT(std::uint8_t const portNumber)
     }
 }
 
-void pMR::verbs::mad::QueuePair::setStateRTR()
+void pMR::Verbs::MAD::QueuePair::setStateRTR()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTR;
@@ -80,7 +80,7 @@ void pMR::verbs::mad::QueuePair::setStateRTR()
     }
 }
 
-void pMR::verbs::mad::QueuePair::setStateRTS()
+void pMR::Verbs::MAD::QueuePair::setStateRTS()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTS;

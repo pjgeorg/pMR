@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include "../ofi.hpp"
 
-pMR::ofi::EventQueue::EventQueue(Fabric &fabric)
+pMR::OFI::EventQueue::EventQueue(Fabric &fabric)
 {
     fi_eq_attr attr = {};
     attr.size = {cEventQueueSize};
@@ -28,7 +28,7 @@ pMR::ofi::EventQueue::EventQueue(Fabric &fabric)
     }
 }
 
-pMR::ofi::EventQueue::~EventQueue()
+pMR::OFI::EventQueue::~EventQueue()
 {
     if(mEventQueue)
     {
@@ -36,17 +36,17 @@ pMR::ofi::EventQueue::~EventQueue()
     }
 }
 
-fid_eq *pMR::ofi::EventQueue::get()
+fid_eq *pMR::OFI::EventQueue::get()
 {
     return mEventQueue;
 }
 
-fid_eq const *pMR::ofi::EventQueue::get() const
+fid_eq const *pMR::OFI::EventQueue::get() const
 {
     return mEventQueue;
 }
 
-pMR::ofi::Info pMR::ofi::EventQueue::pollConnectionRequest() const
+pMR::OFI::Info pMR::OFI::EventQueue::pollConnectionRequest() const
 {
     fi_eq_cm_entry entry = {};
 
@@ -60,7 +60,7 @@ pMR::ofi::Info pMR::ofi::EventQueue::pollConnectionRequest() const
     return Info(entry.info);
 }
 
-pMR::ofi::Info pMR::ofi::EventQueue::pollConnected() const
+pMR::OFI::Info pMR::OFI::EventQueue::pollConnected() const
 {
     fi_eq_cm_entry entry = {};
 
@@ -74,7 +74,7 @@ pMR::ofi::Info pMR::ofi::EventQueue::pollConnected() const
     return Info(entry.info);
 }
 
-std::uint32_t pMR::ofi::EventQueue::poll(fi_eq_cm_entry &entry) const
+std::uint32_t pMR::OFI::EventQueue::poll(fi_eq_cm_entry &entry) const
 {
     std::uint32_t event;
     if(fi_eq_sread(mEventQueue, &event, static_cast<void *>(&entry),

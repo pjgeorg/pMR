@@ -66,43 +66,43 @@ namespace pMR
         void connect(Target const &target);
 
 #ifdef pMR_PROVIDER_CMA
-        std::shared_ptr<cma::Connection> mCMA;
+        std::shared_ptr<CMA::Connection> mCMA;
         void connectCMA(Target const &target);
 #endif // pMR_PROVIDER_CMA
 
 #ifdef pMR_PROVIDER_MPI
-        std::shared_ptr<mpi::Connection> mMPI;
+        std::shared_ptr<MPI::Connection> mMPI;
         void connectMPI(Target const &target);
 #endif // pMR_PROVIDER_MPI
 
 #ifdef pMR_PROVIDER_NULL
-        std::shared_ptr<null::Connection> mNull;
+        std::shared_ptr<Null::Connection> mNull;
         void connectNull(Target const &target);
 #endif // pMR_PROVIDER_NULL
 
 #ifdef pMR_PROVIDER_OFI
-        std::shared_ptr<ofi::Connection> mOFI;
-        void connectOFI(Target const &target, ofi::Info const &info);
+        std::shared_ptr<OFI::Connection> mOFI;
+        void connectOFI(Target const &target, OFI::Info const &info);
 #endif // pMR_PROVIDER_OFI
 
 #ifdef pMR_PROVIDER_PSM2
-        std::shared_ptr<psm2::Connection> mPSM2;
+        std::shared_ptr<PSM2::Connection> mPSM2;
         void connectPSM2(Target const &target);
 #endif // pMR_PROVIDER_PSM2
 
 #ifdef pMR_PROVIDER_SCIF
-        std::shared_ptr<scif::Connection> mSCIF;
+        std::shared_ptr<SCIF::Connection> mSCIF;
         void connectSCIF(Target const &target);
 #endif // pMR_PROVIDER_SCIF
 
 #ifdef pMR_PROVIDER_SELF
-        std::shared_ptr<self::Connection> mSelf;
+        std::shared_ptr<Self::Connection> mSelf;
         void connectSelf(Target const &target);
 #endif // pMR_PROVIDER_SELF
 
 #ifdef pMR_PROVIDER_VERBS
-        std::shared_ptr<verbs::Connection> mVerbs;
-        void connectVerbs(Target const &target, verbs::Device const &device,
+        std::shared_ptr<Verbs::Connection> mVerbs;
+        void connectVerbs(Target const &target, Verbs::Device const &device,
             std::uint8_t const portNumber = 1);
 #endif // pMR_PROVIDER_VERBS
     };

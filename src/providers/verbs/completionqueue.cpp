@@ -17,7 +17,7 @@
 #include "../../arch/processor.hpp"
 #include "../../misc/string.hpp"
 
-pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
+pMR::Verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
 {
     mCompletionQueue = ibv_create_cq(context.get(), {size}, NULL, NULL, 0);
 
@@ -27,22 +27,22 @@ pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
     }
 }
 
-pMR::verbs::CompletionQueue::~CompletionQueue()
+pMR::Verbs::CompletionQueue::~CompletionQueue()
 {
     ibv_destroy_cq(mCompletionQueue);
 }
 
-ibv_cq *pMR::verbs::CompletionQueue::get()
+ibv_cq *pMR::Verbs::CompletionQueue::get()
 {
     return mCompletionQueue;
 }
 
-ibv_cq const *pMR::verbs::CompletionQueue::get() const
+ibv_cq const *pMR::Verbs::CompletionQueue::get() const
 {
     return mCompletionQueue;
 }
 
-void pMR::verbs::CompletionQueue::poll()
+void pMR::Verbs::CompletionQueue::poll()
 {
     ibv_wc workCompletion;
     int numCompletion;
@@ -65,7 +65,7 @@ void pMR::verbs::CompletionQueue::poll()
     }
 }
 
-bool pMR::verbs::CompletionQueue::poll(int retry)
+bool pMR::Verbs::CompletionQueue::poll(int retry)
 {
     ibv_wc workCompletion;
     int numCompletion;

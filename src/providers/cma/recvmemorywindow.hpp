@@ -23,7 +23,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace cma
+    namespace CMA
     {
         class Connection;
 

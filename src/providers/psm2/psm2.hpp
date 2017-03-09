@@ -22,7 +22,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace psm2
+    namespace PSM2
     {
         constexpr std::int64_t cEndpointCloseTimeout = 5 * 1000000000LL;
         constexpr char cUUIDEnv[] = "PSM2_UUID";

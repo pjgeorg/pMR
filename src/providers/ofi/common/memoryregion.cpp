@@ -21,7 +21,7 @@ extern "C" {
 }
 #include "../../../misc/print.hpp"
 
-pMR::ofi::MemoryRegion::MemoryRegion(Domain &domain, void *const buffer,
+pMR::OFI::MemoryRegion::MemoryRegion(Domain &domain, void *const buffer,
     std::size_t length, std::uint64_t const access)
     : mBuffer(buffer), mLength{length}
 {
@@ -86,7 +86,7 @@ pMR::ofi::MemoryRegion::MemoryRegion(Domain &domain, void *const buffer,
     mDescriptor = fi_mr_desc(mMemoryRegion);
 }
 
-pMR::ofi::MemoryRegion::~MemoryRegion()
+pMR::OFI::MemoryRegion::~MemoryRegion()
 {
     if(mMemoryRegion)
     {
@@ -99,52 +99,52 @@ pMR::ofi::MemoryRegion::~MemoryRegion()
     }
 }
 
-fid_mr *pMR::ofi::MemoryRegion::get()
+fid_mr *pMR::OFI::MemoryRegion::get()
 {
     return mMemoryRegion;
 }
 
-fid_mr const *pMR::ofi::MemoryRegion::get() const
+fid_mr const *pMR::OFI::MemoryRegion::get() const
 {
     return mMemoryRegion;
 }
 
-void **pMR::ofi::MemoryRegion::getDescriptor()
+void **pMR::OFI::MemoryRegion::getDescriptor()
 {
     return &mDescriptor;
 }
 
-void *const *pMR::ofi::MemoryRegion::getDescriptor() const
+void *const *pMR::OFI::MemoryRegion::getDescriptor() const
 {
     return &mDescriptor;
 }
 
-std::uint64_t pMR::ofi::MemoryRegion::getKey() const
+std::uint64_t pMR::OFI::MemoryRegion::getKey() const
 {
     return {fi_mr_key(mMemoryRegion)};
 }
 
-std::size_t pMR::ofi::MemoryRegion::getLength() const
+std::size_t pMR::OFI::MemoryRegion::getLength() const
 {
     return {mLength};
 }
 
-std::uint64_t pMR::ofi::MemoryRegion::getAddress() const
+std::uint64_t pMR::OFI::MemoryRegion::getAddress() const
 {
     return {reinterpret_cast<std::uintptr_t>(mBuffer)};
 }
 
-void *pMR::ofi::MemoryRegion::getBuffer()
+void *pMR::OFI::MemoryRegion::getBuffer()
 {
     return mBuffer;
 }
 
-void *pMR::ofi::MemoryRegion::getBuffer() const
+void *pMR::OFI::MemoryRegion::getBuffer() const
 {
     return mBuffer;
 }
 
-void pMR::ofi::MemoryRegion::bind(Counter &counter)
+void pMR::OFI::MemoryRegion::bind(Counter &counter)
 {
     if(fi_mr_bind(mMemoryRegion, &counter.get()->fid, FI_REMOTE_WRITE))
     {

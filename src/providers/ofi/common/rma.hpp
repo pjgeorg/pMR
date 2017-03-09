@@ -24,7 +24,7 @@ extern "C" {
 
 namespace pMR
 {
-    namespace ofi
+    namespace OFI
     {
         class RMA
         {
@@ -52,7 +52,7 @@ namespace pMR
 }
 
 template<typename T>
-void pMR::ofi::postWriteRequest(T &pEndpoint, RMA &rma, std::uint64_t flags)
+void pMR::OFI::postWriteRequest(T &pEndpoint, RMA &rma, std::uint64_t flags)
 {
     if(fi_writemsg(pEndpoint->get(), rma.get(), flags))
     {

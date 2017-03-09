@@ -19,7 +19,7 @@
 
 namespace pMR
 {
-    namespace psm2
+    namespace PSM2
     {
         std::uint32_t getNumberOfUnits();
     }

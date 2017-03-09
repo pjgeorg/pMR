@@ -22,7 +22,7 @@
 
 namespace pMR
 {
-    namespace verbs
+    namespace Verbs
     {
         std::uint16_t getLID(Device const &, std::uint8_t const portNumber);
         std::uint16_t getLID(Context &, std::uint8_t const portNumber);
