@@ -36,7 +36,7 @@ void pMR::Connection::connect(Target const &target)
     auto originNode = Singleton<Node>::Instance();
     decltype(originNode) targetNode;
 
-    backend::exchange(target, originNode, targetNode);
+    Backend::exchange(target, originNode, targetNode);
 
     if(originNode.getHostID() == targetNode.getHostID())
     {

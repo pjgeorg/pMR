@@ -41,7 +41,7 @@ void pMR::Connection::connect(Target const &target)
     auto sendBuffer = originNode.flatten();
     decltype(sendBuffer) recvBuffer;
 
-    backend::exchange(target, sendBuffer, recvBuffer);
+    Backend::exchange(target, sendBuffer, recvBuffer);
 
     decltype(originNode) targetNode(recvBuffer);
 
