@@ -12,14 +12,15 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_RMD_CONNECTION_H
-#define pMR_PROVIDERS_OFI_RMD_CONNECTION_H
+#ifndef pMR_PROVIDERS_OFI_RDM_CONNECTION_H
+#define pMR_PROVIDERS_OFI_RDM_CONNECTION_H
 
+#include <cstdint>
 #include <config.hpp>
+#include "../common/domain.hpp"
+#include "../common/fabric.hpp"
 #include "../common/memoryaddress.hpp"
 #include "../common/memoryregion.hpp"
-#include "../common/rma.hpp"
-#include "../common/tagged.hpp"
 #include "softendpoint.hpp"
 
 namespace pMR
@@ -67,8 +68,8 @@ namespace pMR
 #endif // OFI_RMA
 
         private:
-            GlobalEndpoint *mEndpoint = nullptr;
-            fi_addr_t mPeerAddress = 0;
+            Fabric mFabric;
+            Domain mDomain;
             SoftEndpoint mActiveEndpoint;
             SoftEndpoint mPassiveEndpoint;
 #ifdef OFI_RMA
@@ -83,25 +84,6 @@ namespace pMR
 #endif // OFI_RMA_EVENT
 #endif // OFI_RMA_CONTROL
 #endif // OFI_RMA
-
-            void postSend(
-                SoftEndpoint &softEndpoint, MemoryRegion &memoryRegion);
-            void postSend(SoftEndpoint &softEndpoint,
-                MemoryRegion &memoryRegion, std::size_t const sizeByte);
-            void postSend(SoftEndpoint &softEndpoint);
-            void postSend(Tagged &message);
-
-            void postRecv(
-                SoftEndpoint &softEndpoint, MemoryRegion &memoryRegion);
-            void postRecv(SoftEndpoint &softEndpoint);
-            void postRecv(Tagged &message);
-
-            void postWrite(SoftEndpoint &softEndpoint,
-                MemoryRegion &memoryRegion, MemoryAddress &target);
-            void postWrite(SoftEndpoint &softEndpoint,
-                MemoryRegion &memoryRegion, MemoryAddress &target,
-                std::size_t const sizeByte);
-            void postWrite(RMA &message);
         };
     }
 }

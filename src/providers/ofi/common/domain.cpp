@@ -45,7 +45,7 @@ fid_domain const *pMR::OFI::Domain::get() const
     return mDomain;
 }
 
-void pMR::OFI::Domain::checkMessageSize(std::size_t size) const
+void pMR::OFI::Domain::checkMessageSize(std::size_t const size) const
 {
     if(size > mMaxSize)
     {
@@ -53,11 +53,17 @@ void pMR::OFI::Domain::checkMessageSize(std::size_t size) const
     }
 }
 
-std::uint64_t pMR::OFI::Domain::checkInjectSize(std::size_t size) const
+std::uint64_t pMR::OFI::Domain::checkInjectSize(std::size_t const size) const
 {
-    if(size <= mInjectSize)
+    return {OFI::checkInjectSize(size, mInjectSize)};
+}
+
+std::uint64_t pMR::OFI::checkInjectSize(
+    std::size_t const size, std::size_t const maxInjectSize)
+{
+    if(size <= maxInjectSize)
     {
-        return FI_INJECT;
+        return {FI_INJECT};
     }
     else
     {

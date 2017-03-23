@@ -12,23 +12,19 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_MSG_SOFTENDPOINT_H
-#define pMR_PROVIDERS_OFI_MSG_SOFTENDPOINT_H
+#ifndef pMR_PROVIDERS_OFI_GRDM_SOFTENDPOINT_H
+#define pMR_PROVIDERS_OFI_GRDM_SOFTENDPOINT_H
 
 #include <cstdint>
 #include <vector>
 extern "C" {
 #include <rdma/fabric.h>
 }
-#include "../common/completionqueue.hpp"
-#include "../common/domain.hpp"
-#include "../common/endpoint.hpp"
-#include "../common/eventqueue.hpp"
-#include "../common/info.hpp"
 #include "../common/memoryaddress.hpp"
 #include "../common/memoryregion.hpp"
-#include "../common/message.hpp"
 #include "../common/rma.hpp"
+#include "../common/tagged.hpp"
+#include "globalendpoint.hpp"
 
 namespace pMR
 {
@@ -37,48 +33,46 @@ namespace pMR
         class SoftEndpoint
         {
         public:
-            SoftEndpoint(Domain &domain, Info &info, EventQueue &eventQueue);
+            SoftEndpoint(GlobalEndpoint *endpoint);
             SoftEndpoint(SoftEndpoint const &) = delete;
             SoftEndpoint(SoftEndpoint &&) = delete;
             SoftEndpoint &operator=(SoftEndpoint const &) = delete;
             SoftEndpoint &operator=(SoftEndpoint &&) = delete;
-            ~SoftEndpoint() = default;
-            fid_ep *get();
-            fid_ep const *get() const;
+            ~SoftEndpoint();
 
-            void enable();
-            void connect(std::vector<std::uint8_t> const &address);
-            void accept();
+            std::uint64_t getID() const;
+            void setRemoteID(std::uint64_t const remoteID);
+            std::uint64_t getRemoteID() const;
+            std::uint64_t getSendTag() const;
+            std::uint64_t getRecvTag() const;
 
             fi_context *getSendContext();
             fi_context *getRecvContext();
 
-            void postSend(MemoryRegion &memoryRegion);
-            void postSend(
-                MemoryRegion &memoryRegion, std::size_t const sizeByte);
-            void postSend();
-            void postSend(Message &message);
+            void postSend(MemoryRegion &memoryRegion, fi_addr_t const address);
+            void postSend(MemoryRegion &memoryRegion,
+                std::size_t const sizeByte, fi_addr_t const address);
+            void postSend(fi_addr_t const address);
+            void postSend(Tagged &message);
+            void postRecv(MemoryRegion &memoryRegion, fi_addr_t const address);
+            void postRecv(fi_addr_t const address);
+            void postRecv(Tagged &message);
 
-            void postRecv(MemoryRegion &memoryRegion);
-            void postRecv();
-            void postRecv(Message &message);
-
-            void postWrite(MemoryRegion &memoryRegion, MemoryAddress &target);
             void postWrite(MemoryRegion &memoryRegion, MemoryAddress &target,
-                std::size_t const sizeByte);
+                fi_addr_t const address);
+            void postWrite(MemoryRegion &memoryRegion, MemoryAddress &target,
+                std::size_t const sizeByte, fi_addr_t const address);
             void postWrite(RMA &message);
 
             void pollSend();
             void pollRecv();
 
         private:
-            Endpoint mEndpoint;
-            CompletionQueueContext mCompletionQueue;
+            GlobalEndpoint *mEndpoint = nullptr;
+            std::uint64_t mRemoteID = 0;
             fi_context mSendContext = {};
             fi_context mRecvContext = {};
-            std::size_t mInjectSize = 0;
-            std::uint64_t checkInjectSize(std::size_t size) const;
         };
     }
 }
-#endif // pMR_PROVIDERS_OFI_MSG_SOFTENDPOINT_H
+#endif // pMR_PROVIDERS_OFI_GRDM_SOFTENDPOINT_H

@@ -18,7 +18,11 @@
 #ifdef OFI_EP_MSG
 #include "msg/connection.hpp"
 #elif defined OFI_EP_RDM
+#ifdef OFI_RDM_GLOBAL
+#include "grdm/connection.hpp"
+#else
 #include "rdm/connection.hpp"
+#endif // OFI_RDM_GLOBAL
 #else
 #error "Unknown endpoint."
 #endif // OFI_EP

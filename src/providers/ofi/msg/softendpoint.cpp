@@ -18,7 +18,9 @@
 
 pMR::OFI::SoftEndpoint::SoftEndpoint(
     Domain &domain, Info &info, EventQueue &eventQueue)
-    : mEndpoint(domain, info), mCompletionQueue(domain, {info.getContextSize()})
+    : mEndpoint(domain, info)
+    , mCompletionQueue(domain, {info.getContextSize()})
+    , mInjectSize{info.injectSize()}
 {
     mEndpoint.bind(mCompletionQueue, FI_TRANSMIT | FI_RECV);
     mEndpoint.bind(eventQueue);
@@ -59,6 +61,68 @@ fi_context *pMR::OFI::SoftEndpoint::getRecvContext()
     return &mRecvContext;
 }
 
+void pMR::OFI::SoftEndpoint::postSend(MemoryRegion &memoryRegion)
+{
+    postSend(memoryRegion, {memoryRegion.getLength()});
+}
+
+void pMR::OFI::SoftEndpoint::postSend(
+    MemoryRegion &memoryRegion, std::size_t const sizeByte)
+{
+    Message message(memoryRegion, {sizeByte}, getSendContext());
+    postSend(message);
+}
+
+void pMR::OFI::SoftEndpoint::postSend()
+{
+    Message message(getSendContext());
+    postSend(message);
+}
+
+void pMR::OFI::SoftEndpoint::postSend(Message &message)
+{
+    postSendRequest(mEndpoint, message, checkInjectSize({message.getLength()}));
+}
+
+void pMR::OFI::SoftEndpoint::postRecv(MemoryRegion &memoryRegion)
+{
+    Message message(memoryRegion, getRecvContext());
+    postRecv(message);
+}
+
+void pMR::OFI::SoftEndpoint::postRecv()
+{
+    Message message(getRecvContext());
+    postRecv(message);
+}
+
+void pMR::OFI::SoftEndpoint::postRecv(Message &message)
+{
+    postRecvRequest(mEndpoint, message);
+}
+
+void pMR::OFI::SoftEndpoint::postWrite(
+    MemoryRegion &memoryRegion, MemoryAddress &target)
+{
+    postWrite(memoryRegion, target, {memoryRegion.getLength()});
+}
+
+void pMR::OFI::SoftEndpoint::postWrite(MemoryRegion &memoryRegion,
+    MemoryAddress &target, std::size_t const sizeByte)
+{
+    RMA message(memoryRegion, {sizeByte}, target, getSendContext());
+    postWrite(message);
+}
+
+void pMR::OFI::SoftEndpoint::postWrite(RMA &message)
+{
+    postWriteRequest(mEndpoint, message,
+#ifndef OFI_RMA_EVENT
+        FI_REMOTE_CQ_DATA |
+#endif // OFI_RMA_EVENT
+            checkInjectSize({message.getLength()}));
+}
+
 void pMR::OFI::SoftEndpoint::pollSend()
 {
     mCompletionQueue.poll();
@@ -69,4 +133,9 @@ void pMR::OFI::SoftEndpoint::pollRecv()
 {
     mCompletionQueue.poll();
     return;
+}
+
+std::uint64_t pMR::OFI::SoftEndpoint::checkInjectSize(std::size_t size) const
+{
+    return {OFI::checkInjectSize(size, mInjectSize)};
 }

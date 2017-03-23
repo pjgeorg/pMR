@@ -24,7 +24,11 @@ namespace pMR
         constexpr int cVersionMajor = 1;
         constexpr int cVersionMinor = 3;
         constexpr std::size_t cEventQueueSize = 2;
+#ifdef OFI_RDM_GLOBAL
         constexpr std::size_t cAVCount = 16;
+#else
+        constexpr std::size_t cAVCount = 1;
+#endif // OFI_RDM_GLOBAL
         constexpr std::size_t cReserveSizeCompletion = 128;
     }
 }

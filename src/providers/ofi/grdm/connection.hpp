@@ -12,14 +12,11 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_MSG_CONNECTION_H
-#define pMR_PROVIDERS_OFI_MSG_CONNECTION_H
+#ifndef pMR_PROVIDERS_OFI_GRDM_CONNECTION_H
+#define pMR_PROVIDERS_OFI_GRDM_CONNECTION_H
 
 #include <cstdint>
-#include <memory>
 #include <config.hpp>
-#include "../common/domain.hpp"
-#include "../common/fabric.hpp"
 #include "../common/memoryaddress.hpp"
 #include "../common/memoryregion.hpp"
 #include "softendpoint.hpp"
@@ -69,10 +66,10 @@ namespace pMR
 #endif // OFI_RMA
 
         private:
-            Fabric mFabric;
-            Domain mDomain;
-            std::unique_ptr<SoftEndpoint> mActiveEndpoint;
-            std::unique_ptr<SoftEndpoint> mPassiveEndpoint;
+            GlobalEndpoint *mEndpoint = nullptr;
+            fi_addr_t mPeerAddress = 0;
+            SoftEndpoint mActiveEndpoint;
+            SoftEndpoint mPassiveEndpoint;
 #ifdef OFI_RMA
             alignas(cAlignment) MemoryAddress mLocalTargetMemoryAddress;
             alignas(cAlignment) MemoryAddress mRemoteTargetMemoryAddress;
@@ -88,4 +85,4 @@ namespace pMR
         };
     }
 }
-#endif // pMR_PROVIDERS_OFI_MSG_CONNECTION_H
+#endif // pMR_PROVIDERS_OFI_GRDM_CONNECTION_H

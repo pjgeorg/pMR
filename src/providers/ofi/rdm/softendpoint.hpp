@@ -20,7 +20,12 @@
 extern "C" {
 #include <rdma/fabric.h>
 }
-#include "globalendpoint.hpp"
+#include "../common/completionqueue.hpp"
+#include "../common/endpoint.hpp"
+#include "../common/memoryaddress.hpp"
+#include "../common/memoryregion.hpp"
+#include "../common/message.hpp"
+#include "../common/rma.hpp"
 
 namespace pMR
 {
@@ -29,30 +34,44 @@ namespace pMR
         class SoftEndpoint
         {
         public:
-            SoftEndpoint(GlobalEndpoint *endpoint);
+            SoftEndpoint(Domain &domain, Info &info);
             SoftEndpoint(SoftEndpoint const &) = delete;
             SoftEndpoint(SoftEndpoint &&) = delete;
             SoftEndpoint &operator=(SoftEndpoint const &) = delete;
             SoftEndpoint &operator=(SoftEndpoint &&) = delete;
-            ~SoftEndpoint();
+            ~SoftEndpoint() = default;
 
-            std::uint64_t getID() const;
-            void setRemoteID(std::uint64_t const remoteID);
-            std::uint64_t getRemoteID() const;
-            std::uint64_t getSendTag() const;
-            std::uint64_t getRecvTag() const;
+            std::vector<std::uint8_t> getAddress() const;
+            void connect(std::vector<std::uint8_t> const &addr);
 
             fi_context *getSendContext();
             fi_context *getRecvContext();
+
+            void postSend(MemoryRegion &memoryRegion);
+            void postSend(MemoryRegion &memoryRegion, std::size_t const sizeByte);
+            void postSend();
+            void postSend(Message &message);
+            void postRecv(MemoryRegion &memoryRegion);
+            void postRecv();
+            void postRecv(Message &message);
+
+            void postWrite(MemoryRegion &memoryRegion, MemoryAddress &target);
+            void postWrite(MemoryRegion &memoryRegion, MemoryAddress &target,
+                std::size_t const sizeByte);
+            void postWrite(RMA &message);
 
             void pollSend();
             void pollRecv();
 
         private:
-            GlobalEndpoint *mEndpoint = nullptr;
-            std::uint64_t mRemoteID = 0;
+            Endpoint mEndpoint;
+            AddressVector mAddressVector;
+            CompletionQueueContext mCompletionQueue;
             fi_context mSendContext = {};
             fi_context mRecvContext = {};
+            fi_addr_t mPeerAddress = 0;
+            std::size_t mInjectSize = 0;
+            std::uint64_t checkInjectSize(std::size_t size) const;
         };
     }
 }

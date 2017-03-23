@@ -37,7 +37,7 @@ namespace pMR
             fid_domain *get();
             fid_domain const *get() const;
             void checkMessageSize(std::size_t const size) const;
-            std::uint64_t checkInjectSize(std::size_t size) const;
+            std::uint64_t checkInjectSize(std::size_t const size) const;
 
         private:
             fi_context mContext = {};
@@ -45,6 +45,9 @@ namespace pMR
             std::size_t mMaxSize = 0;
             std::size_t mInjectSize = 0;
         };
+
+        std::uint64_t checkInjectSize(
+            std::size_t const size, std::size_t const maxInjectSize);
     }
 }
 #endif // pMR_PROVIDERS_OFI_COMMON_DOMAIN_H

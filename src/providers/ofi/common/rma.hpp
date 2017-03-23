@@ -47,14 +47,14 @@ namespace pMR
         };
 
         template<typename T>
-        void postWriteRequest(T &pEndpoint, RMA &, std::uint64_t flags = 0);
+        void postWriteRequest(T &endpoint, RMA &, std::uint64_t flags = 0);
     }
 }
 
 template<typename T>
-void pMR::OFI::postWriteRequest(T &pEndpoint, RMA &rma, std::uint64_t flags)
+void pMR::OFI::postWriteRequest(T &endpoint, RMA &rma, std::uint64_t flags)
 {
-    if(fi_writemsg(pEndpoint->get(), rma.get(), flags))
+    if(fi_writemsg(endpoint.get(), rma.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post write request.");
     }

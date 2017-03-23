@@ -14,42 +14,25 @@
 
 #include "softendpoint.hpp"
 
-pMR::OFI::SoftEndpoint::SoftEndpoint(GlobalEndpoint *endpoint)
-    : mEndpoint(endpoint)
+pMR::OFI::SoftEndpoint::SoftEndpoint(Domain &domain, Info &info)
+    : mEndpoint(domain, info)
+    , mAddressVector(domain)
+    , mCompletionQueue(domain, {info.getContextSize()})
+    , mInjectSize{info.injectSize()}
 {
-    mEndpoint->bind({reinterpret_cast<std::uintptr_t>(&mSendContext)},
-        {reinterpret_cast<std::uintptr_t>(&mRecvContext)});
+    mEndpoint.bind(mAddressVector);
+    mEndpoint.bind(mCompletionQueue, FI_TRANSMIT | FI_RECV);
+    mEndpoint.enable();
 }
 
-pMR::OFI::SoftEndpoint::~SoftEndpoint()
+std::vector<std::uint8_t> pMR::OFI::SoftEndpoint::getAddress() const
 {
-    mEndpoint->unbind({reinterpret_cast<std::uintptr_t>(&mSendContext)},
-        {reinterpret_cast<std::uintptr_t>(&mRecvContext)});
+    return mEndpoint.getAddress();
 }
 
-std::uint64_t pMR::OFI::SoftEndpoint::getID() const
+void pMR::OFI::SoftEndpoint::connect(std::vector<std::uint8_t> const &addr)
 {
-    return {reinterpret_cast<std::uintptr_t>(&mRecvContext)};
-}
-
-void pMR::OFI::SoftEndpoint::setRemoteID(std::uint64_t remoteID)
-{
-    mRemoteID = {remoteID};
-}
-
-std::uint64_t pMR::OFI::SoftEndpoint::getRemoteID() const
-{
-    return {mRemoteID};
-}
-
-std::uint64_t pMR::OFI::SoftEndpoint::getSendTag() const
-{
-    return {getRemoteID()};
-}
-
-std::uint64_t pMR::OFI::SoftEndpoint::getRecvTag() const
-{
-    return {getID()};
+    mPeerAddress = {mAddressVector.add(addr)};
 }
 
 fi_context *pMR::OFI::SoftEndpoint::getSendContext()
@@ -62,12 +45,85 @@ fi_context *pMR::OFI::SoftEndpoint::getRecvContext()
     return &mRecvContext;
 }
 
+void pMR::OFI::SoftEndpoint::postSend(
+    MemoryRegion &memoryRegion)
+{
+    postSend(memoryRegion, {memoryRegion.getLength()});
+}
+
+void pMR::OFI::SoftEndpoint::postSend(MemoryRegion &memoryRegion,
+    std::size_t const sizeByte)
+{
+    Message message(
+        memoryRegion, {sizeByte}, getSendContext(), {mPeerAddress});
+    postSend(message);
+}
+
+void pMR::OFI::SoftEndpoint::postSend()
+{
+    Message message(getSendContext(), {mPeerAddress});
+    postSend(message);
+}
+
+void pMR::OFI::SoftEndpoint::postSend(Message &message)
+{
+    postSendRequest(mEndpoint, message, checkInjectSize({message.getLength()}));
+}
+
+void pMR::OFI::SoftEndpoint::postRecv(
+    MemoryRegion &memoryRegion)
+{
+    Message message(memoryRegion, getRecvContext(), {mPeerAddress});
+    postRecv(message);
+}
+
+void pMR::OFI::SoftEndpoint::postRecv()
+{
+    Message message(getRecvContext(), {mPeerAddress});
+    postRecv(message);
+}
+
+void pMR::OFI::SoftEndpoint::postRecv(Message &message)
+{
+    postRecvRequest(mEndpoint, message);
+}
+
+void pMR::OFI::SoftEndpoint::postWrite(
+    MemoryRegion &memoryRegion, MemoryAddress &target)
+{
+    postWrite(memoryRegion, target, {memoryRegion.getLength()});
+}
+
+void pMR::OFI::SoftEndpoint::postWrite(MemoryRegion &memoryRegion,
+    MemoryAddress &target, std::size_t const sizeByte)
+{
+    RMA message(memoryRegion, {sizeByte}, target, getSendContext(),
+        0, {mPeerAddress});
+    postWrite(message);
+}
+
+void pMR::OFI::SoftEndpoint::postWrite(RMA &message)
+{
+    postWriteRequest(mEndpoint, message,
+#ifndef OFI_RMA_EVENT
+        FI_REMOTE_CQ_DATA |
+#endif // OFI_RMA_EVENT
+            checkInjectSize({message.getLength()}));
+}
+
 void pMR::OFI::SoftEndpoint::pollSend()
 {
-    mEndpoint->pollSend({reinterpret_cast<std::uintptr_t>(&mSendContext)});
+    mCompletionQueue.poll();
+    return;
 }
 
 void pMR::OFI::SoftEndpoint::pollRecv()
 {
-    mEndpoint->pollRecv({reinterpret_cast<std::uintptr_t>(&mRecvContext)});
+    mCompletionQueue.poll();
+    return;
+}
+
+std::uint64_t pMR::OFI::SoftEndpoint::checkInjectSize(std::size_t size) const
+{
+    return {OFI::checkInjectSize(size, mInjectSize)};
 }

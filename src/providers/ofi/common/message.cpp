@@ -14,7 +14,7 @@
 
 #include "message.hpp"
 
-pMR::OFI::Message::Message(fi_context *context, fi_addr_t address)
+pMR::OFI::Message::Message(fi_context *context, fi_addr_t const address)
 {
     mIOV.iov_base = nullptr;
     mIOV.iov_len = 0;
@@ -27,13 +27,13 @@ pMR::OFI::Message::Message(fi_context *context, fi_addr_t address)
 }
 
 pMR::OFI::Message::Message(
-    MemoryRegion &memoryRegion, fi_context *context, fi_addr_t address)
+    MemoryRegion &memoryRegion, fi_context *context, fi_addr_t const address)
     : Message(memoryRegion, memoryRegion.getLength(), context, address)
 {
 }
 
 pMR::OFI::Message::Message(MemoryRegion &memoryRegion,
-    std::size_t const sizeByte, fi_context *context, fi_addr_t address)
+    std::size_t const sizeByte, fi_context *context, fi_addr_t const address)
 {
     if(sizeByte == 0)
     {

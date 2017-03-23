@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <stdexcept>
+#include <type_traits>
 extern "C" {
 #include <rdma/fi_tagged.h>
 }
@@ -29,12 +30,13 @@ namespace pMR
         class Tagged
         {
         public:
-            explicit Tagged(
-                fi_context *context, std::uint64_t tag, fi_addr_t address = 0);
+            explicit Tagged(fi_context *context, std::uint64_t tag,
+                fi_addr_t const address = 0);
             Tagged(MemoryRegion &, fi_context *context, std::uint64_t tag,
-                fi_addr_t address = 0);
+                fi_addr_t const address = 0);
             Tagged(MemoryRegion &, std::size_t const sizeByte,
-                fi_context *context, std::uint64_t tag, fi_addr_t address = 0);
+                fi_context *context, std::uint64_t tag,
+                fi_addr_t const address = 0);
             ~Tagged() = default;
             fi_msg_tagged *get();
             fi_msg_tagged const *get() const;
@@ -46,26 +48,26 @@ namespace pMR
         };
 
         template<typename T>
-        void postSendRequest(T *endpoint, Tagged &, std::uint64_t flags = 0);
+        void postSendRequest(T &endpoint, Tagged &, std::uint64_t flags = 0);
 
         template<typename T>
-        void postRecvRequest(T *endpoint, Tagged &, std::uint64_t flags = 0);
+        void postRecvRequest(T &endpoint, Tagged &, std::uint64_t flags = 0);
     }
 }
 
 template<typename T>
-void pMR::OFI::postSendRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
+void pMR::OFI::postSendRequest(T &endpoint, Tagged &tagged, std::uint64_t flags)
 {
-    if(fi_tsendmsg(endpoint->get(), tagged.get(), flags))
+    if(fi_tsendmsg(endpoint.get(), tagged.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post send request.");
     }
 }
 
 template<typename T>
-void pMR::OFI::postRecvRequest(T *endpoint, Tagged &tagged, std::uint64_t flags)
+void pMR::OFI::postRecvRequest(T &endpoint, Tagged &tagged, std::uint64_t flags)
 {
-    if(fi_trecvmsg(endpoint->get(), tagged.get(), flags))
+    if(fi_trecvmsg(endpoint.get(), tagged.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post receive request.");
     }

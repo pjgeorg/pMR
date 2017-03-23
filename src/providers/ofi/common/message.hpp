@@ -29,10 +29,11 @@ namespace pMR
         class Message
         {
         public:
-            explicit Message(fi_context *context, fi_addr_t address = 0);
-            Message(MemoryRegion &, fi_context *context, fi_addr_t address = 0);
+            explicit Message(fi_context *context, fi_addr_t const address = 0);
+            Message(MemoryRegion &, fi_context *context,
+                fi_addr_t const address = 0);
             Message(MemoryRegion &, std::size_t const sizeByte,
-                fi_context *context, fi_addr_t address = 0);
+                fi_context *context, fi_addr_t const address = 0);
             ~Message() = default;
             fi_msg *get();
             fi_msg const *get() const;
@@ -44,18 +45,18 @@ namespace pMR
         };
 
         template<typename T>
-        void postSendRequest(T &pEndpoint, Message &, std::uint64_t flags = 0);
+        void postSendRequest(T &endpoint, Message &, std::uint64_t flags = 0);
 
         template<typename T>
-        void postRecvRequest(T &pEndpoint, Message &, std::uint64_t flags = 0);
+        void postRecvRequest(T &endpoint, Message &, std::uint64_t flags = 0);
     }
 }
 
 template<typename T>
 void pMR::OFI::postSendRequest(
-    T &pEndpoint, Message &message, std::uint64_t flags)
+    T &endpoint, Message &message, std::uint64_t flags)
 {
-    if(fi_sendmsg(pEndpoint->get(), message.get(), flags))
+    if(fi_sendmsg(endpoint.get(), message.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post send request.");
     }
@@ -63,9 +64,9 @@ void pMR::OFI::postSendRequest(
 
 template<typename T>
 void pMR::OFI::postRecvRequest(
-    T &pEndpoint, Message &message, std::uint64_t flags)
+    T &endpoint, Message &message, std::uint64_t flags)
 {
-    if(fi_recvmsg(pEndpoint->get(), message.get(), flags))
+    if(fi_recvmsg(endpoint.get(), message.get(), flags))
     {
         throw std::runtime_error("pMR: Unable to post receive request.");
     }

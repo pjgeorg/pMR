@@ -53,11 +53,15 @@ pMR::OFI::Hints::Hints()
     info->caps |= FI_RMA_EVENT;
 #endif // OFI_RMA_EVENT
 
-#ifdef OFI_EP_MSG
-    info->domain_attr->threading = FI_THREAD_ENDPOINT;
-#elif defined OFI_EP_RDM
+#ifdef OFI_RDM_GLOBAL
+#ifdef OFI_RDM_GLOBAL_THREADSAFE
     info->domain_attr->threading = FI_THREAD_SAFE;
-#endif // OFI_EP
+#else
+    info->domain_attr->threading = FI_THREAD_FID;
+#endif // OFI_RDM_GLOBAL_THREADSAFE
+#else
+    info->domain_attr->threading = FI_THREAD_ENDPOINT;
+#endif // OFI_RDM_GLOBAL
 
 #ifdef OFI_CONTROL_PROGRESS_AUTO
     info->domain_attr->control_progress = FI_PROGRESS_AUTO;

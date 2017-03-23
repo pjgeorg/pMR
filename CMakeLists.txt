@@ -41,6 +41,8 @@ set(OFI.DATA.PROGRESS.AUTO OFF CACHE BOOL "Automatic progess of data.")
 set(OFI.RM OFF CACHE BOOL "Enable Resource Management.")
 set(OFI.MR.SCALABLE ON CACHE BOOL "Scalable Memory Registration Mode.")
 set(OFI.RDM.DIRECTED.RECEIVE OFF CACHE BOOL "Enable directed receive capability for RDM endpoints.")
+set(OFI.RDM.GLOBAL ON CACHE BOOL "Use one global endpoint for RDM.")
+set(OFI.RDM.GLOBAL.THREADSAFE OFF CACHE BOOL "Require the provider to be thread safe.")
 set(OFI.NO.CONTROL ON CACHE BOOL "Disable any control mechanism by pMR, rely on provider to manage all resources. Only works for non-RMA transfers.")
 
 set(PSM2.WRAPPER OFF CACHE STRING "Compile PSM2 wrapper for LD_PRELOAD to allow pMR use PSM2 next to OFI.")

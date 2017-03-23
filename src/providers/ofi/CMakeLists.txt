@@ -23,11 +23,19 @@ list(APPEND OFI_MSG
 
 list(APPEND OFI_RDM
     rdm/connection.cpp
-    rdm/globalendpoint.cpp
     rdm/softendpoint.cpp)
+
+list(APPEND OFI_GRDM
+    grdm/connection.cpp
+    grdm/globalendpoint.cpp
+    grdm/softendpoint.cpp)
 
 if(OFI.EP STREQUAL "MSG")
     add_library(PROVIDER_OFI OBJECT ${OFI_COMMON} ${OFI_MSG})
 elseif(OFI.EP STREQUAL "RDM")
-    add_library(PROVIDER_OFI OBJECT ${OFI_COMMON} ${OFI_RDM})
+    if(OFI.RDM.GLOBAL)
+        add_library(PROVIDER_OFI OBJECT ${OFI_COMMON} ${OFI_GRDM})
+    else()
+        add_library(PROVIDER_OFI OBJECT ${OFI_COMMON} ${OFI_RDM})
+    endif()
 endif()

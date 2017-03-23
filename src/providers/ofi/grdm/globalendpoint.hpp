@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
-#define pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
+#ifndef pMR_PROVIDERS_OFI_GRDM_GLOBALENDPOINT_H
+#define pMR_PROVIDERS_OFI_GRDM_GLOBALENDPOINT_H
 
 #include <cstdint>
 #include <mutex>
@@ -77,10 +77,10 @@ namespace pMR
             std::unordered_map<std::uint64_t, int> mSendCompletions;
             std::unordered_map<std::uint64_t, int> mRecvCompletions;
 
-#ifndef OFI_RDM_GLOBAL_THREADSAFE
+#ifndef OFI_GRDM_GLOBAL_THREADSAFE
             std::mutex mRecvMutex;
             std::mutex mSendMutex;
-#endif // !OFI_RDM_GLOBAL_THREADSAFE
+#endif // !OFI_GRDM_GLOBAL_THREADSAFE
             std::mutex mSendCompletionQueueMutex;
             std::mutex mRecvCompletionQueueMutex;
             std::mutex mSendCompletionsMutex;
@@ -188,4 +188,4 @@ void pMR::OFI::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
         }
     }
 }
-#endif // pMR_PROVIDERS_OFI_RDM_GLOBALENDPOINT_H
+#endif // pMR_PROVIDERS_OFI_GRDM_GLOBALENDPOINT_H

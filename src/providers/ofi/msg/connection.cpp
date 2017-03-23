@@ -13,8 +13,7 @@
 //  limitations under the License.
 
 #include "connection.hpp"
-#include <stdexcept>
-#include "../../backends/backend.hpp"
+#include "../../../backends/backend.hpp"
 #include "../common/passiveendpoint.hpp"
 #include "../ofi.hpp"
 
@@ -29,7 +28,7 @@ pMR::OFI::Connection::Connection(Target const &target, Info info)
 #ifdef OFI_RMA_CONTROL
           FI_REMOTE_WRITE)
 #ifdef OFI_RMA_EVENT
-    , mCounter(getDomain())
+    , mCounter(mDomain)
 #endif // OFI_RMA_EVENT
 #else
           FI_RECV)
@@ -42,8 +41,8 @@ pMR::OFI::Connection::Connection(Target const &target, Info info)
     passiveEndpoint.bind(eventQueue);
     passiveEndpoint.listen();
 
-    std::vector<std::uint8_t> localAddress = passiveEndpoint.getAddress();
-    std::vector<std::uint8_t> remoteAddress(localAddress.size());
+    auto localAddress = passiveEndpoint.getAddress();
+    auto remoteAddress = localAddress;
     Backend::exchange(target, localAddress, remoteAddress);
     info.setDestinationAddress(remoteAddress);
 
@@ -54,14 +53,14 @@ pMR::OFI::Connection::Connection(Target const &target, Info info)
 #ifdef OFI_RMA
 #ifdef OFI_RMA_CONTROL
 #ifdef OFI_RMA_TARGET_RX
-    mConnection->postRecvToActive();
+    postRecvToActive();
 #endif // OFI_RMA_TARGET_RX
 #else
-    mConnection->postRecvAddressToActive();
+    postRecvAddressToActive();
 #endif // OFI_RMA_CONTROL
 #else
 #ifndef OFI_NO_CONTROL
-    mConnection->postRecvToActive();
+    postRecvToActive();
 #endif // !OFI_NO_CONTROL
 #endif // OFI_RMA
 
@@ -94,7 +93,7 @@ pMR::OFI::Domain const &pMR::OFI::Connection::getDomain() const
     return mDomain;
 }
 
-void pMR::OFI::Connection::checkMessageSize(std::size_t size) const
+void pMR::OFI::Connection::checkMessageSize(std::size_t const size) const
 {
     return mDomain.checkMessageSize({size});
 }
@@ -102,27 +101,27 @@ void pMR::OFI::Connection::checkMessageSize(std::size_t size) const
 void pMR::OFI::Connection::postSendToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
-    postSend(mActiveEndpoint, memoryRegion, {sizeByte});
+    mActiveEndpoint->postSend(memoryRegion, {sizeByte});
 }
 
 void pMR::OFI::Connection::postSendToPassive()
 {
-    postSend(mPassiveEndpoint);
+    mPassiveEndpoint->postSend();
 }
 
 void pMR::OFI::Connection::postRecvToActive()
 {
-    postRecv(mActiveEndpoint);
+    mActiveEndpoint->postRecv();
 }
 
 void pMR::OFI::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
 {
-    postRecv(mPassiveEndpoint, memoryRegion);
+    mPassiveEndpoint->postRecv(memoryRegion);
 }
 
 void pMR::OFI::Connection::postRecvToPassive()
 {
-    postRecv(mPassiveEndpoint);
+    mPassiveEndpoint->postRecv();
 }
 
 void pMR::OFI::Connection::pollActiveSend()
@@ -159,96 +158,25 @@ void pMR::OFI::Connection::setLocalTargetMemoryAddress(
 #ifdef OFI_RMA_CONTROL
 void pMR::OFI::Connection::postWriteAddressToPassive()
 {
-    postWrite(mPassiveEndpoint, mLocalTargetMemoryRegion, mRemoteMemoryAddress);
+    mPassiveEndpoint->postWrite(mLocalTargetMemoryRegion, mRemoteMemoryAddress);
 }
 
 #else
 void pMR::OFI::Connection::postSendAddressToPassive()
 {
-    postSend(mPassiveEndpoint, mLocalTargetMemoryRegion);
+    mPassiveEndpoint->postSend(mLocalTargetMemoryRegion);
 }
 
 void pMR::OFI::Connection::postRecvAddressToActive()
 {
-    postRecv(mActiveEndpoint, mRemoteTargetMemoryRegion);
+    mActiveEndpoint->postRecv(mRemoteTargetMemoryRegion);
 }
 #endif // OFI_RMA_CONTROL
 
 void pMR::OFI::Connection::postWriteToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
-    postWrite(
-        mActiveEndpoint, memoryRegion, mRemoteTargetMemoryAddress, {sizeByte});
+    mActiveEndpoint->postWrite(
+        memoryRegion, mRemoteTargetMemoryAddress, {sizeByte});
 }
 #endif // OFI_RMA
-
-void pMR::OFI::Connection::postSend(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, MemoryRegion &memoryRegion)
-{
-    postSend(softEndpoint, memoryRegion, {memoryRegion.getLength()});
-}
-
-void pMR::OFI::Connection::postSend(std::unique_ptr<SoftEndpoint> &softEndpoint,
-    MemoryRegion &memoryRegion, std::size_t const sizeByte)
-{
-    Message message(memoryRegion, {sizeByte}, softEndpoint->getSendContext());
-    postSend(softEndpoint, message);
-}
-
-void pMR::OFI::Connection::postSend(std::unique_ptr<SoftEndpoint> &softEndpoint)
-{
-    Message message(softEndpoint->getSendContext());
-    postSend(softEndpoint, message);
-}
-
-void pMR::OFI::Connection::postSend(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, Message &message)
-{
-    postSendRequest(
-        softEndpoint, message, mDomain.checkInjectSize({message.getLength()}));
-}
-
-void pMR::OFI::Connection::postRecv(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, MemoryRegion &memoryRegion)
-{
-    Message message(memoryRegion, softEndpoint->getRecvContext());
-    postRecv(softEndpoint, message);
-}
-
-void pMR::OFI::Connection::postRecv(std::unique_ptr<SoftEndpoint> &softEndpoint)
-{
-    Message message(softEndpoint->getRecvContext());
-    postRecv(softEndpoint, message);
-}
-
-void pMR::OFI::Connection::postRecv(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, Message &message)
-{
-    postRecvRequest(softEndpoint, message);
-}
-
-void pMR::OFI::Connection::postWrite(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, MemoryRegion &memoryRegion,
-    MemoryAddress &target)
-{
-    postWrite(softEndpoint, memoryRegion, target, {memoryRegion.getLength()});
-}
-
-void pMR::OFI::Connection::postWrite(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, MemoryRegion &memoryRegion,
-    MemoryAddress &target, std::size_t const sizeByte)
-{
-    RMA message(
-        memoryRegion, {sizeByte}, target, softEndpoint->getSendContext());
-    postWrite(softEndpoint, message);
-}
-
-void pMR::OFI::Connection::postWrite(
-    std::unique_ptr<SoftEndpoint> &softEndpoint, RMA &message)
-{
-    postWriteRequest(softEndpoint, message,
-#ifndef OFI_RMA_EVENT
-        FI_REMOTE_CQ_DATA |
-#endif // OFI_RMA_EVENT
-            mDomain.checkInjectSize({message.getLength()}));
-}

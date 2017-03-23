@@ -14,39 +14,44 @@
 
 #include "connection.hpp"
 #include "../../../backends/backend.hpp"
+#include "../../../misc/singleton.hpp"
 #include "../ofi.hpp"
 
 pMR::OFI::Connection::Connection(Target const &target, Info info)
-    : mFabric(info)
-    , mDomain(mFabric, info)
-    , mActiveEndpoint(mDomain, info)
-    , mPassiveEndpoint(mDomain, info)
+    : mEndpoint(&Singleton<GlobalEndpoint>::Instance(info))
+    , mActiveEndpoint(mEndpoint)
+    , mPassiveEndpoint(mEndpoint)
 #ifdef OFI_RMA
-    , mLocalTargetMemoryRegion(mDomain, mLocalTargetMemoryAddress.rawData(),
+    , mLocalTargetMemoryRegion(getDomain(), mLocalTargetMemoryAddress.rawData(),
           {mLocalTargetMemoryAddress.size()}, FI_SEND)
-    , mRemoteTargetMemoryRegion(mDomain, mRemoteTargetMemoryAddress.rawData(),
+    , mRemoteTargetMemoryRegion(getDomain(),
+          mRemoteTargetMemoryAddress.rawData(),
           {mRemoteTargetMemoryAddress.size()},
 #ifdef OFI_RMA_CONTROL
           FI_REMOTE_WRITE)
 #ifdef OFI_RMA_EVENT
-    , mCounter(mDomain)
+    , mCounter(getDomain())
 #endif // OFI_RMA_EVENT
 #else
           FI_RECV)
 #endif // OFI_RMA_CONTROL
 #endif // OFI_RMA
 {
-    auto passiveAddress = mPassiveEndpoint.getAddress();
-    auto activeAddress = mActiveEndpoint.getAddress();
+    auto localAddress = mEndpoint->getAddress();
+    auto activeID = mActiveEndpoint.getID();
+    auto passiveID = mPassiveEndpoint.getID();
 
-    auto remotePassiveAddress = passiveAddress;
-    auto remoteActiveAddress = activeAddress;
+    auto peerAddress = localAddress;
+    auto activeRemoteID = activeID;
+    auto passiveRemoteID = passiveID;
 
-    Backend::exchange(target, passiveAddress, remotePassiveAddress);
-    Backend::exchange(target, activeAddress, remoteActiveAddress);
+    Backend::exchange(target, localAddress, peerAddress);
+    Backend::exchange(target, activeID, passiveRemoteID);
+    Backend::exchange(target, passiveID, activeRemoteID);
 
-    mPassiveEndpoint.connect(remoteActiveAddress);
-    mActiveEndpoint.connect(remotePassiveAddress);
+    mPeerAddress = {mEndpoint->addPeer(peerAddress)};
+    mActiveEndpoint.setRemoteID(activeRemoteID);
+    mPassiveEndpoint.setRemoteID(passiveRemoteID);
 
 #ifdef OFI_RMA
 #ifdef OFI_RMA_CONTROL
@@ -75,43 +80,43 @@ pMR::OFI::Connection::Connection(Target const &target, Info info)
 
 pMR::OFI::Domain &pMR::OFI::Connection::getDomain()
 {
-    return mDomain;
+    return mEndpoint->getDomain();
 }
 
 pMR::OFI::Domain const &pMR::OFI::Connection::getDomain() const
 {
-    return mDomain;
+    return mEndpoint->getDomain();
 }
 
 void pMR::OFI::Connection::checkMessageSize(std::size_t const size) const
 {
-    return mDomain.checkMessageSize({size});
+    return mEndpoint->checkMessageSize({size});
 }
 
 void pMR::OFI::Connection::postSendToActive(
     MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
-    mActiveEndpoint.postSend(memoryRegion, {sizeByte});
+    mActiveEndpoint.postSend(memoryRegion, {sizeByte}, {mPeerAddress});
 }
 
 void pMR::OFI::Connection::postSendToPassive()
 {
-    mPassiveEndpoint.postSend();
+    mPassiveEndpoint.postSend({mPeerAddress});
 }
 
 void pMR::OFI::Connection::postRecvToActive()
 {
-    mActiveEndpoint.postRecv();
+    mActiveEndpoint.postRecv({mPeerAddress});
 }
 
 void pMR::OFI::Connection::postRecvToPassive(MemoryRegion &memoryRegion)
 {
-    mPassiveEndpoint.postRecv(memoryRegion);
+    mPassiveEndpoint.postRecv(memoryRegion, {mPeerAddress});
 }
 
 void pMR::OFI::Connection::postRecvToPassive()
 {
-    mPassiveEndpoint.postRecv();
+    mPassiveEndpoint.postRecv({mPeerAddress});
 }
 
 void pMR::OFI::Connection::pollActiveSend()

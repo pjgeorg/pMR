@@ -15,7 +15,7 @@
 #include "tagged.hpp"
 
 pMR::OFI::Tagged::Tagged(
-    fi_context *context, std::uint64_t tag, fi_addr_t address)
+    fi_context *context, std::uint64_t tag, fi_addr_t const address)
 {
     mIOV.iov_base = nullptr;
     mIOV.iov_len = 0;
@@ -30,13 +30,13 @@ pMR::OFI::Tagged::Tagged(
 }
 
 pMR::OFI::Tagged::Tagged(MemoryRegion &memoryRegion, fi_context *context,
-    std::uint64_t tag, fi_addr_t address)
+    std::uint64_t tag, fi_addr_t const address)
     : Tagged(memoryRegion, memoryRegion.getLength(), context, tag, address)
 {
 }
 
 pMR::OFI::Tagged::Tagged(MemoryRegion &memoryRegion, std::size_t const sizeByte,
-    fi_context *context, std::uint64_t tag, fi_addr_t address)
+    fi_context *context, std::uint64_t tag, fi_addr_t const address)
 {
     if(sizeByte == 0)
     {
