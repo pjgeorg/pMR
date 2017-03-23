@@ -110,14 +110,12 @@ void pMR::OFI::GlobalEndpoint::unbind(
 
 void pMR::OFI::GlobalEndpoint::pollSend(std::uint64_t const iD)
 {
-    poll(mSendCompletionQueue, mSendCompletionQueueMutex, mSendCompletions,
-        mSendCompletionsMutex, iD);
+    poll(mSendCompletionQueue, mSendCompletions, mSendCompletionsMutex, iD);
 }
 
 void pMR::OFI::GlobalEndpoint::pollRecv(std::uint64_t const iD)
 {
-    poll(mRecvCompletionQueue, mRecvCompletionQueueMutex, mRecvCompletions,
-        mRecvCompletionsMutex, iD);
+    poll(mRecvCompletionQueue, mRecvCompletions, mRecvCompletionsMutex, iD);
 }
 
 void pMR::OFI::GlobalEndpoint::checkMessageSize(std::size_t const size) const

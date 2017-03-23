@@ -68,8 +68,6 @@ namespace pMR
 #else
             CompletionQueueContext mRecvCompletionQueue;
 #endif // OFI_RMA && !OFI_RMA_EVENT
-            std::mutex mSendCompletionQueueMutex;
-            std::mutex mRecvCompletionQueueMutex;
 
             std::unordered_map<std::uint64_t, int> mSendCompletions;
             std::unordered_map<std::uint64_t, int> mRecvCompletions;
@@ -90,15 +88,14 @@ namespace pMR
             std::uint64_t retrieveCompletions(CompletionQueueData &queue);
 
             template<typename T>
-            void poll(T &queue, std::mutex &mutexQueue,
-                std::unordered_map<std::uint64_t, int> &map,
+            void poll(T &queue, std::unordered_map<std::uint64_t, int> &map,
                 std::mutex &mutexMap, std::uint64_t const iD);
         };
     }
 }
 
 template<typename T>
-void pMR::OFI::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
+void pMR::OFI::GlobalEndpoint::poll(T &queue,
     std::unordered_map<std::uint64_t, int> &map, std::mutex &mutexMap,
     std::uint64_t const iD)
 {
@@ -113,16 +110,6 @@ void pMR::OFI::GlobalEndpoint::poll(T &queue, std::mutex &mutexQueue,
             }
         }
         {
-            std::lock_guard<std::mutex> lock(mutexQueue);
-            // Re-check retrieved completions.
-            {
-                std::lock_guard<std::mutex> lock(mutexMap);
-                if(checkCompletions(map, iD))
-                {
-                    return;
-                }
-            }
-
             while(true)
             {
                 auto rID = decltype(iD){retrieveCompletions(queue)};

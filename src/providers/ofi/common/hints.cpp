@@ -55,9 +55,8 @@ pMR::OFI::Hints::Hints()
 
 #ifdef OFI_EP_MSG
     info->domain_attr->threading = FI_THREAD_ENDPOINT;
-    info->domain_attr->threading = FI_THREAD_SAFE;
 #elif defined OFI_EP_RDM
-    info->domain_attr->threading = FI_THREAD_DOMAIN;
+    info->domain_attr->threading = FI_THREAD_SAFE;
 #endif // OFI_EP
 
 #ifdef OFI_CONTROL_PROGRESS_AUTO
