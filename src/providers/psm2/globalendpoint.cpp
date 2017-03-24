@@ -31,12 +31,14 @@ pMR::PSM2::GlobalEndpoint::~GlobalEndpoint()
 
 psm2_epid_t pMR::PSM2::GlobalEndpoint::getID()
 {
+#ifndef PSM2_THREAD_SAFE
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {mEndpoint.getID()};
     }
     else
+#endif // PSM2_THREAD_SAFE
     {
         return {mEndpoint.getID()};
     }
@@ -45,12 +47,14 @@ psm2_epid_t pMR::PSM2::GlobalEndpoint::getID()
 psm2_epaddr_t pMR::PSM2::GlobalEndpoint::connect(
     psm2_epid_t const remoteAddress)
 {
+#ifndef PSM2_THREAD_SAFE
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         return {mEndpoint.connect({remoteAddress})};
     }
     else
+#endif // PSM2_THREAD_SAFE
     {
         return {mEndpoint.connect({remoteAddress})};
     }
@@ -59,6 +63,7 @@ psm2_epaddr_t pMR::PSM2::GlobalEndpoint::connect(
 psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postRecv(psm2_epaddr_t const source,
     void *buffer, std::uint32_t sizeByte, std::uint64_t const rTag)
 {
+#ifndef PSM2_THREAD_SAFE
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
@@ -66,6 +71,7 @@ psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postRecv(psm2_epaddr_t const source,
             PSM2::postRecv(mMatchedQueue, source, buffer, {sizeByte}, {rTag})};
     }
     else
+#endif // PSM2_THREAD_SAFE
     {
         return {
             PSM2::postRecv(mMatchedQueue, source, buffer, {sizeByte}, {rTag})};
@@ -76,6 +82,7 @@ psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postSend(
     psm2_epaddr_t const destination, void const *buffer, std::uint32_t sizeByte,
     std::uint64_t sTag)
 {
+#ifndef PSM2_THREAD_SAFE
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
@@ -83,6 +90,7 @@ psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postSend(
             mMatchedQueue, destination, buffer, {sizeByte}, {sTag})};
     }
     else
+#endif // PSM2_THREAD_SAFE
     {
         return {PSM2::postSend(
             mMatchedQueue, destination, buffer, {sizeByte}, {sTag})};
@@ -91,12 +99,14 @@ psm2_mq_req_t pMR::PSM2::GlobalEndpoint::postSend(
 
 void pMR::PSM2::GlobalEndpoint::poll(psm2_mq_req_t &request)
 {
+#ifndef PSM2_THREAD_SAFE
     if(cThreadLevel >= ThreadLevel::Multiple)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         PSM2::poll(mEndpoint, request);
     }
     else
+#endif // PSM2_THREAD_SAFE
     {
         PSM2::poll(mEndpoint, request);
     }

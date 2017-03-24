@@ -45,7 +45,8 @@ set(OFI.RDM.GLOBAL ON CACHE BOOL "Use one global endpoint for RDM.")
 set(OFI.RDM.GLOBAL.THREADSAFE OFF CACHE BOOL "Require the provider to be thread safe.")
 set(OFI.NO.CONTROL ON CACHE BOOL "Disable any control mechanism by pMR, rely on provider to manage all resources. Only works for non-RMA transfers.")
 
-set(PSM2.WRAPPER OFF CACHE STRING "Compile PSM2 wrapper for LD_PRELOAD to allow pMR use PSM2 next to OFI.")
+set(PSM2.THREAD.SAFE OFF CACHE STRING "Pretend PSM2 to be thread safe (experimental).")
+set(PSM2.WRAPPER OFF CACHE STRING "Compile PSM2 wrapper for LD_PRELOAD to allow pMR use PSM2 next to OFI (experimental).")
 set(PSM2.PRINT.STATS OFF CACHE STRING "Print PSM2 Matched Queue stats.")
 
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")

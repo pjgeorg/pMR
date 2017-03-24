@@ -150,6 +150,11 @@ if(PROVIDER.PSM2)
         ERROR("Library psm2 not found!")
     endif()
 
+    if(PSM2.THREAD.SAFE)
+        add_definitions(-DPSM2_THREAD_SAFE)
+        set(PSM2_OPTS "${PSM2_OPTS} ThreadSafe")
+    endif()
+
     if(PSM2.WRAPPER)
         INFO("PSM2 Wrapper library enabled. Use LD_PRELOAD to load libpmr_psm2_preload.so")
     endif()
