@@ -64,6 +64,7 @@ set(RECURSIVE.DOUBLING.FBT OFF CACHE BOOL "Enable optimization for 1D FBT with f
 
 
 set(QPACE2.WARN.TOPOLOGY ON CACHE BOOL "Warning about misuse of topology.")
+set(QPACE3.PSM2 OFF CACHE BOOL "Use PSM2 directly instead of OFI.")
 
 add_subdirectory(src)
 add_subdirectory(doxygen)

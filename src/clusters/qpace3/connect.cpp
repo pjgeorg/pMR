@@ -14,9 +14,11 @@
 
 #include "../../backends/backend.hpp"
 #include "../../connection.hpp"
-#include "../../misc/ip.hpp"
 #include "../../misc/singleton.hpp"
+#ifndef QPACE3_PSM2
+#include "../../misc/ip.hpp"
 #include "../../providers/ofi/common/info.hpp"
+#endif // !QPACE3_PSM2
 #include "../../target.hpp"
 #include "node.hpp"
 
@@ -44,7 +46,11 @@ void pMR::Connection::connect(Target const &target)
     }
     else
     {
+#ifdef QPACE3_PSM2
+        connectPSM2(target);
+#else
         auto info = OFI::getProvider("psm2", IP().getIPv4("ib0"));
         connectOFI(target, info);
+#endif // QPACE3_PSM2
     }
 }
