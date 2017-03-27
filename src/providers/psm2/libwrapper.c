@@ -46,6 +46,7 @@ static void __psm2_unlock()
 static psm2_ep_t gEndpoint;
 static psm2_epid_t gEndpointID;
 static psm2_mq_t gMatchedQueue;
+static int sLocked = 0;
 
 static psm2_error_t (*orig_psm2_init)(
     int *api_verno_major, int *api_verno_minor);
@@ -58,6 +59,19 @@ static psm2_error_t (*orig_psm2_ep_close)(
 static psm2_error_t (*orig_psm2_mq_init)(psm2_ep_t ep, uint64_t tag_order_mask,
     const struct psm2_optkey *opts, int numopts, psm2_mq_t *mq);
 static psm2_error_t (*orig_psm2_mq_finalize)(psm2_mq_t mq);
+
+static psm2_error_t (*orig_psm2_mq_irecv2)(psm2_mq_t mq, psm2_epaddr_t src,
+    psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
+    uint32_t len, void *context, psm2_mq_req_t *req);
+static psm2_error_t (*orig_psm2_mq_isend2)(psm2_mq_t mq, psm2_epaddr_t dest,
+    uint32_t flags, psm2_mq_tag_t *stag, const void *buf, uint32_t len,
+    void *context, psm2_mq_req_t *req);
+static psm2_error_t (*orig_psm2_mq_ipeek)(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status_t *status);
+static psm2_error_t (*orig_psm2_mq_ipeek2)(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status2_t *status);
+static psm2_error_t (*orig_psm2_mq_wait2)(
+    psm2_mq_req_t *request, psm2_mq_status2_t *status);
 static psm2_error_t (*orig_psm2_mq_test2)(
     psm2_mq_req_t *request, psm2_mq_status2_t *status);
 
@@ -70,6 +84,12 @@ __attribute__((constructor)) static void __psm2_constructor(void)
 
     orig_psm2_mq_init = dlsym(RTLD_NEXT, "psm2_mq_init");
     orig_psm2_mq_finalize = dlsym(RTLD_NEXT, "psm2_mq_finalize");
+
+    orig_psm2_mq_irecv2 = dlsym(RTLD_NEXT, "psm2_mq_irecv2");
+    orig_psm2_mq_isend2 = dlsym(RTLD_NEXT, "psm2_mq_isend2");
+    orig_psm2_mq_ipeek = dlsym(RTLD_NEXT, "psm2_mq_ipeek");
+    orig_psm2_mq_ipeek2 = dlsym(RTLD_NEXT, "psm2_mq_ipeek2");
+    orig_psm2_mq_wait2 = dlsym(RTLD_NEXT, "psm2_mq_wait2");
     orig_psm2_mq_test2 = dlsym(RTLD_NEXT, "psm2_mq_test2");
 }
 
@@ -144,12 +164,90 @@ psm2_error_t psm2_mq_finalize(psm2_mq_t mq)
     return PSM2_OK;
 }
 
+psm2_error_t psm2_mq_irecv2(psm2_mq_t mq, psm2_epaddr_t src,
+    psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
+    uint32_t len, void *context, psm2_mq_req_t *req)
+{
+    if(rtag->tag2 == 0xFFFFFFFF)
+    {
+        __psm2_lock();
+        ++sLocked;
+        __psm2_unlock();
+    }
+    psm2_error_t err = orig_psm2_mq_irecv2(
+        mq, src, rtag, rtagsel, flags, buf, len, context, req);
+    return err;
+}
+
+psm2_error_t psm2_mq_isend2(psm2_mq_t mq, psm2_epaddr_t dest, uint32_t flags,
+    psm2_mq_tag_t *stag, const void *buf, uint32_t len, void *context,
+    psm2_mq_req_t *req)
+{
+    if(stag->tag2 == 0xFFFFFFFF)
+    {
+        __psm2_lock();
+        ++sLocked;
+        __psm2_unlock();
+    }
+    psm2_error_t err =
+        orig_psm2_mq_isend2(mq, dest, flags, stag, buf, len, context, req);
+    return err;
+}
+
+psm2_error_t psm2_mq_ipeek(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status_t *status)
+{
+    psm2_error_t err;
+    __psm2_lock();
+    if(sLocked == 0)
+    {
+        err = orig_psm2_mq_ipeek(mq, req, status);
+    }
+    else
+    {
+        err = PSM2_MQ_NO_COMPLETIONS;
+    }
+    __psm2_unlock();
+    return err;
+}
+
+psm2_error_t psm2_mq_ipeek2(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status2_t *status)
+{
+    psm2_error_t err;
+    __psm2_lock();
+    if(sLocked == 0)
+    {
+        err = orig_psm2_mq_ipeek2(mq, req, status);
+    }
+    else
+    {
+        err = PSM2_MQ_NO_COMPLETIONS;
+    }
+    __psm2_unlock();
+    return err;
+}
+
+psm2_error_t psm2_mq_wait2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
+{
+    psm2_error_t err = orig_psm2_mq_wait2(request, status);
+    if(status->msg_tag.tag2 == 0xFFFFFFFF)
+    {
+        __psm2_lock();
+        --sLocked;
+        __psm2_unlock();
+    }
+    return err;
+}
+
 psm2_error_t psm2_mq_test2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
 {
     psm2_error_t err = orig_psm2_mq_test2(request, status);
-    if(status.msg_tag.tag2 == 0xFFFFFFFF)
+    if(status->msg_tag.tag2 == 0xFFFFFFFF)
     {
-        status.context = NULL;
+        __psm2_lock();
+        --sLocked;
+        __psm2_unlock();
     }
     return err;
 }
