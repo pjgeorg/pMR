@@ -159,6 +159,11 @@ if(PROVIDER.PSM2)
         INFO("PSM2 Wrapper library enabled. Use LD_PRELOAD to load libpmr_psm2_preload.so")
     endif()
 
+    if(PSM2.WAIT.BLOCK)
+        add_definitions(-DPSM2_WAIT_BLOCK)
+        set(PSM2_OPTS "${PSM2_OPTS} WaitBlock")
+    endif()
+
     if(PSM2.PRINT.STATS)
         add_definitions(-DPSM2_PRINT_STATS)
         set(PSM2_OPTS "${PSM2_OPTS} PrintStats")

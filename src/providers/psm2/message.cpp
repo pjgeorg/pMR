@@ -69,10 +69,14 @@ psm2_mq_req_t pMR::PSM2::postSend(MatchedQueue &mq,
 void pMR::PSM2::poll(Endpoint &endpoint, psm2_mq_req_t &request)
 {
     psm2_mq_status2_t status;
+#ifdef PSM2_WAIT_BLOCK
+    psm2_mq_wait2(&request, &status);
+#else
     do
     {
         psm2_poll(endpoint.get());
     } while(psm2_mq_test2(&request, &status) != PSM2_OK);
+#endif // PSM2_WAIT_BLOCK
 
     if(status.error_code != PSM2_OK)
     {
