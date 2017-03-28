@@ -46,7 +46,6 @@ static void __psm2_unlock()
 static psm2_ep_t gEndpoint;
 static psm2_epid_t gEndpointID;
 static psm2_mq_t gMatchedQueue;
-static int sLocked = 0;
 
 static psm2_error_t (*orig_psm2_init)(
     int *api_verno_major, int *api_verno_minor);
@@ -60,20 +59,24 @@ static psm2_error_t (*orig_psm2_mq_init)(psm2_ep_t ep, uint64_t tag_order_mask,
     const struct psm2_optkey *opts, int numopts, psm2_mq_t *mq);
 static psm2_error_t (*orig_psm2_mq_finalize)(psm2_mq_t mq);
 
+static psm2_error_t (*orig_psm2_mq_ipeek)(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status_t *status);
+static psm2_error_t (*orig_psm2_mq_ipeek2)(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status2_t *status);
+
+#ifdef PSM2_WRAPPER_BLOCK
+static int sLocked = 0;
 static psm2_error_t (*orig_psm2_mq_irecv2)(psm2_mq_t mq, psm2_epaddr_t src,
     psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
     uint32_t len, void *context, psm2_mq_req_t *req);
 static psm2_error_t (*orig_psm2_mq_isend2)(psm2_mq_t mq, psm2_epaddr_t dest,
     uint32_t flags, psm2_mq_tag_t *stag, const void *buf, uint32_t len,
     void *context, psm2_mq_req_t *req);
-static psm2_error_t (*orig_psm2_mq_ipeek)(
-    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status_t *status);
-static psm2_error_t (*orig_psm2_mq_ipeek2)(
-    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status2_t *status);
 static psm2_error_t (*orig_psm2_mq_wait2)(
     psm2_mq_req_t *request, psm2_mq_status2_t *status);
 static psm2_error_t (*orig_psm2_mq_test2)(
     psm2_mq_req_t *request, psm2_mq_status2_t *status);
+#endif // PSM2_WRAPPER_BLOCK
 
 __attribute__((constructor)) static void __psm2_constructor(void)
 {
@@ -85,12 +88,15 @@ __attribute__((constructor)) static void __psm2_constructor(void)
     orig_psm2_mq_init = dlsym(RTLD_NEXT, "psm2_mq_init");
     orig_psm2_mq_finalize = dlsym(RTLD_NEXT, "psm2_mq_finalize");
 
-    orig_psm2_mq_irecv2 = dlsym(RTLD_NEXT, "psm2_mq_irecv2");
-    orig_psm2_mq_isend2 = dlsym(RTLD_NEXT, "psm2_mq_isend2");
     orig_psm2_mq_ipeek = dlsym(RTLD_NEXT, "psm2_mq_ipeek");
     orig_psm2_mq_ipeek2 = dlsym(RTLD_NEXT, "psm2_mq_ipeek2");
+
+#ifdef PSM2_WRAPPER_BLOCK
+    orig_psm2_mq_irecv2 = dlsym(RTLD_NEXT, "psm2_mq_irecv2");
+    orig_psm2_mq_isend2 = dlsym(RTLD_NEXT, "psm2_mq_isend2");
     orig_psm2_mq_wait2 = dlsym(RTLD_NEXT, "psm2_mq_wait2");
     orig_psm2_mq_test2 = dlsym(RTLD_NEXT, "psm2_mq_test2");
+#endif // PSM2_WRAPPER_BLOCK
 }
 
 psm2_error_t psm2_init(int *api_verno_major, int *api_verno_minor)
@@ -164,36 +170,7 @@ psm2_error_t psm2_mq_finalize(psm2_mq_t mq)
     return PSM2_OK;
 }
 
-psm2_error_t psm2_mq_irecv2(psm2_mq_t mq, psm2_epaddr_t src,
-    psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
-    uint32_t len, void *context, psm2_mq_req_t *req)
-{
-    if(rtag->tag2 == 0xFFFFFFFF)
-    {
-        __psm2_lock();
-        ++sLocked;
-        __psm2_unlock();
-    }
-    psm2_error_t err = orig_psm2_mq_irecv2(
-        mq, src, rtag, rtagsel, flags, buf, len, context, req);
-    return err;
-}
-
-psm2_error_t psm2_mq_isend2(psm2_mq_t mq, psm2_epaddr_t dest, uint32_t flags,
-    psm2_mq_tag_t *stag, const void *buf, uint32_t len, void *context,
-    psm2_mq_req_t *req)
-{
-    if(stag->tag2 == 0xFFFFFFFF)
-    {
-        __psm2_lock();
-        ++sLocked;
-        __psm2_unlock();
-    }
-    psm2_error_t err =
-        orig_psm2_mq_isend2(mq, dest, flags, stag, buf, len, context, req);
-    return err;
-}
-
+#ifdef PSM2_WRAPPER_BLOCK
 psm2_error_t psm2_mq_ipeek(
     psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status_t *status)
 {
@@ -228,6 +205,36 @@ psm2_error_t psm2_mq_ipeek2(
     return err;
 }
 
+psm2_error_t psm2_mq_irecv2(psm2_mq_t mq, psm2_epaddr_t src,
+    psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
+    uint32_t len, void *context, psm2_mq_req_t *req)
+{
+    if(rtag->tag2 == 0xFFFFFFFF)
+    {
+        __psm2_lock();
+        ++sLocked;
+        __psm2_unlock();
+    }
+    psm2_error_t err = orig_psm2_mq_irecv2(
+        mq, src, rtag, rtagsel, flags, buf, len, context, req);
+    return err;
+}
+
+psm2_error_t psm2_mq_isend2(psm2_mq_t mq, psm2_epaddr_t dest, uint32_t flags,
+    psm2_mq_tag_t *stag, const void *buf, uint32_t len, void *context,
+    psm2_mq_req_t *req)
+{
+    if(stag->tag2 == 0xFFFFFFFF)
+    {
+        __psm2_lock();
+        ++sLocked;
+        __psm2_unlock();
+    }
+    psm2_error_t err =
+        orig_psm2_mq_isend2(mq, dest, flags, stag, buf, len, context, req);
+    return err;
+}
+
 psm2_error_t psm2_mq_wait2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
 {
     psm2_error_t err = orig_psm2_mq_wait2(request, status);
@@ -243,11 +250,76 @@ psm2_error_t psm2_mq_wait2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
 psm2_error_t psm2_mq_test2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
 {
     psm2_error_t err = orig_psm2_mq_test2(request, status);
-    if(status->msg_tag.tag2 == 0xFFFFFFFF)
+    if(err == PSM2_OK)
     {
-        __psm2_lock();
-        --sLocked;
-        __psm2_unlock();
+        if(status->msg_tag.tag2 == 0xFFFFFFFF)
+        {
+            __psm2_lock();
+            --sLocked;
+            __psm2_unlock();
+        }
     }
     return err;
 }
+
+#else
+psm2_error_t psm2_mq_ipeek(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status_t *status)
+{
+    psm2_error_t err;
+    psm2_mq_status2_t reqStatus;
+    err = orig_psm2_mq_ipeek2(mq, req, &reqStatus);
+    if(err == PSM2_OK)
+    {
+        if(reqStatus.msg_tag.tag2 == 0xFFFFFFFF)
+        {
+            *req = PSM2_MQ_REQINVALID;
+            err = PSM2_MQ_NO_COMPLETIONS;
+        }
+        else
+        {
+            if(status)
+            {
+                status->msg_tag = *((uint64_t *)reqStatus.msg_tag.tag);
+                status->msg_length = reqStatus.msg_length;
+                status->nbytes = reqStatus.nbytes;
+                status->error_code = reqStatus.error_code;
+                status->context = reqStatus.context;
+            }
+        }
+    }
+    return err;
+}
+
+psm2_error_t psm2_mq_ipeek2(
+    psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status2_t *status)
+{
+    psm2_error_t err;
+    if(status)
+    {
+        err = orig_psm2_mq_ipeek2(mq, req, status);
+        if(err == PSM2_OK)
+        {
+            if(status->msg_tag.tag2 == 0xFFFFFFFF)
+            {
+                *req = PSM2_MQ_REQINVALID;
+                err = PSM2_MQ_NO_COMPLETIONS;
+            }
+        }
+    }
+    else
+    {
+        psm2_mq_status2_t reqStatus;
+        err = orig_psm2_mq_ipeek2(mq, req, &reqStatus);
+        if(err == PSM2_OK)
+        {
+            if(reqStatus.msg_tag.tag2 == 0xFFFFFFFF)
+            {
+                *req = PSM2_MQ_REQINVALID;
+                err = PSM2_MQ_NO_COMPLETIONS;
+            }
+        }
+    }
+    return err;
+}
+#endif // PSM2_WRAPPER_BLOCK

@@ -47,6 +47,7 @@ set(OFI.NO.CONTROL ON CACHE BOOL "Disable any control mechanism by pMR, rely on 
 
 set(PSM2.THREAD.SAFE OFF CACHE STRING "Pretend PSM2 to be thread safe (experimental).")
 set(PSM2.WRAPPER OFF CACHE STRING "Compile PSM2 wrapper for LD_PRELOAD to allow pMR use PSM2 next to OFI (experimental).")
+set(PSM2.WRAPPER.BLOCK OFF CACHE STRING "Block others from calling peek while data operations are in progress. Otherwise hide own requests in peek.")
 set(PSM2.WAIT.BLOCK OFF CACHE STRING "Using blocking wait instead of polling and testing.")
 set(PSM2.PRINT.STATS OFF CACHE STRING "Print PSM2 Matched Queue stats.")
 
