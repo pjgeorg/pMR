@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TAG 0xFFFFFFFF
+
 static pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void __psm2_lock()
@@ -65,7 +67,7 @@ static psm2_error_t (*orig_psm2_mq_ipeek2)(
     psm2_mq_t mq, psm2_mq_req_t *req, psm2_mq_status2_t *status);
 
 #ifdef PSM2_WRAPPER_BLOCK
-static int sLocked = 0;
+static unsigned int gLocked = 0;
 static psm2_error_t (*orig_psm2_mq_irecv2)(psm2_mq_t mq, psm2_epaddr_t src,
     psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
     uint32_t len, void *context, psm2_mq_req_t *req);
@@ -176,7 +178,7 @@ psm2_error_t psm2_mq_ipeek(
 {
     psm2_error_t err;
     __psm2_lock();
-    if(sLocked == 0)
+    if(gLocked == 0)
     {
         err = orig_psm2_mq_ipeek(mq, req, status);
     }
@@ -193,7 +195,7 @@ psm2_error_t psm2_mq_ipeek2(
 {
     psm2_error_t err;
     __psm2_lock();
-    if(sLocked == 0)
+    if(gLocked == 0)
     {
         err = orig_psm2_mq_ipeek2(mq, req, status);
     }
@@ -209,10 +211,10 @@ psm2_error_t psm2_mq_irecv2(psm2_mq_t mq, psm2_epaddr_t src,
     psm2_mq_tag_t *rtag, psm2_mq_tag_t *rtagsel, uint32_t flags, void *buf,
     uint32_t len, void *context, psm2_mq_req_t *req)
 {
-    if(rtag->tag2 == 0xFFFFFFFF)
+    if(rtag->tag2 == TAG)
     {
         __psm2_lock();
-        ++sLocked;
+        ++gLocked;
         __psm2_unlock();
     }
     psm2_error_t err = orig_psm2_mq_irecv2(
@@ -224,10 +226,10 @@ psm2_error_t psm2_mq_isend2(psm2_mq_t mq, psm2_epaddr_t dest, uint32_t flags,
     psm2_mq_tag_t *stag, const void *buf, uint32_t len, void *context,
     psm2_mq_req_t *req)
 {
-    if(stag->tag2 == 0xFFFFFFFF)
+    if(stag->tag2 == TAG)
     {
         __psm2_lock();
-        ++sLocked;
+        ++gLocked;
         __psm2_unlock();
     }
     psm2_error_t err =
@@ -238,10 +240,10 @@ psm2_error_t psm2_mq_isend2(psm2_mq_t mq, psm2_epaddr_t dest, uint32_t flags,
 psm2_error_t psm2_mq_wait2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
 {
     psm2_error_t err = orig_psm2_mq_wait2(request, status);
-    if(status->msg_tag.tag2 == 0xFFFFFFFF)
+    if(status->msg_tag.tag2 == TAG)
     {
         __psm2_lock();
-        --sLocked;
+        --gLocked;
         __psm2_unlock();
     }
     return err;
@@ -252,10 +254,10 @@ psm2_error_t psm2_mq_test2(psm2_mq_req_t *request, psm2_mq_status2_t *status)
     psm2_error_t err = orig_psm2_mq_test2(request, status);
     if(err == PSM2_OK)
     {
-        if(status->msg_tag.tag2 == 0xFFFFFFFF)
+        if(status->msg_tag.tag2 == TAG)
         {
             __psm2_lock();
-            --sLocked;
+            --gLocked;
             __psm2_unlock();
         }
     }
@@ -271,7 +273,7 @@ psm2_error_t psm2_mq_ipeek(
     err = orig_psm2_mq_ipeek2(mq, req, &reqStatus);
     if(err == PSM2_OK)
     {
-        if(reqStatus.msg_tag.tag2 == 0xFFFFFFFF)
+        if(reqStatus.msg_tag.tag2 == TAG)
         {
             *req = PSM2_MQ_REQINVALID;
             err = PSM2_MQ_NO_COMPLETIONS;
@@ -300,7 +302,7 @@ psm2_error_t psm2_mq_ipeek2(
         err = orig_psm2_mq_ipeek2(mq, req, status);
         if(err == PSM2_OK)
         {
-            if(status->msg_tag.tag2 == 0xFFFFFFFF)
+            if(status->msg_tag.tag2 == TAG)
             {
                 *req = PSM2_MQ_REQINVALID;
                 err = PSM2_MQ_NO_COMPLETIONS;
@@ -313,7 +315,7 @@ psm2_error_t psm2_mq_ipeek2(
         err = orig_psm2_mq_ipeek2(mq, req, &reqStatus);
         if(err == PSM2_OK)
         {
-            if(reqStatus.msg_tag.tag2 == 0xFFFFFFFF)
+            if(reqStatus.msg_tag.tag2 == TAG)
             {
                 *req = PSM2_MQ_REQINVALID;
                 err = PSM2_MQ_NO_COMPLETIONS;
