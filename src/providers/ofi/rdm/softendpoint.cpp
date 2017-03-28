@@ -45,17 +45,15 @@ fi_context *pMR::OFI::SoftEndpoint::getRecvContext()
     return &mRecvContext;
 }
 
-void pMR::OFI::SoftEndpoint::postSend(
-    MemoryRegion &memoryRegion)
+void pMR::OFI::SoftEndpoint::postSend(MemoryRegion &memoryRegion)
 {
     postSend(memoryRegion, {memoryRegion.getLength()});
 }
 
-void pMR::OFI::SoftEndpoint::postSend(MemoryRegion &memoryRegion,
-    std::size_t const sizeByte)
+void pMR::OFI::SoftEndpoint::postSend(
+    MemoryRegion &memoryRegion, std::size_t const sizeByte)
 {
-    Message message(
-        memoryRegion, {sizeByte}, getSendContext(), {mPeerAddress});
+    Message message(memoryRegion, {sizeByte}, getSendContext(), {mPeerAddress});
     postSend(message);
 }
 
@@ -70,8 +68,7 @@ void pMR::OFI::SoftEndpoint::postSend(Message &message)
     postSendRequest(mEndpoint, message, checkInjectSize({message.getLength()}));
 }
 
-void pMR::OFI::SoftEndpoint::postRecv(
-    MemoryRegion &memoryRegion)
+void pMR::OFI::SoftEndpoint::postRecv(MemoryRegion &memoryRegion)
 {
     Message message(memoryRegion, getRecvContext(), {mPeerAddress});
     postRecv(message);
@@ -97,8 +94,8 @@ void pMR::OFI::SoftEndpoint::postWrite(
 void pMR::OFI::SoftEndpoint::postWrite(MemoryRegion &memoryRegion,
     MemoryAddress &target, std::size_t const sizeByte)
 {
-    RMA message(memoryRegion, {sizeByte}, target, getSendContext(),
-        0, {mPeerAddress});
+    RMA message(
+        memoryRegion, {sizeByte}, target, getSendContext(), 0, {mPeerAddress});
     postWrite(message);
 }
 

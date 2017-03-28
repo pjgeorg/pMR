@@ -48,7 +48,8 @@ namespace pMR
             fi_context *getRecvContext();
 
             void postSend(MemoryRegion &memoryRegion);
-            void postSend(MemoryRegion &memoryRegion, std::size_t const sizeByte);
+            void postSend(
+                MemoryRegion &memoryRegion, std::size_t const sizeByte);
             void postSend();
             void postSend(Message &message);
             void postRecv(MemoryRegion &memoryRegion);
