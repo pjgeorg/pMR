@@ -32,8 +32,8 @@ namespace pMR
     template<typename T, std::size_t N, typename... Types>
     std::string toString(std::array<T, N> const &arg, Types const &... args);
 
-    template<typename T, typename... Types>
-    std::string toString(std::vector<T> const &arg, Types const &... args);
+    template<typename T, typename A, typename... Types>
+    std::string toString(std::vector<T, A> const &arg, Types const &... args);
 
     template<typename... Types>
     std::string toString(std::string const &arg, Types const &... args);
@@ -75,8 +75,8 @@ std::string pMR::toString(std::array<T, N> const &arg, Types const &... args)
     return str;
 }
 
-template<typename T, typename... Types>
-std::string pMR::toString(std::vector<T> const &arg, Types const &... args)
+template<typename T, typename A, typename... Types>
+std::string pMR::toString(std::vector<T, A> const &arg, Types const &... args)
 {
     std::string str;
     for(auto element : arg)
