@@ -2,7 +2,11 @@ if(MIC)
     include(mic)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -std=c++11")
+if("${CMAKE_CXX_FLAGS}" STREQUAL "")
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -O3 -std=c++11")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -std=c++11")
+endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-braced-scalar-init -Wno-missing-braces")
@@ -39,11 +43,10 @@ include(allreduce)
 # Re-configure config.hpp to set all enabled providers
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY)
 
-string(TOLOWER ${CLUSTER} CLUSTER)
-add_subdirectory(clusters/${CLUSTER})
+string(TOLOWER ${CLUSTER} CLUSTER_DIR)
+add_subdirectory(clusters/${CLUSTER_DIR})
 
 add_subdirectory(misc)
-
 
 if(CAPI)
     if(NOT ${BACKEND} STREQUAL "MPI")
