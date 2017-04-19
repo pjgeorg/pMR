@@ -23,6 +23,9 @@
 
 namespace pMR
 {
+    template<typename... Types>
+    std::string toString(bool const arg, Types const &... args);
+
     template<typename T, typename... Types>
     std::string toString(T const &arg, Types const &... args);
 
@@ -39,6 +42,19 @@ namespace pMR
     std::string toString(std::string const &arg, Types const &... args);
 
     std::string toString();
+}
+
+template<typename... Types>
+std::string pMR::toString(bool const arg, Types const &... args)
+{
+    std::string str;
+    std::ostringstream oss;
+    oss << std::boolalpha;
+    oss << arg;
+    str += oss.str();
+    str += " ";
+    str += toString(args...);
+    return str;
 }
 
 template<typename T, typename... Types>
