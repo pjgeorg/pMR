@@ -41,6 +41,11 @@ pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
     queryTarget();
 }
 
+bool pMR::Target::isRemote() const
+{
+    return {!(mNull || mSelf)};
+}
+
 bool pMR::Target::isNull() const
 {
     return {mNull};

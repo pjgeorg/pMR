@@ -59,6 +59,9 @@ namespace pMR
             int const uniqueSendID, int const uniqueRecvID, bool const null,
             bool const self);
         ~Target() = default;
+        //! @brief Checks whether the target is another process.
+        //! @return Returns true if another process, false otherwise.
+        bool isRemote() const;
         //! @brief Checks whether the target is null (MPI_PROC_NULL).
         //! @return Returns true if null, false otherwise.
         bool isNull() const;
