@@ -141,6 +141,8 @@ void runExchange(int argc, char **argv)
         finalize();
     }
 
+    threads = std::min(threads, static_cast<int>(connections.size()));
+
     // Print Benchmark Information
     printMaster("Benchmark:   Exchange");
     printMaster("Processes:   ", communicator.size());
@@ -220,8 +222,6 @@ void runExchange(int argc, char **argv)
 
         auto size = sendWindows.size();
         auto s = decltype(size){0};
-
-        threads = std::min(threads, static_cast<int>(size));
 
         double time = -pMR::getTimeInSeconds();
 #pragma omp parallel num_threads(threads)
