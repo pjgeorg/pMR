@@ -82,13 +82,13 @@ namespace pMR
     constexpr std::size_t cPadding = @PADDING@;
 
     template<typename T, T Padding = cPadding>
-    T padSize(T const size)
+    constexpr T padSize(T const size)
     {
         return (size + Padding - 1) / Padding * Padding;
     }
 
     template<typename T>
-    T alignedSize(T const size)
+    constexpr T alignedSize(T const size)
     {
         return {padSize<T, cAlignment>(size)};
     }
