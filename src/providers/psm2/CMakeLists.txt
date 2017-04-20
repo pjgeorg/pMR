@@ -16,4 +16,5 @@ add_library(PROVIDER_PSM2 OBJECT
 if(PSM2.WRAPPER)
     add_library(pmr_psm2_preload SHARED libwrapper.c)
     install(TARGETS pmr_psm2_preload LIBRARY DESTINATION lib)
+    target_link_libraries(pmr_psm2_preload dl)
 endif()
