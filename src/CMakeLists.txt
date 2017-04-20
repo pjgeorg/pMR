@@ -2,6 +2,12 @@ if(MIC)
     include(mic)
 endif()
 
+if("${CMAKE_C_FLAGS}" STREQUAL "")
+    set(CMAKE_C_FLAGS "-Wall -Werror -O3")
+else()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -O3")
+endif()
+
 if("${CMAKE_CXX_FLAGS}" STREQUAL "")
     set(CMAKE_CXX_FLAGS "-Wall -Werror -O3 -std=c++11")
 else()
