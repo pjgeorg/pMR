@@ -101,7 +101,6 @@ namespace pMR
         std::vector<int> mCoordinates;
         std::vector<int> mTopology;
         std::vector<int> mPeriodic;
-        bool mCartesian = false;
     };
 }
 #endif // pMR_COMMUNICATOR_H

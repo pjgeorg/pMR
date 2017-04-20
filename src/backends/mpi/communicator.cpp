@@ -104,7 +104,6 @@ pMR::Communicator::Communicator(MPI_Comm const communicator,
         throw std::runtime_error(
             "pMR: Unable to create cartesian communicator.");
     }
-    mCartesian = {true};
 
     // Get own ID
     if(MPI_Comm_rank(mCommunicator, &mID))
