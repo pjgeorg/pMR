@@ -93,7 +93,7 @@ namespace pMR
         return {padSize<T, cAlignment>(size)};
     }
 
-    template<typename T>
+    template<typename T = unsigned char>
     constexpr std::size_t cacheLineSize()
     {
         return {@CACHELINESIZE@ / sizeof(T)};
