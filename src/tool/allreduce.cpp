@@ -81,7 +81,7 @@ void runAllReduce(int argc, char **argv)
     pMR::Communicator communicator(MPI_COMM_WORLD);
 
     // Print Benchmark Information
-    printMaster("Benchmark:   AllReduce");
+    printMaster("Benchmark:    AllReduce");
     printMaster("Processes:   ", communicator.size());
     printMaster("BitExact:    ", bitExact);
     printMaster("Verify:      ", verify);

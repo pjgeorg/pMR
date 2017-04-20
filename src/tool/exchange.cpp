@@ -144,7 +144,7 @@ void runExchange(int argc, char **argv)
     threads = std::min(threads, static_cast<int>(connections.size()));
 
     // Print Benchmark Information
-    printMaster("Benchmark:   Exchange");
+    printMaster("Benchmark:    Exchange");
     printMaster("Processes:   ", communicator.size());
     printMaster("Dimensions:  ", static_cast<int>(connections.size() / 2), "/",
         communicator.dimensions());
