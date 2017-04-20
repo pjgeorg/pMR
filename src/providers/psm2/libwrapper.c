@@ -22,6 +22,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TAG 0xFFFFFFFF
 
@@ -282,7 +283,7 @@ psm2_error_t psm2_mq_ipeek(
         {
             if(status)
             {
-                status->msg_tag = *((uint64_t *)reqStatus.msg_tag.tag);
+                memcpy(&(status->msg_tag), reqStatus.msg_tag.tag, sizeof(uint64_t));
                 status->msg_length = reqStatus.msg_length;
                 status->nbytes = reqStatus.nbytes;
                 status->error_code = reqStatus.error_code;
