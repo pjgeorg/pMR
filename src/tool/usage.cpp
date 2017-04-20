@@ -13,8 +13,8 @@
 //  limitations under the License.
 
 #include "usage.hpp"
-#include "parameter.hpp"
 #include "mpi.hpp"
+#include "parameter.hpp"
 
 void printUsage()
 {
@@ -33,12 +33,13 @@ void printUsage()
     printMaster("    --cxxflags          Get CXX compiler flags.");
     printMaster("    --libs              Get required libraries.");
     printMaster("    --ldflags           Get required LDFLAGS.");
+    printMaster("    --config            Get altered configuration.");
     printMaster();
     printMaster();
     printMaster("Benchmark:");
     printMaster("  Use to run simple benchmarks.");
     printMaster("  Select benchmark:");
-    printMaster("    --benchmark         exchange | sendrecv | allreduce");
+    printMaster("    --benchmark         exchange | allreduce");
     printMaster();
     printMaster("  Optional parameters:");
     printMaster("    --dim D             Set number of dimensions.");
@@ -48,10 +49,16 @@ void printUsage()
     printMaster("    --overallSize s     Set maximum sent data.");
     printMaster("    --minMsgSize m      Set minimum message size.");
     printMaster("    --MaxMsgSize M      Set maximum message size.");
-    printMaster("    --deltaMsgSize d    Set message size delta.");
-    printMaster("    --granularity g     Set allreduse size granulrity.");
+    printMaster(
+        "    --deltaMsgSize d    Set message size delta factor in percent.");
+    printMaster("    --minDeltaMsgSize m Set minimum delta for message size.");
+    printMaster("    --maxDeltaMsgSize M Set minimum delta for message size.");
     printMaster("    --bufferedSend      Enable buffered send.");
     printMaster("    --bufferedRecv      Enable buffered receive.");
+    printMaster("    --threaded          Enable threaded communication.");
+    printMaster("    --verify            Enable communication verification.");
+    printMaster("    --granularity g     Set AllReduce size granularity.");
+    printMaster("    --bitExact          Use bit identical allreduce.");
 
     finalize();
 }

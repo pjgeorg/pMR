@@ -12,12 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "reduce.hpp"
+#ifndef pMR_TOOL_ALLREDUCE_H
+#define pMR_TOOL_ALLREDUCE_H
 
-void plus(float const *in, float *inout, std::uint32_t count)
-{
-    for(std::uint32_t i = 0; i != count; ++i)
-    {
-        inout[i] += in[i];
-    }
-}
+void runAllReduce(int argc, char **argv);
+
+#endif // pMR_TOOL_ALLREDUCE_H

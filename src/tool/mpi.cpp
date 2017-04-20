@@ -15,11 +15,28 @@
 #include "mpi.hpp"
 #include <cstdlib>
 #include <stdexcept>
+#include "../config.hpp"
 #include "../misc/print.hpp"
 
 void init(int argc, char **argv)
 {
-    int required = MPI_THREAD_SERIALIZED;
+    int required = []() {
+        if(pMR::cThreadLevel <= pMR::ThreadLevel::Single)
+        {
+            return MPI_THREAD_SINGLE;
+        }
+        if(pMR::cThreadLevel <= pMR::ThreadLevel::Funneled)
+        {
+            return MPI_THREAD_FUNNELED;
+        }
+        if(pMR::cThreadLevel <= pMR::ThreadLevel::Serialized)
+        {
+            return MPI_THREAD_SERIALIZED;
+        }
+
+        return MPI_THREAD_MULTIPLE;
+    }();
+
     int provided;
 
     if(MPI_Init_thread(&argc, &argv, required, &provided))

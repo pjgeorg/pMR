@@ -43,8 +43,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/info.hpp.in
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(tool
-    benchmark.cpp info.cpp mpi.cpp parameter.cpp reduce.cpp tool.cpp usage.cpp
-    tests/exchange.cpp tests/global.cpp)
+    allreduce.cpp
+    exchange.cpp
+    info.cpp
+    mpi.cpp
+    parameter.cpp
+    tool.cpp
+    usage.cpp)
 target_link_libraries(tool pmr)
 set_target_properties(tool PROPERTIES OUTPUT_NAME pmr)
 install(TARGETS tool DESTINATION bin)

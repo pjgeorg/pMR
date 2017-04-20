@@ -12,9 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_TOOL_TEST_GLOBAL_H
-#define pMR_TOOL_TEST_GLOBAL_H
+#ifndef pMR_TOOL_EXCHANGE_H
+#define pMR_TOOL_EXCHANGE_H
 
-void runGlobalTest();
+void runExchange(int argc, char **argv);
 
-#endif // pMR_TOOL_TEST_GLOBAL_H
+#endif // pMR_TOOL_EXCHANGE_H
