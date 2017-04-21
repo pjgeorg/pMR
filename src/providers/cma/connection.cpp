@@ -14,12 +14,15 @@
 
 #include "connection.hpp"
 #include <array>
+#include <cerrno>
+#include <cstring>
 #include <stdexcept>
 extern "C" {
 #include <unistd.h>
 }
 #include "../../arch/processor.hpp"
 #include "../../backends/backend.hpp"
+#include "../../misc/string.hpp"
 
 pMR::CMA::Connection::Connection(Target const &target)
 {
@@ -83,7 +86,8 @@ void pMR::CMA::Connection::writeData(
 
         if(ret < 0)
         {
-            throw std::runtime_error("pMR: CMA failed to write data.");
+            throw std::runtime_error(toString(
+                "pMR: CMA failed to write data:", std::strerror(errno)));
         }
 
         localBuffer.iov_base = static_cast<void *>(
