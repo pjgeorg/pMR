@@ -243,13 +243,11 @@ void pMR::RecursiveDoubling::AllReduce::postBroadcast()
     {
         if(mRDConnections.size() == 0)
         {
-            mPreRecvWindow->init();
             mPreRecvWindow->post();
             mPreRecvWindow->wait();
         }
         else
         {
-            mPreSendWindow->init();
             mPreSendWindow->post();
             mPreSendWindow->wait();
         }
