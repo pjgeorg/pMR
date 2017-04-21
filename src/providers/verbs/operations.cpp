@@ -13,10 +13,12 @@
 //  limitations under the License.
 
 #include "operations.hpp"
+#include <cstring>
+#include <stdexcept>
 extern "C" {
 #include <infiniband/verbs.h>
 }
-#include <stdexcept>
+#include "../../misc/string.hpp"
 #include "verbs.hpp"
 
 void pMR::Verbs::postSendRequest(
@@ -42,9 +44,11 @@ void pMR::Verbs::postSendRequest(
 
     ibv_send_wr *badRequest;
 
-    if(ibv_post_send(queuePair.get(), &workRequest, &badRequest))
+    auto err = ibv_post_send(queuePair.get(), &workRequest, &badRequest);
+    if(err)
     {
-        throw std::runtime_error("pMR: Unable to post Send Work Request.");
+        throw std::runtime_error(toString(
+            "pMR: Unable to post Send Work Request:", std::strerror(err)));
     }
 }
 
@@ -65,9 +69,11 @@ void pMR::Verbs::postRecvRequest(
 
     ibv_recv_wr *badRequest;
 
-    if(ibv_post_recv(queuePair.get(), &workRequest, &badRequest))
+    auto err = ibv_post_recv(queuePair.get(), &workRequest, &badRequest);
+    if(err)
     {
-        throw std::runtime_error("pMR: Unable to post Receive Work Request.");
+        throw std::runtime_error(toString(
+            "pMR: Unable to post Receive Work Request:", std::strerror(err)));
     }
 }
 
@@ -97,8 +103,10 @@ void pMR::Verbs::postWriteRequest(QueuePair &queuePair,
 
     ibv_send_wr *badRequest;
 
-    if(ibv_post_send(queuePair.get(), &workRequest, &badRequest))
+    auto err = ibv_post_send(queuePair.get(), &workRequest, &badRequest);
+    if(err)
     {
-        throw std::runtime_error("pMR: Unable to post RDMA Work Request.");
+        throw std::runtime_error(toString(
+            "pMR: Unable to post RDMA Work Request:", std::strerror(err)));
     }
 }
