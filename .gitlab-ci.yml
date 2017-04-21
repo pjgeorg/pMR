@@ -5,7 +5,7 @@ stages:
     - build
     - test
 
-build-job-CentOS-7.3-gcc-openmpi-Release:
+build-job-CentOS-gcc-openmpi-mpi:
     image: docker.io/rqcd/centos-latest-buildtools:latest
     stage: build
     script:
@@ -22,7 +22,24 @@ build-job-CentOS-7.3-gcc-openmpi-Release:
         paths:
             - install/bin/pmr
 
-test-job-CentOS-7.3-gcc-openmpi-Release:
+build-job-CentOS-gcc-openmpi-shm:
+    image: docker.io/rqcd/centos-latest-buildtools:latest
+    stage: build
+    script:
+        - module purge
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+test-job-CentOS-gcc-openmpi-mpi:
     image: docker.io/rqcd/centos-latest-buildtools:latest
     stage: test
     script:
@@ -30,4 +47,14 @@ test-job-CentOS-7.3-gcc-openmpi-Release:
         - module load mpi/openmpi-x86_64
         - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --verify
     dependencies:
-        - build-job-CentOS-7.3-gcc-openmpi-Release
+        - build-job-CentOS-gcc-openmpi-mpi
+
+test-job-CentOS-gcc-openmpi-shm:
+    image: docker.io/rqcd/centos-latest-buildtools:latest
+    stage: test
+    script:
+        - module purge
+        - module load mpi/openmpi-x86_64
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --verify
+    dependencies:
+        - build-job-CentOS-gcc-openmpi-shm
