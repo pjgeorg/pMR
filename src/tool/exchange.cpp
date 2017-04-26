@@ -146,8 +146,19 @@ void runExchange(int argc, char **argv)
     // Print Benchmark Information
     printMaster("Benchmark:    Exchange");
     printMaster("Processes:   ", communicator.size());
-    printMaster("Dimensions:  ", static_cast<int>(connections.size() / 2), "/",
-        communicator.dimensions());
+    printMaster("Dimensions:  ",
+        [&connections, &periodic]() {
+            auto dims = connections.size();
+            for(auto v : periodic)
+            {
+                if(v == 0)
+                {
+                    ++dims;
+                }
+            }
+            return static_cast<int>(dims / 2);
+        }(),
+        "/", communicator.dimensions());
     printMaster("Topology:    ", communicator.topology());
     printMaster("Periodic:    ", communicator.periodic());
     printMaster("BufferedSend:", bufferedSend);
