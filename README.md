@@ -53,6 +53,7 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 Note: Even in case of non-serialized multi-threaded applications, calls to one particular connection still have to be serialized. I.e. no two threads are allowed to be working on the same connection concurrently.
 
 ### Optional configurations ###
+For a full list of optional parameters see [CMakeLists.txt](CMakeLists.txt).
 - <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KNC). Requires Intel Compiler and Intel MPSS 3.7 (or newer).
 - <b>-DCAPI=ON</b>: Include optional C API.
 - <b>-DPROFILING=ON</b>: Enable profiling capability. 
