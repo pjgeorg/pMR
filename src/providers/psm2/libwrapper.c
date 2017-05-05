@@ -46,9 +46,9 @@ static void __psm2_unlock()
     }
 }
 
-static psm2_ep_t gEndpoint;
-static psm2_epid_t gEndpointID;
-static psm2_mq_t gMatchedQueue;
+static psm2_ep_t gEndpoint = NULL;
+static psm2_epid_t gEndpointID = 0;
+static psm2_mq_t gMatchedQueue = NULL;
 
 static psm2_error_t (*orig_psm2_init)(
     int *api_verno_major, int *api_verno_minor);
@@ -102,6 +102,19 @@ __attribute__((constructor)) static void __psm2_constructor(void)
 #endif // PSM2_WRAPPER_BLOCK
 }
 
+__attribute__((destructor)) static void __psm2_destructor(void)
+{
+    if(gMatchedQueue != NULL)
+    {
+        orig_psm2_mq_finalize(gMatchedQueue);
+    }
+
+    if(gEndpoint != NULL)
+    {
+        orig_psm2_finalize();
+    }
+}
+
 psm2_error_t psm2_init(int *api_verno_major, int *api_verno_minor)
 {
     __psm2_lock();
@@ -130,11 +143,9 @@ psm2_error_t psm2_ep_open(const psm2_uuid_t unique_job_key,
 {
     __psm2_lock();
 
-    static int sInitialized = 0;
     psm2_error_t err = PSM2_OK;
-    if(!sInitialized)
+    if(gEndpoint == NULL)
     {
-        sInitialized = 1;
         err = orig_psm2_ep_open(unique_job_key, opts, &gEndpoint, &gEndpointID);
     }
     *ep = gEndpoint;
@@ -154,11 +165,9 @@ psm2_error_t psm2_mq_init(psm2_ep_t ep, uint64_t tag_order_mask,
 {
     __psm2_lock();
 
-    static int sInitialized = 0;
     psm2_error_t err = PSM2_OK;
-    if(!sInitialized)
+    if(gMatchedQueue == NULL)
     {
-        sInitialized = 1;
         err = orig_psm2_mq_init(
             ep, tag_order_mask, opts, numopts, &gMatchedQueue);
     }
