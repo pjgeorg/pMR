@@ -113,6 +113,348 @@ build-job-CentOS-gcc-openmpi-qpaceb-threaded:
         paths:
             - install/bin/pmr
 
+build-job-CentOS-gcc-4.9-openmpi-mpi:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-3/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=MPI
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-4.9-openmpi-mpi-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-3/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=MPI -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-4.9-openmpi-shm:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-3/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-4.9-openmpi-shm-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-3/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-4.9-openmpi-qpaceb:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-3/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=QPACEB
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-4.9-openmpi-qpaceb-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-3/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=QPACEB -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-5-openmpi-mpi:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-4/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=MPI
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-5-openmpi-mpi-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-4/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=MPI -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-5-openmpi-shm:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-4/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-5-openmpi-shm-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-4/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-5-openmpi-qpaceb:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-4/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=QPACEB
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-5-openmpi-qpaceb-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-4/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=QPACEB -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-6-openmpi-mpi:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-6/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=MPI
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-6-openmpi-mpi-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-6/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=MPI -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-6-openmpi-shm:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-6/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-6-openmpi-shm-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-6/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=SHM -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-6-openmpi-qpaceb:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-6/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=QPACEB
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
+build-job-CentOS-gcc-6-openmpi-qpaceb-threaded:
+    stage: build
+    tags:
+        - kern-login
+    script:
+        - module purge
+        - source /opt/rh/devtoolset-6/enable
+        - module load mpi/openmpi-x86_64
+        - mkdir build
+        - mkdir install
+        - cd build
+        - cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=../install -DCLUSTER=QPACEB -DTHREAD=Multiple
+        - make
+        - make install
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - install/bin/pmr
+
 test-job-CentOS-gcc-openmpi-mpi:
     stage: test
     tags:
