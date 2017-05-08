@@ -35,10 +35,10 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
         ../
 
 ### Supported options for CLUSTER ###
-- <b>QPACE3</b>: Cluster with single port Omni-Path fat tree. Omni-Path (OFI) and shared memory (Cross-Memory Attach).
+- <b>QPACE3</b>: Cluster with single port Omni-Path HFI. Omni-Path (OFI or PSM2) and shared memory (Cross-Memory Attach).
 - <b>QPACE2</b>: Cluster with 1D FBT InfiniBand topology. InfiniBand verbs only, no shared memory.
 - <b>QPACEB</b>: Cluster with single port InfiniBand HCA. InfiniBand verbs only, no shared memory.
-- <b>iDataCool</b>: Cluster with single port InfiniBand HCA. InfiniBand Verbs and shared memory (Cross-Memory Attach).
+- <b>iDataCool</b>: Cluster with single port InfiniBand HCA. InfiniBand verbs and shared memory (Cross-Memory Attach).
 - <b>SHM</b>: Single node using shared memory (Cross-Memory Attach) only.
 - <b>MPI</b>: MPI fallback support. Uses MPI for intra- and inter-node communication.
 
