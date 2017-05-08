@@ -20,14 +20,14 @@
 
 namespace pMR
 {
-    template<typename ...Types>
-    void print(Types const &...args);
+    template<typename... Types>
+    void print(Types const &... args);
 }
 
-template<typename ...Types>
-void pMR::print(Types const &...args)
+template<typename... Types>
+void pMR::print(Types const &... args)
 {
     std::string str = toString(args...) + "\n";
-    std::cout << str;
+    std::cout << str << std::flush;
 }
 #endif // pMR_MISC_PRINT_H

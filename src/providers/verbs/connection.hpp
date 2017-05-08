@@ -16,115 +16,74 @@
 #define pMR_PROVIDERS_VERBS_CONNECTION_H
 
 #include <cstdint>
-extern "C"
-{
+extern "C" {
 #include <infiniband/verbs.h>
 }
-#include "context.hpp"
-#include "protectiondomain.hpp"
-#include "completionqueue.hpp"
-#include "queuepair.hpp"
+#include <config.hpp>
 #include "connectionaddress.hpp"
+#include "context.hpp"
+#include "endpoint.hpp"
 #include "memoryaddress.hpp"
 #include "memoryregion.hpp"
-#include "config.hpp"
+#include "protectiondomain.hpp"
+#include "scattergather.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class ScatterGatherList;
-
-    class Connection
+    namespace Verbs
     {
+        class Connection
+        {
         public:
-            Connection(Target const &target,
-                    Device const &device, std::uint8_t const portNumber = 1);
-            Connection(const Connection&) = delete;
-            Connection(Connection&&) = delete;
-            Connection& operator=(const Connection&) = delete;
-            Connection& operator=(Connection&&) = delete;
+            Connection(Target const &target, Device const &device,
+                std::uint8_t const portNumber = 1);
+            Connection(Connection const &) = delete;
+            Connection(Connection &&) = delete;
+            Connection &operator=(Connection const &) = delete;
+            Connection &operator=(Connection &&) = delete;
             ~Connection() = default;
-            Context& getContext();
-            Context const& getContext() const;
-            ProtectionDomain& getProtectionDomain();
-            ProtectionDomain const& getProtectionDomain() const;
-            void setLocalMemoryAddress(MemoryRegion const&);
-            MemoryAddress const& getRemoteMemoryAddress() const;
+            Context &getContext();
+            Context const &getContext() const;
+            ProtectionDomain &getProtectionDomain();
+            ProtectionDomain const &getProtectionDomain() const;
 
-            void postSendAddrRequestToPassive();
-            void postRecvAddrRequestToActive();
+            void postSendToActive(
+                MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
+            void postSendToPassive();
+            void postRecvToActive();
+            void postRecvToPassive(MemoryRegion &memoryRegion);
+            void postRecvToPassive();
 
-            void postSendRequestToActive(MemoryRegion const &memoryRegion);
-            void postSendRequestToActive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
-            void postSendRequestToPassive(MemoryRegion const &memoryRegion);
-            void postSendRequestToPassive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
-            void postRecvRequestToActive(MemoryRegion const &memoryRegion);
-            void postRecvRequestToPassive(MemoryRegion const &memoryRegion);
+            void pollActive();
+            void pollPassive();
 
-            void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequestToActive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequestToPassive(MemoryRegion const &memoryRegion,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequestToPassive(MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRecvRequestToActive();
-            void postRecvRequestToPassive();
+#ifdef VERBS_RDMA
+            void setLocalTargetMemoryAddress(MemoryRegion const &);
+#ifdef VERBS_RDMA_CONTROL
+            void postWriteAddressToPassive();
+#else
+            void postSendAddressToPassive();
+            void postRecvAddressToActive();
+#endif // VERBS_RDMA_CONTROL
+            void postWriteToActive(
+                MemoryRegion const &memoryRegion, std::uint32_t const sizeByte);
+#endif // VERBS_RDMA
 
-            void pollActiveCompletionQueue();
-            void pollPassiveCompletionQueue();
         private:
             Context mContext;
             ProtectionDomain mProtectionDomain;
-            CompletionQueue mActiveCompletionQueue;
-            CompletionQueue mPassiveCompletionQueue;
-            QueuePair mActiveQueuePair;
-            QueuePair mPassiveQueuePair;
-            MemoryAddress mLocalMemoryAddress;
+            Endpoint mActiveEndpoint;
+            Endpoint mPassiveEndpoint;
+#ifdef VERBS_RDMA
+            alignas(cAlignment) MemoryAddress mLocalTargetMemoryAddress;
+            alignas(cAlignment) MemoryAddress mRemoteTargetMemoryAddress;
+            MemoryRegion mLocalTargetMemoryRegion;
+            MemoryRegion mRemoteTargetMemoryRegion;
+#ifdef VERBS_RDMA_CONTROL
             MemoryAddress mRemoteMemoryAddress;
-            alignas(alignment) MemoryRegion mSendMemoryRegion;
-            alignas(alignment) MemoryRegion mRecvMemoryRegion;
-            std::uint32_t mMaxInlineDataSize = 0;
-            void postSendRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion);
-            void postSendRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte);
-            void postSendRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const numEntries);
-            void postRecvRequest(QueuePair &queuePair);
-            void postRecvRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion);
-            void postRecvRequest(QueuePair &queuePair,
-                    ibv_sge *scatterGatherList, int const numEntries);
-            void postRDMAWriteRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequest(QueuePair &queuePair,
-                    MemoryRegion const &memoryRegion,
-                    std::uint32_t const sizeByte,
-                    MemoryAddress const &remoteMemoryAddress);
-            void postRDMAWriteRequest(QueuePair &queuePair,
-                    ScatterGatherList &scatterGatherList,
-                    MemoryAddress const &remoteMemoryAddress);
-    };
-
-    class ScatterGatherList
-    {
-        public:
-            ScatterGatherList(MemoryRegion const&);
-            ScatterGatherList(MemoryRegion const&,
-                    std::uint32_t const sizeByte);
-            ibv_sge* get();
-            ibv_sge const* get() const;
-            std::uint32_t getLength() const;
-            int getNumEntries() const;
-        private:
-            ibv_sge mScatterGatherList;
-    };
-}}
+#endif // VERBS_RDMA_CONTROL
+#endif // VERBS_RDMA
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_CONNECTION_H

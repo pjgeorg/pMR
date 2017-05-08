@@ -15,35 +15,45 @@
 #ifndef pMR_PROVIDERS_VERBS_VERBS_H
 #define pMR_PROVIDERS_VERBS_VERBS_H
 
-namespace pMR { namespace verbs
+#include <cstdint>
+extern "C" {
+#include <infiniband/verbs.h>
+}
+
+namespace pMR
 {
-    enum Verbs
+    namespace Verbs
     {
-        VerbsRecvWRID = 1,
-        VerbsSendWRID = 2,
-        VerbsRDMAWRID = 3,
-        VerbsMaxSend = 1,
-        VerbsMaxRecv = 1024,
-        VerbsMaxCQEntry = 1024,
-        VerbsInitialPostRecv = 512,
-        VerbsMaxSendSG = 1,
-        VerbsMaxRecvSG = 1,
-        VerbsServiceLevel = 0,
-        VerbsPSN = 0,
-        VerbsTimeout = 14,
-        VerbsRetry = 7,
-        VerbsPKeyIndex = 0,
-        VerbsRDAtomic = 1,
-        VerbsRNRTimer = 12,
-        VerbsSrcPath = 0,
-        VerbsStaticRate = 0,
-        VerbsSGIDIndex = 0,
-        VerbsHopLimit = 1,
-        VerbsGlobal = 1,
-        VerbsMADBlockSize = 256,
-        VerbsMADBlockGRHSize = 296,
-        VerbsGRHSize = VerbsMADBlockGRHSize - VerbsMADBlockSize,
-        VerbsDefaultQP1QKey = 0x80010000
-    };
-}}
+        constexpr std::uint64_t cRecvWRID = 1;
+        constexpr std::uint64_t cSendWRID = 2;
+        constexpr std::uint64_t cWriteWRID = 3;
+        constexpr int cMaxCQEntry = 16;
+        constexpr std::uint32_t cMaxSend = 1;
+        constexpr std::uint32_t cMaxRecv = 32;
+        constexpr std::uint32_t cMaxSendSG = 1;
+        constexpr std::uint32_t cMaxRecvSG = 1;
+        constexpr std::uint32_t cMaxInlineDataSize = VERBS_INLINE;
+        constexpr std::uint16_t cPKeyIndex = 0;
+        constexpr ibv_mtu cMTU = VERBS_MTU;
+        constexpr std::uint32_t cPSN = 0;
+        constexpr std::uint8_t cDestRDAtomic = 1;
+        constexpr std::uint8_t cRNRTimer = 12;
+        constexpr std::uint8_t cServiceLevel = 0;
+        constexpr std::uint8_t cSrcPath = 0;
+        constexpr std::uint8_t cStaticRate = 0;
+        constexpr std::uint8_t cGlobal = 1;
+        constexpr std::uint8_t cSGIDIndex = 0;
+        constexpr std::uint8_t cHopLimit = 1;
+        constexpr std::uint8_t cRDAtomic = 1;
+        constexpr std::uint8_t cTimeout = 14;
+        constexpr std::uint8_t cRetryCounter = 7;
+        constexpr std::uint8_t cRNRRetry = 7;
+        constexpr int cInitialPostRecv = 16;
+        constexpr std::uint32_t cDefaultQP1QKey = 0x80010000;
+        constexpr int cMADPollCQRetry = 1000;
+        constexpr int cMADBlockSize = 256;
+        constexpr int cMADBlockGRHSize = 296;
+        constexpr int cGRHSize = cMADBlockGRHSize - cMADBlockSize;
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_VERBS_H

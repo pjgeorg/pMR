@@ -35,9 +35,10 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
         ../
 
 ### Supported options for CLUSTER ###
+- <b>QPACE3</b>: Cluster with single port Omni-Path HFI. Omni-Path (OFI or PSM2) and shared memory (Cross-Memory Attach).
 - <b>QPACE2</b>: Cluster with 1D FBT InfiniBand topology. InfiniBand verbs only, no shared memory.
 - <b>QPACEB</b>: Cluster with single port InfiniBand HCA. InfiniBand verbs only, no shared memory.
-- <b>iDataCool</b>: Cluster with single port InfiniBand HCA. InfiniBand Verbs and shared memory (Cross-Memory Attach).
+- <b>iDataCool</b>: Cluster with single port InfiniBand HCA. InfiniBand verbs and shared memory (Cross-Memory Attach).
 - <b>SHM</b>: Single node using shared memory (Cross-Memory Attach) only.
 - <b>MPI</b>: MPI fallback support. Uses MPI for intra- and inter-node communication.
 
@@ -45,16 +46,17 @@ Set up build environment using [CMake](http://www.cmake.org) (only out-of-source
 - <b>MPI</b>: For applications using MPI for multi-processing.
 
 ### Supported options for THREAD ###
-- <b>None</b>: Suitable for single-threaded applications.
-- <b>Serialized</b>: Suitable for multi-threaded applications with serialized calls to pMR functions (except explicitly multi-threaded functions).
-- <b>OpenMP</b>: Support for OpenMP multi-threaded applications.
+- <b>Single</b>: Single-threaded application.
+- <b>Serialized</b>: Multi-threaded application with serialized calls to pMR functions (except explicitly multi-threaded functions).
+- <b>Multiple</b>: Multi-threaded application.
+
+Note: Even in case of non-serialized multi-threaded applications, calls to one particular connection still have to be serialized. I.e. no two threads are allowed to be working on the same connection concurrently.
 
 ### Optional configurations ###
-- <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KNC). Requires Intel Compiler and Intel MPSS 3.6 (or newer).
+For a full list of optional parameters see [CMakeLists.txt](CMakeLists.txt).
+- <b>-DMIC=ON</b>: Cross-compile for the first generation Intel Xeon Phi (KNC). Requires Intel Compiler and Intel MPSS 3.7 (or newer).
 - <b>-DCAPI=ON</b>: Include optional C API.
 - <b>-DPROFILING=ON</b>: Enable profiling capability. 
-- <b>-DHINT=ON</b>: Enable hints that might help to spot performance issues.
-- <b>-DMPI.PERSISTENT=ON</b>: Enable persistent point-to-point communication for MPI provider.
 
 ## Build & Install ##
 To build a static library and install all required files:

@@ -15,18 +15,19 @@
 #ifndef pMR_TOOL_PARAMETER_H
 #define pMR_TOOL_PARAMETER_H
 
-#include <string>
-#include <array>
 #include <algorithm>
+#include <array>
 #include <sstream>
+#include <string>
+#include <vector>
 #include "usage.hpp"
 
-bool parameterExists(char *const *begin, char *const *end,
-        std::string const &parameter);
+bool parameterExists(
+    char *const *begin, char *const *end, std::string const &parameter);
 
 template<typename T>
-void parameterOption(char **begin, char **end,
-        std::string const &parameter, T &value)
+void parameterOption(
+    char **begin, char **end, std::string const &parameter, T &value)
 {
     char **input = std::find(begin, end, parameter);
 
@@ -44,8 +45,8 @@ void parameterOption(char **begin, char **end,
     }
 }
 template<typename T>
-void parameterOption(char **begin, char **end,
-        std::string const &parameter, std::vector<T> &option)
+void parameterOption(char **begin, char **end, std::string const &parameter,
+    std::vector<T> &option)
 {
     char **input = std::find(begin, end, parameter);
 

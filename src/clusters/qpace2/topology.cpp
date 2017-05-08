@@ -12,41 +12,19 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "connection.hpp"
 #include "topology.hpp"
 #include "node.hpp"
-#include "../../providers/verbs/connection.hpp"
-#include "../../providers/verbs/topology.hpp"
-#include "../../misc/singleton.hpp"
-#include "../../backends/backend.hpp"
-#ifdef HINT
+
+#ifdef QPACE2_WARN_TOPOLOGY
 #include "../../misc/print.hpp"
-#endif // HINT
-
-void pMR::Connection::connectVerbs(Target const &target)
-{
-    verbs::Devices devices;
-    auto device = verbs::getIBAdapter(devices);
-
-    auto originNode = Singleton<Node>::Instance(device);
-
-    auto sendBuffer = originNode.flatten();
-    decltype(sendBuffer) recvBuffer;
-
-    backend::exchange(target, sendBuffer, recvBuffer); 
-
-    decltype(originNode) targetNode(recvBuffer);
-
-    auto portNumber = detectBestPort(originNode, targetNode);
-
-    mVerbs = std::make_shared<verbs::Connection>(target, device, portNumber);
-}
+#endif // QPACE2_WARN TOPOLOGY
 
 std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
 {
     // Origin and Target on same brick
     if(origin.getNodeGUID() == target.getNodeGUID())
     {
+        // Choose port depending on origin and target SCIF ID to balance load
         if(origin.getSCIFNodeID() + target.getSCIFNodeID() != 5)
         {
             return 1;
@@ -57,10 +35,11 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
         }
     }
 
-    // Origin and Target in same hyperblock
+    // Origin and Target in same block <-> Two common switches
     if(origin.getSwitchLID(1) == target.getSwitchLID(1) &&
-            origin.getSwitchLID(2) == target.getSwitchLID(2))
+        origin.getSwitchLID(2) == target.getSwitchLID(2))
     {
+        // Choose port depending on origin and target SCIF ID to balance load
         if(origin.getSCIFNodeID() + target.getSCIFNodeID() < 6)
         {
             return 1;
@@ -74,16 +53,18 @@ std::uint8_t pMR::detectBestPort(Node const &origin, Node const &target)
     // At least one common switch
     for(std::uint8_t portNumber = 1; portNumber != 3; ++portNumber)
     {
-        if(origin.getSwitchLID(portNumber) == target.getSwitchLID(portNumber))
+        if(origin.getSwitchLID({portNumber}) ==
+            target.getSwitchLID({portNumber}))
         {
-            return portNumber;
+            return {portNumber};
         }
     }
 
+#ifdef QPACE2_WARN_TOPOLOGY
+    print("pMR: Using bad path. Check topology.");
+#endif // QPACE2_WARN TOPOLOGY
+
     // No common switch
-#ifdef HINT
-    print("pMR: HINT: Using bad path. Check topology.");
-#endif // HINT
     if(origin.getSCIFNodeID() + target.getSCIFNodeID() < 6)
     {
         return 1;

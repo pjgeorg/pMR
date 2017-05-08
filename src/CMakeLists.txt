@@ -1,205 +1,95 @@
 if(MIC)
-    if(NOT ${CMAKE_C_COMPILER} MATCHES "icc.*$")
-        message(FATAL_ERROR "Require Intel Compiler to build for Intel MIC.")
-    endif()
-    if("$ENV{MPSS_SYSROOTS}" STREQUAL "")
-        message(FATAL_ERROR "MPSS not found!")
-    endif()
-
-    set(CMAKE_SYSTEM_NAME Linux)
-    set(CMAKE_SYSTEM_PROCESSOR k1om)
-    set(CMAKE_SYSTEM_VERSION 1)
-    set(_CMAKE_TOOLCHAIN_PREFIX  x86_64-k1om-linux-)
-    set(CMAKE_FIND_ROOT_PATH $ENV{MPSS_SYSROOTS}/k1om-mpss-linux)
-    set(CMAKE_C_FLAGS "-mmic ${CMAKE_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "-mmic ${CMAKE_CXX_FLAGS}")
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/Modules)
-    set(CMAKE_EXECUTABLE_SUFFIX ".mic")
+    include(mic)
 endif()
 
-set(CMAKE_CXX_FLAGS "-Wall -O3 -std=c++11 ${CMAKE_CXX_FLAGS}")
-
-if(PROFILING)
-    add_definitions(-DPROFILING)
-endif()
-if(HINT)
-    add_definitions(-DHINT)
+if("${CMAKE_C_FLAGS}" STREQUAL "")
+    set(CMAKE_C_FLAGS "-Wall -Werror -O3")
+else()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -O3")
 endif()
 
-set(ALIGNMENT 64)
+if("${CMAKE_CXX_FLAGS}" STREQUAL "")
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -O3 -std=c++11")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -std=c++11")
+endif()
 
-if(THREAD STREQUAL "")
-    message(FATAL_ERROR "No thread given!")
-elseif(${THREAD} STREQUAL "OpenMP")
-    find_package(OpenMP)
-    if(NOT OPENMP_FOUND)
-        message(FATAL_ERROR "OpenMP not found!")
-    endif()
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-braced-scalar-init -Wno-missing-braces")
+endif()
+
+find_package(OpenMP)
+if(NOT OPENMP_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas")
+    INFO("OpenMP not found. Reduce operations OpenMP SIMD optimization unavailable.")
+else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-    add_subdirectory(threads/openmp)
-elseif(${THREAD} STREQUAL "Serialized")
-    add_subdirectory(threads/serialized)
-elseif(${THREAD} STREQUAL "None")
-    add_subdirectory(threads/none)
-else()
-    message(FATAL_ERROR "Unknown thread given!")
 endif()
 
-if(BACKEND STREQUAL "")
-    message(FATAL_ERROR "No backend given!")
-elseif(${BACKEND} STREQUAL "MPI")
-    find_package(MPI)
-    if(NOT MPI_C_FOUND)
-        message(FATAL_ERROR "MPI not found!")
-    endif()
-    #Get rid of MPICXX bindings
-    add_definitions(-DMPICH_SKIP_MPICXX)
-    add_definitions(-DOMPI_SKIP_MPICXX)
-    include_directories(${MPI_C_INCLUDE_PATH})
-    list(APPEND LIBRARIES ${MPI_C_LIBRARIES})
-    add_subdirectory(backends/mpi) 
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/backends/mpi)
-else()
-    message(FATAL_ERROR "Unknown backend given!")
+if(PROFILING)
+    set(pMR_PROFILING PROFILING)
 endif()
 
-if(CLUSTER STREQUAL "")
-    message(FATAL_ERROR "No target cluster given!")
-elseif(${CLUSTER} STREQUAL "QPACE2")
-    set(PROVIDER_NULL ON)
-    set(PROVIDER_SELF ON)
-    set(PROVIDER_LOOP ON)
-    set(PROVIDER_SCIF ON)
-    set(PROVIDER_VERBS ON)
-    set(ALLREDUCE "RECURSIVEDOUBLING")
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/qpaceb)
-elseif(${CLUSTER} STREQUAL "QPACEB")
-    set(PROVIDER_NULL ON)
-    set(PROVIDER_SELF ON)
-    set(PROVIDER_LOOP ON)
-    set(PROVIDER_VERBS ON)
-    set(ALLREDUCE "RECURSIVEDOUBLING")
-elseif(${CLUSTER} STREQUAL "iDataCool")
-    set(PROVIDER_NULL ON)
-    set(PROVIDER_SELF ON)
-    set(PROVIDER_LOOP ON)
-    set(PROVIDER_CMA ON)
-    set(PROVIDER_VERBS ON)
-    set(ALLREDUCE "RECURSIVEDOUBLING")
-elseif(${CLUSTER} STREQUAL "SHM")
-    set(PROVIDER_NULL ON)
-    set(PROVIDER_SELF ON)
-    set(PROVIDER_LOOP ON)
-    set(PROVIDER_CMA ON)
-    set(ALLREDUCE "RECURSIVEDOUBLING")
-elseif(${CLUSTER} STREQUAL "MPI")
-    set(PROVIDER_NULL ON)
-    set(PROVIDER_SELF ON)
-    set(PROVIDER_LOOP ON)
-    set(PROVIDER_MPI ON)
-    set(ALLREDUCE "RECURSIVEDOUBLING")
-else()
-    message(FATAL_ERROR "Unknown target cluster given!")
+if(WARN.ZERO)
+    set(pMR_WARN_ZERO WARN.ZERO)
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
-    ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY) 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.hpp DESTINATION include/pmr)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-string(TOLOWER ${CLUSTER} CLUSTER)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/clusters/${CLUSTER})
-add_subdirectory(clusters/${CLUSTER})
+include(arch)
+include(thread)
+include(backend)
+include(provider)
+include(allreduce)
 
-install(FILES recvwindow.hpp sendwindow.hpp window.hpp DESTINATION include/pmr)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+# Re-configure config.hpp to set all enabled providers
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/config.hpp @ONLY)
 
-if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)|(k1om)")
-    add_subdirectory(arch/x86)
-else()
-    message(FATAL_ERROR "Unkown architecture!")
-endif()
+string(TOLOWER ${CLUSTER} CLUSTER_DIR)
+add_subdirectory(clusters/${CLUSTER_DIR})
 
 add_subdirectory(misc)
 
-string(TOLOWER ${ALLREDUCE} ALLREDUCE)
-add_subdirectory(allreduce/${ALLREDUCE})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/allreduce/${ALLREDUCE})
-
-if(PROVIDER_NULL)
-    add_subdirectory(providers/null)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_NULL>)
-endif()
-if(PROVIDER_SELF)
-    add_subdirectory(providers/self)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_SELF>)
-endif()
-if(PROVIDER_LOOP)
-    add_subdirectory(providers/loop)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_LOOP>)
-endif()
-if(PROVIDER_CMA)
-    add_subdirectory(providers/cma)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_CMA>)
-endif()
-if(PROVIDER_MPI)
-    if(NOT ${BACKEND} STREQUAL "MPI")
-        message(FATAL_ERROR "MPI provider only available for backend MPI!")
-    endif()
-    add_subdirectory(providers/mpi)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_MPI>)
-endif()
-if(PROVIDER_VERBS)
-    find_library(IBVERBS NAMES ibverbs PATHS ENV LIBRARY_PATH)
-    if(NOT IBVERBS)
-        message(FATAL_ERROR "Library ibverbs not found!")
-    endif()
-    add_subdirectory(providers/verbs)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_VERBS>)
-    list(APPEND LIBRARIES ${IBVERBS})
-endif()
-if(PROVIDER_SCIF)
-    find_library(SCIF NAMES scif PATHS ENV LIBRARY_PATH)
-    if(NOT SCIF)
-        message(FATAL_ERROR "Library scif not found!")
-    endif()
-    add_subdirectory(providers/scif)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_SCIF>)
-    list(APPEND LIBRARIES ${SCIF})
-endif()
-if(PROVIDER_NUMA)
-    find_library(NUMA NAMES numa PATHS ENV LIBRARY_PATH)
-    if(NOT NUMA)
-        message(FATAL_ERROR "Library NUMA not found!")
-    endif()
-    add_subdirectory(providers/numa)
-    list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_NUMA>)
-    list(APPEND LIBRARIES ${NUMA})
-endif()
-
 if(CAPI)
     if(NOT ${BACKEND} STREQUAL "MPI")
-        message(FATAL_ERROR "C API only available for backend MPI!")
+        ERROR("C API only available for backend MPI!")
     endif()
     add_subdirectory(api/c)
     list(APPEND API_SRC $<TARGET_OBJECTS:API_C>)
 endif()
 
+install(FILES
+    allreduce.hpp
+    connection.hpp
+    operations.hpp
+    provider.hpp
+    recvmemorywindow.hpp
+    recvwindow.hpp
+    sendmemorywindow.hpp
+    sendwindow.hpp
+    window.hpp DESTINATION include/pmr)
+
 add_library(pmr STATIC
     $<TARGET_OBJECTS:ARCH>
     $<TARGET_OBJECTS:MISC>
-    $<TARGET_OBJECTS:THREAD>
     $<TARGET_OBJECTS:BACKEND>
     $<TARGET_OBJECTS:CLUSTER>
-    $<TARGET_OBJECTS:ALLREDUCE>
     ${PROVIDERS}
-    ${API_SRC})
+    ${ALLREDUCE}
+    ${API_SRC}
+    allreduce.cpp
+    connection.cpp
+    provider.cpp
+    recvmemorywindow.cpp
+    sendmemorywindow.cpp
+    types.cpp)
 
 target_link_libraries(pmr ${LIBRARIES})
-target_include_directories(pmr PUBLIC
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)
+target_include_directories(pmr PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)
 
 install(TARGETS pmr
     EXPORT pmr-targets
@@ -209,7 +99,7 @@ install(TARGETS pmr
 install(EXPORT pmr-targets FILE pmr-config.cmake DESTINATION cmake)
 
 if(NOT ${BACKEND} STREQUAL "MPI")
-    message(STATUS "Tool currently only available for backend MPI.")
+    INFO("Tool currently only available for backend MPI.")
 else()
     add_subdirectory(tool)
 endif()

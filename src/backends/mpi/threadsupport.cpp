@@ -14,32 +14,47 @@
 
 #include "threadsupport.hpp"
 #include <stdexcept>
+extern "C" {
+#include <mpi.h>
+}
 
-pMR::backend::ThreadSupport::ThreadSupport()
+pMR::Backend::ThreadSupport::ThreadSupport()
 {
-    int provided;
-    if(MPI_Query_thread(&provided) != MPI_SUCCESS)
+    if(sLevel == ThreadLevel::Unknown)
     {
-        throw std::runtime_error("pMR: Unable to query MPI Thread support.");
-    }
+        int provided;
+        if(MPI_Query_thread(&provided) != MPI_SUCCESS)
+        {
+            throw std::runtime_error(
+                "pMR: Unable to query MPI Thread support.");
+        }
 
-    if(provided == MPI_THREAD_MULTIPLE)
-    {
-        mMultiple = true;
-    }
-
-    if(provided == MPI_THREAD_SERIALIZED)
-    {
-        mSerialized = true;
+        switch(provided)
+        {
+            case MPI_THREAD_MULTIPLE:
+                sLevel = ThreadLevel::Multiple;
+                break;
+            case MPI_THREAD_SERIALIZED:
+                sLevel = ThreadLevel::Serialized;
+                break;
+            case MPI_THREAD_FUNNELED:
+                sLevel = ThreadLevel::Funneled;
+                break;
+            case MPI_THREAD_SINGLE:
+                sLevel = ThreadLevel::Single;
+                break;
+            default:
+                throw std::runtime_error("pMR: Unknown MPI thread level.");
+        }
     }
 }
 
-bool pMR::backend::ThreadSupport::multiple() const
+enum pMR::ThreadLevel pMR::Backend::ThreadSupport::getLevel() const
 {
-    return mMultiple;
+    return {sLevel};
 }
 
-bool pMR::backend::ThreadSupport::serialized() const
-{
-    return mSerialized;
-}
+std::mutex pMR::Backend::ThreadSupport::Mutex;
+
+enum pMR::ThreadLevel pMR::Backend::ThreadSupport::sLevel =
+    pMR::ThreadLevel::Unknown;

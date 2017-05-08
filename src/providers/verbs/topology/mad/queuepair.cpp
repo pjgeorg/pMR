@@ -14,22 +14,21 @@
 
 #include "queuepair.hpp"
 #include <stdexcept>
-#include "../../verbs.hpp"
 #include "../../queuepair.hpp"
+#include "../../verbs.hpp"
 
-pMR::verbs::mad::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
-        CompletionQueue &sendCompletionQueue,
-        CompletionQueue &recvCompletionQueue)
+pMR::Verbs::MAD::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
+    CompletionQueue &sendCompletionQueue, CompletionQueue &recvCompletionQueue)
 {
     ibv_qp_init_attr initialAttributes = {};
     initialAttributes.send_cq = sendCompletionQueue.get();
     initialAttributes.recv_cq = recvCompletionQueue.get();
-    initialAttributes.cap.max_send_wr = VerbsMaxSend;
-    initialAttributes.cap.max_recv_wr = VerbsMaxRecv;
-    initialAttributes.cap.max_send_sge = VerbsMaxSendSG;
-    initialAttributes.cap.max_recv_sge = VerbsMaxRecvSG;
+    initialAttributes.cap.max_send_wr = {cMaxSend};
+    initialAttributes.cap.max_recv_wr = {cMaxRecv};
+    initialAttributes.cap.max_send_sge = {cMaxSendSG};
+    initialAttributes.cap.max_recv_sge = {cMaxRecvSG};
     initialAttributes.sq_sig_all = 1;
-    initialAttributes.cap.max_inline_data = VerbsMADBlockSize;
+    initialAttributes.cap.max_inline_data = {cMADBlockSize};
     initialAttributes.qp_type = IBV_QPT_UD;
 
     mQueuePair = ibv_create_qp(protectionDomain.get(), &initialAttributes);
@@ -40,40 +39,37 @@ pMR::verbs::mad::QueuePair::QueuePair(ProtectionDomain &protectionDomain,
     }
 }
 
-pMR::verbs::mad::QueuePair::~QueuePair()
+pMR::Verbs::MAD::QueuePair::~QueuePair()
 {
     ibv_destroy_qp(mQueuePair);
 }
 
-ibv_qp* pMR::verbs::mad::QueuePair::get()
+ibv_qp *pMR::Verbs::MAD::QueuePair::get()
 {
     return mQueuePair;
 }
 
-ibv_qp const* pMR::verbs::mad::QueuePair::get() const
+ibv_qp const *pMR::Verbs::MAD::QueuePair::get() const
 {
     return mQueuePair;
 }
 
-void pMR::verbs::mad::QueuePair::setStateINIT(std::uint8_t const portNumber)
+void pMR::Verbs::MAD::QueuePair::setStateINIT(std::uint8_t const portNumber)
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_INIT;
-    attr.pkey_index = VerbsPKeyIndex;
-    attr.port_num = portNumber;
-    attr.qkey = VerbsDefaultQP1QKey;
+    attr.pkey_index = {cPKeyIndex};
+    attr.port_num = {portNumber};
+    attr.qkey = {cDefaultQP1QKey};
 
     if(ibv_modify_qp(get(), &attr,
-                IBV_QP_STATE |
-                IBV_QP_PKEY_INDEX |
-                IBV_QP_PORT |
-                IBV_QP_QKEY))
+           IBV_QP_STATE | IBV_QP_PKEY_INDEX | IBV_QP_PORT | IBV_QP_QKEY))
     {
         throw std::runtime_error("pMR: Unable to modify QueuePair to INIT.");
     }
 }
 
-void pMR::verbs::mad::QueuePair::setStateRTR()
+void pMR::Verbs::MAD::QueuePair::setStateRTR()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTR;
@@ -84,11 +80,11 @@ void pMR::verbs::mad::QueuePair::setStateRTR()
     }
 }
 
-void pMR::verbs::mad::QueuePair::setStateRTS()
+void pMR::Verbs::MAD::QueuePair::setStateRTS()
 {
     ibv_qp_attr attr = {};
     attr.qp_state = IBV_QPS_RTS;
-    attr.sq_psn = VerbsPSN;
+    attr.sq_psn = {cPSN};
 
     if(ibv_modify_qp(get(), &attr, IBV_QP_STATE | IBV_QP_SQ_PSN))
     {

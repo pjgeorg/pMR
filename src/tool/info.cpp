@@ -13,26 +13,14 @@
 //  limitations under the License.
 
 #include "info.hpp"
-#include "parameter.hpp"
 #include "mpi.hpp"
+#include "parameter.hpp"
 
 void printInfo(int argc, char **argv)
 {
-    if(parameterExists(argv, argv + argc, "--libs"))
+    if(parameterExists(argv, argv + argc, "--version"))
     {
-        printMaster(sLibs);
-    }
-    if(parameterExists(argv, argv + argc, "--ldflags"))
-    {
-        printMaster(sLDFlags);
-    }
-    if(parameterExists(argv, argv + argc, "--cxx"))
-    {
-        printMaster(sCXX);
-    }
-    if(parameterExists(argv, argv + argc, "--cxxflags"))
-    {
-        printMaster(sCXXFlags);
+        printMaster(sVersion);
     }
     if(parameterExists(argv, argv + argc, "--cluster"))
     {
@@ -46,8 +34,24 @@ void printInfo(int argc, char **argv)
     {
         printMaster(sThread);
     }
-    if(parameterExists(argv, argv + argc, "--version"))
+    if(parameterExists(argv, argv + argc, "--cxx"))
     {
-        printMaster(sVersion);
+        printMaster(sCXX);
+    }
+    if(parameterExists(argv, argv + argc, "--cxxflags"))
+    {
+        printMaster(sCXXFlags);
+    }
+    if(parameterExists(argv, argv + argc, "--libs"))
+    {
+        printMaster(sLibs);
+    }
+    if(parameterExists(argv, argv + argc, "--ldflags"))
+    {
+        printMaster(sLDFlags);
+    }
+    if(parameterExists(argv, argv + argc, "--config"))
+    {
+        printMaster(sConfig);
     }
 }

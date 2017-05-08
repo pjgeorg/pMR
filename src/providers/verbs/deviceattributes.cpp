@@ -15,7 +15,7 @@
 #include "deviceattributes.hpp"
 #include <stdexcept>
 
-pMR::verbs::DeviceAttributes::DeviceAttributes(Context &context)
+pMR::Verbs::DeviceAttributes::DeviceAttributes(Context &context)
 {
     if(ibv_query_device(context.get(), &mDeviceAttributes))
     {
@@ -23,12 +23,17 @@ pMR::verbs::DeviceAttributes::DeviceAttributes(Context &context)
     }
 }
 
-std::uint64_t pMR::verbs::DeviceAttributes::getNodeGUID() const
+std::uint64_t pMR::Verbs::DeviceAttributes::getNodeGUID() const
 {
-    return mDeviceAttributes.node_guid;
+    return {mDeviceAttributes.node_guid};
 }
 
-std::uint8_t pMR::verbs::DeviceAttributes::getPortCount() const
+std::uint8_t pMR::Verbs::DeviceAttributes::getPortCount() const
 {
-    return mDeviceAttributes.phys_port_cnt;
+    return {mDeviceAttributes.phys_port_cnt};
+}
+
+std::uint64_t pMR::Verbs::DeviceAttributes::getMaxMemoryRegionSize() const
+{
+    return {mDeviceAttributes.max_mr_size};
 }

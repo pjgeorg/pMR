@@ -14,7 +14,7 @@
 
 #include "../backend.hpp"
 
-void pMR::backend::sync(Target const &target)
+void pMR::Backend::sync(Target const &target)
 {
     exchange(target, nullptr, nullptr, 0);
 }

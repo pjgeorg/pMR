@@ -16,16 +16,17 @@
 #define pMR_MISC_XDUMP_H
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 namespace pMR
 {
-    void xdump(void const *data, std::uint64_t sizeByte);
+    std::string xdump(void const *data, std::size_t sizeByte);
 
     template<typename T>
-    void xdump(std::vector<T> const &vector)
+    std::string xdump(std::vector<T> const &vector)
     {
-        xdump(vector.data(), vector.size() * sizeof(T));
+        return xdump(vector.data(), vector.size() * sizeof(T));
     }
 }
 #endif // pMR_MISC_XDUMP_H

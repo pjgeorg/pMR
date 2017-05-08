@@ -17,11 +17,14 @@
 
 #include <string>
 
-namespace pMR { namespace numa
+namespace pMR
 {
-    int getNode(std::string const devicePath);
+    namespace NUMA
+    {
+        int getNode(std::string const devicePath);
 
-    // Get NUMA Node ID of current process
-    int getNode();
-}}
+        // Get NUMA Node ID of current process
+        int getNode();
+    }
+}
 #endif // pMR_PROVIDERS_NUMA_TOPOLOGY_H

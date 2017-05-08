@@ -1,6 +1,13 @@
-add_library(MISC OBJECT string.cpp time.cpp)
+add_library(MISC OBJECT
+    ip.cpp
+    random.cpp
+    string.cpp
+    time.cpp
+    xdump.cpp)
+
 install(FILES
     allocator.hpp
+    ip.hpp
     numeric.hpp
     print.hpp
     profiling.hpp
@@ -9,4 +16,5 @@ install(FILES
     string.hpp
     thread.hpp
     time.hpp
-    type.hpp DESTINATION include/pmr/misc)
+    type.hpp
+    xdump.hpp DESTINATION include/pmr/misc)

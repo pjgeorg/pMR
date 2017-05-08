@@ -12,44 +12,44 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "info.hpp"
 #include <cstdlib>
 #include "../misc/print.hpp"
+#include "allreduce.hpp"
+#include "exchange.hpp"
+#include "info.hpp"
 #include "mpi.hpp"
 #include "parameter.hpp"
 #include "usage.hpp"
-#include "benchmark.hpp"
-#include "tests/exchange.hpp"
-#include "tests/global.hpp"
 
 int main(int argc, char **argv)
 {
     try
     {
         init(argc, argv);
-    
+
         if(parameterExists(argv, argv + argc, "--usage") or
             parameterExists(argv, argv + argc, "--help"))
         {
             printUsage();
         }
 
-        // Run tests
-        if(parameterExists(argv, argv + argc, "--tests"))
-        {
-            runExchangeTest();
-            runGlobalTest();
-        }
-    
-        // Run desired benchmark
         if(parameterExists(argv, argv + argc, "--benchmark"))
         {
-            runBenchmark(argc, argv);
+            std::string benchmark;
+            parameterOption<std::string>(
+                argv, argv + argc, "--benchmark", benchmark);
+            if(benchmark == "exchange")
+            {
+                runExchange(argc, argv);
+            }
+            if(benchmark == "allreduce")
+            {
+                runAllReduce(argc, argv);
+            }
+            printUsage();
         }
-    
-        // Print requested information
-        printInfo(argc, argv);
 
+        printInfo(argc, argv);
         finalize();
     }
     catch(const std::exception &e)

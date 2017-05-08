@@ -15,112 +15,105 @@
 #include "connectionaddress.hpp"
 #include <array>
 #include <stdexcept>
-#include "portattributes.hpp"
-#include "verbs.hpp"
 #include "../../backends/backend.hpp"
+#include "endpoint.hpp"
+#include "portattributes.hpp"
+#include "queuepair.hpp"
+#include "verbs.hpp"
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(Context &context,
-        QueuePair const &queuePair, std::uint8_t const portNumber)
-    :   mQPN(queuePair.getQPN()), mGID(context, portNumber)
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
+    Context &context, Endpoint const &endpoint, std::uint8_t const portNumber)
+    : ConnectionAddress(context, endpoint.getQueuePair(), {portNumber})
 {
-    PortAttributes portAttributes(context, portNumber);
-    mLID = portAttributes.getLID();
-    mMTU = portAttributes.getMTU();
 }
 
-pMR::verbs::ConnectionAddress::ConnectionAddress(
-        ConnectionAddress const &connectionAddress,
-        QueuePair const &queuePair)
-    :   mQPN(queuePair.getQPN()),
-        mGID(connectionAddress.getGID()),
-        mLID(connectionAddress.getLID()),
-        mMTU(connectionAddress.getMTU()) { }
-
-void pMR::verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
+    Context &context, QueuePair const &queuePair, std::uint8_t const portNumber)
+    : mQPN{queuePair.getQPN()}, mGID{context, portNumber}
 {
-    mQPN = QPN;
+    mLID = {PortAttributes(context, portNumber).getLID()};
 }
 
-void pMR::verbs::ConnectionAddress::setLID(std::uint16_t const LID)
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
+    ConnectionAddress const &connectionAddress, Endpoint const &endpoint)
+    : ConnectionAddress(connectionAddress, endpoint.getQueuePair())
 {
-    mLID = LID;
 }
 
-void pMR::verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
+pMR::Verbs::ConnectionAddress::ConnectionAddress(
+    ConnectionAddress const &connectionAddress, QueuePair const &queuePair)
+    : mQPN{queuePair.getQPN()}
+    , mGID{connectionAddress.getGID()}
+    , mLID{connectionAddress.getLID()}
+{
+}
+
+void pMR::Verbs::ConnectionAddress::setQPN(std::uint32_t const QPN)
+{
+    mQPN = {QPN};
+}
+
+void pMR::Verbs::ConnectionAddress::setLID(std::uint16_t const LID)
+{
+    mLID = {LID};
+}
+
+void pMR::Verbs::ConnectionAddress::setGUID(std::uint64_t const GUID)
 {
     mGID.setGUID(GUID);
 }
 
-void pMR::verbs::ConnectionAddress::setSubnetPrefix(
-        std::uint64_t const subnetPrefix)
+void pMR::Verbs::ConnectionAddress::setSubnetPrefix(
+    std::uint64_t const subnetPrefix)
 {
-    mGID.setSubnetPrefix(subnetPrefix);
+    mGID.setSubnetPrefix({subnetPrefix});
 }
 
-void pMR::verbs::ConnectionAddress::setMTU(ibv_mtu const MTU)
+std::uint32_t pMR::Verbs::ConnectionAddress::getQPN() const
 {
-    mMTU = MTU;
+    return {mQPN};
 }
 
-std::uint32_t pMR::verbs::ConnectionAddress::getQPN() const
+std::uint16_t pMR::Verbs::ConnectionAddress::getLID() const
 {
-    return mQPN;
+    return {mLID};
 }
 
-std::uint16_t pMR::verbs::ConnectionAddress::getLID() const
-{
-    return mLID;
-}
-
-ibv_gid pMR::verbs::ConnectionAddress::getGID() const
+ibv_gid pMR::Verbs::ConnectionAddress::getGID() const
 {
     return mGID.get();
 }
 
-std::uint64_t pMR::verbs::ConnectionAddress::getGUID() const
+std::uint64_t pMR::Verbs::ConnectionAddress::getGUID() const
 {
-    return mGID.getGUID();
+    return {mGID.getGUID()};
 }
 
-std::uint64_t pMR::verbs::ConnectionAddress::getSubnetPrefix() const
+std::uint64_t pMR::Verbs::ConnectionAddress::getSubnetPrefix() const
 {
-    return mGID.getSubnetPrefix();
+    return {mGID.getSubnetPrefix()};
 }
 
-ibv_mtu pMR::verbs::ConnectionAddress::getMTU() const
+void pMR::Verbs::exchangeConnectionAddress(pMR::Target const &target,
+    ConnectionAddress const &originActiveAddress,
+    ConnectionAddress const &originPassiveAddress,
+    ConnectionAddress &targetActiveAddress,
+    ConnectionAddress &targetPassiveAddress)
 {
-    return mMTU;
-}
-
-void pMR::verbs::exchangeConnectionAddress(pMR::Target const &target,
-        ConnectionAddress const &originActiveAddress,
-        ConnectionAddress const &originPassiveAddress,
-        ConnectionAddress &targetActiveAddress,
-        ConnectionAddress &targetPassiveAddress)
-{
-    std::array<std::uint64_t, 6> sendBuffer = {
-        originActiveAddress.getQPN(),
-        originActiveAddress.getLID(),
-        originActiveAddress.getSubnetPrefix(),
-        originActiveAddress.getGUID(),
-        originActiveAddress.getMTU(),
+    std::array<std::uint64_t, 5> sendBuffer = {
+        originActiveAddress.getQPN(), originActiveAddress.getLID(),
+        originActiveAddress.getSubnetPrefix(), originActiveAddress.getGUID(),
         originPassiveAddress.getQPN(),
     };
     decltype(sendBuffer) recvBuffer;
 
-    pMR::backend::exchange(target, sendBuffer, recvBuffer);
+    pMR::Backend::exchange(target, sendBuffer, recvBuffer);
 
     targetActiveAddress.setQPN(std::get<0>(recvBuffer));
     targetActiveAddress.setLID(std::get<1>(recvBuffer));
     targetActiveAddress.setSubnetPrefix(std::get<2>(recvBuffer));
     targetActiveAddress.setGUID(std::get<3>(recvBuffer));
-    targetActiveAddress.setMTU(static_cast<ibv_mtu>(std::get<4>(recvBuffer)));
 
     targetPassiveAddress = targetActiveAddress;
-    targetPassiveAddress.setQPN(std::get<5>(recvBuffer));
-
-    if(originActiveAddress.getMTU() != targetActiveAddress.getMTU())
-    {
-        throw std::runtime_error("pMR: Connection MTU mismatch.");
-    }
+    targetPassiveAddress.setQPN(std::get<4>(recvBuffer));
 }

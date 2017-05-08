@@ -22,5 +22,5 @@ double pMR::getTimeInSeconds()
     {
         throw std::runtime_error("Unable to get current time.");
     }
-    return static_cast<double>(timeSpec.tv_nsec)/1e9 + timeSpec.tv_sec;
+    return static_cast<double>(timeSpec.tv_nsec) / 1e9 + timeSpec.tv_sec;
 }

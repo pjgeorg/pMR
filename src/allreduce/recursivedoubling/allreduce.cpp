@@ -13,148 +13,266 @@
 //  limitations under the License.
 
 #include "allreduce.hpp"
-#include <cmath>
 
-#include <iostream>
+static constexpr int cBlocking = RECURSIVE_DOUBLING_BLOCKING;
+static constexpr int cDomainSize = RECURSIVE_DOUBLING_DOMAIN_SIZE;
 
-pMR::AllReduce::AllReduce(Communicator const communicator,
-        std::uint32_t const sizeByte)
-    :   mSizeByte(std::ceil(static_cast<double>(sizeByte) / alignment)
-            * alignment)
+static constexpr bool isPowerOfTwo(int x)
+{
+    return x && ((x & (x - 1)) == 0);
+}
+
+static_assert(isPowerOfTwo(cBlocking),
+    "Recursive Doubling blocking factor is not a power of two.");
+
+pMR::RecursiveDoubling::AllReduce::AllReduce(
+    Communicator const &communicator, void *buffer, size_type const sizeByte)
 {
     // Recursive doubling only works for a power of two number of processes.
     // For the non-power of two case we do:
-    //  1. A pre step to reduce the number to the nearest lower power of two.
-    //  2. Recursive-doubling with the reduced number of processes.
-    //  3. A post step to scatter the result to not involved processes.
+    //  1. Reduce withing a domain
+    //  2. A pre step to reduce the number to the nearest lower power of two.
+    //  3. Recursive-doubling with the reduced number of processes.
+    //  4. A post step to scatter the result to not involved processes.
+    //  5. Broadcast within a domain
+    //  Note: Step 1. and  5. are optional to first reduce within a domain.
 
-    // Get nearest power of two less than or equal to number of ranks.
+    auto numProcesses = communicator.size();
+    auto processID = communicator.ID();
+
+    // Padded size for contigious buffers (each chunk is aligned)
+    auto padSize = alignedSize(sizeByte);
+    auto offsetBuffer = decltype(mDomainBuffers.size()){0};
+
+    auto domainSize = cDomainSize;
+    if(cDomainSize > 1)
+    {
+        if(numProcesses % cDomainSize == 0)
+        {
+            if(processID % cDomainSize == 0)
+            {
+                mDomainBuffers.resize((cDomainSize - 1) * padSize);
+                mDomainRoot = {true};
+                offsetBuffer = 0;
+                for(auto target = processID + 1;
+                    target < processID + cDomainSize; ++target)
+                {
+                    mDomainConnections.emplace_back(
+                        communicator.getTarget(target));
+
+                    mDomainSendWindows.emplace_back(
+                        mDomainConnections.back(), buffer, sizeByte);
+                    mDomainRecvWindows.emplace_back(mDomainConnections.back(),
+                        static_cast<void *>(
+                            mDomainBuffers.data() + offsetBuffer),
+                        sizeByte);
+                    offsetBuffer += padSize;
+                }
+            }
+            else
+            {
+                auto target = processID - (processID % cDomainSize);
+                mDomainConnections.emplace_back(communicator.getTarget(target));
+                mDomainSendWindows.emplace_back(
+                    mDomainConnections.back(), buffer, sizeByte);
+                mDomainRecvWindows.emplace_back(
+                    mDomainConnections.back(), buffer, sizeByte);
+                return;
+            }
+
+            processID /= cDomainSize;
+            numProcesses /= cDomainSize;
+        }
+        else
+        {
+            domainSize = 1;
+        }
+    }
+
+    // Get nearest power of two less than or equal to number of processes.
     // Also gets depth log_2(n) of the algorithm
     int Po2Processes = 0x1;
     int depth = -1;
-    while(Po2Processes <= communicator.size())
+    while(Po2Processes <= numProcesses)
     {
-        Po2Processes <<=1;
+        Po2Processes <<= 1;
         ++depth;
     }
     Po2Processes >>= 1;
 
-    // Number of required buffers
-    // Start at 1, as we always require at least one to store the local data.
-    int numBuffers = 1;
-
-    // processID for recursive-doubling
-    // -1 indicates that the process is not part of recursive-doubling.
-    int processID = communicator.ID();
-
-    // Check if number of processes is not a power of two
-    if(communicator.size() - Po2Processes != 0)
+    auto blocking = decltype(cBlocking){1};
+    if(numProcesses != Po2Processes)
     {
         // Need to perform pre step to reduce number of processes.
-        // This is done by sending the data of the first odd size() - Po2
-        // processes to the first even. Afterwards processes that should
-        // participate in recursive doubling are assigned a new ID.
-        if(communicator.ID() < 2 * (communicator.size() - Po2Processes))
+
+        // Do a blocking of ranks only if possible
+        if((numProcesses - Po2Processes) % cBlocking == 0)
         {
-            if(communicator.ID() % 2 == 0)
+            blocking = cBlocking;
+        }
+
+        if(processID % (numProcesses / blocking) <
+            2 * (numProcesses - Po2Processes) / blocking)
+        {
+            if(processID % (numProcesses / blocking) % 2 == 0)
             {
-                // Establish connection to odd rank (+1)
-                mPPConnection = std::unique_ptr<pMR::Connection>(
-                        new pMR::Connection(communicator.getTarget(
-                                communicator.ID() + 1)));
+                auto target = (processID + 1) * domainSize;
+                mPreConnection = std::unique_ptr<pMR::Connection>(
+                    new pMR::Connection(communicator.getTarget(target)));
 
-                // Assign new process ID
-                processID /= 2;
+                mPreSendWindow = std::unique_ptr<pMR::SendMemoryWindow>(
+                    new pMR::SendMemoryWindow(
+                        *mPreConnection, buffer, sizeByte));
+                mPreBuffer.resize(sizeByte);
+                mPreRecvWindow = std::unique_ptr<pMR::RecvMemoryWindow>(
+                    new pMR::RecvMemoryWindow(*mPreConnection,
+                        static_cast<void *>(mPreBuffer.data()), sizeByte));
 
-                // Increment numBuffers by 1 to receive data
-                ++numBuffers;
+                processID = (processID / (numProcesses / blocking)) *
+                        (Po2Processes / blocking) +
+                    ((processID % (numProcesses / blocking)) / 2);
             }
             else
             {
-                // Establish connection to even rank (-1)
-                mPPConnection = std::unique_ptr<pMR::Connection>(
-                        new pMR::Connection(communicator.getTarget(
-                                communicator.ID() - 1)));
-
-                // Assign new process ID
-                processID = -1;
+                auto target = (processID - 1) * domainSize;
+                mPreConnection = std::unique_ptr<pMR::Connection>(
+                    new pMR::Connection(communicator.getTarget(target)));
+                mPreSendWindow = std::unique_ptr<pMR::SendMemoryWindow>(
+                    new pMR::SendMemoryWindow(
+                        *mPreConnection, buffer, sizeByte));
+                mPreRecvWindow = std::unique_ptr<pMR::RecvMemoryWindow>(
+                    new pMR::RecvMemoryWindow(
+                        *mPreConnection, buffer, sizeByte));
+                return;
             }
         }
         else
         {
-            // Assign new process ID
-            processID -= communicator.size() - Po2Processes;
+            processID -= (numProcesses - Po2Processes) / blocking *
+                (processID / (numProcesses / blocking) + 1);
         }
     }
 
     // Setup recursive-doubling
-    if(processID != -1)
+    mRDPartition = depth;
+    for(auto c = processID + 1; c <= Po2Processes / 2; c <<= 1)
     {
-        // Increment numBuffers by depth for multi-buffering.
-        numBuffers += depth;
-
-        // Distance to the target process ID of a certain level
-        int distance = 0x1;
-
-        for(int level = 0; level != depth; ++level)
-        {
-            int target = processID ^ distance;
-
-            // Restore real process ID of target
-            if(target < communicator.size() - Po2Processes)
-            {
-                target *= 2;
-            }
-            else
-            {
-                target += communicator.size() - Po2Processes;
-            }
-
-            // Establish connection to target
-            mRDConnections.emplace_back(communicator.getTarget(target));
-
-            // Calculate distance for next level
-            distance <<= 1;
-        }
+        --mRDPartition;
     }
 
-    // Current buffer offset in contigious buffer
-    decltype(mBuffers.size()) offsetBuffer = 0;
+    mRDBuffers.resize(depth * padSize);
 
-    // Allocate contigious buffer(s)
-    mBuffers.resize(numBuffers * mSizeByte);
+    // Distance to the target process ID of a certain level
+    auto distance = decltype(depth){0x1};
 
-    // Setup Memory Windows for post and pre step
-    if(mPPConnection)
+    for(auto level = 0; level != depth; ++level)
     {
-        mPPSendWindow = std::unique_ptr<pMR::SendMemoryWindow>(
-                new pMR::SendMemoryWindow(*mPPConnection,
-                    static_cast<void*>(mBuffers.data() + 0), mSizeByte));
+        auto target = processID ^ distance;
 
-        // For processes only involved in pre and post step we use the same
-        // buffer for send (pre) and receive (post) memory window.
-        if(processID != -1)
+#ifdef RECURSIVE_DOUBLING_FBT
+        if(level == depth - 1)
         {
-            offsetBuffer += mSizeByte;
+            if(Po2Processes % 4 == 0)
+            {
+                if(processID / (Po2Processes / 4) % 2 == 0)
+                {
+                    target = processID - Po2Processes / 4 + Po2Processes;
+                }
+                else
+                {
+                    target = processID + Po2Processes / 4;
+                }
+                target %= Po2Processes;
+            }
         }
+#endif // RECURSIVE_DOUBLING_FBT
 
-        mPPRecvWindow = std::unique_ptr<pMR::RecvMemoryWindow>(
-                new pMR::RecvMemoryWindow(*mPPConnection,
-                    static_cast<void*>(mBuffers.data() + offsetBuffer),
-                    mSizeByte));
+        // Restore real process ID of target
+        if(target % (Po2Processes / blocking) <
+            1 * (numProcesses - Po2Processes) / blocking)
+        {
+            target = (target / (Po2Processes / blocking)) *
+                    (numProcesses / blocking) +
+                ((target % (Po2Processes / blocking)) * 2);
+        }
+        else
+        {
+            target += (numProcesses - Po2Processes) / blocking *
+                (target / (numProcesses / blocking) + 1);
+        }
+        target *= domainSize;
+
+        mRDConnections.emplace_back(communicator.getTarget(target));
+        mRDSendWindows.emplace_back(mRDConnections.back(), buffer, sizeByte);
+        mRDRecvWindows.emplace_back(mRDConnections.back(),
+            static_cast<void *>(mRDBuffers.data() + level * padSize), sizeByte);
+
+        // Calculate distance for next level
+        distance <<= 1;
     }
+}
 
-    // Setup Memory Windows for recursive-doubling
-    for(auto const &connection : mRDConnections)
+void pMR::RecursiveDoubling::AllReduce::initWindows()
+{
+    for(auto &window : mDomainSendWindows)
     {
-        // Use the same send buffer for all connections.
-        mRDSendWindows.emplace_back(connection,
-                static_cast<void*>(mBuffers.data() + 0), mSizeByte);
+        window.init();
+    }
+    for(auto &window : mDomainRecvWindows)
+    {
+        window.init();
+    }
+    if(mPreConnection)
+    {
+        mPreSendWindow->init();
+        mPreRecvWindow->init();
+    }
+    for(auto &window : mRDSendWindows)
+    {
+        window.init();
+    }
+    for(auto &window : mRDRecvWindows)
+    {
+        window.init();
+    }
+}
 
-        // Increment offset by message size. I.e. use a different receive
-        // buffer for each connection.
-        offsetBuffer += mSizeByte;
-        mRDRecvWindows.emplace_back(connection,
-                static_cast<void*>(mBuffers.data() + offsetBuffer), mSizeByte);
+void pMR::RecursiveDoubling::AllReduce::postBroadcast()
+{
+    if(mPreConnection)
+    {
+        if(mRDConnections.size() == 0)
+        {
+            mPreRecvWindow->post();
+            mPreRecvWindow->wait();
+        }
+        else
+        {
+            mPreSendWindow->post();
+            mPreSendWindow->wait();
+        }
+    }
+}
+
+void pMR::RecursiveDoubling::AllReduce::domainBroadcast()
+{
+    if(mDomainRoot)
+    {
+        for(auto &window : mDomainSendWindows)
+        {
+            window.post();
+        }
+        for(auto &window : mDomainSendWindows)
+        {
+            window.wait();
+        }
+    }
+    else
+    {
+        for(auto &window : mDomainRecvWindows)
+        {
+            window.post();
+            window.wait();
+        }
     }
 }

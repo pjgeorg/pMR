@@ -19,23 +19,26 @@
 #include <cstdint>
 #include "memoryregion.hpp"
 
-namespace pMR { namespace verbs
+namespace pMR
 {
-    class MemoryAddress
+    namespace Verbs
     {
+        class MemoryAddress
+        {
         public:
             MemoryAddress() = default;
             MemoryAddress(MemoryRegion const &memoryRegion);
-            void set(MemoryRegion const&);
+            void set(MemoryRegion const &);
             std::uint64_t getAddress() const;
             std::uint32_t getRKey() const;
-            std::uint32_t getLength() const;
-            std::uint64_t* rawData();
-            std::uint64_t const* rawData() const;
-            std::size_t size() const;
+            std::uint64_t *rawData();
+            std::uint64_t const *rawData() const;
+            std::uint32_t size() const;
             ~MemoryAddress() = default;
+
         private:
-            std::array<std::uint64_t,3> mData;
-    };
-}}
+            std::array<std::uint64_t, 2> mData;
+        };
+    }
+}
 #endif // pMR_PROVIDERS_VERBS_MEMORYADDRESS_H

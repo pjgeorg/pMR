@@ -12,17 +12,15 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "topology.hpp"
+#include "device.hpp"
 #include <fstream>
 #include <iterator>
-#include <string>
 #include <stdexcept>
-#include "support.hpp"
-#include "../../misc/singleton.hpp"
+#include "numa.hpp"
 
-int pMR::numa::getNode(std::string const devicePath)
+int pMR::NUMA::getNode(std::string const devicePath)
 {
-    Singleton<Support>::Instance();
+    checkAvailable();
 
     std::ifstream deviceFile(devicePath + "/device/numa_node", std::ios::in);
     if(!deviceFile)
@@ -30,5 +28,5 @@ int pMR::numa::getNode(std::string const devicePath)
         throw std::runtime_error("pMR: Unable to open device file.");
     }
 
-    return *(std::istream_iterator<int>(deviceFile));
+    return {*(std::istream_iterator<int>(deviceFile))};
 }

@@ -19,17 +19,17 @@ namespace pMR
 {
     class Target;
 
-    namespace null
+    namespace Null
     {
         class Connection
         {
-            public:
-                Connection(Target const &target);
-                Connection(const Connection&) = delete;
-                Connection(Connection&&) = delete;
-                Connection& operator=(const Connection&) = delete;
-                Connection& operator=(Connection&&) = delete;
-                ~Connection() = default;
+        public:
+            Connection(Target const &target);
+            Connection(Connection const &) = delete;
+            Connection(Connection &&) = delete;
+            Connection &operator=(Connection const &) = delete;
+            Connection &operator=(Connection &&) = delete;
+            ~Connection() = default;
         };
     }
 }

@@ -15,16 +15,88 @@
 #ifndef pMR_CONFIG_H
 #define pMR_CONFIG_H
 
-#ifndef PROFILING
-#cmakedefine PROFILING
-#endif
+#include <cstdint>
 
-#ifndef HINT
-#cmakedefine HINT
-#endif
+#ifndef pMR_PROFILING
+#cmakedefine pMR_PROFILING
+#endif // pMR_PROFILING
+
+#ifndef pMR_WARN_ZERO
+#cmakedefine pMR_WARN_ZERO
+#endif // pMR_WARN_ZERO
+
+#ifndef pMR_PROVIDER_CMA
+#cmakedefine pMR_PROVIDER_CMA
+#endif // pMR_PROVIDER_CMA
+
+#ifndef pMR_PROVIDER_MPI
+#cmakedefine pMR_PROVIDER_MPI
+#endif // pMR_PROVIDER_MPI
+
+#ifndef pMR_PROVIDER_NULL
+#cmakedefine pMR_PROVIDER_NULL
+#endif // pMR_PROVIDER_NULL
+
+#ifndef pMR_PROVIDER_OFI
+#cmakedefine pMR_PROVIDER_OFI
+#endif // pMR_PROVIDER_OFI
+
+#ifndef pMR_PROVIDER_PSM2
+#cmakedefine pMR_PROVIDER_PSM2
+#endif // pMR_PROVIDER_PSM2
+
+#ifndef pMR_PROVIDER_SCIF
+#cmakedefine pMR_PROVIDER_SCIF
+#endif // pMR_PROVIDER_SCIF
+
+#ifndef pMR_PROVIDER_SELF
+#cmakedefine pMR_PROVIDER_SELF
+#endif // pMR_PROVIDER_SELF
+
+#ifndef pMR_PROVIDER_VERBS
+#cmakedefine pMR_PROVIDER_VERBS
+#endif // pMR_PROVIDER_VERBS
+
+#ifndef pMR_ALLREDUCE_MPI
+#cmakedefine pMR_ALLREDUCE_MPI
+#endif // pMR_ALLREDUCE_MPI
+
+#ifndef pMR_ALLREDUCE_RECURSIVE_DOUBLING
+#cmakedefine pMR_ALLREDUCE_RECURSIVE_DOUBLING
+#endif // pMR_ALLREDUCE_RECURSIVE_DOUBLING
 
 namespace pMR
 {
-    constexpr unsigned int alignment = @ALIGNMENT@;
+    enum class ThreadLevel
+    {
+        Unknown,
+        Single,
+        Funneled,
+        Serialized,
+        Multiple,
+    };
+    constexpr ThreadLevel cThreadLevel = ThreadLevel::@THREAD@;
+
+    using size_type = int;
+    constexpr std::size_t cAlignment = @ALIGNMENT@;
+    constexpr std::size_t cPadding = @PADDING@;
+
+    template<typename T, T Padding = cPadding>
+    constexpr T padSize(T const size)
+    {
+        return (size + Padding - 1) / Padding * Padding;
+    }
+
+    template<typename T>
+    constexpr T alignedSize(T const size)
+    {
+        return {padSize<T, cAlignment>(size)};
+    }
+
+    template<typename T = unsigned char>
+    constexpr std::size_t cacheLineSize()
+    {
+        return {@CACHELINESIZE@ / sizeof(T)};
+    }
 }
 #endif // pMR_CONFIG_H

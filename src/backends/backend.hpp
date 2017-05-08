@@ -17,32 +17,58 @@
 
 #include <array>
 #include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <vector>
 
 namespace pMR
 {
     class Target;
 
-    namespace backend
+    namespace Backend
     {
         void sync(Target const &target);
-    
-        void exchange(Target const &target,
-                void const *sendBuffer, void *recvBuffer,
-                std::uint32_t const sizeByte);
-    
+
+        void exchange(Target const &target, void const *sendBuffer,
+            void *recvBuffer, int const sizeByte);
+
         template<typename T>
         void exchange(Target const &target, T const &sendBuffer, T &recvBuffer)
         {
-            return exchange(target, static_cast<void const*>(&sendBuffer),
-                    static_cast<void*>(&recvBuffer), sizeof(sendBuffer));
+            if(sizeof(sendBuffer) > std::numeric_limits<int>::max())
+            {
+                throw std::length_error("pMR: Connection data size overflow.");
+            }
+
+            return exchange(target, static_cast<void const *>(&sendBuffer),
+                static_cast<void *>(&recvBuffer),
+                {static_cast<int>(sizeof(sendBuffer))});
         }
 
         template<typename T, std::size_t N>
         void exchange(Target const &target, std::array<T, N> const &sendBuffer,
-                std::array<T, N> &recvBuffer)
+            std::array<T, N> &recvBuffer)
         {
-            return exchange(target, sendBuffer.data(),
-                    recvBuffer.data(), sizeof(sendBuffer));
+            if(sizeof(sendBuffer) > std::numeric_limits<int>::max())
+            {
+                throw std::length_error("pMR: Connection data size overflow.");
+            }
+
+            return exchange(target, sendBuffer.data(), recvBuffer.data(),
+                {static_cast<int>(sizeof(sendBuffer))});
+        }
+
+        template<typename T>
+        void exchange(Target const &target, std::vector<T> const &sendBuffer,
+            std::vector<T> &recvBuffer)
+        {
+            if(sendBuffer.size() * sizeof(T) > std::numeric_limits<int>::max())
+            {
+                throw std::length_error("pMR: Connection data size overflow.");
+            }
+
+            return exchange(target, sendBuffer.data(), recvBuffer.data(),
+                {static_cast<int>(sendBuffer.size() * sizeof(T))});
         }
     }
 }

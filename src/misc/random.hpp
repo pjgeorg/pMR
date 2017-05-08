@@ -15,35 +15,67 @@
 #ifndef pMR_MISC_RANDOM_H
 #define pMR_MISC_RANDOM_H
 
-#include <random>
 #include <limits>
+#include <random>
 #include "singleton.hpp"
 
 namespace pMR
 {
-    template<typename T>
-    class Random
+    class Seed
     {
-        public:
-            Random()
-                :   mEngine(mSeed()),
-                    mDistribution(std::numeric_limits<T>::min(),
-                            std::numeric_limits<T>::max()) { }
-            ~Random() = default;
-            T getRandomNumber()
-            {
-                return mDistribution(mEngine);
-            }
-        private:
-            std::random_device mSeed;
-            std::default_random_engine mEngine;
-            std::uniform_int_distribution<T> mDistribution;
+    protected:
+        ~Seed() = default;
+        static std::random_device mSeed;
+        static std::default_random_engine mEngine;
+    };
+
+    template<typename T, bool = std::is_integral<T>::value>
+    class Random;
+
+    template<typename T>
+    class Random<T, true> : Seed
+    {
+    public:
+        T getRandomNumber();
+
+    private:
+        static std::uniform_int_distribution<T> mDistribution;
+    };
+
+    template<typename T>
+    class Random<T, false> : Seed
+    {
+    public:
+        T getRandomNumber();
+
+    private:
+        static std::uniform_real_distribution<T> mDistribution;
     };
 
     template<typename T>
     T getRandomNumber()
     {
-        return Singleton<Random<T>>::Instance().getRandomNumber();
+        return {Random<T>().getRandomNumber()};
     }
 }
+
+template<typename T>
+T pMR::Random<T, true>::getRandomNumber()
+{
+    return {mDistribution(mEngine)};
+}
+
+template<typename T>
+std::uniform_int_distribution<T> pMR::Random<T, true>::mDistribution(
+    std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+
+template<typename T>
+T pMR::Random<T, false>::getRandomNumber()
+{
+    return {mDistribution(mEngine) * 2};
+}
+
+template<typename T>
+std::uniform_real_distribution<T> pMR::Random<T, false>::mDistribution(
+    std::numeric_limits<T>::lowest() / 2, std::numeric_limits<T>::max() / 2);
 #endif // pMR_MISC_RANDOM_H

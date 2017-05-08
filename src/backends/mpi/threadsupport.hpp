@@ -15,24 +15,24 @@
 #ifndef pMR_BACKENDS_MPI_THREADSUPPORT_H
 #define pMR_BACKENDS_MPI_THREADSUPPORT_H
 
-#include <string>
-extern "C"
-{
-#include <mpi.h>
-}
+#include <mutex>
+#include <config.hpp>
 
-namespace pMR { namespace backend
+namespace pMR
 {
-    class ThreadSupport
+    namespace Backend
     {
+        class ThreadSupport
+        {
         public:
             ThreadSupport();
             ~ThreadSupport() = default;
-            bool multiple() const;
-            bool serialized() const;
+            enum ThreadLevel getLevel() const;
+            static std::mutex Mutex;
+
         private:
-            bool mMultiple = false;
-            bool mSerialized = false;
-    };
-}}
+            static enum ThreadLevel sLevel;
+        };
+    }
+}
 #endif // pMR_BACKENDS_MPI_THREADSUPPORT_H

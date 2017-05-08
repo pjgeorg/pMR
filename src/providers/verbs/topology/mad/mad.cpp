@@ -14,34 +14,36 @@
 
 #include "mad.hpp"
 #include <stdexcept>
-#include "address.hpp"
 #include "../../connection.hpp"
+#include "../../scattergather.hpp"
+#include "../../verbs.hpp"
+#include "address.hpp"
+#include "addresshandle.hpp"
 
-pMR::verbs::mad::MAD::MAD(Context &context,
-        std::uint8_t const portNumber)
-    :   mPortNumber(portNumber),
-        mPortAttributes(context, mPortNumber),
-        mProtectionDomain(context),
-        mSendCompletionQueue(context, VerbsMaxSend),
-        mRecvCompletionQueue(context, VerbsMaxRecv),
-        mQueuePair(mProtectionDomain, mSendCompletionQueue,
-                mRecvCompletionQueue),
-        mRecvMemoryRegion(context, mProtectionDomain,
-                static_cast<void*>(mRecvMAD.data()), sizeof(mRecvMAD),
-                IBV_ACCESS_LOCAL_WRITE)
+pMR::Verbs::MAD::MAD::MAD(Context &context, std::uint8_t const portNumber)
+    : mPortNumber{portNumber}
+    , mPortAttributes(context, {mPortNumber})
+    , mProtectionDomain(context)
+    , mSendCompletionQueue(context, {cMaxSend})
+    , mRecvCompletionQueue(context, {cMaxRecv})
+    , mQueuePair(mProtectionDomain, mSendCompletionQueue, mRecvCompletionQueue)
+    , mRecvMemoryRegion(context, mProtectionDomain,
+          static_cast<void *>(mRecvMAD.data()),
+          {static_cast<std::uint32_t>(sizeof(mRecvMAD))},
+          IBV_ACCESS_LOCAL_WRITE)
 {
     mQueuePair.setStateINIT(mPortNumber);
     mQueuePair.setStateRTR();
     mQueuePair.setStateRTS();
 }
 
-void pMR::verbs::mad::MAD::postRecvRequest()
+void pMR::Verbs::MAD::MAD::postRecvRequest()
 {
-    ScatterGatherList scatterGatherList(mRecvMemoryRegion);
+    ScatterGatherElement scatterGatherElement(mRecvMemoryRegion);
 
     ibv_recv_wr workRequest = {};
-    workRequest.wr_id = VerbsRecvWRID;
-    workRequest.sg_list = scatterGatherList.get();
+    workRequest.wr_id = {cRecvWRID};
+    workRequest.sg_list = scatterGatherElement.get();
     workRequest.num_sge = 1;
 
     ibv_recv_wr *badRequest;
@@ -52,25 +54,23 @@ void pMR::verbs::mad::MAD::postRecvRequest()
     }
 }
 
-void pMR::verbs::mad::MAD::postSendRequest()
+void pMR::Verbs::MAD::MAD::postSendRequest()
 {
-    ibv_sge scatterGatherList = {};
-    scatterGatherList.addr = reinterpret_cast<std::uint64_t>(mSendMAD.data());
-    scatterGatherList.length = sizeof(mSendMAD);
-    scatterGatherList.lkey = 0;
+    ScatterGatherElement scatterGatherElement(
+        mSendMAD.data(), sizeof(mSendMAD));
 
-    SubnetManager subnetManager(mPortAttributes, mPortNumber);
+    SubnetManager subnetManager(mPortAttributes, {mPortNumber});
     AddressHandle addressHandle(mProtectionDomain, subnetManager);
 
     ibv_send_wr workRequest = {};
-    workRequest.wr_id = VerbsSendWRID;
-    workRequest.sg_list = &scatterGatherList;
-    workRequest.num_sge = 1;
+    workRequest.wr_id = {cSendWRID};
+    workRequest.sg_list = scatterGatherElement.get();
+    workRequest.num_sge = {scatterGatherElement.getNumEntries()};
     workRequest.opcode = IBV_WR_SEND;
     workRequest.send_flags = IBV_SEND_INLINE;
     workRequest.wr.ud.ah = addressHandle.get();
     workRequest.wr.ud.remote_qpn = 1;
-    workRequest.wr.ud.remote_qkey = VerbsDefaultQP1QKey;
+    workRequest.wr.ud.remote_qkey = {cDefaultQP1QKey};
 
     ibv_send_wr *badRequest;
 
@@ -80,13 +80,12 @@ void pMR::verbs::mad::MAD::postSendRequest()
     }
 }
 
-void pMR::verbs::mad::MAD::query()
+void pMR::Verbs::MAD::MAD::query()
 {
     postRecvRequest();
     do
     {
         postSendRequest();
         mSendCompletionQueue.poll();
-    }
-    while(!mRecvCompletionQueue.poll(1e6));
+    } while(!mRecvCompletionQueue.poll({cMADPollCQRetry}));
 }

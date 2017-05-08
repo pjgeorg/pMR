@@ -14,25 +14,29 @@
 
 #include "memoryregion.hpp"
 #include <stdexcept>
-#include "../../misc/singleton.hpp"
 
-bool pMR::verbs::ODP::isTrue() const
-{
-    return mHasODP;
-}
+#ifdef VERBS_ODP
+#include "odp.hpp"
+#endif // VERBS_ODP
 
-pMR::verbs::MemoryRegion::MemoryRegion(Context &context,
-        ProtectionDomain &protectionDomain,
-        void* buffer, std::uint32_t size, int access)
+pMR::Verbs::MemoryRegion::MemoryRegion(Context &context,
+    ProtectionDomain &protectionDomain, void *buffer, std::uint32_t size,
+    int access)
 {
-    if(Singleton<ODP>::Instance(context).isTrue())
+#ifdef VERBS_ODP
+    access = updateMemoryRegionAccessODP(context, access);
+#endif // VERBS_ODP
+
+    if(size > context.getMaxMemoryRegionSize() ||
+        size > context.getMaxMessageSize())
     {
-        access = updateMemoryRegionAccessODP(access);
+        throw std::length_error("pMR: Message size overflow.");
     }
+
     registerMemoryRegion(protectionDomain, buffer, size, access);
 }
 
-pMR::verbs::MemoryRegion::~MemoryRegion()
+pMR::Verbs::MemoryRegion::~MemoryRegion()
 {
     if(getLength() > 0)
     {
@@ -44,45 +48,44 @@ pMR::verbs::MemoryRegion::~MemoryRegion()
     }
 }
 
-ibv_mr* pMR::verbs::MemoryRegion::get()
+ibv_mr *pMR::Verbs::MemoryRegion::get()
 {
     return mMemoryRegion;
 }
 
-ibv_mr const* pMR::verbs::MemoryRegion::get() const
+ibv_mr const *pMR::Verbs::MemoryRegion::get() const
 {
     return mMemoryRegion;
 }
 
-std::uint64_t pMR::verbs::MemoryRegion::getAddress() const
+std::uint64_t pMR::Verbs::MemoryRegion::getAddress() const
 {
-    return reinterpret_cast<std::uint64_t>(mMemoryRegion->addr);
+    return {reinterpret_cast<std::uintptr_t>(mMemoryRegion->addr)};
 }
 
-std::uint32_t pMR::verbs::MemoryRegion::getLKey() const
+std::uint32_t pMR::Verbs::MemoryRegion::getLKey() const
 {
     return {mMemoryRegion->lkey};
 }
 
-std::uint32_t pMR::verbs::MemoryRegion::getRKey() const
+std::uint32_t pMR::Verbs::MemoryRegion::getRKey() const
 {
     return {mMemoryRegion->rkey};
 }
 
-std::uint32_t pMR::verbs::MemoryRegion::getLength() const
+std::uint32_t pMR::Verbs::MemoryRegion::getLength() const
 {
     return {static_cast<std::uint32_t>(mMemoryRegion->length)};
 }
 
-void pMR::verbs::MemoryRegion::registerMemoryRegion(
-        ProtectionDomain &protectionDomain, void* buffer,
-        std::uint32_t const size, int const access)
+void pMR::Verbs::MemoryRegion::registerMemoryRegion(
+    ProtectionDomain &protectionDomain, void *buffer, std::uint32_t const size,
+    int const access)
 {
     if(size > 0)
     {
         mMemoryRegion =
             ibv_reg_mr(protectionDomain.get(), buffer, size, access);
-
         if(!mMemoryRegion)
         {
             throw std::runtime_error("pMR: Could not register Memory Region.");

@@ -14,11 +14,12 @@
 
 #include "completionqueue.hpp"
 #include <stdexcept>
+#include "../../arch/processor.hpp"
 #include "../../misc/string.hpp"
 
-pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
+pMR::Verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
 {
-    mCompletionQueue = ibv_create_cq(context.get(), size, NULL, NULL, 0);
+    mCompletionQueue = ibv_create_cq(context.get(), {size}, NULL, NULL, 0);
 
     if(!mCompletionQueue)
     {
@@ -26,54 +27,72 @@ pMR::verbs::CompletionQueue::CompletionQueue(Context &context, int const size)
     }
 }
 
-pMR::verbs::CompletionQueue::~CompletionQueue()
+pMR::Verbs::CompletionQueue::~CompletionQueue()
 {
     ibv_destroy_cq(mCompletionQueue);
 }
 
-ibv_cq* pMR::verbs::CompletionQueue::get()
+ibv_cq *pMR::Verbs::CompletionQueue::get()
 {
     return mCompletionQueue;
 }
 
-ibv_cq const* pMR::verbs::CompletionQueue::get() const
+ibv_cq const *pMR::Verbs::CompletionQueue::get() const
 {
     return mCompletionQueue;
 }
 
-void pMR::verbs::CompletionQueue::poll()
+void pMR::Verbs::CompletionQueue::poll()
 {
     ibv_wc workCompletion;
-    int received = 0;
-    while(received <= 0)
-    {
-        received = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
-    }
-    if(workCompletion.status != IBV_WC_SUCCESS)
-    {
-        throw std::runtime_error(toString("pMR: Completion Queue ID",
-                    workCompletion.wr_id, "failed with status",
-                    workCompletion.status));
-    }
-}
-
-bool pMR::verbs::CompletionQueue::poll(int count)
-{
-    ibv_wc workCompletion;
-    int returnValue = 0;
+    int numCompletion;
     do
     {
-        if((returnValue = ibv_poll_cq(mCompletionQueue, 1, &workCompletion)))
-        {
-            if(returnValue < 0 || workCompletion.status != IBV_WC_SUCCESS)
-            {
-                throw std::runtime_error(toString("pMR: Completion Queue ID",
-                            workCompletion.wr_id, "failed with status",
-                            workCompletion.status));
-            }
-            return true;
-        }
+        numCompletion = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
+        CPURelax();
+    } while(numCompletion == 0);
+
+    if(numCompletion < 0)
+    {
+        throw std::runtime_error("pMR: Failed to poll CQ.");
     }
-    while(--count);
-    return false;
+
+    if(workCompletion.status != IBV_WC_SUCCESS)
+    {
+        throw std::runtime_error(toString("pMR: Work Request ID",
+            workCompletion.wr_id,
+            "failed with status:", ibv_wc_status_str(workCompletion.status)));
+    }
+}
+
+bool pMR::Verbs::CompletionQueue::poll(int retry)
+{
+    ibv_wc workCompletion;
+    int numCompletion;
+    do
+    {
+        numCompletion = ibv_poll_cq(mCompletionQueue, 1, &workCompletion);
+        CPURelax();
+    } while(numCompletion == 0 && --retry);
+
+    if(numCompletion < 0)
+    {
+        throw std::runtime_error("pMR: Failed to poll CQ.");
+    }
+
+    if(workCompletion.status != IBV_WC_SUCCESS)
+    {
+        throw std::runtime_error(toString("pMR: Work Request ID",
+            workCompletion.wr_id,
+            "failed with status:", ibv_wc_status_str(workCompletion.status)));
+    }
+
+    if(numCompletion)
+    {
+        return {true};
+    }
+    else
+    {
+        return {false};
+    }
 }

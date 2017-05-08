@@ -27,6 +27,6 @@ template<class Iterator>
 constexpr bool pMR::isRandomAccessIterator()
 {
     return std::is_base_of<std::random_access_iterator_tag,
-           typename std::iterator_traits<Iterator>::iterator_category>::value;
+        typename std::iterator_traits<Iterator>::iterator_category>::value;
 }
 #endif // pMR_MISC_TYPE_H

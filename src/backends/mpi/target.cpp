@@ -16,73 +16,64 @@
 #include <stdexcept>
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
-        unsigned const uniqueSendID, unsigned const uniqueRecvID,
-        bool const null, bool const self, bool const loop)
-    :   mCommunicator(communicator),
-        mTarget(targetRank),
-        mUniqueSendID(uniqueSendID),
-        mUniqueRecvID(uniqueRecvID),
-        mNull(null),
-        mSelf(self),
-        mLoop(loop)
+    int const uniqueSendID, int const uniqueRecvID, bool const null,
+    bool const self)
+    : mCommunicator{communicator}
+    , mTarget{targetRank}
+    , mUniqueSendID{uniqueSendID}
+    , mUniqueRecvID{uniqueRecvID}
+    , mNull{null}
+    , mSelf{self}
 {
     if(mNull && mSelf)
     {
         throw std::logic_error("pMR: Target specified as both null and self.");
     }
-    if(mNull && mLoop)
-    {
-        throw std::logic_error("pMR: Target specified as both null and loop.");
-    }
-    if(mSelf && mLoop)
-    {
-        throw std::logic_error("pMR: Target specified as both self and loop.");
-    }
 }
 
 pMR::Target::Target(MPI_Comm const communicator, int const targetRank,
-        unsigned const uniqueSendID, unsigned const uniqueRecvID)
-    :   mCommunicator(communicator),
-        mTarget(targetRank),
-        mUniqueSendID(uniqueSendID),
-        mUniqueRecvID(uniqueRecvID)
+    int const uniqueSendID, int const uniqueRecvID)
+    : mCommunicator{communicator}
+    , mTarget{targetRank}
+    , mUniqueSendID{uniqueSendID}
+    , mUniqueRecvID{uniqueRecvID}
 {
     queryTarget();
 }
 
+bool pMR::Target::isRemote() const
+{
+    return {!(mNull || mSelf)};
+}
+
 bool pMR::Target::isNull() const
 {
-    return mNull;
+    return {mNull};
 }
 
 bool pMR::Target::isSelf() const
 {
-    return mSelf;
-}
-
-bool pMR::Target::isLoop() const
-{
-    return mLoop;
+    return {mSelf};
 }
 
 int pMR::Target::getTargetRank() const
 {
-    return mTarget;
+    return {mTarget};
 }
 
 int pMR::Target::getUniqueSendID() const
 {
-    return mUniqueSendID;
+    return {mUniqueSendID};
 }
 
 int pMR::Target::getUniqueRecvID() const
 {
-    return mUniqueRecvID;
+    return {mUniqueRecvID};
 }
 
 MPI_Comm pMR::Target::getMPICommunicator() const
 {
-    return mCommunicator;
+    return {mCommunicator};
 }
 
 int pMR::Target::queryRank() const
@@ -92,27 +83,18 @@ int pMR::Target::queryRank() const
     {
         throw std::runtime_error("pMR: Unable to determine own MPI rank.");
     }
-    return ownRank;
+    return {ownRank};
 }
 
 void pMR::Target::queryTarget()
 {
-    // Check if target is null
     if(mTarget == MPI_PROC_NULL)
     {
-        mNull = true;
+        mNull = {true};
     }
 
-    // Check if target is self/loop
     if(queryRank() == mTarget)
     {
-        if(mUniqueSendID == mUniqueRecvID)
-        {
-            mLoop = true;
-        }
-        else
-        {
-            mSelf = true;
-        }
+        mSelf = {true};
     }
 }

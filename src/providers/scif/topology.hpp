@@ -17,8 +17,11 @@
 
 #include <cstdint>
 
-namespace pMR { namespace scif
+namespace pMR
 {
-    std::uint16_t getNodeID();
-}}
+    namespace SCIF
+    {
+        std::uint16_t getNodeID();
+    }
+}
 #endif // pMR_PROVIDERS_SCIF_TOPOLOGY_H

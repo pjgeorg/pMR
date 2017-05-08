@@ -15,9 +15,9 @@
 #include "switch.hpp"
 #include "../../../../misc/random.hpp"
 
-pMR::verbs::mad::SwitchLID::SwitchLID(Context &context,
-        std::uint8_t const portNumber)
-    :   MAD(context, portNumber)
+pMR::Verbs::MAD::SwitchLID::SwitchLID(
+    Context &context, std::uint8_t const portNumber)
+    : MAD(context, {portNumber})
 {
     auto transactionID = getRandomNumber<std::uint32_t>();
     // SA Formate (15.2.1.1) (0-55)
@@ -26,7 +26,7 @@ pMR::verbs::mad::SwitchLID::SwitchLID(Context &context,
     // Management Class 1Byte
     std::get<1>(mSendMAD) = 0x03;
     // Class Version 1Byte
-    std::get<2>(mSendMAD) = 0x02; 
+    std::get<2>(mSendMAD) = 0x02;
     // Method 1Byte
     std::get<3>(mSendMAD) = 0x01;
     // Status 2Byte
@@ -61,45 +61,45 @@ pMR::verbs::mad::SwitchLID::SwitchLID(Context &context,
     // Reserved 48 2Byte
 }
 
-bool pMR::verbs::mad::SwitchLID::validate()
+bool pMR::Verbs::MAD::SwitchLID::validate()
 {
-    std::uint32_t status = std::get<VerbsGRHSize+4>(mRecvMAD) << 24 |
-        std::get<VerbsGRHSize+5>(mRecvMAD) << 16 |
-        std::get<VerbsGRHSize+6>(mRecvMAD) << 8 |
-        std::get<VerbsGRHSize+75>(mRecvMAD);
+    std::uint32_t status = std::get<cGRHSize + 4>(mRecvMAD) << 24 |
+        std::get<cGRHSize + 5>(mRecvMAD) << 16 |
+        std::get<cGRHSize + 6>(mRecvMAD) << 8 |
+        std::get<cGRHSize + 75>(mRecvMAD);
     if(status)
     {
         return false;
     }
 
-    std::uint8_t method = std::get<VerbsGRHSize+3>(mRecvMAD) & 0x0F;
+    std::uint8_t method = std::get<cGRHSize + 3>(mRecvMAD) & 0x0F;
     if(method != 0x01)
     {
         return false;
     }
 
-    std::uint16_t offset = std::get<VerbsGRHSize+44>(mRecvMAD) << 8 |
-        std::get<VerbsGRHSize+45>(mRecvMAD);
+    std::uint16_t offset = std::get<cGRHSize + 44>(mRecvMAD) << 8 |
+        std::get<cGRHSize + 45>(mRecvMAD);
     if(!offset)
     {
         return false;
     }
 
-    if(!std::equal(mRecvMAD.begin()+VerbsGRHSize+12,
-                mRecvMAD.begin()+VerbsGRHSize+12+4, mSendMAD.begin()+12))
+    if(!std::equal(mRecvMAD.begin() + cGRHSize + 12,
+           mRecvMAD.begin() + cGRHSize + 12 + 4, mSendMAD.begin() + 12))
     {
         return false;
     }
     return true;
 }
 
-int pMR::verbs::mad::SwitchLID::getSwitchLID()
+int pMR::Verbs::MAD::SwitchLID::getSwitchLID()
 {
     do
     {
         query();
-    }
-    while(!validate());
-    return (std::get<VerbsGRHSize+60>(mRecvMAD) |
-            std::get<VerbsGRHSize+61>(mRecvMAD));
+    } while(!validate());
+
+    return (std::get<cGRHSize + 60>(mRecvMAD) << 8 |
+        std::get<cGRHSize + 61>(mRecvMAD));
 }
