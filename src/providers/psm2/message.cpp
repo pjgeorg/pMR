@@ -55,13 +55,13 @@ psm2_mq_req_t pMR::PSM2::postSend(MatchedQueue &mq,
     psm2_mq_req_t req;
 
     std::uint32_t flags = 0;
-    if(sizeByte > cEagerThreshold)
+    if(sizeByte >= cEagerThreshold)
     {
         flags |= PSM2_MQ_FLAG_SENDSYNC;
     }
 
     auto err = psm2_mq_isend2(
-        mq.get(), destination, 0, &tag, buffer, sizeByte, NULL, &req);
+        mq.get(), destination, flags, &tag, buffer, sizeByte, NULL, &req);
 
     if(err)
     {

@@ -45,6 +45,7 @@ void printUsage()
     printMaster("    --dim D             Set number of dimensions.");
     printMaster("    --geom x y z t      Set process topology.");
     printMaster("    --periodic x y z t  Set process topology.");
+    printMaster("    --active x y z t    Set active channels. Non-active channels exchange zero sized messages to sync.");
     printMaster("    --maxIter n         Set maximum iterations.");
     printMaster("    --overallSize s     Set maximum sent data.");
     printMaster("    --minMsgSize m      Set minimum message size.");
