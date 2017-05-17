@@ -27,6 +27,7 @@ namespace pMR
         constexpr std::int64_t cEndpointCloseTimeout = 5 * 1000000000LL;
         constexpr char cUUIDEnv[] = "PSM2_UUID";
         constexpr char cDefaultUUID[] = "00FF00FF-0000-0000-0000-00FF00FF00FF";
+        constexpr std::uint32_t cEagerThreshold = PSM2_EAGER_THRESHOLD;
 
         // We use the additional 32bit to distinguish from any other library
         // E.g. OFI is using these for (L->R):

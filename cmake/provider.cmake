@@ -185,6 +185,12 @@ if(PROVIDER.PSM2)
         add_definitions(-DPSM2_PRINT_STATS)
     endif()
 
+    if(PSM2.EAGER.THRESHOLD STREQUAL "")
+        ERROR("PSM2: No eager threshold set")
+    endif()
+    add_definitions(-DPSM2_EAGER_THRESHOLD=${PSM2.EAGER.THRESHOLD})
+    list(APPEND PSM2_CAPS "EagerThreshold=${PSM2.EAGER.THRESHOLD}")
+
     add_subdirectory(providers/psm2)
     list(APPEND PROVIDERS $<TARGET_OBJECTS:PROVIDER_PSM2>)
     list(APPEND LIBRARIES ${PSM2})
