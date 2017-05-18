@@ -16,11 +16,16 @@
 #include <stdexcept>
 extern "C" {
 #include <psm2.h>
+#include <stdlib.h>
 }
 #include "error.hpp"
+#include "psm2.hpp"
 
 pMR::PSM2::PSM::PSM()
 {
+    setenv("MPI_LOCALRANKID", std::getenv(cLocalRankIDEnv), 0);
+    setenv("MPI_LOCALNRANKS", std::getenv(cLocalNRanksEnv), 0);
+
     int vMajor = PSM2_VERNO_MAJOR;
     int vMinor = PSM2_VERNO_MINOR;
 
