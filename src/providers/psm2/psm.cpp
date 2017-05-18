@@ -23,8 +23,7 @@ extern "C" {
 
 pMR::PSM2::PSM::PSM()
 {
-    setenv("MPI_LOCALRANKID", std::getenv(cLocalRankIDEnv), 0);
-    setenv("MPI_LOCALNRANKS", std::getenv(cLocalNRanksEnv), 0);
+    setEnvironment();
 
     int vMajor = PSM2_VERNO_MAJOR;
     int vMinor = PSM2_VERNO_MINOR;
@@ -47,4 +46,33 @@ pMR::PSM2::PSM::PSM()
 pMR::PSM2::PSM::~PSM()
 {
     psm2_finalize();
+}
+
+void pMR::PSM2::PSM::setEnvironment() const
+{
+    if(std::getenv(cLocalRankIDEnv) == NULL)
+    {
+        for(auto localRankIDEnv : cLocalRankIDEnvs)
+        {
+            auto rankID = std::getenv(localRankIDEnv);
+            if(rankID)
+            {
+                setenv(cLocalRankIDEnv, rankID, 0);
+                break;
+            }
+        }
+    }
+
+    if(std::getenv(cLocalNRanksEnv) == NULL)
+    {
+        for(auto localNRanksEnv : cLocalNRanksEnvs)
+        {
+            auto nRanks = std::getenv(localNRanksEnv);
+            if(nRanks)
+            {
+                setenv(cLocalNRanksEnv, nRanks, 0);
+                break;
+            }
+        }
+    }
 }

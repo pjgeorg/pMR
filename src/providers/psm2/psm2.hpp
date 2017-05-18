@@ -15,6 +15,7 @@
 #ifndef pMR_PROVIDERS_PSM2_PSM2_H
 #define pMR_PROVIDERS_PSM2_PSM2_H
 
+#include <array>
 #include <cstdint>
 extern "C" {
 #include <psm2_mq.h>
@@ -28,8 +29,12 @@ namespace pMR
         constexpr char cUUIDEnv[] = "PSM2_UUID";
         constexpr char cDefaultUUID[] = "00FF00FF-0000-0000-0000-00FF00FF00FF";
         constexpr std::uint32_t cEagerThreshold = PSM2_EAGER_THRESHOLD;
-        constexpr char cLocalRankIDEnv[] = "SLURM_LOCALID";
-        constexpr char cLocalNRanksEnv[] = "SLURM_NTASKS_PER_NODE";
+        constexpr char cLocalRankIDEnv[] = "MPI_LOCALRANKID";
+        constexpr char cLocalNRanksEnv[] = "MPI_LOCALNRANKS";
+        constexpr std::array<char const *, 2> cLocalRankIDEnvs = {
+            {"SLURM_LOCALID", "OMPI_COMM_WORLD_LOCAL_RANK"}};
+        constexpr std::array<char const *, 2> cLocalNRanksEnvs = {
+            {"SLURM_NTASKS_PER_NODE", "OMPI_COMM_WORLD_LOCAL_SIZE"}};
 
         // We use the additional 32bit to distinguish from any other library
         // E.g. OFI is using these for (L->R):

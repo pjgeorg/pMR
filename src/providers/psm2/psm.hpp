@@ -28,6 +28,9 @@ namespace pMR
             PSM &operator=(PSM const &) = delete;
             PSM &operator=(PSM &&) = delete;
             ~PSM();
+
+        private:
+            void setEnvironment() const;
         };
     }
 }
