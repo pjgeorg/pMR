@@ -248,6 +248,13 @@ void runExchange(int argc, char **argv)
             }
         }
 
+        // Only zero sized messages if no active windows
+        if(activeWindows == 0)
+        {
+            msgSize = 0;
+            maxMsgSize = 0;
+        }
+
         // Calculate iterations count
         auto iter = maxIter;
         if(msgSize)
