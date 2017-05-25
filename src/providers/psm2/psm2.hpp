@@ -15,7 +15,6 @@
 #ifndef pMR_PROVIDERS_PSM2_PSM2_H
 #define pMR_PROVIDERS_PSM2_PSM2_H
 
-#include <array>
 #include <cstdint>
 extern "C" {
 #include <psm2_mq.h>
