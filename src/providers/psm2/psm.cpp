@@ -16,11 +16,16 @@
 #include <stdexcept>
 extern "C" {
 #include <psm2.h>
+#include <stdlib.h>
 }
+#include "../../backends/backend.hpp"
 #include "error.hpp"
+#include "psm2.hpp"
 
 pMR::PSM2::PSM::PSM()
 {
+    setEnvironment();
+
     int vMajor = PSM2_VERNO_MAJOR;
     int vMinor = PSM2_VERNO_MINOR;
 
@@ -42,4 +47,19 @@ pMR::PSM2::PSM::PSM()
 pMR::PSM2::PSM::~PSM()
 {
     psm2_finalize();
+}
+
+void pMR::PSM2::PSM::setEnvironment() const
+{
+    if(std::getenv(cLocalRankIDEnv) == NULL)
+    {
+        setenv(cLocalRankIDEnv,
+            std::to_string(Backend::getLocalProcessID()).c_str(), 0);
+    }
+
+    if(std::getenv(cLocalNRanksEnv) == NULL)
+    {
+        setenv(cLocalNRanksEnv,
+            std::to_string(Backend::getLocalNumProcesses()).c_str(), 0);
+    }
 }

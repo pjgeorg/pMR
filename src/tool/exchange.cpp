@@ -37,6 +37,8 @@ void runExchange(int argc, char **argv)
     int dim = {1};
     std::vector<int> geom;
     std::vector<int> periodic;
+    std::vector<int> active;
+    std::vector<int> activeConnections;
     std::uint64_t maxIter = {10000};
     std::uint64_t overallSize = {1024 * 1024 * 1024};
     std::uint32_t minMsgSize = {0};
@@ -53,8 +55,10 @@ void runExchange(int argc, char **argv)
     parameterOption(argv, argv + argc, "--dim", dim);
     geom.resize(dim, 0);
     periodic.resize(dim, 1);
+    active.resize(dim, 1);
     parameterOption(argv, argv + argc, "--geom", geom);
     parameterOption(argv, argv + argc, "--periodic", periodic);
+    parameterOption(argv, argv + argc, "--active", active);
 
     parameterOption<std::uint64_t>(argv, argv + argc, "--maxIter", maxIter);
     parameterOption<std::uint64_t>(
@@ -117,10 +121,12 @@ void runExchange(int argc, char **argv)
             if(lNeighbor.isRemote())
             {
                 connections.emplace_back(lNeighbor);
+                activeConnections.emplace_back(active[n]);
             }
             if(rNeighbor.isRemote())
             {
                 connections.emplace_back(rNeighbor);
+                activeConnections.emplace_back(active[n]);
             }
         }
         else
@@ -128,10 +134,13 @@ void runExchange(int argc, char **argv)
             if(rNeighbor.isRemote())
             {
                 connections.emplace_back(rNeighbor);
+                activeConnections.emplace_back(active[n]);
             }
             if(lNeighbor.isRemote())
             {
                 connections.emplace(connections.end() - 1, lNeighbor);
+                activeConnections.emplace(
+                    activeConnections.end() - 1, active[n]);
             }
         }
     }
@@ -161,6 +170,7 @@ void runExchange(int argc, char **argv)
         "/", communicator.dimensions());
     printMaster("Topology:    ", communicator.topology());
     printMaster("Periodic:    ", communicator.periodic());
+    printMaster("Active:      ", active);
     printMaster("BufferedSend:", bufferedSend);
     printMaster("BufferedRecv:", bufferedRecv);
     printMaster("Threads:     ", threads);
@@ -178,16 +188,32 @@ void runExchange(int argc, char **argv)
         std::vector<pMR::SendWindow<unsigned char>> sendWindows;
         std::vector<pMR::RecvWindow<unsigned char>> recvWindows;
 
+        std::uint64_t activeWindows = 0;
+
         // Create Buffers and Windows
         for(decltype(connections.size()) c = 0; c != connections.size(); ++c)
         {
+
+            auto const tmpSize = [&activeConnections, &activeWindows, c,
+                msgSize] {
+                if(activeConnections[c] == 0)
+                {
+                    return decltype(msgSize){0};
+                }
+                else
+                {
+                    ++activeWindows;
+                    return msgSize;
+                }
+            }();
+
             if(verify)
             {
-                vBuffers.emplace_back(msgSize + pMR::cacheLineSize());
-                sendBuffers.emplace_back(msgSize + pMR::cacheLineSize());
-                recvBuffers.emplace_back(msgSize + pMR::cacheLineSize());
+                vBuffers.emplace_back(tmpSize + pMR::cacheLineSize());
+                sendBuffers.emplace_back(tmpSize + pMR::cacheLineSize());
+                recvBuffers.emplace_back(tmpSize + pMR::cacheLineSize());
 
-                std::generate_n(vBuffers.back().begin(), msgSize,
+                std::generate_n(vBuffers.back().begin(), tmpSize,
                     pMR::getRandomNumber<std::uint8_t>);
                 std::fill_n(vBuffers.back().rbegin(), pMR::cacheLineSize(), 0);
                 std::copy(vBuffers.back().begin(), vBuffers.back().end(),
@@ -197,38 +223,43 @@ void runExchange(int argc, char **argv)
             }
             else
             {
-                sendBuffers.emplace_back(msgSize);
-                recvBuffers.emplace_back(msgSize);
+                sendBuffers.emplace_back(tmpSize);
+                recvBuffers.emplace_back(tmpSize);
             }
 
             if(bufferedSend)
             {
-                sendWindows.emplace_back(connections[c], msgSize);
+                sendWindows.emplace_back(connections[c], tmpSize);
             }
             else
             {
                 sendWindows.emplace_back(
-                    connections[c], sendBuffers.back().data(), msgSize);
+                    connections[c], sendBuffers.back().data(), tmpSize);
             }
 
             if(bufferedRecv)
             {
-                recvWindows.emplace_back(connections[c], msgSize);
+                recvWindows.emplace_back(connections[c], tmpSize);
             }
             else
             {
                 recvWindows.emplace_back(
-                    connections[c], recvBuffers.back().data(), msgSize);
+                    connections[c], recvBuffers.back().data(), tmpSize);
             }
+        }
+
+        // Only zero sized messages if no active windows
+        if(activeWindows == 0)
+        {
+            msgSize = 0;
+            maxMsgSize = 0;
         }
 
         // Calculate iterations count
         auto iter = maxIter;
         if(msgSize)
         {
-            iter = std::min(iter,
-                overallSize / msgSize /
-                    static_cast<std::uint64_t>(sendWindows.size()));
+            iter = std::min(iter, overallSize / msgSize / activeWindows);
         }
 
         auto size = sendWindows.size();

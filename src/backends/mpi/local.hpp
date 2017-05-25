@@ -12,26 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_PROVIDERS_PSM2_PSM_H
-#define pMR_PROVIDERS_PSM2_PSM_H
+#ifndef pMR_BACKENDS_MPI_LOCAL_H
+#define pMR_BACKENDS_MPI_LOCAL_H
+
+extern "C" {
+#include <mpi.h>
+}
 
 namespace pMR
 {
-    namespace PSM2
+    namespace Backend
     {
-        class PSM
-        {
-        public:
-            PSM();
-            PSM(PSM const &) = delete;
-            PSM(PSM &&) = delete;
-            PSM &operator=(PSM const &) = delete;
-            PSM &operator=(PSM &&) = delete;
-            ~PSM();
-
-        private:
-            void setEnvironment() const;
-        };
+        MPI_Comm getLocalCommunicator();
     }
 }
-#endif // pMR_PROVIDERS_PSM2_PSM_H
+#endif // pMR_BACKENDS_MPI_LOCAL_H

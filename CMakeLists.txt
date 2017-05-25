@@ -55,6 +55,7 @@ set(PSM2.WRAPPER OFF CACHE STRING "Compile PSM2 wrapper for LD_PRELOAD to allow 
 set(PSM2.WRAPPER.BLOCK OFF CACHE STRING "Block others from calling peek while data operations are in progress. Otherwise hide own requests in peek.")
 set(PSM2.WAIT.BLOCK OFF CACHE STRING "Using blocking wait instead of polling and testing.")
 set(PSM2.PRINT.STATS OFF CACHE STRING "Print PSM2 Matched Queue stats.")
+set(PSM2.EAGER.THRESHOLD 64000 CACHE STRING "Set eager rendezvous threshold. For messages below threshold PSM2 decides which protocol to use.")
 
 set(SELF.WARN ON CACHE BOOL "Warn when using provider self.")
 
