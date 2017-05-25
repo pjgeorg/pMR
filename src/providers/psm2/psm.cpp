@@ -18,6 +18,7 @@ extern "C" {
 #include <psm2.h>
 #include <stdlib.h>
 }
+#include "../../backends/backend.hpp"
 #include "error.hpp"
 #include "psm2.hpp"
 
@@ -52,27 +53,13 @@ void pMR::PSM2::PSM::setEnvironment() const
 {
     if(std::getenv(cLocalRankIDEnv) == NULL)
     {
-        for(auto localRankIDEnv : cLocalRankIDEnvs)
-        {
-            auto rankID = std::getenv(localRankIDEnv);
-            if(rankID)
-            {
-                setenv(cLocalRankIDEnv, rankID, 0);
-                break;
-            }
-        }
+        setenv(cLocalRankIDEnv,
+            std::to_string(Backend::getLocalProcessID()).c_str(), 0);
     }
 
     if(std::getenv(cLocalNRanksEnv) == NULL)
     {
-        for(auto localNRanksEnv : cLocalNRanksEnvs)
-        {
-            auto nRanks = std::getenv(localNRanksEnv);
-            if(nRanks)
-            {
-                setenv(cLocalNRanksEnv, nRanks, 0);
-                break;
-            }
-        }
+        setenv(cLocalNRanksEnv,
+            std::to_string(Backend::getLocalNumProcesses()).c_str(), 0);
     }
 }

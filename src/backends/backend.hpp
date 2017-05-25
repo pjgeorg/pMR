@@ -27,6 +27,9 @@ namespace pMR
 
     namespace Backend
     {
+        int getLocalProcessID();
+        int getLocalNumProcesses();
+
         void sync(Target const &target);
 
         void exchange(Target const &target, void const *sendBuffer,

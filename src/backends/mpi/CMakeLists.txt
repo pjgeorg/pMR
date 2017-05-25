@@ -1,6 +1,7 @@
 add_library(BACKEND OBJECT
     communicator.cpp
     exchange.cpp
+    local.cpp
     sync.cpp
     target.cpp
     threadsupport.cpp)

@@ -31,10 +31,6 @@ namespace pMR
         constexpr std::uint32_t cEagerThreshold = PSM2_EAGER_THRESHOLD;
         constexpr char cLocalRankIDEnv[] = "MPI_LOCALRANKID";
         constexpr char cLocalNRanksEnv[] = "MPI_LOCALNRANKS";
-        constexpr std::array<char const *, 2> cLocalRankIDEnvs = {
-            {"SLURM_LOCALID", "OMPI_COMM_WORLD_LOCAL_RANK"}};
-        constexpr std::array<char const *, 2> cLocalNRanksEnvs = {
-            {"SLURM_NTASKS_PER_NODE", "OMPI_COMM_WORLD_LOCAL_SIZE"}};
 
         // We use the additional 32bit to distinguish from any other library
         // E.g. OFI is using these for (L->R):
