@@ -21,7 +21,7 @@ build-job-CentOS-gcc-openmpi-mpi:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-openmpi-mpi-threaded:
     stage: build
@@ -39,7 +39,7 @@ build-job-CentOS-gcc-openmpi-mpi-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-openmpi-shm:
     stage: build
@@ -57,7 +57,7 @@ build-job-CentOS-gcc-openmpi-shm:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-openmpi-shm-threaded:
     stage: build
@@ -75,7 +75,7 @@ build-job-CentOS-gcc-openmpi-shm-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-openmpi-qpaceb:
     stage: build
@@ -93,7 +93,7 @@ build-job-CentOS-gcc-openmpi-qpaceb:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-openmpi-qpaceb-threaded:
     stage: build
@@ -111,7 +111,7 @@ build-job-CentOS-gcc-openmpi-qpaceb-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-4.9-openmpi-mpi:
     stage: build
@@ -130,7 +130,7 @@ build-job-CentOS-gcc-4.9-openmpi-mpi:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-4.9-openmpi-mpi-threaded:
     stage: build
@@ -149,7 +149,7 @@ build-job-CentOS-gcc-4.9-openmpi-mpi-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-4.9-openmpi-shm:
     stage: build
@@ -168,7 +168,7 @@ build-job-CentOS-gcc-4.9-openmpi-shm:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-4.9-openmpi-shm-threaded:
     stage: build
@@ -187,7 +187,7 @@ build-job-CentOS-gcc-4.9-openmpi-shm-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-4.9-openmpi-qpaceb:
     stage: build
@@ -206,7 +206,7 @@ build-job-CentOS-gcc-4.9-openmpi-qpaceb:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-4.9-openmpi-qpaceb-threaded:
     stage: build
@@ -225,7 +225,7 @@ build-job-CentOS-gcc-4.9-openmpi-qpaceb-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-5-openmpi-mpi:
     stage: build
@@ -244,7 +244,7 @@ build-job-CentOS-gcc-5-openmpi-mpi:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-5-openmpi-mpi-threaded:
     stage: build
@@ -263,7 +263,7 @@ build-job-CentOS-gcc-5-openmpi-mpi-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-5-openmpi-shm:
     stage: build
@@ -282,7 +282,7 @@ build-job-CentOS-gcc-5-openmpi-shm:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-5-openmpi-shm-threaded:
     stage: build
@@ -301,7 +301,7 @@ build-job-CentOS-gcc-5-openmpi-shm-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-5-openmpi-qpaceb:
     stage: build
@@ -320,7 +320,7 @@ build-job-CentOS-gcc-5-openmpi-qpaceb:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-5-openmpi-qpaceb-threaded:
     stage: build
@@ -339,7 +339,7 @@ build-job-CentOS-gcc-5-openmpi-qpaceb-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-6-openmpi-mpi:
     stage: build
@@ -358,7 +358,7 @@ build-job-CentOS-gcc-6-openmpi-mpi:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-6-openmpi-mpi-threaded:
     stage: build
@@ -377,7 +377,7 @@ build-job-CentOS-gcc-6-openmpi-mpi-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-6-openmpi-shm:
     stage: build
@@ -396,7 +396,7 @@ build-job-CentOS-gcc-6-openmpi-shm:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-6-openmpi-shm-threaded:
     stage: build
@@ -415,7 +415,7 @@ build-job-CentOS-gcc-6-openmpi-shm-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-6-openmpi-qpaceb:
     stage: build
@@ -434,7 +434,7 @@ build-job-CentOS-gcc-6-openmpi-qpaceb:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 build-job-CentOS-gcc-6-openmpi-qpaceb-threaded:
     stage: build
@@ -453,7 +453,7 @@ build-job-CentOS-gcc-6-openmpi-qpaceb-threaded:
     artifacts:
         expire_in: 1 week
         paths:
-            - install/bin/pmr
+            - install/bin/pmr-bench
 
 test-job-CentOS-gcc-openmpi-mpi:
     stage: test
@@ -462,12 +462,12 @@ test-job-CentOS-gcc-openmpi-mpi:
     script:
         - module purge
         - module load mpi/openmpi-x86_64
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --dim 1 --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark exchange --dim 2 --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark exchange --dim 1 --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark exchange --dim 2 --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark allreduce --verify
     dependencies:
         - build-job-CentOS-gcc-openmpi-mpi
 
@@ -479,12 +479,12 @@ test-job-CentOS-gcc-openmpi-mpi-threaded:
         - module purge
         - module load mpi/openmpi-x86_64
         - export OMP_NUM_THREADS=2
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --dim 1 --threaded --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark exchange --dim 2 --threaded --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark exchange --dim 1 --threaded --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark exchange --dim 2 --threaded --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark allreduce --verify
     dependencies:
         - build-job-CentOS-gcc-openmpi-mpi-threaded
 
@@ -495,12 +495,12 @@ test-job-CentOS-gcc-openmpi-shm:
     script:
         - module purge
         - module load mpi/openmpi-x86_64
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --dim 1 --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark exchange --dim 2 --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark exchange --dim 1 --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark exchange --dim 2 --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark allreduce --verify
     dependencies:
         - build-job-CentOS-gcc-openmpi-shm
 
@@ -512,12 +512,12 @@ test-job-CentOS-gcc-openmpi-shm-threaded:
         - module purge
         - module load mpi/openmpi-x86_64
         - export OMP_NUM_THREADS=2
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --dim 1 --threaded --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark exchange --dim 2 --threaded --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark exchange --dim 1 --threaded --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark exchange --dim 2 --threaded --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark allreduce --verify
     dependencies:
         - build-job-CentOS-gcc-openmpi-shm-threaded
 
@@ -528,12 +528,12 @@ test-job-CentOS-gcc-openmpi-qpaceb:
     script:
         - module purge
         - module load mpi/openmpi-x86_64
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --dim 1 --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark exchange --dim 2 --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark exchange --dim 1 --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark exchange --dim 2 --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark allreduce --verify
     dependencies:
         - build-job-CentOS-gcc-openmpi-qpaceb
 
@@ -545,11 +545,11 @@ test-job-CentOS-gcc-openmpi-qpaceb-threaded:
         - module purge
         - module load mpi/openmpi-x86_64
         - export OMP_NUM_THREADS=2
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark exchange --dim 1 --threaded --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark exchange --dim 2 --threaded --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr --benchmark allreduce --verify
-        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark exchange --dim 1 --threaded --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark exchange --dim 2 --threaded --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 1 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 2 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 3 ./install/bin/pmr-bench --benchmark allreduce --verify
+        - mpirun --allow-run-as-root --mca btl self,vader --mca pml ob1 -np 4 ./install/bin/pmr-bench --benchmark allreduce --verify
     dependencies:
         - build-job-CentOS-gcc-openmpi-qpaceb-threaded
