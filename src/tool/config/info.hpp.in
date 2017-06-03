@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_TOOL_INFO_H
-#define pMR_TOOL_INFO_H
+#ifndef pMR_TOOL_CONFIG_INFO_H
+#define pMR_TOOL_CONFIG_INFO_H
 
 constexpr char sLibs[] = "@LIBS@";
 constexpr char sLDFlags[] = "@LDFLAGS@";
@@ -35,4 +35,4 @@ void printCluster();
 void printBackend();
 void printThread();
 void printVersion();
-#endif // pMR_TOOL_INFO_H
+#endif // pMR_TOOL_CONFIG_INFO_H

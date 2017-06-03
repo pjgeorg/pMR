@@ -12,15 +12,14 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_TOOL_PARAMETER_H
-#define pMR_TOOL_PARAMETER_H
+#ifndef pMR_TOOL_COMMON_PARAMETER_H
+#define pMR_TOOL_COMMON_PARAMETER_H
 
 #include <algorithm>
 #include <array>
 #include <sstream>
 #include <string>
 #include <vector>
-#include "usage.hpp"
 
 bool parameterExists(
     char *const *begin, char *const *end, std::string const &parameter);
@@ -40,7 +39,7 @@ void parameterOption(
         }
         else
         {
-            printUsage();
+            throw std::invalid_argument(parameter);
         }
     }
 }
@@ -60,7 +59,7 @@ void parameterOption(char **begin, char **end, std::string const &parameter,
                 {
                     if(!isdigit(character))
                     {
-                        printUsage();
+                        throw std::invalid_argument(parameter);
                     }
                 }
                 std::istringstream stream(*input);
@@ -68,9 +67,9 @@ void parameterOption(char **begin, char **end, std::string const &parameter,
             }
             else
             {
-                printUsage();
+                throw std::invalid_argument(parameter);
             }
         }
     }
 }
-#endif // pMR_TOOL_PARAMETER_H
+#endif // pMR_TOOL_COMMON_PARAMETER_H

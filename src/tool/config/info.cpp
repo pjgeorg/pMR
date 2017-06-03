@@ -13,45 +13,52 @@
 //  limitations under the License.
 
 #include "info.hpp"
-#include "mpi.hpp"
+#include <iostream>
 #include "parameter.hpp"
+#include "usage.hpp"
 
-void printInfo(int argc, char **argv)
+int main(int argc, char **argv)
 {
+    if(parameterExists(argv, argv + argc, "--usage") or
+        parameterExists(argv, argv + argc, "--help"))
+    {
+        printUsage();
+    }
+
     if(parameterExists(argv, argv + argc, "--version"))
     {
-        printMaster(sVersion);
+        std::cout << sVersion << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--cluster"))
     {
-        printMaster(sCluster);
+        std::cout << sCluster << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--backend"))
     {
-        printMaster(sBackend);
+        std::cout << sBackend << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--thread"))
     {
-        printMaster(sThread);
+        std::cout << sThread << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--cxx"))
     {
-        printMaster(sCXX);
+        std::cout << sCXX << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--cxxflags"))
     {
-        printMaster(sCXXFlags);
+        std::cout << sCXXFlags << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--libs"))
     {
-        printMaster(sLibs);
+        std::cout << sLibs << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--ldflags"))
     {
-        printMaster(sLDFlags);
+        std::cout << sLDFlags << std::endl;
     }
     if(parameterExists(argv, argv + argc, "--config"))
     {
-        printMaster(sConfig);
+        std::cout << sConfig << std::endl;
     }
 }

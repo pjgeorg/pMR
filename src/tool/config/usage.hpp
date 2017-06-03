@@ -12,9 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_TOOL_EXCHANGE_H
-#define pMR_TOOL_EXCHANGE_H
+#ifndef pMR_TOOL_CONFIG_USAGE_H
+#define pMR_TOOL_CONFIG_USAGE_H
 
-void runExchange(int argc, char **argv);
+void printUsage();
 
-#endif // pMR_TOOL_EXCHANGE_H
+#endif // pMR_TOOL_CONFIG_USAGE_H

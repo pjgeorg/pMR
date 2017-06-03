@@ -13,12 +13,11 @@
 //  limitations under the License.
 
 #include <cstdlib>
-#include "../misc/print.hpp"
+#include "../../misc/print.hpp"
+#include "../common/parameter.hpp"
 #include "allreduce.hpp"
 #include "exchange.hpp"
-#include "info.hpp"
 #include "mpi.hpp"
-#include "parameter.hpp"
 #include "usage.hpp"
 
 int main(int argc, char **argv)
@@ -46,10 +45,9 @@ int main(int argc, char **argv)
             {
                 runAllReduce(argc, argv);
             }
-            printUsage();
         }
 
-        printInfo(argc, argv);
+        printUsage();
         finalize();
     }
     catch(const std::exception &e)

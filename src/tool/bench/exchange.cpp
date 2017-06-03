@@ -19,17 +19,17 @@
 extern "C" {
 #include <omp.h>
 }
-#include "../allreduce.hpp"
-#include "../communicator.hpp"
-#include "../config.hpp"
-#include "../connection.hpp"
-#include "../misc/allocator.hpp"
-#include "../misc/random.hpp"
-#include "../misc/time.hpp"
-#include "../recvwindow.hpp"
-#include "../sendwindow.hpp"
+#include "../../communicator.hpp"
+#include "../../config.hpp"
+#include "../../connection.hpp"
+#include "../../misc/allocator.hpp"
+#include "../../misc/random.hpp"
+#include "../../misc/time.hpp"
+#include "../../recvwindow.hpp"
+#include "../../sendwindow.hpp"
+#include "../common/parameter.hpp"
 #include "mpi.hpp"
-#include "parameter.hpp"
+#include "usage.hpp"
 
 void runExchange(int argc, char **argv)
 {

@@ -12,9 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_TOOL_USAGE_H
-#define pMR_TOOL_USAGE_H
+#ifndef pMR_TOOL_BENCH_ALLREDUCE_H
+#define pMR_TOOL_BENCH_ALLREDUCE_H
 
-void printUsage();
+void runAllReduce(int argc, char **argv);
 
-#endif // pMR_TOOL_USAGE_H
+#endif // pMR_TOOL_BENCH_ALLREDUCE_H

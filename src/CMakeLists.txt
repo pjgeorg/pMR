@@ -98,8 +98,4 @@ install(TARGETS pmr
     RUNTIME DESTINATION bin)
 install(EXPORT pmr-targets FILE pmr-config.cmake DESTINATION cmake)
 
-if(NOT ${BACKEND} STREQUAL "MPI")
-    INFO("Tool currently only available for backend MPI.")
-else()
-    add_subdirectory(tool)
-endif()
+add_subdirectory(tool)

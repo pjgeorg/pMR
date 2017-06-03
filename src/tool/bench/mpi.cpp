@@ -15,8 +15,8 @@
 #include "mpi.hpp"
 #include <cstdlib>
 #include <stdexcept>
-#include "../config.hpp"
-#include "../misc/print.hpp"
+#include "../../config.hpp"
+#include "../../misc/print.hpp"
 
 void init(int argc, char **argv)
 {

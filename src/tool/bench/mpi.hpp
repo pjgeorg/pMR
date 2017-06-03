@@ -12,13 +12,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#ifndef pMR_TOOL_MPI_H
-#define pMR_TOOL_MPI_H
+#ifndef pMR_TOOL_BENCH_MPI_H
+#define pMR_TOOL_BENCH_MPI_H
 
 extern "C" {
 #include <mpi.h>
 }
-#include "../misc/print.hpp"
+#include "../../misc/print.hpp"
 
 void init(int argc, char **argv);
 void finalize(int exitCode = 0);
@@ -34,4 +34,4 @@ void printMaster(Types const &... args)
         pMR::print(args...);
     }
 }
-#endif // pMR_TOOL_MPI_H
+#endif // pMR_TOOL_BENCH_MPI_H
