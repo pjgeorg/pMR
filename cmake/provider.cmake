@@ -167,6 +167,7 @@ if(PROVIDER.PSM2)
 
     if(PSM2.WRAPPER)
         INFO("PSM2 Wrapper library enabled. Use LD_PRELOAD to load libpmr_psm2_preload.so")
+        list(APPEND REQUIRED_EXPORTS "LD_PRELOAD=${CMAKE_INSTALL_PREFIX}/lib/libpmr_psm2_preload.so")
         list(APPEND PSM2_CAPS "Wrapper")
     endif()
 

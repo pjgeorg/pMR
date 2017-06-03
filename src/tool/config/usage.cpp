@@ -30,5 +30,9 @@ void printUsage()
     std::cout << "    --cxxflags          Get CXX compiler flags." << std::endl;
     std::cout << "    --libs              Get required libraries." << std::endl;
     std::cout << "    --ldflags           Get required LDFLAGS." << std::endl;
-    std::cout << "    --config            Get altered configuration." << std::endl;
+    std::cout << "    --config            Get altered configuration."
+              << std::endl;
+    std::cout << "    --exports           Get list of environment variables to "
+                 "be exported."
+              << std::endl;
 }

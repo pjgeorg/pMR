@@ -24,6 +24,7 @@ constexpr char sBackend[] = "@BACKEND@";
 constexpr char sThread[] = "@THREAD@";
 constexpr char sVersion[] = "@GIT_VERSION@";
 constexpr char sConfig[] = "@CMAKE_CONFIG@";
+constexpr char sExports[] = "@REQUIRED_EXPORTS@";
 
 void printInfo(int argc, char **argv);
 
@@ -35,4 +36,5 @@ void printCluster();
 void printBackend();
 void printThread();
 void printVersion();
+void printExports();
 #endif // pMR_TOOL_CONFIG_INFO_H

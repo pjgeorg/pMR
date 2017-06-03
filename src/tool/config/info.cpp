@@ -61,4 +61,8 @@ int main(int argc, char **argv)
     {
         std::cout << sConfig << std::endl;
     }
+    if(parameterExists(argv, argv + argc, "--exports"))
+    {
+        std::cout << sExports << std::endl;
+    }
 }
